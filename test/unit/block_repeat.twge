@@ -1,0 +1,20 @@
+@repeat=inf @interval=5s
+block InfRepeat {
+    actions = {
+        console.log("5s");
+    }
+}
+
+@repeat=5 @interval=1s
+block InfRepeat {
+    actions = {
+        console.log("1s");
+    }
+}
+
+@delay=10s @repeat=2 @interval=1.5s
+block InfRepeat {
+    actions = {
+        console.log("1.5s");
+    }
+}

@@ -1,0 +1,12 @@
+block triggerBlock {
+    triggers {
+    }
+}
+block checkBlock {
+    checks {
+    }
+}
+block actionsBlock {
+    actions {
+    }
+}
