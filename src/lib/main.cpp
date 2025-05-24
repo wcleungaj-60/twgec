@@ -1,9 +1,7 @@
-#include <iostream>
 #include <fstream>
-#include <string>
-#include <vector>
-#include <cctype>
-#include "./lexer.cpp"
+#include "lexer.h"
+#include "parser.h"
+#include "codegen.h"
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
