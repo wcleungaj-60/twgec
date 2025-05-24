@@ -3,40 +3,39 @@
 
 #include <iostream>
 #include <memory>
-#include <vector>
 #include <string>
+#include <vector>
 
-// Base class for all AST nodes
-class ASTNode {
+class ChecksNode {
 public:
-    virtual ~ASTNode() = default;
-    virtual void print(int indent = 0) const = 0;
+  void print(int indent = 0) const;
 };
 
-class BlockNode : public ASTNode {
+class TriggersNode {
 public:
-    std::string identifier;
-    std::unique_ptr<ASTNode> checksNode;
-    std::unique_ptr<ASTNode> triggersNode;
-    std::unique_ptr<ASTNode> actionsNode;
-
-    BlockNode(const std::string& id) : identifier(id) {}
-    void print(int indent = 0) const override;
+  void print(int indent = 0) const;
 };
 
-class ChecksNode : public ASTNode {
+class ActionsNode {
 public:
-    void print(int indent = 0) const override;
+  void print(int indent = 0) const;
 };
 
-class TriggersNode : public ASTNode {
+class BlockNode {
 public:
-    void print(int indent = 0) const override;
+  std::string identifier;
+  std::unique_ptr<ChecksNode> checksNode;
+  std::unique_ptr<TriggersNode> triggersNode;
+  std::unique_ptr<ActionsNode> actionsNode;
+
+  BlockNode(const std::string &id) : identifier(id) {}
+  void print(int indent = 0) const;
 };
 
-class ActionsNode : public ASTNode {
+class ModuleNode {
 public:
-    void print(int indent = 0) const override;
+  std::vector<std::unique_ptr<BlockNode>> nodes;
+  void print(int indent = 0) const;
 };
 
 #endif
