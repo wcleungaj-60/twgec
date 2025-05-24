@@ -1,0 +1,62 @@
+#ifndef TOKEN_H
+#define TOKEN_H
+
+#include <iostream>
+
+#define LEXER_TOKEN_PRINT(type, output) \
+    case (type):                        \
+        os << output;                   \
+        break
+
+enum class TokenType
+{
+    /* Keyword */
+    BLOCK,    // block
+    ACTIONS,  // actions
+    TRIGGERS, // triggers
+    CHECKS,   // checks
+    /* Speical Character */
+    OPENCUR,   // {
+    CLOSECUR,  // }
+    ASSIGN,    // =
+    SEMICOLON, // ;
+    /* Others */
+    STRING,
+    IDENTIFIER,
+    END,
+    UNKNOWN
+};
+
+struct Token
+{
+    TokenType type;
+    std::string value;
+
+    Token(TokenType t, const std::string &v = "") : type(t), value(v) {}
+
+    friend std::ostream &operator<<(std::ostream &os, const Token &token)
+    {
+        os << "twge.";
+        switch (token.type)
+        {
+            // Keywords
+            LEXER_TOKEN_PRINT(TokenType::BLOCK, "block");
+            LEXER_TOKEN_PRINT(TokenType::ACTIONS, "actions");
+            LEXER_TOKEN_PRINT(TokenType::TRIGGERS, "triggers");
+            LEXER_TOKEN_PRINT(TokenType::CHECKS, "checks");
+            // Speical Character
+            LEXER_TOKEN_PRINT(TokenType::OPENCUR, "{");
+            LEXER_TOKEN_PRINT(TokenType::CLOSECUR, "}");
+            LEXER_TOKEN_PRINT(TokenType::ASSIGN, "=");
+            LEXER_TOKEN_PRINT(TokenType::SEMICOLON, ";");
+            // Otherwise
+            LEXER_TOKEN_PRINT(TokenType::STRING, "string@" + token.value);
+            LEXER_TOKEN_PRINT(TokenType::IDENTIFIER, "identifier@" + token.value);
+            LEXER_TOKEN_PRINT(TokenType::UNKNOWN, "unknown@" + token.value);
+            LEXER_TOKEN_PRINT(TokenType::END, "end");
+        }
+        return os;
+    }
+};
+
+#endif
