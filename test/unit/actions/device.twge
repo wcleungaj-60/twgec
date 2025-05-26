@@ -1,0 +1,7 @@
+block deviceInit {
+    actions {
+        manaCircle(10,16);
+        mapBlock(10,16);
+        iceStoma(10,16);
+    }
+}

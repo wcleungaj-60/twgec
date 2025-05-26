@@ -1,0 +1,8 @@
+block globalInit {
+    actions {
+        #globalString = "123"
+        #globalInt = 123
+        #globalNum = 1.23
+        #globalBool = true
+    }
+}

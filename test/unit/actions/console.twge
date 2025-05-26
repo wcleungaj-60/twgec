@@ -1,0 +1,11 @@
+block consoleLog {
+    actions {
+        console.log("123");
+    }
+}
+
+block consoleLog {
+    actions {
+        console.error("456");
+    }
+}
