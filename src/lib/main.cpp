@@ -1,6 +1,5 @@
-#include "codegen.h"
-#include "lexer.h"
-#include "parser.h"
+#include "frontend/lexer.h"
+#include "frontend/parser.h"
 #include <fstream>
 
 int main(int argc, char *argv[]) {

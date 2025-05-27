@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "frontend/lexer.h"
 
 namespace keyword {
 std::string block = "block";

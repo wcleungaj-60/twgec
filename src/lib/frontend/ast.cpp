@@ -1,4 +1,4 @@
-#include "ast.h"
+#include "frontend/ast.h"
 
 void ModuleNode::print(int indent) const {
   std::string indentation(indent, ' ');
