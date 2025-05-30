@@ -4,8 +4,15 @@ void ModuleNode::print(int indent) const {
   std::string indentation(indent, ' ');
   std::cout << indentation << "ModuleNode: "
             << "\n";
-  for (auto &node : nodes)
-    node->print(indent + 4);
+  for (auto &metadata : metadatas)
+    metadata->print(indent + 4);
+  for (auto &block : blocks)
+    block->print(indent + 4);
+}
+
+void MetadataNode::print(int indent) const {
+  std::string indentation(indent, ' ');
+  std::cout << indentation << "MetadataNode: " << key << "=" << value << "\n";
 }
 
 void BlockNode::print(int indent) const {

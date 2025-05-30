@@ -22,6 +22,7 @@ private:
   std::string input;
   size_t pos;
 
+  Token metadataToken();
   Token stringToken();
   Token identifierToken();
 };

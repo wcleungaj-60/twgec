@@ -1,0 +1,3 @@
+__schema__ = "https://code.gamelet.com/gassets/schema/events/v1";
+__title__ = "眾國爭雄";
+__map__ = "CG.Mat1Gau1Dou1Jau5/ZhongGuoZhengXiong/ZhongGuo_map1.twmap";

@@ -17,15 +17,36 @@ Parser::Parser(const std::vector<Token> &inputTokens) {
   }
 }
 
+/***
+ * ModuleNode = (BlockNode | MetadataNode)*
+ */
 std::unique_ptr<ModuleNode> Parser::parse() {
   std::unique_ptr<ModuleNode> moduleNode = std::make_unique<ModuleNode>();
   while (!tokens.empty()) {
-    auto blockNode = parseBlock();
-    if (!blockNode)
+    if (auto blockNode = parseBlock())
+      moduleNode->blocks.push_back(std::move(blockNode));
+    else if (auto metadataNode = parseMetadata())
+      moduleNode->metadatas.push_back(std::move(metadataNode));
+    else
       return nullptr;
-    moduleNode->nodes.push_back(std::move(blockNode));
   }
   return moduleNode;
+}
+
+/**
+ * MetadataNode = MetadataToken + AssignToken + StringToken + SemicolonToken
+ */
+std::unique_ptr<MetadataNode> Parser::parseMetadata() {
+  std::string key = tokens.front().value;
+  if (!consume(TokenType::METADATA) || !consume(TokenType::ASSIGN) ||
+      tokens.empty())
+    return nullptr;
+  std::string value = tokens.front().value;
+  if (!consume(TokenType::STRING) || !consume(TokenType::SEMICOLON))
+    return nullptr;
+  std::unique_ptr<MetadataNode> metadataNode =
+      std::make_unique<MetadataNode>(key, value);
+  return metadataNode;
 }
 
 /**

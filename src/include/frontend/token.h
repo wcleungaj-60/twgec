@@ -22,6 +22,7 @@ enum class TokenType {
   /* Others */
   STRING,
   IDENTIFIER,
+  METADATA,
   END,
   UNKNOWN
 };
@@ -48,6 +49,7 @@ struct Token {
       // Otherwise
       LEXER_TOKEN_PRINT(TokenType::STRING, "string@" + token.value);
       LEXER_TOKEN_PRINT(TokenType::IDENTIFIER, "identifier@" + token.value);
+      LEXER_TOKEN_PRINT(TokenType::METADATA, "metadata@" + token.value);
       LEXER_TOKEN_PRINT(TokenType::UNKNOWN, "unknown@" + token.value);
       LEXER_TOKEN_PRINT(TokenType::END, "end");
     }

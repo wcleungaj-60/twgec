@@ -32,9 +32,19 @@ public:
   void print(int indent = 0) const;
 };
 
+class MetadataNode {
+public:
+  std::string key;
+  std::string value;
+  MetadataNode(const std::string &key, const std::string &value)
+      : key(key), value(value) {}
+  void print(int indent = 0) const;
+};
+
 class ModuleNode {
 public:
-  std::vector<std::unique_ptr<BlockNode>> nodes;
+  std::vector<std::unique_ptr<MetadataNode>> metadatas;
+  std::vector<std::unique_ptr<BlockNode>> blocks;
   void print(int indent = 0) const;
 };
 
