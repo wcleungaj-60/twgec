@@ -1,5 +1,6 @@
 #include "frontend/lexer.h"
 #include "frontend/parser.h"
+#include "codegen/codegen.h"
 #include <fstream>
 
 int main(int argc, char *argv[]) {
@@ -40,6 +41,9 @@ int main(int argc, char *argv[]) {
   } else {
     std::cout << "Invalid AST\n";
   }
+
+  CodeGen codegen(moduleNode);
+  codegen.codegen("game.events");
 
   return 0;
 }

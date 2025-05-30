@@ -1,5 +1,8 @@
-#include <string>
-#include <vector>
+#ifndef METADATA_H
+#define METADATA_H
+
+#include <unordered_map>
+#include "ast.h"
 
 struct Point {
     int x;
@@ -12,6 +15,7 @@ public:
   bool isCompulsory;
   MetadataAbstract(std::string key, bool isCompulsory = false)
       : key(key), isCompulsory(isCompulsory){};
+  virtual ~MetadataAbstract() {};
 };
 
 class MetadataBool : public MetadataAbstract {
@@ -65,4 +69,16 @@ public:
         upperBound(upperBound){};
 };
 
-extern const std::vector<MetadataAbstract> metadataVec;
+class MetadataLegalizer {
+private:
+    static std::vector<std::unique_ptr<MetadataAbstract>> metadataVec;
+    const std::unique_ptr<ModuleNode>& moduleNode;
+    std::unordered_map<std::string, std::string> metadataMap;
+    void initDefaultVec();
+public:
+    MetadataLegalizer(const std::unique_ptr<ModuleNode>& moduleNode): moduleNode(moduleNode) {initDefaultVec();};
+    void transform();
+    std::unordered_map<std::string, std::string> getCodegen();
+};
+
+#endif

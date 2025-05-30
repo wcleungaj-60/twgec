@@ -1,66 +1,74 @@
 #include "codegen/metadata.h"
 
-const std::vector<MetadataAbstract> metadataVec = {
+std::vector<std::unique_ptr<MetadataAbstract>> MetadataLegalizer::metadataVec = {};
+
+void  MetadataLegalizer::initDefaultVec(){
     // Integer
-    MetadataInteger("stageWidth", 600),
-    MetadataInteger("stageHeight", 500),
-    MetadataInteger("roomSize", 4, 1, 8),
-    MetadataInteger("lives", 3),
-    MetadataInteger("maxAbilityLevel", 2, 0, 2),
-    MetadataInteger("bornDuration", 300),
-    MetadataInteger("bornLockDuration", 100),
-    MetadataInteger("minPlayers", 1, 1, 8),
+    metadataVec.push_back(std::make_unique<MetadataInteger>("stageWidth", 600));
+    metadataVec.push_back(std::make_unique<MetadataInteger>("stageHeight", 500));
+    metadataVec.push_back(std::make_unique<MetadataInteger>("roomSize", 4, 1, 8));
+    metadataVec.push_back(std::make_unique<MetadataInteger>("lives", 3));
+    metadataVec.push_back(std::make_unique<MetadataInteger>("maxAbilityLevel", 2, 0, 2));
+    metadataVec.push_back(std::make_unique<MetadataInteger>("bornDuration", 300));
+    metadataVec.push_back(std::make_unique<MetadataInteger>("bornLockDuration", 100));
+    metadataVec.push_back(std::make_unique<MetadataInteger>("minPlayers", 1, 1, 8));
     // Boolean
-    MetadataBool("supportSignin", true),
-    MetadataBool("mustLogin", true),
-    MetadataBool("allowGuest", true),
-    MetadataBool("supportMsgServer", true),
-    MetadataBool("runGame", true),
-    MetadataBool("campOpSkydow", true),
-    MetadataBool("campOpRoyal", true),
-    MetadataBool("campOpThird", true),
-    MetadataBool("setInitFocus", false),
-    MetadataBool("setBornDuration", false),
-    MetadataBool("nextGameEnabled", true),
-    MetadataBool("playDefaultMusic", true),
-    MetadataBool("disableNextGameOnMissionComplete", false),
-    MetadataBool("useDefaultItems", false),
-    MetadataBool("defCarryItems", false),
-    MetadataBool("useDefaultCampLocs", false),
-    MetadataBool("useCustomWeapons", false),
-    MetadataBool("useCustomFarWeapons", false),
-    MetadataBool("useCustomItems", false),
-    MetadataBool("allowGuest", true),
+    metadataVec.push_back(std::make_unique<MetadataBool>("supportSignin", true));
+    metadataVec.push_back(std::make_unique<MetadataBool>("mustLogin", true));
+    metadataVec.push_back(std::make_unique<MetadataBool>("allowGuest", true));
+    metadataVec.push_back(std::make_unique<MetadataBool>("supportMsgServer", true));
+    metadataVec.push_back(std::make_unique<MetadataBool>("runGame", true));
+    metadataVec.push_back(std::make_unique<MetadataBool>("campOpSkydow", true));
+    metadataVec.push_back(std::make_unique<MetadataBool>("campOpRoyal", true));
+    metadataVec.push_back(std::make_unique<MetadataBool>("campOpThird", true));
+    metadataVec.push_back(std::make_unique<MetadataBool>("setInitFocus", false));
+    metadataVec.push_back(std::make_unique<MetadataBool>("setBornDuration", false));
+    metadataVec.push_back(std::make_unique<MetadataBool>("nextGameEnabled", true));
+    metadataVec.push_back(std::make_unique<MetadataBool>("playDefaultMusic", true));
+    metadataVec.push_back(std::make_unique<MetadataBool>("disableNextGameOnMissionComplete", false));
+    metadataVec.push_back(std::make_unique<MetadataBool>("useDefaultItems", false));
+    metadataVec.push_back(std::make_unique<MetadataBool>("defCarryItems", false));
+    metadataVec.push_back(std::make_unique<MetadataBool>("useDefaultCampLocs", false));
+    metadataVec.push_back(std::make_unique<MetadataBool>("useCustomWeapons", false));
+    metadataVec.push_back(std::make_unique<MetadataBool>("useCustomFarWeapons", false));
+    metadataVec.push_back(std::make_unique<MetadataBool>("useCustomItems", false));
+    metadataVec.push_back(std::make_unique<MetadataBool>("allowGuest", true));
     // String
-    MetadataString("schema", "", true),
-    MetadataString("title", "", true),
-    MetadataString("map", "", true),
-    MetadataString("stageBackgroundColor", "#999999"),
-    MetadataString("gamezoneCode", "mission"),
+    metadataVec.push_back(std::make_unique<MetadataString>("schema", "", true));
+    metadataVec.push_back(std::make_unique<MetadataString>("title", "", true));
+    metadataVec.push_back(std::make_unique<MetadataString>("map", "", true));
+    metadataVec.push_back(std::make_unique<MetadataString>("stageBackgroundColor", "#999999"));
+    metadataVec.push_back(std::make_unique<MetadataString>("gamezoneCode", "mission"));
     // Enum
-    MetadataEnum("roomType", "close", {"close", "open"}),
-    MetadataEnum("stageAlignHorizontal", "center", {"left", "center", "right"}),
-    MetadataEnum("stageAlignVertical", "middle", {"top", "middle", "bottom"}),
-    MetadataEnum("cameraAfterOver", "free", {"free", "restrict", "none"}),
-    MetadataEnum("stageResolutionPolicy", "showAll",
-                 {"showAll", "exactFit", "noBorder", "fixedWidth",
-                  "fixedHeight", "origin"}),
-    MetadataEnum("gameStartFadein", "fadein",
-                 {"fadein", "fadeinL", "dark", "show"}),
+    // metadataVec.push_back(std::make_unique<MetadataEnum>("roomType", "close", {"close", "open"}));
+    // metadataVec.push_back(std::make_unique<MetadataEnum>("stageAlignHorizontal", "center", {"left", "center", "right"}));
+    // metadataVec.push_back(std::make_unique<MetadataEnum>("stageAlignVertical", "middle", {"top", "middle", "bottom"}));
+    // metadataVec.push_back(std::make_unique<MetadataEnum>("cameraAfterOver", "free", {"free", "restrict", "none"}));
+    // metadataVec.push_back(std::make_unique<MetadataEnum>("stageResolutionPolicy", "showAll",
+    //              {"showAll", "exactFit", "noBorder", "fixedWidth",
+    //               "fixedHeight", "origin"}),
+    // metadataVec.push_back(std::make_unique<MetadataEnum>("gameStartFadein", "fadein",
+    //              {"fadein", "fadeinL", "dark", "show"}));
     // List
-    MetadataList<Point>("skydowLocs"),
-    MetadataList<Point>("royalLocs"),
-    MetadataList<Point>("thirdLocs"),
-    MetadataList<Point>("initFocus"),
-    MetadataList<std::string>("preloadSources"),
-    MetadataList<std::string>("preloadResourcesExclude"),
-    MetadataList<std::string>("carryItemCodes"),
-    MetadataList<std::string>("releaseCamp", {"third", "royal", "skydow"},
-                              {"third", "royal", "skydow", "random"}),
-    MetadataList<std::string>("debugCamp", {"third", "royal", "skydow"},
-                              {"third", "royal", "skydow", "random"}),
+    metadataVec.push_back(std::make_unique<MetadataList<Point>>("skydowLocs"));
+    metadataVec.push_back(std::make_unique<MetadataList<Point>>("royalLocs"));
+    metadataVec.push_back(std::make_unique<MetadataList<Point>>("thirdLocs"));
+    metadataVec.push_back(std::make_unique<MetadataList<Point>>("initFocus"));
+    metadataVec.push_back(std::make_unique<MetadataList<std::string>>("preloadSources"));
+    metadataVec.push_back(std::make_unique<MetadataList<std::string>>("preloadResourcesExclude"));
+    metadataVec.push_back(std::make_unique<MetadataList<std::string>>("carryItemCodes"));
+    // std::make_unique<MetadataList<std::string>>("releaseCamp", {"third", "royal", "skydow"},
+    //                           {"third", "royal", "skydow", "random"}),
+    // std::make_unique<MetadataList<std::string>>("debugCamp", {"third", "royal", "skydow"},
+    //                           {"third", "royal", "skydow", "random"}),
     // Unsupport
-    MetadataUnsupport("customWeapons", ""),
-    MetadataUnsupport("customFarWeapons", ""),
-    MetadataUnsupport("customItems", ""),
-};
+    metadataVec.push_back(std::make_unique<MetadataUnsupport>("customWeapons", ""));
+    metadataVec.push_back(std::make_unique<MetadataUnsupport>("customFarWeapons", ""));
+    metadataVec.push_back(std::make_unique<MetadataUnsupport>("customItems", ""));
+}
+
+void MetadataLegalizer::transform(){
+    std::unordered_map<std::string, MetadataAbstract*> defaultMap;
+    for(auto& defaultMeta: metadataVec)
+        defaultMap[defaultMeta->key] = defaultMeta.get();
+}
