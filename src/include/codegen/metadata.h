@@ -5,11 +5,67 @@
 #include <memory>
 #include <unordered_map>
 
-#define META_INT(...) std::make_unique<MetadataInteger>(__VA_ARGS__)
-#define META_BOOL(...) std::make_unique<MetadataBool>(__VA_ARGS__)
-#define META_STRING(...) std::make_unique<MetadataString>(__VA_ARGS__)
-#define META_LIST(type, ...) std::make_unique<MetadataList<type>>(__VA_ARGS__)
-#define META_UNSUPPORT(...) std::make_unique<MetadataUnsupport>(__VA_ARGS__)
+#define INIT_META_INT(map, key, ...)                                           \
+  map[key] = std::make_unique<MetadataInteger>(key, __VA_ARGS__)
+#define INIT_META_BOOL(map, key, ...)                                          \
+  map[key] = std::make_unique<MetadataBool>(key, __VA_ARGS__)
+#define INIT_META_STRING(map, key, ...)                                        \
+  map[key] = std::make_unique<MetadataString>(key, __VA_ARGS__)
+#define INIT_META_LIST(map, type, key)                                         \
+  map[key] = std::make_unique<MetadataList<type>>(key)
+#define INIT_META_UNSUPPORT(map, key)                                          \
+  map[key] = std::make_unique<MetadataUnsupport>(key)
+
+namespace metadata {
+// Int
+const std::string stageWidth = "stageWidth";
+const std::string stageHeight = "stageHeight";
+const std::string roomSize = "roomSize";
+const std::string lives = "lives";
+const std::string maxAbilityLevel = "maxAbilityLevel";
+const std::string bornDuration = "bornDuration";
+const std::string bornLockDuration = "bornLockDuration";
+const std::string minPlayers = "minPlayers";
+// Boolean
+const std::string supportSignin = "supportSignin";
+const std::string mustLogin = "mustLogin";
+const std::string allowGuest = "allowGuest";
+const std::string supportMsgServer = "supportMsgServer";
+const std::string runGame = "runGame";
+const std::string campOpSkydow = "campOpSkydow";
+const std::string campOpRoyal = "campOpRoyal";
+const std::string campOpThird = "campOpThird";
+const std::string setInitFocus = "setInitFocus";
+const std::string setBornDuration = "setBornDuration";
+const std::string nextGameEnabled = "nextGameEnabled";
+const std::string playDefaultMusic = "playDefaultMusic";
+const std::string disableNextGameOnMissionComplete =
+    "disableNextGameOnMissionComplete";
+const std::string useDefaultItems = "useDefaultItems";
+const std::string defCarryItems = "defCarryItems";
+const std::string useDefaultCampLocs = "useDefaultCampLocs";
+const std::string useCustomWeapons = "useCustomWeapons";
+const std::string useCustomFarWeapons = "useCustomFarWeapons";
+const std::string useCustomItems = "useCustomItems";
+// String
+const std::string title = "title";
+const std::string map = "map";
+const std::string schema = "schema";
+const std::string stageBackgroundColor = "stageBackgroundColor";
+const std::string gamezoneCode = "gamezoneCode";
+// List
+const std::string skydowLocs = "skydowLocs";
+const std::string royalLocs = "royalLocs";
+const std::string thirdLocs = "thirdLocs";
+const std::string initFocus = "initFocus";
+const std::string preloadSources = "preloadSources";
+const std::string preloadResourcesExclude = "preloadResourcesExclude";
+const std::string carryItemCodes = "carryItemCodes";
+// Unsupport
+const std::string customWeapons = "customWeapons";
+const std::string customFarWeapons = "customFarWeapons";
+const std::string customItems = "customItems";
+} // namespace metadata
 
 struct Point {
   int x;
@@ -88,6 +144,8 @@ public:
     initDefaultMap();
   };
   std::string getStr(std::string key);
+  std::string getBool(std::string key);
+  int getInt(std::string key);
 };
 
 #endif
