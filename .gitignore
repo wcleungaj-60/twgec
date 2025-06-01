@@ -1,3 +1,5 @@
 /build
 Makefile
 .vscode
+.cache
+*game.events
