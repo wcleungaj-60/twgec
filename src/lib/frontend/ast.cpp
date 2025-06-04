@@ -1,4 +1,5 @@
 #include "frontend/ast.h"
+#include "utils/utils.h"
 
 void ModuleNode::print(int indent) const {
   std::string indentation(indent, ' ');
@@ -38,5 +39,14 @@ void TriggersNode::print(int indent) const {
 
 void ActionsNode::print(int indent) const {
   std::string indentation(indent, ' ');
-  std::cout << indentation << "ActionsNode\n";
+  std::cout << indentation << "ActionsNode {\n";
+  for (auto &a : actions)
+    a.get()->print(indent + 4);
+  std::cout << indentation << "}\n";
+}
+
+void ActionNode::print(int indent) const {
+  std::string indentation(indent, ' ');
+  std::cout << indentation << join(identifier, ".") << "(" << join(args, ",")
+            << ")\n";
 }

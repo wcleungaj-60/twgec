@@ -17,8 +17,12 @@ enum class TokenType {
   /* Speical Character */
   OPENCUR,   // {
   CLOSECUR,  // }
+  OPENPAR,   // (
+  CLOSEPAR,  // )
   ASSIGN,    // =
   SEMICOLON, // ;
+  DOT,       // .
+  COMMA,     // ,
   /* Others */
   STRING,
   IDENTIFIER,
@@ -44,8 +48,12 @@ struct Token {
       // Speical Character
       LEXER_TOKEN_PRINT(TokenType::OPENCUR, "{");
       LEXER_TOKEN_PRINT(TokenType::CLOSECUR, "}");
+      LEXER_TOKEN_PRINT(TokenType::OPENPAR, "(");
+      LEXER_TOKEN_PRINT(TokenType::CLOSEPAR, ")");
       LEXER_TOKEN_PRINT(TokenType::ASSIGN, "=");
       LEXER_TOKEN_PRINT(TokenType::SEMICOLON, ";");
+      LEXER_TOKEN_PRINT(TokenType::DOT, ".");
+      LEXER_TOKEN_PRINT(TokenType::COMMA, ",");
       // Otherwise
       LEXER_TOKEN_PRINT(TokenType::STRING, "string@" + token.value);
       LEXER_TOKEN_PRINT(TokenType::IDENTIFIER, "identifier@" + token.value);

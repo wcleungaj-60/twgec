@@ -1,6 +1,5 @@
 #include "frontend/parser.h"
 #include <queue>
-#include <stdexcept>
 #include <vector>
 
 bool Parser::consume(TokenType type) {
@@ -56,26 +55,35 @@ std::unique_ptr<BlockNode> Parser::parseBlock() {
   if (!consume(TokenType::BLOCK) || tokens.empty())
     return nullptr;
   std::string name = tokens.front().value;
-  if (!consume(TokenType::IDENTIFIER) || !consume(TokenType::OPENCUR))
+  if (!consume(TokenType::IDENTIFIER) || !consume(TokenType::OPENCUR)) {
+    std::cerr
+        << "Expected syntax: expected: blocks identifer {/*block details*/}\n";
     return nullptr;
+  }
   std::unique_ptr<BlockNode> blockNode = std::make_unique<BlockNode>(name);
   while (tokens.front().type != TokenType::CLOSECUR) {
     if (tokens.front().type == TokenType::ACTIONS) {
       auto actionsNode = parseActions();
-      if (!actionsNode)
+      if (!actionsNode) {
+        std::cerr << "found in block \"" << name << "\"\n";
         return nullptr;
+      }
       blockNode->actionsNode = std::move(actionsNode);
     }
     if (tokens.front().type == TokenType::CHECKS) {
       auto checksNode = parseChecks();
-      if (!checksNode)
+      if (!checksNode) {
+        std::cerr << "found in block \"" << name << "\"\n";
         return nullptr;
+      }
       blockNode->checksNode = std::move(checksNode);
     }
     if (tokens.front().type == TokenType::TRIGGERS) {
       auto triggersNode = parseTriggers();
-      if (!triggersNode)
+      if (!triggersNode) {
+        std::cerr << "found in block \"" << name << "\"\n";
         return nullptr;
+      }
       blockNode->triggersNode = std::move(triggersNode);
     }
   }
@@ -88,11 +96,57 @@ std::unique_ptr<BlockNode> Parser::parseBlock() {
  * ACTIONS + OPENCUR + CLOSECUR
  */
 std::unique_ptr<ActionsNode> Parser::parseActions() {
-  if (!consume(TokenType::ACTIONS) || !consume(TokenType::OPENCUR) ||
-      !consume(TokenType::CLOSECUR))
+  if (!consume(TokenType::ACTIONS) || !consume(TokenType::OPENCUR)) {
+    std::cerr << "Expected syntax: actions {/*You actions*/}\n";
     return nullptr;
+  }
   std::unique_ptr<ActionsNode> actionsNode = std::make_unique<ActionsNode>();
+  while (tokens.front().type != TokenType::CLOSECUR) {
+    auto actionNode = parseAction();
+    if (!actionNode) {
+      std::cerr << "Expected syntax: identifier(dot identifier)* \"(\"NULL | "
+                   "((arg comma)* arg)\")\" semicolon\n";
+      return nullptr;
+    }
+    actionsNode->actions.push_back(std::move(actionNode));
+  }
+  if (!consume(TokenType::CLOSECUR)) {
+    std::cerr << "Expected syntax: actions {/*You actions*/}\n";
+    return nullptr;
+  }
   return actionsNode;
+}
+
+/**
+ * IDENTIFIFER + (DOT + IDENTIFIFER)* + OPENPAR + ARG* + CLOSEPAR + SEMICOLON
+ */
+std::unique_ptr<ActionNode> Parser::parseAction() {
+  std::unique_ptr<ActionNode> actionNode = std::make_unique<ActionNode>();
+  std::string id = tokens.front().value;
+  if (!consume(TokenType::IDENTIFIER))
+    return nullptr;
+  actionNode->identifier.push_back(id);
+  while (tokens.front().type != TokenType::OPENPAR) {
+    if (!consume(TokenType::DOT))
+      return nullptr;
+    id = tokens.front().value;
+    if (!consume(TokenType::IDENTIFIER))
+      return nullptr;
+    actionNode->identifier.push_back(id);
+  }
+  consume(TokenType::OPENPAR);
+  while (tokens.front().type != TokenType::CLOSEPAR) {
+    std::string arg = tokens.front().value;
+    if (!consume(TokenType::STRING))
+      return nullptr;
+    actionNode->args.push_back(arg);
+    if (tokens.front().type != TokenType::CLOSEPAR &&
+        !consume(TokenType::COMMA))
+      return nullptr;
+  }
+  if (!consume(TokenType::CLOSEPAR) || !consume(TokenType::SEMICOLON))
+    return nullptr;
+  return actionNode;
 }
 
 /**
@@ -100,8 +154,10 @@ std::unique_ptr<ActionsNode> Parser::parseActions() {
  */
 std::unique_ptr<ChecksNode> Parser::parseChecks() {
   if (!consume(TokenType::CHECKS) || !consume(TokenType::OPENCUR) ||
-      !consume(TokenType::CLOSECUR))
+      !consume(TokenType::CLOSECUR)) {
+    std::cerr << "Expected syntax: checks {/*You checks*/}\n";
     return nullptr;
+  }
   std::unique_ptr<ChecksNode> checksNode = std::make_unique<ChecksNode>();
   return checksNode;
 }
@@ -111,8 +167,10 @@ std::unique_ptr<ChecksNode> Parser::parseChecks() {
  */
 std::unique_ptr<TriggersNode> Parser::parseTriggers() {
   if (!consume(TokenType::TRIGGERS) || !consume(TokenType::OPENCUR) ||
-      !consume(TokenType::CLOSECUR))
+      !consume(TokenType::CLOSECUR)) {
+    std::cerr << "Expected syntax: triggers {/*You triggers*/}";
     return nullptr;
+  }
   std::unique_ptr<TriggersNode> triggersNode = std::make_unique<TriggersNode>();
   return triggersNode;
 }

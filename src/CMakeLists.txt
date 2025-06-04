@@ -13,4 +13,5 @@ target_include_directories(twgec PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include/frontend
     ${CMAKE_CURRENT_SOURCE_DIR}/include/codegen
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/utils
 )

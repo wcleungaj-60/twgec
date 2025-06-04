@@ -27,28 +27,35 @@ Token Lexer::nextToken() {
     case '}':
       pos++;
       return Token(TokenType::CLOSECUR);
+    case '(':
+      pos++;
+      return Token(TokenType::OPENPAR);
+    case ')':
+      pos++;
+      return Token(TokenType::CLOSEPAR);
+    case '.':
+      pos++;
+      return Token(TokenType::DOT);
+    case ',':
+      pos++;
+      return Token(TokenType::COMMA);
     case ';':
       pos++;
       return Token(TokenType::SEMICOLON);
-    case 'a':
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::actions,
-                                     TokenType::ACTIONS);
-    case 'b':
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::block,
-                                     TokenType::BLOCK);
-    case 'c':
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::checks,
-                                     TokenType::CHECKS);
-    case 't':
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::triggers,
-                                     TokenType::TRIGGERS);
     case '_':
       return metadataToken();
     default:
-      if (std::isalpha(current))
-        return identifierToken();
-      else
+      if (!std::isalpha(current))
         return Token(TokenType::UNKNOWN, std::string(1, input[pos++]));
+      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::actions,
+                                     TokenType::ACTIONS);
+      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::block,
+                                     TokenType::BLOCK);
+      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::checks,
+                                     TokenType::CHECKS);
+      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::triggers,
+                                     TokenType::TRIGGERS);
+      return identifierToken();
     }
   }
   return Token(TokenType::END);

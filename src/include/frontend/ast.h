@@ -16,8 +16,17 @@ public:
   void print(int indent = 0) const;
 };
 
+class ActionNode {
+public:
+  std::vector<std::string> identifier;
+  std::vector<std::string> args;
+public:
+  void print(int indent = 0) const;
+};
+
 class ActionsNode {
 public:
+  std::vector<std::unique_ptr<ActionNode>> actions;
   void print(int indent = 0) const;
 };
 

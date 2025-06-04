@@ -15,6 +15,7 @@ private:
   std::unique_ptr<BlockNode> parseBlock();
   std::unique_ptr<MetadataNode> parseMetadata();
   std::unique_ptr<ActionsNode> parseActions();
+  std::unique_ptr<ActionNode> parseAction();
   std::unique_ptr<ChecksNode> parseChecks();
   std::unique_ptr<TriggersNode> parseTriggers();
 

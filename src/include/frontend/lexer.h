@@ -4,7 +4,6 @@
 #include "token.h"
 #include <cctype>
 #include <string>
-#include <vector>
 
 #define LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword, type)              \
   if ((input).substr((pos), (keyword).length()) == (keyword) &&                \
