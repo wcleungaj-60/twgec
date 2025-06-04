@@ -2,8 +2,7 @@
 #include "utils/utils.h"
 
 void ModuleNode::print(int indent) const {
-  std::string indentation(indent, ' ');
-  std::cout << indentation << "ModuleNode: "
+  std::cout << inden(indent) << "ModuleNode: "
             << "\n";
   for (auto &metadata : metadatas)
     metadata->print(indent + 4);
@@ -12,13 +11,11 @@ void ModuleNode::print(int indent) const {
 }
 
 void MetadataNode::print(int indent) const {
-  std::string indentation(indent, ' ');
-  std::cout << indentation << "MetadataNode: " << key << "=" << value << "\n";
+  std::cout << inden(indent) << "MetadataNode: " << key << "=" << value << "\n";
 }
 
 void BlockNode::print(int indent) const {
-  std::string indentation(indent, ' ');
-  std::cout << indentation << "BlockNode: " << identifier << "\n";
+  std::cout << inden(indent) << "BlockNode: " << identifier << "\n";
   if (checksNode)
     checksNode->print(indent + 4);
   if (triggersNode)
@@ -28,25 +25,21 @@ void BlockNode::print(int indent) const {
 }
 
 void ChecksNode::print(int indent) const {
-  std::string indentation(indent, ' ');
-  std::cout << indentation << "ChecksNode\n";
+  std::cout << inden(indent) << "ChecksNode\n";
 }
 
 void TriggersNode::print(int indent) const {
-  std::string indentation(indent, ' ');
-  std::cout << indentation << "TriggersNode\n";
+  std::cout << inden(indent) << "TriggersNode\n";
 }
 
 void ActionsNode::print(int indent) const {
-  std::string indentation(indent, ' ');
-  std::cout << indentation << "ActionsNode {\n";
+  std::cout << inden(indent) << "ActionsNode {\n";
   for (auto &a : actions)
     a.get()->print(indent + 4);
-  std::cout << indentation << "}\n";
+  std::cout << inden(indent) << "}\n";
 }
 
 void ActionNode::print(int indent) const {
-  std::string indentation(indent, ' ');
-  std::cout << indentation << join(identifier, ".") << "(" << join(args, ",")
+  std::cout << inden(indent) << join(identifier, ".") << "(" << join(args, ",")
             << ")\n";
 }

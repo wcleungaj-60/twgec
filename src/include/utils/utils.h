@@ -15,4 +15,6 @@ inline std::string join(const std::vector<std::string>& elements, const std::str
     return result.str();
 }
 
+inline std::string inden(int _) { return std::string(_, ' '); }
+
 #endif

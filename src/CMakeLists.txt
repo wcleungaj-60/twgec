@@ -6,6 +6,7 @@ add_executable(twgec
     lib/frontend/parser.cpp
     lib/codegen/metadata.cpp
     lib/codegen/codegen.cpp
+    lib/codegen/twge_action.cpp
     lib/main.cpp
 )
 

@@ -1,9 +1,7 @@
 #include "codegen.h"
+#include "twge_action.h"
 #include <fstream>
 #include <iostream>
-
-/** Helper Function */
-std::string inden(int _) { return std::string(_, ' '); }
 
 std::string getMetaString(
     std::unordered_map<std::string, std::unique_ptr<MetadataAbstract>> metaMap,
@@ -132,7 +130,8 @@ void CodeGen::codegenBlocks(std::ofstream &of) {
     return;
   }
   of << std::endl;
-  for (auto &block : moduleNode->blocks) {
+  for (auto i = 0; i < moduleNode->blocks.size(); i++) {
+    auto &block = moduleNode->blocks[i];
     of << inden(8) << "{" << std::endl;
     of << inden(12) << "\"id\": \"" << block->identifier << "\"," << std::endl;
     of << inden(12) << "\"disabled\": false," << std::endl;
@@ -145,15 +144,46 @@ void CodeGen::codegenBlocks(std::ofstream &of) {
     codegenActions(of, block->actionsNode);
     codegenChecks(of, block->checksNode);
     codegenTriggers(of, block->triggersNode);
-    of << inden(8) << "}," << std::endl;
+    of << inden(8) << "}";
+    if (i != moduleNode->blocks.size() - 1)
+      of << ",";
+    of << std::endl;
   }
   of << inden(4) << "]" << std::endl;
 }
 
 void CodeGen::codegenActions(std::ofstream &of,
                              std::unique_ptr<ActionsNode> &actions) {
-  of << inden(12) << "\"actions\": []," << std::endl;
+  of << inden(12) << "\"actions\": [";
+  if (actions->actions.empty()) {
+    of << "]," << std::endl;
+    return;
+  }
+  of << std::endl;
+  for (auto i = 0; i < actions->actions.size(); i++) {
+    of << inden(16) << "{" << std::endl;
+    codegenAction(of, actions->actions[i]);
+    of << inden(16) << "}";
+    if (i != actions->actions.size() - 1)
+      of << ",";
+    of << std::endl;
+  }
+  of << inden(12) << "]," << std::endl;
 }
+
+void CodeGen::codegenAction(std::ofstream &of,
+                            std::unique_ptr<ActionNode> &action) {
+  if (action->identifier[0] == "console") {
+    if (action->identifier.size() >= 2 && action->args.size() == 1 &&
+        (action->identifier[1] == "log" || action->identifier[1] == "error")) {
+      twge::action::console(of, action);
+      return;
+    }
+  }
+  std::cerr << "Unknown action: ";
+  action->print();
+}
+
 void CodeGen::codegenChecks(std::ofstream &of,
                             std::unique_ptr<ChecksNode> &checks) {
   of << inden(12) << "\"checks\": []," << std::endl;
