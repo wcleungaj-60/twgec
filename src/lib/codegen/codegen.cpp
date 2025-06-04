@@ -125,9 +125,47 @@ void CodeGen::codegenMetaData(std::ofstream &of) {
   of << inden(4) << "}," << std::endl;
 }
 
+void CodeGen::codegenBlocks(std::ofstream &of) {
+  of << inden(4) << "\"events\": [";
+  if (moduleNode->blocks.size() == 0) {
+    of << "]" << std::endl;
+    return;
+  }
+  of << std::endl;
+  for (auto &block : moduleNode->blocks) {
+    of << inden(8) << "{" << std::endl;
+    of << inden(12) << "\"id\": \"" << block->identifier << "\"," << std::endl;
+    of << inden(12) << "\"disabled\": false," << std::endl;
+    of << inden(12) << "\"folder\": \"\"," << std::endl;
+    of << inden(12) << "\"startTime\": 0," << std::endl;
+    of << inden(12) << "\"checkInterval\": 10," << std::endl;
+    of << inden(12) << "\"repeats\": 0," << std::endl;
+    of << inden(12) << "\"repeatInterval\": 0," << std::endl;
+    of << inden(12) << "\"devOnly\": false," << std::endl;
+    codegenActions(of, block->actionsNode);
+    codegenChecks(of, block->checksNode);
+    codegenTriggers(of, block->triggersNode);
+    of << inden(8) << "}," << std::endl;
+  }
+  of << inden(4) << "]" << std::endl;
+}
+
+void CodeGen::codegenActions(std::ofstream &of,
+                             std::unique_ptr<ActionsNode> &actions) {
+  of << inden(12) << "\"actions\": []," << std::endl;
+}
+void CodeGen::codegenChecks(std::ofstream &of,
+                            std::unique_ptr<ChecksNode> &checks) {
+  of << inden(12) << "\"checks\": []," << std::endl;
+}
+void CodeGen::codegenTriggers(std::ofstream &of,
+                              std::unique_ptr<TriggersNode> &triggers) {
+  of << inden(12) << "\"triggers\": []" << std::endl;
+}
+
 void CodeGen::codegenModuleNode(std::ofstream &of) {
   of << "{" << std::endl;
   codegenMetaData(of);
-  of << "    \"events\": []" << std::endl;
+  codegenBlocks(of);
   of << "}" << std::endl;
 }
