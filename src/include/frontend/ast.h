@@ -19,7 +19,9 @@ public:
 class ActionNode {
 public:
   std::vector<std::string> identifier;
-  std::vector<std::string> args;
+  std::vector<std::string> positional_args;
+  std::vector<std::pair<std::string, std::string>> named_args;
+
 public:
   void print(int indent = 0) const;
 };

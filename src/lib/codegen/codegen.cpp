@@ -42,7 +42,7 @@ void CodeGen::codegenMetaData(std::ofstream &of) {
   of << inden(8) << "}," << std::endl;
   of << inden(8) << "\"configs\": {" << std::endl;
   of << inden(12) << "\"TwilightWarsConfig\": {" << std::endl;
-  of << inden(12) << "\"title\": " << metadataLegalizer.getStr(metadata::title)
+  of << inden(16) << "\"title\": " << metadataLegalizer.getStr(metadata::title)
      << "," << std::endl;
   of << inden(16) << "\"serverConfig\": {" << std::endl;
   of << inden(20)
@@ -174,11 +174,15 @@ void CodeGen::codegenActions(std::ofstream &of,
 void CodeGen::codegenAction(std::ofstream &of,
                             std::unique_ptr<ActionNode> &action) {
   if (action->identifier[0] == "console") {
-    if (action->identifier.size() >= 2 && action->args.size() == 1 &&
+    if (action->identifier.size() >= 2 && action->positional_args.size() == 1 &&
         (action->identifier[1] == "log" || action->identifier[1] == "error")) {
       twge::action::console(of, action);
       return;
     }
+  }
+  if (action->identifier[0] == "addActor") {
+    twge::action::addActor(of, action);
+    return;
   }
   std::cerr << "Unknown action: ";
   action->print();

@@ -16,6 +16,7 @@ private:
   std::unique_ptr<MetadataNode> parseMetadata();
   std::unique_ptr<ActionsNode> parseActions();
   std::unique_ptr<ActionNode> parseAction();
+  bool parseActionArgs(std::unique_ptr<ActionNode> &, bool foundNamed = false);
   std::unique_ptr<ChecksNode> parseChecks();
   std::unique_ptr<TriggersNode> parseTriggers();
 

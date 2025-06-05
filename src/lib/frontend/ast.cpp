@@ -40,6 +40,9 @@ void ActionsNode::print(int indent) const {
 }
 
 void ActionNode::print(int indent) const {
-  std::cout << inden(indent) << join(identifier, ".") << "(" << join(args, ",")
-            << ")\n";
+  std::cout << inden(indent) << join(identifier, ".") << "("
+            << join(positional_args, ",");
+  if (!named_args.empty())
+    std::cout << "," << join(named_args, ",");
+  std::cout << ")\n";
 }

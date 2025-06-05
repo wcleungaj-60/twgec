@@ -118,7 +118,8 @@ std::unique_ptr<ActionsNode> Parser::parseActions() {
 }
 
 /**
- * IDENTIFIFER + (DOT + IDENTIFIFER)* + OPENPAR + ARG* + CLOSEPAR + SEMICOLON
+ * ActionNode = IDENTIFIFER + (DOT + IDENTIFIFER)* + OPENPAR + NULL | ARGS +
+ * CLOSEPAR + SEMICOLON
  */
 std::unique_ptr<ActionNode> Parser::parseAction() {
   std::unique_ptr<ActionNode> actionNode = std::make_unique<ActionNode>();
@@ -136,17 +137,39 @@ std::unique_ptr<ActionNode> Parser::parseAction() {
   }
   consume(TokenType::OPENPAR);
   while (tokens.front().type != TokenType::CLOSEPAR) {
-    std::string arg = tokens.front().value;
-    if (!consume(TokenType::STRING))
-      return nullptr;
-    actionNode->args.push_back(arg);
-    if (tokens.front().type != TokenType::CLOSEPAR &&
-        !consume(TokenType::COMMA))
+    if (!parseActionArgs(actionNode))
       return nullptr;
   }
   if (!consume(TokenType::CLOSEPAR) || !consume(TokenType::SEMICOLON))
     return nullptr;
   return actionNode;
+}
+
+bool Parser::parseActionArgs(std::unique_ptr<ActionNode> &actionNode,
+                             bool foundNamed) {
+  std::string firstToken = tokens.front().value;
+  if (!consume(TokenType::IDENTIFIER)) {
+    // NAMED_ARGS = IDENTIFIFER EQUAL STRING (COMMA NAMED_ARGS)*
+    if (foundNamed)
+      return false;
+    if (!consume(TokenType::STRING))
+      return false;
+    actionNode->positional_args.push_back(firstToken);
+    if (consume(TokenType::COMMA))
+      return parseActionArgs(actionNode);
+  } else {
+    // POSITIONAL_ARGS = (STRING (COMMA POSITIONAL_ARGS)*) | (IDENTIFIFER EQUAL
+    // STRING (COMMA NAMED_ARGS)*)
+    if (!consume(TokenType::ASSIGN))
+      return false;
+    std::string secondToken = tokens.front().value;
+    if (!consume(TokenType::STRING))
+      return false;
+    actionNode->named_args.push_back({firstToken, secondToken});
+    if (consume(TokenType::COMMA))
+      return parseActionArgs(actionNode, true);
+  }
+  return tokens.front().type == TokenType::CLOSEPAR;
 }
 
 /**
