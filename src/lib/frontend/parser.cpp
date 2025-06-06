@@ -16,9 +16,6 @@ Parser::Parser(const std::vector<Token> &inputTokens) {
   }
 }
 
-/***
- * ModuleNode = (BlockNode | MetadataNode)*
- */
 std::unique_ptr<ModuleNode> Parser::parse() {
   std::unique_ptr<ModuleNode> moduleNode = std::make_unique<ModuleNode>();
   while (!tokens.empty()) {
@@ -32,9 +29,6 @@ std::unique_ptr<ModuleNode> Parser::parse() {
   return moduleNode;
 }
 
-/**
- * MetadataNode = MetadataToken + AssignToken + StringToken + SemicolonToken
- */
 std::unique_ptr<MetadataNode> Parser::parseMetadata() {
   std::string key = tokens.front().value;
   if (!consume(TokenType::METADATA) || !consume(TokenType::ASSIGN) ||
@@ -48,9 +42,6 @@ std::unique_ptr<MetadataNode> Parser::parseMetadata() {
   return metadataNode;
 }
 
-/**
- * BLOCK + IDENTIFIFER + OPENCUR + [ACTIONS|CHECKS|TRIGGERS] + CLOSECUR
- */
 std::unique_ptr<BlockNode> Parser::parseBlock() {
   if (!consume(TokenType::BLOCK) || tokens.empty())
     return nullptr;
@@ -92,9 +83,6 @@ std::unique_ptr<BlockNode> Parser::parseBlock() {
   return blockNode;
 }
 
-/**
- * ACTIONS + OPENCUR + CLOSECUR
- */
 std::unique_ptr<ActionsNode> Parser::parseActions() {
   if (!consume(TokenType::ACTIONS) || !consume(TokenType::OPENCUR)) {
     std::cerr << "Expected syntax: actions {/*You actions*/}\n";
@@ -117,10 +105,6 @@ std::unique_ptr<ActionsNode> Parser::parseActions() {
   return actionsNode;
 }
 
-/**
- * ActionNode = IDENTIFIFER + (DOT + IDENTIFIFER)* + OPENPAR + NULL | ARGS +
- * CLOSEPAR + SEMICOLON
- */
 std::unique_ptr<ActionNode> Parser::parseAction() {
   std::unique_ptr<ActionNode> actionNode = std::make_unique<ActionNode>();
   std::string id = tokens.front().value;
@@ -149,7 +133,6 @@ bool Parser::parseActionArgs(std::unique_ptr<ActionNode> &actionNode,
                              bool foundNamed) {
   std::string firstToken = tokens.front().value;
   if (!consume(TokenType::IDENTIFIER)) {
-    // NAMED_ARGS = IDENTIFIFER EQUAL STRING (COMMA NAMED_ARGS)*
     if (foundNamed)
       return false;
     if (!consume(TokenType::STRING))
@@ -158,8 +141,6 @@ bool Parser::parseActionArgs(std::unique_ptr<ActionNode> &actionNode,
     if (consume(TokenType::COMMA))
       return parseActionArgs(actionNode);
   } else {
-    // POSITIONAL_ARGS = (STRING (COMMA POSITIONAL_ARGS)*) | (IDENTIFIFER EQUAL
-    // STRING (COMMA NAMED_ARGS)*)
     if (!consume(TokenType::ASSIGN))
       return false;
     std::string secondToken = tokens.front().value;
@@ -172,9 +153,6 @@ bool Parser::parseActionArgs(std::unique_ptr<ActionNode> &actionNode,
   return tokens.front().type == TokenType::CLOSEPAR;
 }
 
-/**
- * CHECKS + OPENCUR + CLOSECUR
- */
 std::unique_ptr<ChecksNode> Parser::parseChecks() {
   if (!consume(TokenType::CHECKS) || !consume(TokenType::OPENCUR) ||
       !consume(TokenType::CLOSECUR)) {
@@ -185,9 +163,6 @@ std::unique_ptr<ChecksNode> Parser::parseChecks() {
   return checksNode;
 }
 
-/**
- * TRIGGERS + OPENCUR + CLOSECUR
- */
 std::unique_ptr<TriggersNode> Parser::parseTriggers() {
   if (!consume(TokenType::TRIGGERS) || !consume(TokenType::OPENCUR) ||
       !consume(TokenType::CLOSECUR)) {

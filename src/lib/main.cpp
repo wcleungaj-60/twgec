@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[]) {
   if (argc < 2) {
-    std::cerr << "Usage: " << argv[0] << " <input_file>\n";
+    std::cerr << "Usage: " << argv[0] << " <input_file> <argument>*\n";
     return 1;
   }
 
@@ -14,6 +14,16 @@ int main(int argc, char *argv[]) {
   if (!inputFile.is_open()) {
     std::cerr << "Error: Could not open file " << argv[1] << "\n";
     return 1;
+  }
+
+  bool printToken = false;
+  bool printAST = false;
+
+  for(int i = 2; i < argc; i++) {
+    if(std::string(argv[i]) == "--print-token")
+      printToken = true;
+    if(std::string(argv[i]) == "--print-ast")
+      printAST = true;
   }
 
   std::string input((std::istreambuf_iterator<char>(inputFile)),
@@ -29,19 +39,23 @@ int main(int argc, char *argv[]) {
     token = lexer.nextToken();
   }
 
-  std::cout << "Tokens:\n";
-  for (const auto &t : tokens) {
-    std::cout << t << "\n";
+  if(printToken){
+    std::cout << "===== Print Tokens =====\n";
+    for (const auto &t : tokens)
+      std::cout << t << "\n";
   }
 
   Parser parser(tokens);
   std::unique_ptr<ModuleNode> moduleNode = parser.parse();
-  if (moduleNode != nullptr) {
-    std::cout << "\nAST:\n";
-    moduleNode->print();
-  } else {
+  if (moduleNode == nullptr) {
     std::cout << "Invalid AST\n";
+    return 1;
   }
+  if(printAST){
+    std::cout << "===== Print AST =====\n";
+    moduleNode->print();
+  }
+
   MetadataLegalizer metadataLegalizer(moduleNode);
   CodeGen codegen(moduleNode, metadataLegalizer);
   codegen.codegen("game.events");
