@@ -173,18 +173,11 @@ void CodeGen::codegenActions(std::ofstream &of,
 
 void CodeGen::codegenAction(std::ofstream &of,
                             std::unique_ptr<ActionNode> &action) {
-  if (action->identifier[0] == "console") {
-    if (action->identifier.size() >= 2 && action->positional_args.size() == 1 &&
-        (action->identifier[1] == "log" || action->identifier[1] == "error")) {
-      twge::action::console(of, action);
-      return;
-    }
-  }
-  if (action->identifier[0] == "addActor") {
-    twge::action::addActor(of, action);
-    return;
-  }
-  std::cerr << "Unknown action: ";
+  if (action->identifier[0] == "console")
+    return twge::action::console(of, action);
+  if (action->identifier[0] == "addActor")
+    return twge::action::addActor(of, action);
+  std::cerr << "Codegen error at " << action.get()->loc << ": ";
   action->print();
 }
 

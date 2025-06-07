@@ -5,7 +5,6 @@
 #include "token.h"
 #include <memory>
 #include <queue>
-#include <stdexcept>
 #include <vector>
 
 class Parser {

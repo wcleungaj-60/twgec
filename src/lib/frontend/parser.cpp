@@ -7,10 +7,10 @@ bool Parser::consume(TokenType type, bool errorThrowing = true) {
     tokens.pop();
     return true;
   }
-  if(errorThrowing)
-      std::cerr << "SyntaxError: Expecting " << type << " at " 
-        << tokens.front().location << ". Found \'" << tokens.front().value
-        << "\'\n";
+  if (errorThrowing)
+    std::cerr << "SyntaxError: Expecting " << type << " at "
+              << tokens.front().location << ". Found \'" << tokens.front().value
+              << "\'\n";
   return false;
 }
 
@@ -21,22 +21,23 @@ Parser::Parser(const std::vector<Token> &inputTokens) {
 }
 
 std::unique_ptr<ModuleNode> Parser::parse() {
-  std::unique_ptr<ModuleNode> moduleNode = std::make_unique<ModuleNode>();
+  Location loc = tokens.front().location;
+  std::unique_ptr<ModuleNode> moduleNode = std::make_unique<ModuleNode>(loc);
   while (!tokens.empty()) {
     if (tokens.front().type == TokenType::BLOCK) {
       if (auto blockNode = parseBlock())
         moduleNode->blocks.push_back(std::move(blockNode));
       else
         return nullptr;
-    } else if(tokens.front().type == TokenType::METADATA) {
+    } else if (tokens.front().type == TokenType::METADATA) {
       if (auto metadataNode = parseMetadata())
         moduleNode->metadatas.push_back(std::move(metadataNode));
       else
         return nullptr;
     } else {
-      std::cerr << "SyntaxError: Expecting block or metadata declaration at " 
-        << tokens.front().location << ". Found \'" << tokens.front().value <<
-        "\'\n";
+      std::cerr << "SyntaxError: Expecting block or metadata declaration at "
+                << tokens.front().location << ". Found \'"
+                << tokens.front().value << "\'\n";
       return nullptr;
     }
   }
@@ -45,6 +46,7 @@ std::unique_ptr<ModuleNode> Parser::parse() {
 
 std::unique_ptr<MetadataNode> Parser::parseMetadata() {
   std::string key = tokens.front().value;
+  Location loc = tokens.front().location;
   std::string strippedKey = key.substr(2, key.size() - 4);
   if (!consume(TokenType::METADATA) || !consume(TokenType::ASSIGN))
     return nullptr;
@@ -52,16 +54,17 @@ std::unique_ptr<MetadataNode> Parser::parseMetadata() {
   if (!consume(TokenType::STRING) || !consume(TokenType::SEMICOLON))
     return nullptr;
   std::unique_ptr<MetadataNode> metadataNode =
-      std::make_unique<MetadataNode>(strippedKey, value);
+      std::make_unique<MetadataNode>(strippedKey, value, loc);
   return metadataNode;
 }
 
 std::unique_ptr<BlockNode> Parser::parseBlock() {
   consume(TokenType::BLOCK);
   std::string name = tokens.front().value;
+  Location loc = tokens.front().location;
   if (!consume(TokenType::IDENTIFIER) || !consume(TokenType::OPENCUR))
     return nullptr;
-  std::unique_ptr<BlockNode> blockNode = std::make_unique<BlockNode>(name);
+  std::unique_ptr<BlockNode> blockNode = std::make_unique<BlockNode>(name, loc);
   while (tokens.front().type != TokenType::CLOSECUR) {
     if (tokens.front().type == TokenType::ACTIONS) {
       auto actionsNode = parseActions();
@@ -88,9 +91,10 @@ std::unique_ptr<BlockNode> Parser::parseBlock() {
 }
 
 std::unique_ptr<ActionsNode> Parser::parseActions() {
+  Location loc = tokens.front().location;
   if (!consume(TokenType::ACTIONS) || !consume(TokenType::OPENCUR))
     return nullptr;
-  std::unique_ptr<ActionsNode> actionsNode = std::make_unique<ActionsNode>();
+  std::unique_ptr<ActionsNode> actionsNode = std::make_unique<ActionsNode>(loc);
   while (tokens.front().type != TokenType::CLOSECUR) {
     auto actionNode = parseAction();
     if (!actionNode)
@@ -103,8 +107,9 @@ std::unique_ptr<ActionsNode> Parser::parseActions() {
 }
 
 std::unique_ptr<ActionNode> Parser::parseAction() {
-  std::unique_ptr<ActionNode> actionNode = std::make_unique<ActionNode>();
   std::string id = tokens.front().value;
+  Location loc = tokens.front().location;
+  std::unique_ptr<ActionNode> actionNode = std::make_unique<ActionNode>(loc);
   if (!consume(TokenType::IDENTIFIER))
     return nullptr;
   actionNode->identifier.push_back(id);
@@ -129,16 +134,19 @@ std::unique_ptr<ActionNode> Parser::parseAction() {
 bool Parser::parseActionArgs(std::unique_ptr<ActionNode> &actionNode,
                              bool foundNamed) {
   std::string firstToken = tokens.front().value;
+  Location loc = tokens.front().location;
   if (!consume(TokenType::IDENTIFIER, /*errorThrowing*/ false)) {
     if (foundNamed) {
-      std::cerr << "SyntaxError: Expecting an identifier at " 
-        << tokens.front().location << ". Found \'" << tokens.front().value
-        << "\'\n";
+      std::cerr << "SyntaxError: Expecting an identifier at "
+                << tokens.front().location << ". Found \'"
+                << tokens.front().value << "\'\n";
       return false;
     }
     if (!consume(TokenType::STRING))
       return false;
-    actionNode->positional_args.push_back(firstToken);
+    std::unique_ptr<PositionalArgNode> posArgNode =
+        std::make_unique<PositionalArgNode>(firstToken, loc);
+    actionNode->positional_args.push_back(std::move(posArgNode));
     if (consume(TokenType::COMMA, /*errorThrowing*/ false))
       return parseActionArgs(actionNode);
   } else {
@@ -147,7 +155,9 @@ bool Parser::parseActionArgs(std::unique_ptr<ActionNode> &actionNode,
     std::string secondToken = tokens.front().value;
     if (!consume(TokenType::STRING))
       return false;
-    actionNode->named_args.push_back({firstToken, secondToken});
+    std::unique_ptr<NamedArgNode> namedArgNode =
+        std::make_unique<NamedArgNode>(firstToken, secondToken, loc);
+    actionNode->named_args.push_back(std::move(namedArgNode));
     if (consume(TokenType::COMMA, /*errorThrowing*/ false))
       return parseActionArgs(actionNode, true);
   }
@@ -155,17 +165,20 @@ bool Parser::parseActionArgs(std::unique_ptr<ActionNode> &actionNode,
 }
 
 std::unique_ptr<ChecksNode> Parser::parseChecks() {
-  if (!consume(TokenType::CHECKS) || !consume(TokenType::OPENCUR) || 
-    !consume(TokenType::CLOSECUR))
+  Location loc = tokens.front().location;
+  if (!consume(TokenType::CHECKS) || !consume(TokenType::OPENCUR) ||
+      !consume(TokenType::CLOSECUR))
     return nullptr;
-  std::unique_ptr<ChecksNode> checksNode = std::make_unique<ChecksNode>();
+  std::unique_ptr<ChecksNode> checksNode = std::make_unique<ChecksNode>(loc);
   return checksNode;
 }
 
 std::unique_ptr<TriggersNode> Parser::parseTriggers() {
+  Location loc = tokens.front().location;
   if (!consume(TokenType::TRIGGERS) || !consume(TokenType::OPENCUR) ||
       !consume(TokenType::CLOSECUR))
     return nullptr;
-  std::unique_ptr<TriggersNode> triggersNode = std::make_unique<TriggersNode>();
+  std::unique_ptr<TriggersNode> triggersNode =
+      std::make_unique<TriggersNode>(loc);
   return triggersNode;
 }

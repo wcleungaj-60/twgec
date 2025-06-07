@@ -19,11 +19,11 @@ Token Lexer::nextToken() {
       pos++;
       continue;
     case '\t':
-      Lexer::column+=4;
+      Lexer::column += 4;
       pos++;
       continue;
     case '\n':
-      Lexer::column=1;
+      Lexer::column = 1;
       Lexer::line++;
       pos++;
       continue;
@@ -65,7 +65,8 @@ Token Lexer::nextToken() {
       return metadataToken();
     default:
       if (!std::isalpha(current))
-        return Token(TokenType::UNKNOWN, Lexer::line, Lexer::column++, std::string(1, input[pos++]));
+        return Token(TokenType::UNKNOWN, Lexer::line, Lexer::column++,
+                     std::string(1, input[pos++]));
       LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::actions,
                                      TokenType::ACTIONS);
       LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::block,
@@ -81,46 +82,51 @@ Token Lexer::nextToken() {
 }
 
 Token Lexer::metadataToken() {
-  int startColumn = column; 
+  int startColumn = column;
   size_t start = pos;
   if (pos + 1 >= input.length() || input[pos++] != '_' || input[pos++] != '_') {
     column += 3;
-    return Token(TokenType::UNKNOWN, Lexer::line, startColumn, std::string(1, input[pos++]));
+    return Token(TokenType::UNKNOWN, Lexer::line, startColumn,
+                 std::string(1, input[pos++]));
   }
   column += 2;
-  while (pos < input.length() && (isalnum(input[pos]) && input[pos] != '_')){
+  while (pos < input.length() && (isalnum(input[pos]) && input[pos] != '_')) {
     column++;
     pos++;
   }
   if (pos + 1 >= input.length() || input[pos++] != '_' || input[pos++] != '_') {
     column += 3;
-    return Token(TokenType::UNKNOWN, Lexer::line, startColumn, std::string(1, input[pos++]));
+    return Token(TokenType::UNKNOWN, Lexer::line, startColumn,
+                 std::string(1, input[pos++]));
   }
   column += 2;
-  return Token(TokenType::METADATA, Lexer::line, startColumn, input.substr(start, pos - start));
+  return Token(TokenType::METADATA, Lexer::line, startColumn,
+               input.substr(start, pos - start));
 }
 
 Token Lexer::stringToken() {
   int startColumn = column;
   size_t start = pos++;
   column++;
-  while (pos < input.length() && input[pos] != '"'){
+  while (pos < input.length() && input[pos] != '"') {
     column++;
     pos++;
   }
-  if (pos < input.length()){
+  if (pos < input.length()) {
     column++;
     pos++; // Skip closing quote
   }
-  return Token(TokenType::STRING, Lexer::line, startColumn, input.substr(start, pos - start));
+  return Token(TokenType::STRING, Lexer::line, startColumn,
+               input.substr(start, pos - start));
 }
 
 Token Lexer::identifierToken() {
   size_t start = pos;
   int startColumn = column;
-  while (pos < input.length() && (isalnum(input[pos]) || input[pos] == '_')){
+  while (pos < input.length() && (isalnum(input[pos]) || input[pos] == '_')) {
     column++;
     pos++;
   }
-  return Token(TokenType::IDENTIFIER, Lexer::line, startColumn, input.substr(start, pos - start));
+  return Token(TokenType::IDENTIFIER, Lexer::line, startColumn,
+               input.substr(start, pos - start));
 }
