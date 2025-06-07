@@ -8,8 +8,10 @@
 #define LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword, type)              \
   if ((input).substr((pos), (keyword).length()) == (keyword) &&                \
       !isalpha((input)[(pos) + (keyword).length()])) {                         \
+    int startColumn = Lexer::column;                                           \
+    Lexer::column += (keyword).length();                                       \
     (pos) += (keyword).length();                                               \
-    return Token((type));                                                      \
+    return Token(type, Lexer::line, startColumn, keyword);                     \
   }
 
 class Lexer {
@@ -18,6 +20,8 @@ public:
   Token nextToken();
 
 private:
+  static int line;
+  static int column;
   std::string input;
   size_t pos;
 

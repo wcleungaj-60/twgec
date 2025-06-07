@@ -39,6 +39,17 @@ int main(int argc, char *argv[]) {
     token = lexer.nextToken();
   }
 
+  bool hasLexicalError = false;
+  for (const auto &t : tokens)
+      if(t.type == TokenType::UNKNOWN){
+        hasLexicalError = true;
+        std::cerr << "InvalidCharacterError: Unexpected character \'" 
+          << t.value << "\' at " << t.location << "\n";
+      }
+  if(hasLexicalError)
+      return 1;
+
+
   if(printToken){
     std::cout << "===== Print Tokens =====\n";
     for (const auto &t : tokens)
@@ -48,7 +59,7 @@ int main(int argc, char *argv[]) {
   Parser parser(tokens);
   std::unique_ptr<ModuleNode> moduleNode = parser.parse();
   if (moduleNode == nullptr) {
-    std::cout << "Invalid AST\n";
+    std::cerr << "SyntaxError: Cannot convert the token in a valid AST\n";
     return 1;
   }
   if(printAST){
