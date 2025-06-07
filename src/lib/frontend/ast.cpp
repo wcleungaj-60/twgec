@@ -40,9 +40,10 @@ void ActionsNode::print(int indent) const {
 }
 
 void ActionNode::print(int indent) const {
-  std::cout << inden(indent) << join(identifier, ".") << "("
-            << join(positional_args, ",");
-  if (!named_args.empty())
-    std::cout << "," << join(named_args, ",");
+  std::cout << inden(indent) << join(identifier, ".") << "(";
+  for(auto& posArg : positional_args)
+    std::cout << posArg.get()->value << ",";
+  for(auto& namedArg : named_args)
+    std::cout << namedArg.get()->key << "=" << namedArg.get()->value << ",";
   std::cout << ")\n";
 }

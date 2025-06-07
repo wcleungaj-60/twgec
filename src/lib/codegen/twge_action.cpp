@@ -7,7 +7,7 @@ void twge::action::console(std::ofstream &of,
   of << inden(20) << "\"data\": {" << std::endl;
   of << inden(24) << "\"logType\": \"" << action->identifier[1] << "\","
      << std::endl;
-  of << inden(24) << "\"text\": " << action->positional_args[0] << ","
+  of << inden(24) << "\"text\": " << action->positional_args[0].get()->value << ","
      << std::endl;
   of << inden(24) << "\"value\": \"\"" << std::endl;
   of << inden(20) << "}" << std::endl;

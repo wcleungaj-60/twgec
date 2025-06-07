@@ -184,7 +184,7 @@ void CodeGen::codegenAction(std::ofstream &of,
     twge::action::addActor(of, action);
     return;
   }
-  std::cerr << "Unknown action: ";
+  std::cerr << "Codegen error at " << action.get()->loc << ": ";
   action->print();
 }
 
