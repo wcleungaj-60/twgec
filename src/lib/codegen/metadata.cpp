@@ -31,8 +31,9 @@ void MetadataLegalizer::initDefaultMap() {
   INIT_META_BOOL(metaMap, metadata::useCustomFarWeapons, false);
   INIT_META_BOOL(metaMap, metadata::useCustomItems, false);
   // String
-  INIT_META_STRING(metaMap, metadata::title, "", true);
-  INIT_META_STRING(metaMap, metadata::map, "", true);
+  INIT_META_STRING(metaMap, metadata::title, "我的任務");
+  INIT_META_STRING(metaMap, metadata::map,
+                   "CG.TWEventsGameTemplate/gamemap.twmap");
   INIT_META_STRING(metaMap, metadata::schema,
                    "\"https://code.gamelet.com/gassets/schema/events/v1\"");
   INIT_META_STRING(metaMap, metadata::stageBackgroundColor, "\"#999999\"");
@@ -74,15 +75,33 @@ void MetadataLegalizer::initDefaultMap() {
 
   for (auto &metadata : moduleNode->metadatas) {
     if (metaMap.find(metadata->key) == metaMap.end()) {
-      std::cerr << "Unknown metadata: " << metadata->key << std::endl;
+      std::cerr << "Codegen error: Unknown metadata \'" << metadata->key
+                << "\' at " << metadata->loc << std::endl;
       return;
     }
-    if (auto metaStr =
-            dynamic_cast<MetadataString *>(metaMap[metadata->key].get())) {
-      metaStr->value = metadata->value;
+    auto codegenStr =
+        dynamic_cast<MetadataString *>(metaMap[metadata->key].get());
+    auto codegenInt =
+        dynamic_cast<MetadataInteger *>(metaMap[metadata->key].get());
+    auto codegenBool =
+        dynamic_cast<MetadataBool *>(metaMap[metadata->key].get());
+    auto astStr = dynamic_cast<StringValueNode *>(metadata->value.get());
+    auto astInt = dynamic_cast<IntValueNode *>(metadata->value.get());
+    auto astBool = dynamic_cast<BoolValueNode *>(metadata->value.get());
+    if (codegenStr && astStr) {
+      codegenStr->value = astStr->value;
       continue;
     }
-    std::cerr << "Unsupported metadata: " << metadata->key << std::endl;
+    if (codegenInt && astInt) {
+      codegenInt->value = astInt->value;
+      continue;
+    }
+    if (codegenBool && astBool) {
+      codegenBool->value = astBool->value;
+      continue;
+    }
+    std::cerr << "Codegen error: twgec hasn\'t yet supported this metadata \'"
+              << metadata->key << "\' at " << metadata->loc << std::endl;
     return;
   }
 }

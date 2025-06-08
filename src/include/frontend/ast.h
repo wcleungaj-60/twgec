@@ -7,6 +7,35 @@
 #include <string>
 #include <vector>
 
+class ValueNode {
+public:
+  Location loc;
+  virtual void print(int indent = 0) const {};
+  ValueNode(Location loc) : loc(loc) {}
+};
+
+class StringValueNode : public ValueNode {
+public:
+  std::string value;
+  void print() const { std::cout << value; }
+  StringValueNode(std::string value, Location loc)
+      : ValueNode(loc), value(value) {}
+};
+
+class IntValueNode : public ValueNode {
+public:
+  int value;
+  void print() const { std::cout << value; }
+  IntValueNode(int value, Location loc) : ValueNode(loc), value(value) {}
+};
+
+class BoolValueNode : public ValueNode {
+public:
+  bool value;
+  void print() const { std::cout << (value ? "true" : "false"); }
+  BoolValueNode(bool value, Location loc) : ValueNode(loc), value(value) {}
+};
+
 class ChecksNode {
 public:
   Location loc;
@@ -72,9 +101,10 @@ class MetadataNode {
 public:
   Location loc;
   std::string key;
-  std::string value;
-  MetadataNode(const std::string &key, const std::string &value, Location loc)
-      : key(key), value(value), loc(loc) {}
+  std::unique_ptr<ValueNode> value;
+  MetadataNode(const std::string &key, std::unique_ptr<ValueNode> &value,
+               Location loc)
+      : key(key), value(std::move(value)), loc(loc) {}
   void print(int indent = 0) const;
 };
 

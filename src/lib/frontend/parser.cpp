@@ -50,8 +50,27 @@ std::unique_ptr<MetadataNode> Parser::parseMetadata() {
   std::string strippedKey = key.substr(2, key.size() - 4);
   if (!consume(TokenType::METADATA) || !consume(TokenType::ASSIGN))
     return nullptr;
-  std::string value = tokens.front().value;
-  if (!consume(TokenType::STRING) || !consume(TokenType::SEMICOLON))
+  std::unique_ptr<ValueNode> value;
+  if (tokens.front().type == TokenType::STRING) {
+    value = std::make_unique<StringValueNode>(tokens.front().value, loc);
+    consume(TokenType::STRING);
+  } else if (tokens.front().type == TokenType::INT) {
+    value =
+        std::make_unique<IntValueNode>(std::stoi(tokens.front().value), loc);
+    consume(TokenType::INT);
+  } else if (tokens.front().type == TokenType::TRUE) {
+    value = std::make_unique<BoolValueNode>(true, loc);
+    consume(TokenType::TRUE);
+  } else if (tokens.front().type == TokenType::FALSE) {
+    value = std::make_unique<BoolValueNode>(false, loc);
+    consume(TokenType::FALSE);
+  } else {
+    std::cerr << "SyntaxError: Expecting a value (string/int/bool) at "
+              << tokens.front().location << ". Found \'" << tokens.front().value
+              << "\'\n";
+    return nullptr;
+  }
+  if (!consume(TokenType::SEMICOLON))
     return nullptr;
   std::unique_ptr<MetadataNode> metadataNode =
       std::make_unique<MetadataNode>(strippedKey, value, loc);

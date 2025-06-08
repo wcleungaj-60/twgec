@@ -1,6 +1,8 @@
 #include "frontend/lexer.h"
 
 namespace keyword {
+std::string _true = "true";
+std::string _false = "false";
 std::string block = "block";
 std::string actions = "actions";
 std::string triggers = "triggers";
@@ -64,9 +66,15 @@ Token Lexer::nextToken() {
     case '_':
       return metadataToken();
     default:
-      if (!std::isalpha(current))
+      if (std::isdigit(current) && current != '0')
+        return integerToken();
+      else if (!std::isalpha(current))
         return Token(TokenType::UNKNOWN, Lexer::line, Lexer::column++,
                      std::string(1, input[pos++]));
+      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_true,
+                                     TokenType::TRUE);
+      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_false,
+                                     TokenType::FALSE);
       LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::actions,
                                      TokenType::ACTIONS);
       LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::block,
@@ -128,5 +136,16 @@ Token Lexer::identifierToken() {
     pos++;
   }
   return Token(TokenType::IDENTIFIER, Lexer::line, startColumn,
+               input.substr(start, pos - start));
+}
+
+Token Lexer::integerToken() {
+  size_t start = pos;
+  int startColumn = column;
+  while (pos < input.length() && isdigit(input[pos])) {
+    column++;
+    pos++;
+  }
+  return Token(TokenType::INT, Lexer::line, startColumn,
                input.substr(start, pos - start));
 }

@@ -11,7 +11,9 @@ void ModuleNode::print(int indent) const {
 }
 
 void MetadataNode::print(int indent) const {
-  std::cout << inden(indent) << "MetadataNode: " << key << "=" << value << "\n";
+  std::cout << inden(indent) << "MetadataNode: " << key << "=";
+  value->print();
+  std::cout << "\n";
 }
 
 void BlockNode::print(int indent) const {

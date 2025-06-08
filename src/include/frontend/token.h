@@ -16,6 +16,8 @@
 
 enum class TokenType {
   /* Keyword */
+  TRUE,     // true
+  FALSE,    // false
   BLOCK,    // block
   ACTIONS,  // actions
   TRIGGERS, // triggers
@@ -30,6 +32,7 @@ enum class TokenType {
   DOT,       // .
   COMMA,     // ,
   /* Others */
+  INT,
   STRING,
   IDENTIFIER,
   METADATA,
@@ -39,6 +42,8 @@ enum class TokenType {
 
 inline std::ostream &operator<<(std::ostream &os, const TokenType &type) {
   switch (type) {
+    LEXER_TOKEN_TYPE_PRINT(TokenType::TRUE, "\'true\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::FALSE, "\'false\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::BLOCK, "\'block\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::ACTIONS, "\'actions\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::TRIGGERS, "\'triggers\'");
@@ -53,6 +58,7 @@ inline std::ostream &operator<<(std::ostream &os, const TokenType &type) {
     LEXER_TOKEN_TYPE_PRINT(TokenType::DOT, "\'.\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::COMMA, "\',\'");
     // Otherwise
+    LEXER_TOKEN_TYPE_PRINT(TokenType::INT, "int");
     LEXER_TOKEN_TYPE_PRINT(TokenType::STRING, "string");
     LEXER_TOKEN_TYPE_PRINT(TokenType::IDENTIFIER, "identifier");
     LEXER_TOKEN_TYPE_PRINT(TokenType::METADATA, "metadata");
@@ -74,6 +80,8 @@ struct Token {
     os << "twge.";
     switch (token.type) {
       // Keywords
+      LEXER_TOKEN_PRINT(TokenType::TRUE, "bool@true");
+      LEXER_TOKEN_PRINT(TokenType::FALSE, "bool@false");
       LEXER_TOKEN_PRINT(TokenType::BLOCK, "block");
       LEXER_TOKEN_PRINT(TokenType::ACTIONS, "actions");
       LEXER_TOKEN_PRINT(TokenType::TRIGGERS, "triggers");
@@ -88,6 +96,7 @@ struct Token {
       LEXER_TOKEN_PRINT(TokenType::DOT, ".");
       LEXER_TOKEN_PRINT(TokenType::COMMA, ",");
       // Otherwise
+      LEXER_TOKEN_PRINT(TokenType::INT, "int@" + token.value);
       LEXER_TOKEN_PRINT(TokenType::STRING, "string@" + token.value);
       LEXER_TOKEN_PRINT(TokenType::IDENTIFIER, "identifier@" + token.value);
       LEXER_TOKEN_PRINT(TokenType::METADATA, "metadata@" + token.value);

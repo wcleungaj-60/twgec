@@ -1,0 +1,8 @@
+__stageWidth__ = 600;
+__stageHeight__ = 500;
+__minPlayers__ = 1;
+__roomSize__ = 4;
+__lives__ = 3;
+__maxAbilityLevel__ = 2;
+__bornDuration__ = 300;
+__bornLockDuration__ = 100;

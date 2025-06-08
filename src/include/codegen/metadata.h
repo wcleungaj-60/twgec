@@ -75,9 +75,7 @@ struct Point {
 class MetadataAbstract {
 public:
   std::string key;
-  bool isCompulsory;
-  MetadataAbstract(std::string key, bool isCompulsory = false)
-      : key(key), isCompulsory(isCompulsory){};
+  MetadataAbstract(std::string key) : key(key){};
   virtual ~MetadataAbstract(){};
 };
 
@@ -101,8 +99,8 @@ class MetadataString : public MetadataAbstract {
 public:
   std::string value;
   std::vector<std::string> possibleValue;
-  MetadataString(std::string key, std::string value, bool isCompulsory = false)
-      : MetadataAbstract(key, isCompulsory), value(value){};
+  MetadataString(std::string key, std::string value)
+      : MetadataAbstract(key), value(value){};
 };
 
 template <typename T> class MetadataList : public MetadataAbstract {
