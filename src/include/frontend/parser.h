@@ -18,6 +18,7 @@ private:
   bool parseActionArgs(std::unique_ptr<ActionNode> &, bool foundNamed = false);
   std::unique_ptr<ChecksNode> parseChecks();
   std::unique_ptr<TriggersNode> parseTriggers();
+  std::unique_ptr<ValueNode> parseValue();
 
 public:
   Parser(const std::vector<Token> &inputTokens);

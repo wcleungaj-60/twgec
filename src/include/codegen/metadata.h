@@ -144,6 +144,7 @@ public:
   std::string getStr(std::string key);
   std::string getBool(std::string key);
   int getInt(std::string key);
+  std::string getList(std::string key, int indent);
 };
 
 #endif

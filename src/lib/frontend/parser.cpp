@@ -50,26 +50,9 @@ std::unique_ptr<MetadataNode> Parser::parseMetadata() {
   std::string strippedKey = key.substr(2, key.size() - 4);
   if (!consume(TokenType::METADATA) || !consume(TokenType::ASSIGN))
     return nullptr;
-  std::unique_ptr<ValueNode> value;
-  if (tokens.front().type == TokenType::STRING) {
-    value = std::make_unique<StringValueNode>(tokens.front().value, loc);
-    consume(TokenType::STRING);
-  } else if (tokens.front().type == TokenType::INT) {
-    value =
-        std::make_unique<IntValueNode>(std::stoi(tokens.front().value), loc);
-    consume(TokenType::INT);
-  } else if (tokens.front().type == TokenType::TRUE) {
-    value = std::make_unique<BoolValueNode>(true, loc);
-    consume(TokenType::TRUE);
-  } else if (tokens.front().type == TokenType::FALSE) {
-    value = std::make_unique<BoolValueNode>(false, loc);
-    consume(TokenType::FALSE);
-  } else {
-    std::cerr << "SyntaxError: Expecting a value (string/int/bool) at "
-              << tokens.front().location << ". Found \'" << tokens.front().value
-              << "\'\n";
+  std::unique_ptr<ValueNode> value = parseValue();
+  if (!value)
     return nullptr;
-  }
   if (!consume(TokenType::SEMICOLON))
     return nullptr;
   std::unique_ptr<MetadataNode> metadataNode =
@@ -200,4 +183,46 @@ std::unique_ptr<TriggersNode> Parser::parseTriggers() {
   std::unique_ptr<TriggersNode> triggersNode =
       std::make_unique<TriggersNode>(loc);
   return triggersNode;
+}
+
+std::unique_ptr<ValueNode> Parser::parseValue() {
+  Location loc = tokens.front().location;
+  std::string value = tokens.front().value;
+  if (consume(TokenType::STRING, false))
+    return std::make_unique<StringValueNode>(value, loc);
+  if (consume(TokenType::INT, false))
+    return std::make_unique<IntValueNode>(std::stoi(value), loc);
+  if (consume(TokenType::TRUE, false))
+    return std::make_unique<BoolValueNode>(true, loc);
+  if (consume(TokenType::FALSE, false))
+    return std::make_unique<BoolValueNode>(false, loc);
+  if (consume(TokenType::OPENPAR, false)) {
+    std::string xLoc = tokens.front().value;
+    consume(TokenType::INT);
+    consume(TokenType::COMMA);
+    std::string yLoc = tokens.front().value;
+    consume(TokenType::INT);
+    consume(TokenType::CLOSEPAR);
+    return std::make_unique<PointValueNode>(std::stoi(xLoc), std::stoi(yLoc),
+                                            loc);
+  }
+  if (consume(TokenType::OPENSQR, false)){
+    std::unique_ptr<ListValueNode> listNode = std::make_unique<ListValueNode>(loc);
+    bool firstItem = true;
+    while(tokens.front().type != TokenType::CLOSESQR) {
+      if(!firstItem)
+        consume(TokenType::COMMA);
+      std::unique_ptr<ValueNode> item = parseValue();
+      if(!item)
+        return nullptr;
+      listNode->items.push_back(std::move(item));
+      firstItem = false;
+    }
+    consume(TokenType::CLOSESQR);
+    return listNode;
+  }
+  std::cerr << "SyntaxError: Expecting a value (string/int/bool) at "
+            << tokens.front().location << ". Found \'" << tokens.front().value
+            << "\'\n";
+  return nullptr;
 }

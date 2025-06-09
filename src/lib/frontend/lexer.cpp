@@ -51,6 +51,14 @@ Token Lexer::nextToken() {
       Lexer::column++;
       pos++;
       return Token(TokenType::CLOSEPAR, Lexer::line, Lexer::column - 1, ")");
+    case '[':
+      Lexer::column++;
+      pos++;
+      return Token(TokenType::OPENSQR, Lexer::line, Lexer::column - 1, "[");
+    case ']':
+      Lexer::column++;
+      pos++;
+      return Token(TokenType::CLOSESQR, Lexer::line, Lexer::column - 1, "]");
     case '.':
       Lexer::column++;
       pos++;
@@ -65,8 +73,10 @@ Token Lexer::nextToken() {
       return Token(TokenType::SEMICOLON, Lexer::line, Lexer::column - 1, ";");
     case '_':
       return metadataToken();
+    case '/':
+      return commentToken();
     default:
-      if (std::isdigit(current) && current != '0')
+      if (std::isdigit(current))
         return integerToken();
       else if (!std::isalpha(current))
         return Token(TokenType::UNKNOWN, Lexer::line, Lexer::column++,
@@ -116,7 +126,7 @@ Token Lexer::stringToken() {
   int startColumn = column;
   size_t start = pos++;
   column++;
-  while (pos < input.length() && input[pos] != '"') {
+  while (pos < input.length() && (input[pos] != '"' || input[pos - 1] == '\\')) {
     column++;
     pos++;
   }
@@ -147,5 +157,22 @@ Token Lexer::integerToken() {
     pos++;
   }
   return Token(TokenType::INT, Lexer::line, startColumn,
+               input.substr(start, pos - start));
+}
+
+Token Lexer::commentToken() {
+  size_t start = pos;
+  int startColumn = column;
+  if (pos + 1 >= input.length() || input[pos++] != '/' || input[pos++] != '/') {
+    column += 3;
+    return Token(TokenType::UNKNOWN, Lexer::line, startColumn,
+                 std::string(1, input[pos++]));
+  }
+  column += 2;
+  while (pos < input.length() && input[pos] != '\n') {
+    column++;
+    pos++;
+  }
+  return Token(TokenType::COMMENT, Lexer::line, startColumn,
                input.substr(start, pos - start));
 }

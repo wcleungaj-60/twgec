@@ -27,6 +27,8 @@ enum class TokenType {
   CLOSECUR,  // }
   OPENPAR,   // (
   CLOSEPAR,  // )
+  OPENSQR,   // [
+  CLOSESQR,  // ]
   ASSIGN,    // =
   SEMICOLON, // ;
   DOT,       // .
@@ -34,6 +36,7 @@ enum class TokenType {
   /* Others */
   INT,
   STRING,
+  COMMENT,
   IDENTIFIER,
   METADATA,
   END,
@@ -53,6 +56,8 @@ inline std::ostream &operator<<(std::ostream &os, const TokenType &type) {
     LEXER_TOKEN_TYPE_PRINT(TokenType::CLOSECUR, "\'}\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::OPENPAR, "\'(\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::CLOSEPAR, "\')\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::OPENSQR, "\'[\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::CLOSESQR, "\']\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::ASSIGN, "\'=\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::SEMICOLON, "\';\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::DOT, "\'.\'");
@@ -60,6 +65,7 @@ inline std::ostream &operator<<(std::ostream &os, const TokenType &type) {
     // Otherwise
     LEXER_TOKEN_TYPE_PRINT(TokenType::INT, "int");
     LEXER_TOKEN_TYPE_PRINT(TokenType::STRING, "string");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::COMMENT, "comment");
     LEXER_TOKEN_TYPE_PRINT(TokenType::IDENTIFIER, "identifier");
     LEXER_TOKEN_TYPE_PRINT(TokenType::METADATA, "metadata");
     LEXER_TOKEN_TYPE_PRINT(TokenType::UNKNOWN, "unknown");
@@ -91,6 +97,8 @@ struct Token {
       LEXER_TOKEN_PRINT(TokenType::CLOSECUR, "}");
       LEXER_TOKEN_PRINT(TokenType::OPENPAR, "(");
       LEXER_TOKEN_PRINT(TokenType::CLOSEPAR, ")");
+      LEXER_TOKEN_PRINT(TokenType::OPENSQR, "[");
+      LEXER_TOKEN_PRINT(TokenType::CLOSESQR, "]");
       LEXER_TOKEN_PRINT(TokenType::ASSIGN, "=");
       LEXER_TOKEN_PRINT(TokenType::SEMICOLON, ";");
       LEXER_TOKEN_PRINT(TokenType::DOT, ".");
@@ -98,6 +106,7 @@ struct Token {
       // Otherwise
       LEXER_TOKEN_PRINT(TokenType::INT, "int@" + token.value);
       LEXER_TOKEN_PRINT(TokenType::STRING, "string@" + token.value);
+      LEXER_TOKEN_PRINT(TokenType::COMMENT, "comment@" + token.value);
       LEXER_TOKEN_PRINT(TokenType::IDENTIFIER, "identifier@" + token.value);
       LEXER_TOKEN_PRINT(TokenType::METADATA, "metadata@" + token.value);
       LEXER_TOKEN_PRINT(TokenType::UNKNOWN, "unknown@" + token.value);

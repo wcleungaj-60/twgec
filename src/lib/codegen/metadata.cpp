@@ -1,4 +1,5 @@
 #include "codegen/metadata.h"
+#include "utils/utils.h"
 
 void MetadataLegalizer::initDefaultMap() {
   // Integer
@@ -31,9 +32,9 @@ void MetadataLegalizer::initDefaultMap() {
   INIT_META_BOOL(metaMap, metadata::useCustomFarWeapons, false);
   INIT_META_BOOL(metaMap, metadata::useCustomItems, false);
   // String
-  INIT_META_STRING(metaMap, metadata::title, "我的任務");
+  INIT_META_STRING(metaMap, metadata::title, "\"我的任務\"");
   INIT_META_STRING(metaMap, metadata::map,
-                   "CG.TWEventsGameTemplate/gamemap.twmap");
+                   "\"CG.TWEventsGameTemplate/gamemap.twmap\"");
   INIT_META_STRING(metaMap, metadata::schema,
                    "\"https://code.gamelet.com/gassets/schema/events/v1\"");
   INIT_META_STRING(metaMap, metadata::stageBackgroundColor, "\"#999999\"");
@@ -58,7 +59,6 @@ void MetadataLegalizer::initDefaultMap() {
   INIT_META_LIST(metaMap, Point, metadata::skydowLocs);
   INIT_META_LIST(metaMap, Point, metadata::royalLocs);
   INIT_META_LIST(metaMap, Point, metadata::thirdLocs);
-  INIT_META_LIST(metaMap, Point, metadata::initFocus);
   INIT_META_LIST(metaMap, std::string, metadata::preloadSources);
   INIT_META_LIST(metaMap, std::string, metadata::preloadResourcesExclude);
   INIT_META_LIST(metaMap, std::string, metadata::carryItemCodes);
@@ -69,6 +69,7 @@ void MetadataLegalizer::initDefaultMap() {
   // "skydow"},
   //                           {"third", "royal", "skydow", "random"}),
   // Unsupport
+  INIT_META_UNSUPPORT(metaMap, metadata::initFocus);
   INIT_META_UNSUPPORT(metaMap, metadata::customWeapons);
   INIT_META_UNSUPPORT(metaMap, metadata::customFarWeapons);
   INIT_META_UNSUPPORT(metaMap, metadata::customItems);
@@ -85,9 +86,12 @@ void MetadataLegalizer::initDefaultMap() {
         dynamic_cast<MetadataInteger *>(metaMap[metadata->key].get());
     auto codegenBool =
         dynamic_cast<MetadataBool *>(metaMap[metadata->key].get());
+    auto codegenPointList =
+        dynamic_cast<MetadataList<Point> *>(metaMap[metadata->key].get());
     auto astStr = dynamic_cast<StringValueNode *>(metadata->value.get());
     auto astInt = dynamic_cast<IntValueNode *>(metadata->value.get());
     auto astBool = dynamic_cast<BoolValueNode *>(metadata->value.get());
+    auto astList = dynamic_cast<ListValueNode *>(metadata->value.get());
     if (codegenStr && astStr) {
       codegenStr->value = astStr->value;
       continue;
@@ -98,6 +102,19 @@ void MetadataLegalizer::initDefaultMap() {
     }
     if (codegenBool && astBool) {
       codegenBool->value = astBool->value;
+      continue;
+    }
+    if (codegenPointList && astList) {
+      for (auto &itemNode : astList->items) {
+        if (auto pointNode = dynamic_cast<PointValueNode *>(itemNode.get())) {
+          codegenPointList->value.push_back({pointNode->x, pointNode->y});
+        } else {
+          std::cerr << "Codegen error: Metadata \'" << metadata->key
+                    << "\' expects a point type value at " << itemNode->loc
+                    << std::endl;
+          return;
+        }
+      }
       continue;
     }
     std::cerr << "Codegen error: twgec hasn\'t yet supported this metadata \'"
@@ -118,4 +135,25 @@ std::string MetadataLegalizer::getStr(std::string key) {
 
 int MetadataLegalizer::getInt(std::string key) {
   return (static_cast<MetadataInteger *>(metaMap[key].get()))->value;
+}
+
+std::string MetadataLegalizer::getList(std::string key, int indent) {
+  auto codegenListPoint =
+      dynamic_cast<MetadataList<Point> *>(metaMap[key].get());
+  if (!codegenListPoint) {
+    std::cerr << "Codegen error: twgec hasn\'t yet supported this metadata \'"
+              << key << std::endl;
+  }
+  std::string ret = "[\n";
+  for (auto i = 0; i < codegenListPoint->value.size(); i++) {
+    Point pt = codegenListPoint->value[i];
+    ret += inden(indent + 4) + "{\n";
+    ret += inden(indent + 8) + "\"x\": \"" + std::to_string(pt.x) + "\",\n";
+    ret += inden(indent + 8) + "\"y\": \"" + std::to_string(pt.y) + "\"\n";
+    ret += inden(indent + 4) + "}";
+    if (i != codegenListPoint->value.size() - 1)
+      ret += ",\n";
+  }
+  ret += "\n" + inden(indent) + "]";
+  return ret;
 }

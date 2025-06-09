@@ -10,8 +10,31 @@
 class ValueNode {
 public:
   Location loc;
-  virtual void print(int indent = 0) const {};
+  virtual void print() const {};
   ValueNode(Location loc) : loc(loc) {}
+};
+
+class ListValueNode : public ValueNode {
+public:
+  std::vector<std::unique_ptr<ValueNode>> items = {};
+  virtual void print() const {
+    std::cout << "[";
+    for (auto i = 0; i < items.size(); i++) {
+      items[i]->print();
+      if (i != items.size() - 1)
+        std::cout << ",";
+    }
+    std::cout << "]";
+  };
+  ListValueNode(Location loc) : ValueNode(loc) {}
+};
+
+class PointValueNode : public ValueNode {
+public:
+  int x;
+  int y;
+  virtual void print() const { std::cout << "(" << x << "," << y << ")"; };
+  PointValueNode(int x, int y, Location loc) : ValueNode(loc), x(x), y(y) {}
 };
 
 class StringValueNode : public ValueNode {

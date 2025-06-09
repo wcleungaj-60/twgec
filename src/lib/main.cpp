@@ -1,7 +1,8 @@
-#include "frontend/lexer.h"
-#include "frontend/parser.h"
 #include "codegen/codegen.h"
 #include "codegen/metadata.h"
+#include "frontend/lexer.h"
+#include "frontend/parser.h"
+#include <algorithm>
 #include <fstream>
 
 int main(int argc, char *argv[]) {
@@ -19,10 +20,10 @@ int main(int argc, char *argv[]) {
   bool printToken = false;
   bool printAST = false;
 
-  for(int i = 2; i < argc; i++) {
-    if(std::string(argv[i]) == "--print-token")
+  for (int i = 2; i < argc; i++) {
+    if (std::string(argv[i]) == "--print-token")
       printToken = true;
-    if(std::string(argv[i]) == "--print-ast")
+    if (std::string(argv[i]) == "--print-ast")
       printAST = true;
   }
 
@@ -41,20 +42,25 @@ int main(int argc, char *argv[]) {
 
   bool hasLexicalError = false;
   for (const auto &t : tokens)
-      if(t.type == TokenType::UNKNOWN){
-        hasLexicalError = true;
-        std::cerr << "InvalidCharacterError: Unexpected character \'" 
-          << t.value << "\' at " << t.location << "\n";
-      }
-  if(hasLexicalError)
-      return 1;
+    if (t.type == TokenType::UNKNOWN) {
+      hasLexicalError = true;
+      std::cerr << "InvalidCharacterError: Unexpected character \'" << t.value
+                << "\' at " << t.location << "\n";
+    }
+  if (hasLexicalError)
+    return 1;
 
-
-  if(printToken){
+  if (printToken) {
     std::cout << "===== Print Tokens =====\n";
     for (const auto &t : tokens)
       std::cout << t << "\n";
   }
+
+  tokens.erase(std::remove_if(tokens.begin(), tokens.end(),
+                              [](const Token &token) {
+                                return token.type == TokenType::COMMENT;
+                              }),
+               tokens.end());
 
   Parser parser(tokens);
   std::unique_ptr<ModuleNode> moduleNode = parser.parse();
@@ -62,7 +68,7 @@ int main(int argc, char *argv[]) {
     std::cerr << "SyntaxError: Cannot convert the token in a valid AST\n";
     return 1;
   }
-  if(printAST){
+  if (printAST) {
     std::cout << "===== Print AST =====\n";
     moduleNode->print();
   }

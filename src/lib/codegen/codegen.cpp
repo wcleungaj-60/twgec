@@ -106,9 +106,14 @@ void CodeGen::codegenMetaData(std::ofstream &of) {
   of << inden(16) << "\"useDefaultCampLocs\": "
      << metadataLegalizer.getBool(metadata::useDefaultCampLocs) << ","
      << std::endl;
-  of << inden(16) << "\"skydowLocs\": []," << std::endl;
-  of << inden(16) << "\"royalLocs\": []," << std::endl;
-  of << inden(16) << "\"thirdLocs\": []," << std::endl;
+  of << inden(16) << "\"skydowLocs\": "
+     << metadataLegalizer.getList(metadata::skydowLocs, 20) << "," << std::endl;
+  of << inden(16)
+     << "\"royalLocs\": " << metadataLegalizer.getList(metadata::royalLocs, 20)
+     << "," << std::endl;
+  of << inden(16)
+     << "\"thirdLocs\": " << metadataLegalizer.getList(metadata::thirdLocs, 20)
+     << "," << std::endl;
   of << inden(16) << "\"useCustomWeapons\": "
      << metadataLegalizer.getBool(metadata::useCustomWeapons) << ","
      << std::endl;

@@ -26,6 +26,7 @@ private:
   size_t pos;
 
   Token metadataToken();
+  Token commentToken();
   Token integerToken();
   Token stringToken();
   Token identifierToken();
