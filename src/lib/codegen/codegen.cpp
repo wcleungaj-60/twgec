@@ -1,5 +1,6 @@
 #include "codegen.h"
 #include "twge_action.h"
+#include "utils/utils.h"
 #include <fstream>
 #include <iostream>
 
@@ -82,9 +83,14 @@ void CodeGen::codegenMetaData(std::ofstream &of) {
   of << inden(20) << "\"y\": \"0\"" << std::endl;
   of << inden(16) << "}," << std::endl;
   of << inden(16) << "\"campOptions\": {" << std::endl;
-  of << inden(20) << "\"campOpSkydow\": true," << std::endl;
-  of << inden(20) << "\"campOpRoyal\": true," << std::endl;
-  of << inden(20) << "\"campOpThird\": true" << std::endl;
+  of << inden(20) << "\"campOpSkydow\": "
+     << metadataLegalizer.getBool(metadata::campOpSkydow) << "," << std::endl;
+  of << inden(20)
+     << "\"campOpRoyal\": " << metadataLegalizer.getBool(metadata::campOpRoyal)
+     << "," << std::endl;
+  of << inden(20)
+     << "\"campOpThird\": " << metadataLegalizer.getBool(metadata::campOpThird)
+     << std::endl;
   of << inden(16) << "}," << std::endl;
   of << inden(16) << "\"map\": " << metadataLegalizer.getStr(metadata::map)
      << "," << std::endl;

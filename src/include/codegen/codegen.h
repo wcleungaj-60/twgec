@@ -2,8 +2,6 @@
 #define CODEGEN_H
 
 #include "metadata.h"
-#include "twge_action.h"
-#include "utils/utils.h"
 
 class CodeGen {
 private:

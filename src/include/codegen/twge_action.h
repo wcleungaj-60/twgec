@@ -1,8 +1,7 @@
 #ifndef TWGE_ACTION_H
 #define TWGE_ACTION_H
 
-#include "metadata.h"
-#include "utils/utils.h"
+#include "ast.h"
 
 namespace twge {
 namespace action {
