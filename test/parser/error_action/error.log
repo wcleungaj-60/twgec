@@ -1,0 +1,2 @@
+SyntaxError: Expecting identifier at 3:9. Found '__metadata__'
+SyntaxError: Cannot convert the token in a valid AST

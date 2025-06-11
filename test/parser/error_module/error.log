@@ -1,0 +1,2 @@
+SyntaxError: Expecting block or metadata declaration at 4:1. Found 'test'
+SyntaxError: Cannot convert the token in a valid AST

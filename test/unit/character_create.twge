@@ -1,7 +1,0 @@
-block init {
-    actions = {
-        instance = character(
-            id = "npc*"
-        );
-    }
-}

@@ -1,0 +1,2 @@
+SyntaxError: Expecting identifier at 1:7. Found '{'
+SyntaxError: Cannot convert the token in a valid AST

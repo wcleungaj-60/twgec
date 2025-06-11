@@ -1,8 +1,0 @@
-block init {
-    triggers {
-    }
-    checks {
-    }
-    actions {
-    }
-}

@@ -1,0 +1,2 @@
+SyntaxError: Expecting '{' at 2:13. Found '='
+SyntaxError: Cannot convert the token in a valid AST
