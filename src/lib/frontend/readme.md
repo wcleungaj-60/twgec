@@ -30,9 +30,9 @@ ModuleNode := [BlockNode | MetadataNode]*
   - ChecksNode := ChecksToken OpenCurToken CheckNode* CloseCurToken
   - TriggersNode := TriggersToken OpenCurToken TriggerNode* CloseCurToken
 // Arguments
-PositionalArgNode = [IdentifierToken AssignToken StringToken [CommaToken NamedArgNode]?] | 
-       [STRING [CommaToken PositionalArgNode]?]
-NamedArgNode = IdentifierToken AssignToken StringToken [CommaToken NamedArgNode]?
+PositionalArgNode = [IdentifierToken AssignToken ValueNode [CommaToken NamedArgNode]?] | 
+                    [ValueNode [CommaToken PositionalArgNode]?]
+NamedArgNode = IdentifierToken AssignToken ValueNode [CommaToken NamedArgNode]?
 // Value
 ValueNode := StringValueNode | IntValueNode | BoolValueNode
 StringValueNode := StringToken
