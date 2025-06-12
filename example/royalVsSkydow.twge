@@ -1,0 +1,12 @@
+__skydowLocs__ = [(7,1)];
+__royalLocs__ = [(22,18)];
+__thirdLocs__ = [(28,1),(1,28)];
+__title__ = "皇家天影之爭";
+__map__ = "CG.TWEventsGameTemplate/gamemap.twmap";
+
+block init {
+    actions {
+        addActor(name = "天影武士", camp = "skydow", hp = "200", x = "11", y = "7", range = "0");
+        addActor(name = "皇家騎士", camp = "royal", hp = "200", x = "18", y = "12", range = "0");
+    }
+}
