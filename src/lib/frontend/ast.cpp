@@ -44,12 +44,13 @@ void ActionsNode::print(int indent) const {
 void ActionNode::print(int indent) const {
   std::cout << inden(indent) << join(identifier, ".") << "(";
   for (int i = 0; i < positional_args.size(); i++) {
-    std::cout << positional_args[i].get()->value;
+    positional_args[i]->valueNode->print();
     if (i != positional_args.size() - 1 || !named_args.empty())
       std::cout << ",";
   }
   for (int i = 0; i < named_args.size(); i++) {
-    std::cout << named_args[i].get()->key << "=" << named_args[i].get()->value;
+    std::cout << named_args[i].get()->key << "=";
+    named_args[i]->valueNode->print();
     if (i != named_args.size() - 1)
       std::cout << ",";
   }

@@ -135,7 +135,7 @@ std::unique_ptr<ActionNode> Parser::parseAction() {
 
 bool Parser::parseActionArgs(std::unique_ptr<ActionNode> &actionNode,
                              bool foundNamed) {
-  std::string firstToken = tokens.front().value;
+  std::string identifierToken = tokens.front().value;
   Location loc = tokens.front().location;
   if (!consume(TokenType::IDENTIFIER, /*errorThrowing*/ false)) {
     if (foundNamed) {
@@ -144,21 +144,22 @@ bool Parser::parseActionArgs(std::unique_ptr<ActionNode> &actionNode,
                 << tokens.front().value << "\'\n";
       return false;
     }
-    if (!consume(TokenType::STRING))
+    std::unique_ptr<ValueNode> valueNode = parseValue();
+    if (!valueNode)
       return false;
     std::unique_ptr<PositionalArgNode> posArgNode =
-        std::make_unique<PositionalArgNode>(firstToken, loc);
+        std::make_unique<PositionalArgNode>(valueNode, loc);
     actionNode->positional_args.push_back(std::move(posArgNode));
     if (consume(TokenType::COMMA, /*errorThrowing*/ false))
       return parseActionArgs(actionNode);
   } else {
     if (!consume(TokenType::ASSIGN))
       return false;
-    std::string secondToken = tokens.front().value;
-    if (!consume(TokenType::STRING))
+    auto valueNode = parseValue();
+    if (!valueNode)
       return false;
     std::unique_ptr<NamedArgNode> namedArgNode =
-        std::make_unique<NamedArgNode>(firstToken, secondToken, loc);
+        std::make_unique<NamedArgNode>(identifierToken, valueNode, loc);
     actionNode->named_args.push_back(std::move(namedArgNode));
     if (consume(TokenType::COMMA, /*errorThrowing*/ false))
       return parseActionArgs(actionNode, true);
@@ -206,14 +207,15 @@ std::unique_ptr<ValueNode> Parser::parseValue() {
     return std::make_unique<PointValueNode>(std::stoi(xLoc), std::stoi(yLoc),
                                             loc);
   }
-  if (consume(TokenType::OPENSQR, false)){
-    std::unique_ptr<ListValueNode> listNode = std::make_unique<ListValueNode>(loc);
+  if (consume(TokenType::OPENSQR, false)) {
+    std::unique_ptr<ListValueNode> listNode =
+        std::make_unique<ListValueNode>(loc);
     bool firstItem = true;
-    while(tokens.front().type != TokenType::CLOSESQR) {
-      if(!firstItem)
+    while (tokens.front().type != TokenType::CLOSESQR) {
+      if (!firstItem)
         consume(TokenType::COMMA);
       std::unique_ptr<ValueNode> item = parseValue();
-      if(!item)
+      if (!item)
         return nullptr;
       listNode->items.push_back(std::move(item));
       firstItem = false;

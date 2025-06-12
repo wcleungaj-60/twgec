@@ -76,18 +76,19 @@ public:
 class PositionalArgNode {
 public:
   Location loc;
-  std::string value;
-  PositionalArgNode(const std::string &value, Location loc)
-      : value(value), loc(loc) {}
+  std::unique_ptr<ValueNode> valueNode;
+  PositionalArgNode(std::unique_ptr<ValueNode> &valueNode, Location loc)
+      : valueNode(std::move(valueNode)), loc(loc) {}
 };
 
 class NamedArgNode {
 public:
   Location loc;
   std::string key;
-  std::string value;
-  NamedArgNode(const std::string &key, const std::string &value, Location loc)
-      : key(key), value(value), loc(loc) {}
+  std::unique_ptr<ValueNode> valueNode;
+  NamedArgNode(const std::string &key, std::unique_ptr<ValueNode> &valueNode,
+               Location loc)
+      : key(key), valueNode(std::move(valueNode)), loc(loc) {}
 };
 
 class ActionNode {

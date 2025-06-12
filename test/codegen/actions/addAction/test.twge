@@ -5,6 +5,6 @@ __map__ = "CG.TWEventsGameTemplate/gamemap.twmap";
 block init {
     actions {
         addActor();
-        addActor(name = "天影武士", camp = "skydow", hp = "200", x = "5", y = "5");
+        addActor(name = "天影武士", camp = "skydow", hp = 200, x = 5, y = 5);
     }
 }
