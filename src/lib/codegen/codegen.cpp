@@ -187,7 +187,7 @@ void CodeGen::codegenAction(std::ofstream &of,
   if (action->identifier[0] == "console")
     return twge::action::console(of, action);
   if (action->identifier[0] == "addActor")
-    return twge::action::addActor(of, action);
+    return twge::action::ActionAddActor::addActor(of, action);
   std::cerr << "Codegen error at " << action.get()->loc << ": ";
   action->print();
 }

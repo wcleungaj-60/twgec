@@ -1,8 +1,19 @@
 #include "codegen/twge_action.h"
+#include "codegen_transformer.h"
 #include "utils/utils.h"
 #include <fstream>
 #include <iostream>
 #include <unordered_map>
+
+DefaultMap twge::action::ActionAddActor::defaultMap = DefaultMap({
+    {"id", {AST_STRING, CODEGEN_STRING, "ai*"}},
+    {"name", {AST_STRING, CODEGEN_STRING, ""}},
+    {"camp", {AST_STRING, CODEGEN_STRING, "skydow"}},
+    {"x", {AST_INT, CODEGEN_STRING, "0"}},
+    {"y", {AST_INT, CODEGEN_STRING, "0"}},
+    {"hp", {AST_INT, CODEGEN_STRING, "100"}},
+    {"range", {AST_INT, CODEGEN_STRING, "10000"}},
+});
 
 void twge::action::console(std::ofstream &of,
                            std::unique_ptr<ActionNode> &action) {
@@ -32,47 +43,17 @@ void twge::action::console(std::ofstream &of,
   of << inden(20) << "}" << std::endl;
 }
 
-void twge::action::addActor(std::ofstream &of,
-                            std::unique_ptr<ActionNode> &action) {
-  std::unordered_map<std::string, std::string> stringMap = {
-      {"id", "\"ai*\""}, {"name", "\"\""}, {"camp", "\"skydow\""}};
-  std::unordered_map<std::string, int> intMap = {
-      {"x", 0}, {"y", 0}, {"hp", 100}, {"range", 10000}};
-  if (action->positional_args.size() != 0) {
-    std::cerr << "Only named argument can be passed for \"addActor\" action at "
-              << action->loc << "\n";
-    return;
-  }
-  for (auto &namedArg : action->named_args) {
-    if (auto *stringValueNode =
-            dynamic_cast<StringValueNode *>(namedArg->valueNode.get())) {
-      if (stringMap.find(namedArg->key) == stringMap.end()) {
-        std::cerr << "Unknown string parameter at " << namedArg->loc
-                  << ". Only 'id', 'name', and 'camp' are valid for addActor "
-                     "action string parameter\n";
-        return;
-      }
-      stringMap[namedArg->key] = stringValueNode->value;
-    } else if (auto *intValueNode =
-                   dynamic_cast<IntValueNode *>(namedArg->valueNode.get())) {
-      if (intMap.find(namedArg->key) == intMap.end()) {
-        std::cerr
-            << "Unknown int parameter at " << namedArg->loc
-            << ". Only 'x', 'y', 'hp', and 'range' are valid for addActor "
-               "action string parameter\n";
-        return;
-      }
-      intMap[namedArg->key] = intValueNode->value;
-    } else {
-      std::cerr << "Unknown unsupported paramter type at " << namedArg->loc
-                << "\n";
-      return;
-    }
-  }
+void twge::action::ActionAddActor::addActor(
+    std::ofstream &of, std::unique_ptr<ActionNode> &action) {
+  std::unordered_map<std::string, const std::shared_ptr<ValueNode>> inputMap;
+  for (auto &namedArg : action->named_args)
+    inputMap.insert({namedArg->key, std::move(namedArg->valueNode)});
   of << inden(20) << "\"type\": \"AddActor\"," << std::endl;
   of << inden(20) << "\"data\": {" << std::endl;
-  of << inden(24) << "\"actorCode\": " << stringMap["id"] << "," << std::endl;
-  of << inden(24) << "\"name\": " << stringMap["name"] << "," << std::endl;
+  of << inden(24) << "\"actorCode\": " << defaultMap.get("id", inputMap["id"])
+     << "," << std::endl;
+  of << inden(24) << "\"name\": " << defaultMap.get("name", inputMap["name"])
+     << "," << std::endl;
   of << inden(24) << "\"role\": {" << std::endl;
   of << inden(28) << "\"dr\": 0" << std::endl;
   of << inden(24) << "}," << std::endl;
@@ -83,11 +64,14 @@ void twge::action::addActor(std::ofstream &of,
   of << inden(24) << "\"weapon1\": {" << std::endl;
   of << inden(28) << "\"w1Type\": \"default\"" << std::endl;
   of << inden(24) << "}," << std::endl;
-  of << inden(24) << "\"camp\": " << stringMap["camp"] << "," << std::endl;
+  of << inden(24) << "\"camp\": " << defaultMap.get("camp", inputMap["camp"])
+     << "," << std::endl;
   of << inden(24) << "\"group\": \"0\"," << std::endl;
   of << inden(24) << "\"location\": {" << std::endl;
-  of << inden(28) << "\"x\": \"" << intMap["x"] << "\"," << std::endl;
-  of << inden(28) << "\"y\": \"" << intMap["y"] << "\"," << std::endl;
+  of << inden(28) << "\"x\": " << defaultMap.get("x", inputMap["x"]) << ","
+     << std::endl;
+  of << inden(28) << "\"y\": " << defaultMap.get("y", inputMap["y"]) << ","
+     << std::endl;
   of << inden(28) << "\"range\": \"0\"" << std::endl;
   of << inden(24) << "}," << std::endl;
   of << inden(24) << "\"shiftX\": 0," << std::endl;
@@ -95,7 +79,8 @@ void twge::action::addActor(std::ofstream &of,
   of << inden(24) << "\"spawnLoc\": true," << std::endl;
   of << inden(24) << "\"rotation\": \"0\"," << std::endl;
   of << inden(24) << "\"idleRotate\": true," << std::endl;
-  of << inden(24) << "\"maxhp\": \"" << intMap["hp"] << "\"," << std::endl;
+  of << inden(24) << "\"maxhp\": " << defaultMap.get("hp", inputMap["hp"])
+     << "," << std::endl;
   of << inden(24) << "\"manaPower\": \"0\"," << std::endl;
   of << inden(24) << "\"lives\": \"1\"," << std::endl;
   of << inden(24) << "\"preferAbilityLevel\": \"smart\"," << std::endl;
@@ -103,7 +88,8 @@ void twge::action::addActor(std::ofstream &of,
   of << inden(24) << "\"weight\": \"4\"," << std::endl;
   of << inden(24) << "\"strength\": \"1\"," << std::endl;
   of << inden(24) << "\"vision\": \"300\"," << std::endl;
-  of << inden(24) << "\"range\": \"" << intMap["range"] << "\"," << std::endl;
+  of << inden(24) << "\"range\": " << defaultMap.get("range", inputMap["range"])
+     << "," << std::endl;
   of << inden(24) << "\"score\": \"10\"," << std::endl;
   of << inden(24) << "\"bloodType\": \"default\"," << std::endl;
   of << inden(24) << "\"unbrokenArmor\": true," << std::endl;
