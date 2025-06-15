@@ -32,13 +32,13 @@ void MetadataLegalizer::initDefaultMap() {
   INIT_META_BOOL(metaMap, metadata::useCustomFarWeapons, false);
   INIT_META_BOOL(metaMap, metadata::useCustomItems, false);
   // String
-  INIT_META_STRING(metaMap, metadata::title, "\"我的任務\"");
+  INIT_META_STRING(metaMap, metadata::title, "我的任務");
   INIT_META_STRING(metaMap, metadata::map,
-                   "\"CG.TWEventsGameTemplate/gamemap.twmap\"");
+                   "CG.TWEventsGameTemplate/gamemap.twmap");
   INIT_META_STRING(metaMap, metadata::schema,
-                   "\"https://code.gamelet.com/gassets/schema/events/v1\"");
-  INIT_META_STRING(metaMap, metadata::stageBackgroundColor, "\"#999999\"");
-  INIT_META_STRING(metaMap, metadata::gamezoneCode, "\"mission\"");
+                   "https://code.gamelet.com/gassets/schema/events/v1");
+  INIT_META_STRING(metaMap, metadata::stageBackgroundColor, "#999999");
+  INIT_META_STRING(metaMap, metadata::gamezoneCode, "mission");
   // Enum
   // metadataVec.push_back(std::make_unique<MetadataEnum>("roomType", "close",
   // {"close", "open"}));
@@ -130,7 +130,8 @@ std::string MetadataLegalizer::getBool(std::string key) {
 }
 
 std::string MetadataLegalizer::getStr(std::string key) {
-  return (static_cast<MetadataString *>(metaMap[key].get()))->value;
+  return "\"" + (static_cast<MetadataString *>(metaMap[key].get()))->value +
+         "\"";
 }
 
 int MetadataLegalizer::getInt(std::string key) {

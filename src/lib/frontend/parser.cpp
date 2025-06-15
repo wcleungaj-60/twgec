@@ -190,7 +190,8 @@ std::unique_ptr<ValueNode> Parser::parseValue() {
   Location loc = tokens.front().location;
   std::string value = tokens.front().value;
   if (consume(TokenType::STRING, false))
-    return std::make_unique<StringValueNode>(value, loc);
+    return std::make_unique<StringValueNode>(
+        value.substr(1, value.length() - 2), loc);
   if (consume(TokenType::INT, false))
     return std::make_unique<IntValueNode>(std::stoi(value), loc);
   if (consume(TokenType::TRUE, false))

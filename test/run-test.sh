@@ -34,6 +34,7 @@ check_output "test/codegen/metadata/bool/test.twge" "test/codegen/metadata/bool/
 check_output "test/codegen/metadata/int/test.twge" "test/codegen/metadata/int/output.events"
 check_output "test/codegen/metadata/listPoint/test.twge" "test/codegen/metadata/listPoint/output.events"
 check_output "test/codegen/metadata/string/test.twge" "test/codegen/metadata/string/output.events"
+check_error "test/codegen/actions/error_camp/test.twge" "test/codegen/actions/error_camp/error.log"
 check_error "test/parser/error_action/test.twge" "test/parser/error_action/error.log"
 check_error "test/parser/error_actions/test.twge" "test/parser/error_actions/error.log"
 check_error "test/parser/error_block/test.twge" "test/parser/error_block/error.log"

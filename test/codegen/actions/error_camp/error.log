@@ -1,0 +1,6 @@
+Codegen Warnings: Found invalid camp enumeration "random". Please use the enumerations below:
+ ->  civil royal skydow third 天影 平民 皇家 第三
+ ->  Found at 8:25
+Codegen Warnings: Found invalid camp enumeration "myCamp". Please use the enumerations below:
+ ->  civil royal skydow third 天影 平民 皇家 第三
+ ->  Found at 9:25

@@ -1,5 +1,6 @@
 #include "codegen/twge_action.h"
 #include "codegen_transformer.h"
+#include "keyword.h"
 #include "utils/utils.h"
 #include <fstream>
 #include <iostream>
@@ -38,7 +39,7 @@ void twge::action::console(std::ofstream &of,
   of << inden(20) << "\"data\": {" << std::endl;
   of << inden(24) << "\"logType\": \"" << action->identifier[1] << "\","
      << std::endl;
-  of << inden(24) << "\"text\": " << paramNode->value << "," << std::endl;
+  of << inden(24) << "\"text\": \"" << paramNode->value << "\"," << std::endl;
   of << inden(24) << "\"value\": \"\"" << std::endl;
   of << inden(20) << "}" << std::endl;
 }
@@ -64,7 +65,10 @@ void twge::action::ActionAddActor::addActor(
   of << inden(24) << "\"weapon1\": {" << std::endl;
   of << inden(28) << "\"w1Type\": \"default\"" << std::endl;
   of << inden(24) << "}," << std::endl;
-  of << inden(24) << "\"camp\": " << defaultMap.get("camp", inputMap["camp"])
+  of << inden(24) << "\"camp\": "
+     << defaultMap.get(
+            "camp", inputMap["camp"],
+            std::make_shared<keyword::KeywordEnum>(keyword::camp::keywordEnum))
      << "," << std::endl;
   of << inden(24) << "\"group\": \"0\"," << std::endl;
   of << inden(24) << "\"location\": {" << std::endl;

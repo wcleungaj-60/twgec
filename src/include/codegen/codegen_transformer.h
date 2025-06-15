@@ -2,6 +2,7 @@
 #define CODEGEN_TRANSFORMER_H
 
 #include "ast.h"
+#include "keyword.h"
 #include <iostream>
 #include <string>
 #include <unordered_map>
@@ -26,49 +27,57 @@ struct DefaultMapValue {
 
 class DefaultMap {
 public:
-  const std::unordered_map<std::string, DefaultMapValue> map;
-  DefaultMap(std::unordered_map<std::string, DefaultMapValue> map) : map(map) {}
+  const std::unordered_map<std::string, DefaultMapValue> defaultMap;
+  DefaultMap(std::unordered_map<std::string, DefaultMapValue> defaultMap)
+      : defaultMap(defaultMap) {}
   std::string get(std::string key) {
-    if (map.find(key) != map.end()) {
-      if (map.at(key).codegenType == CODEGEN_STRING)
-        return "\"" + map.at(key).defaultValue + "\"";
-      if (map.at(key).codegenType == CODEGEN_INT)
-        return map.at(key).defaultValue;
+    if (defaultMap.find(key) != defaultMap.end()) {
+      if (defaultMap.at(key).codegenType == CODEGEN_STRING)
+        return "\"" + defaultMap.at(key).defaultValue + "\"";
+      if (defaultMap.at(key).codegenType == CODEGEN_INT)
+        return defaultMap.at(key).defaultValue;
     }
     std::cerr << "Compiler Implementation Error: Found unknown key \'" << key
               << "\'\n";
     return "";
   }
-  std::string get(std::string key, const std::shared_ptr<ValueNode> &value) {
-    std::string ret = "";
-    if (map.find(key) == map.end()) {
+  std::string get(std::string key, const std::shared_ptr<ValueNode> &value,
+                  std::shared_ptr<keyword::KeywordEnum> keywordEnum = nullptr) {
+    if (defaultMap.find(key) == defaultMap.end()) {
       std::cerr << "Compiler Implementation Error: Found unknown key \'" << key
                 << "\'\n";
-      return ret;
+      return "";
     }
     if (!value) {
-      if (map.at(key).codegenType == CODEGEN_STRING)
-        return "\"" + map.at(key).defaultValue + "\"";
-      if (map.at(key).codegenType == CODEGEN_INT)
-        return map.at(key).defaultValue;
+      if (defaultMap.at(key).codegenType == CODEGEN_STRING)
+        return "\"" + defaultMap.at(key).defaultValue + "\"";
+      if (defaultMap.at(key).codegenType == CODEGEN_INT)
+        return defaultMap.at(key).defaultValue;
     }
-    if (map.at(key).astType == AST_INT)
+    if (defaultMap.at(key).astType == AST_INT)
       if (auto *intNode = dynamic_cast<IntValueNode *>(value.get())) {
-        if (map.at(key).codegenType == CODEGEN_STRING)
-          ret = "\"" + std::to_string(intNode->value) + "\"";
-        else if (map.at(key).codegenType == CODEGEN_INT)
-          ret = std::to_string(intNode->value);
+        if (defaultMap.at(key).codegenType == CODEGEN_STRING)
+          return "\"" + std::to_string(intNode->value) + "\"";
+        else if (defaultMap.at(key).codegenType == CODEGEN_INT)
+          return std::to_string(intNode->value);
       }
-    if (map.at(key).astType == AST_STRING)
+    if (defaultMap.at(key).astType == AST_STRING)
       if (auto *stringNode = dynamic_cast<StringValueNode *>(value.get())) {
-        if (map.at(key).codegenType == CODEGEN_STRING)
-          ret = stringNode->value;
+        if (defaultMap.at(key).codegenType == CODEGEN_STRING) {
+          if (!keywordEnum) {
+            return "\"" + stringNode->value + "\"";
+          } else {
+            std::pair<bool, std::string> enumResult =
+                keywordEnum.get()->get(stringNode->value);
+            if (!enumResult.first)
+              std::cerr << " ->  Found at " << stringNode->loc << "\n";
+            return "\"" + enumResult.second + "\"";
+          }
+        }
       }
-    if (ret == "")
-      std::cerr
-          << "Compiler Implementation Error: incorrect type conversion at "
-          << value->loc << "\n";
-    return ret;
+    std::cerr << "Compiler Implementation Error: incorrect type conversion at "
+              << value->loc << "\n";
+    return "";
   }
 };
 
