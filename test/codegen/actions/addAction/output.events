@@ -140,10 +140,10 @@
                         },
                         "actorType": "defaultType",
                         "weapon0": {
-                            "w0Type": "default"
+                            "w0Type": "giantAxe"
                         },
                         "weapon1": {
-                            "w1Type": "default"
+                            "w1Type": "rocketLauncher"
                         },
                         "camp": "skydow",
                         "group": "0",

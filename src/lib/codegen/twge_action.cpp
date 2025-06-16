@@ -10,6 +10,8 @@ DefaultMap twge::action::ActionAddActor::defaultMap = DefaultMap({
     {"id", {AST_STRING, CODEGEN_STRING, "ai*"}},
     {"name", {AST_STRING, CODEGEN_STRING, ""}},
     {"camp", {AST_STRING, CODEGEN_STRING, "skydow"}},
+    {"weapon1", {AST_STRING, CODEGEN_STRING, "default"}},
+    {"weapon2", {AST_STRING, CODEGEN_STRING, "default"}},
     {"x", {AST_INT, CODEGEN_STRING, "0"}},
     {"y", {AST_INT, CODEGEN_STRING, "0"}},
     {"hp", {AST_INT, CODEGEN_STRING, "100"}},
@@ -60,10 +62,18 @@ void twge::action::ActionAddActor::addActor(
   of << inden(24) << "}," << std::endl;
   of << inden(24) << "\"actorType\": \"defaultType\"," << std::endl;
   of << inden(24) << "\"weapon0\": {" << std::endl;
-  of << inden(28) << "\"w0Type\": \"default\"" << std::endl;
+  of << inden(28) << "\"w0Type\": "
+     << defaultMap.get("weapon1", inputMap["weapon1"],
+                       std::make_shared<keyword::KeywordEnum>(
+                           keyword::weapon::keywordEnum))
+     << std::endl;
   of << inden(24) << "}," << std::endl;
   of << inden(24) << "\"weapon1\": {" << std::endl;
-  of << inden(28) << "\"w1Type\": \"default\"" << std::endl;
+  of << inden(28) << "\"w1Type\": "
+     << defaultMap.get("weapon2", inputMap["weapon2"],
+                       std::make_shared<keyword::KeywordEnum>(
+                           keyword::weapon::keywordEnum))
+     << std::endl;
   of << inden(24) << "}," << std::endl;
   of << inden(24) << "\"camp\": "
      << defaultMap.get(
