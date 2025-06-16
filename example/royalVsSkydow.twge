@@ -6,7 +6,7 @@ __map__ = "CG.TWEventsGameTemplate/gamemap.twmap";
 
 block init {
     actions {
-        addActor(name = "天影武士", camp = "天影", hp = 200, x = 11, y = 7, range = 0, weapon1 = "盾牌", weapon2 = "狙擊槍");
-        addActor(name = "皇家騎士", camp = "皇家", hp = 200, x = 18, y = 12, range = 0, weapon1 = "盾牌", weapon2 = "狙擊槍");
+        addActor(name = "天影武士", camp = "天影", hp = 200, x = 11, y = 7, range = 0, weapon1 = "盾牌", weapon2 = "狙擊槍", role = "天影武士1");
+        addActor(name = "皇家騎士", camp = "皇家", hp = 200, x = 18, y = 12, range = 0, weapon1 = "盾牌", weapon2 = "狙擊槍", role = "皇家機械人");
     }
 }

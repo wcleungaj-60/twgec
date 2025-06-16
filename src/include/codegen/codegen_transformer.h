@@ -74,6 +74,17 @@ public:
             return "\"" + enumResult.second + "\"";
           }
         }
+        if (defaultMap.at(key).codegenType == CODEGEN_INT) {
+          if (!keywordEnum) {
+            return stringNode->value;
+          } else {
+            std::pair<bool, std::string> enumResult =
+                keywordEnum.get()->get(stringNode->value);
+            if (!enumResult.first)
+              std::cerr << " ->  Found at " << stringNode->loc << "\n";
+            return enumResult.second;
+          }
+        }
       }
     std::cerr << "Compiler Implementation Error: incorrect type conversion at "
               << value->loc << "\n";

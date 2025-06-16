@@ -16,6 +16,7 @@ DefaultMap twge::action::ActionAddActor::defaultMap = DefaultMap({
     {"y", {AST_INT, CODEGEN_STRING, "0"}},
     {"hp", {AST_INT, CODEGEN_STRING, "100"}},
     {"range", {AST_INT, CODEGEN_STRING, "10000"}},
+    {"role", {AST_STRING, CODEGEN_INT, "0"}},
 });
 
 void twge::action::console(std::ofstream &of,
@@ -58,7 +59,11 @@ void twge::action::ActionAddActor::addActor(
   of << inden(24) << "\"name\": " << defaultMap.get("name", inputMap["name"])
      << "," << std::endl;
   of << inden(24) << "\"role\": {" << std::endl;
-  of << inden(28) << "\"dr\": 0" << std::endl;
+  of << inden(28) << "\"dr\": "
+     << defaultMap.get(
+            "role", inputMap["role"],
+            std::make_shared<keyword::KeywordEnum>(keyword::role::keywordEnum))
+     << std::endl;
   of << inden(24) << "}," << std::endl;
   of << inden(24) << "\"actorType\": \"defaultType\"," << std::endl;
   of << inden(24) << "\"weapon0\": {" << std::endl;
