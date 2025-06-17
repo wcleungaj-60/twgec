@@ -10,3 +10,10 @@ block init {
         addActor(name = "皇家騎士", camp = "皇家", hp = 200, x = 18, y = 12, range = 0, weapon1 = "盾牌", weapon2 = "狙擊槍", role = "皇家機械人");
     }
 }
+
+block spawn {
+    actions {
+        addActor(name = "天影士兵", camp = "天影", hp = 100, x = 14, y = 1, role = "天影士兵", patrol = [(14,1),(15,18)]);
+        addActor(name = "皇家士兵", camp = "皇家", hp = 100, x = 15, y = 18, role = "皇家士兵", patrol = [(15,18),(14,1)]);
+    }
+}

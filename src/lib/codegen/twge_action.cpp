@@ -17,6 +17,7 @@ DefaultMap twge::action::ActionAddActor::defaultMap = DefaultMap({
     {"hp", {AST_INT, CODEGEN_STRING, "100"}},
     {"range", {AST_INT, CODEGEN_STRING, "10000"}},
     {"role", {AST_STRING, CODEGEN_INT, "0"}},
+    {"patrol", {AST_LIST_POINT, CODEGEN_LIST_PATROL, "[]"}},
 });
 
 void twge::action::console(std::ofstream &of,
@@ -116,6 +117,10 @@ void twge::action::ActionAddActor::addActor(
   of << inden(24) << "\"distractWhenHit\": true," << std::endl;
   of << inden(24) << "\"thinkInterval\": 60," << std::endl;
   of << inden(24) << "\"farAutoLevel\": \"0\"," << std::endl;
+  of << inden(24) << "\"patrols\": true," << std::endl;
+  of << inden(24)
+     << "\"patrolPath\": " << defaultMap.get("patrol", inputMap["patrol"])
+     << "," << std::endl;
   of << inden(24) << "\"bornDelayDuration\": \"0\"," << std::endl;
   of << inden(24) << "\"bornDuration\": \"1000\"," << std::endl;
   of << inden(24) << "\"bornLockDuration\": \"1000\"," << std::endl;

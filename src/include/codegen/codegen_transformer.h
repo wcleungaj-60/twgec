@@ -11,12 +11,14 @@ enum ASTType {
   AST_INVALID,
   AST_INT,
   AST_STRING,
+  AST_LIST_POINT,
 };
 
 enum CodegenType {
   CODEGEN_INVALID,
   CODEGEN_INT,
-  CODEGEN_STRING, // two `\"` will be added
+  CODEGEN_STRING,      // two `\"` will be added
+  CODEGEN_LIST_PATROL, // {loc{x,y,range},rotation,duration}
 };
 
 struct DefaultMapValue {
@@ -36,6 +38,8 @@ public:
         return "\"" + defaultMap.at(key).defaultValue + "\"";
       if (defaultMap.at(key).codegenType == CODEGEN_INT)
         return defaultMap.at(key).defaultValue;
+      if (defaultMap.at(key).codegenType == CODEGEN_LIST_PATROL)
+        return defaultMap.at(key).defaultValue;
     }
     std::cerr << "Compiler Implementation Error: Found unknown key \'" << key
               << "\'\n";
@@ -52,6 +56,8 @@ public:
       if (defaultMap.at(key).codegenType == CODEGEN_STRING)
         return "\"" + defaultMap.at(key).defaultValue + "\"";
       if (defaultMap.at(key).codegenType == CODEGEN_INT)
+        return defaultMap.at(key).defaultValue;
+      if (defaultMap.at(key).codegenType == CODEGEN_LIST_PATROL)
         return defaultMap.at(key).defaultValue;
     }
     if (defaultMap.at(key).astType == AST_INT)
@@ -86,6 +92,34 @@ public:
           }
         }
       }
+    if (defaultMap.at(key).astType == AST_LIST_POINT) {
+      if (auto *listNode = dynamic_cast<ListValueNode *>(value.get())) {
+        if (defaultMap.at(key).codegenType == CODEGEN_LIST_PATROL) {
+          std::string ret = "[\n";
+          for (auto idx = 0; idx < listNode->items.size(); idx++) {
+            if (auto *pointNode = dynamic_cast<PointValueNode *>(
+                    listNode->items[idx].get())) {
+              ret += std::string(28, ' ') + "{\n";
+              ret += std::string(32, ' ') + "\"loc\": {\n";
+              ret += std::string(36, ' ') + "\"x\": \"" +
+                     std::to_string(pointNode->x) + "\",\n";
+              ret += std::string(36, ' ') + "\"y\": \"" +
+                     std::to_string(pointNode->y) + "\",\n";
+              ret += std::string(36, ' ') + "\"range\": \"0\"\n";
+              ret += std::string(32, ' ') + "},\n";
+              ret += std::string(32, ' ') + "\"rotation\": \"0\",\n";
+              ret += std::string(32, ' ') + "\"duration\": \"3000\"\n";
+              ret += std::string(28, ' ') + "}";
+              if (idx != listNode->items.size() - 1)
+                ret += ",";
+              ret += "\n";
+            }
+          }
+          ret += std::string(24, ' ') + "]";
+          return ret;
+        }
+      }
+    }
     std::cerr << "Compiler Implementation Error: incorrect type conversion at "
               << value->loc << "\n";
     return "";
