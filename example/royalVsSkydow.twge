@@ -12,8 +12,11 @@ block init {
 }
 
 block spawn {
+    __delay__ = 5000;
+    __repeat__ = 100;
+    __repeatInterval__ = 10000;
     actions {
-        addActor(name = "天影士兵", camp = "天影", hp = 100, x = 14, y = 1, role = "天影士兵", patrol = [(14,1),(15,18)]);
-        addActor(name = "皇家士兵", camp = "皇家", hp = 100, x = 15, y = 18, role = "皇家士兵", patrol = [(15,18),(14,1)]);
+        addActor(name = "天影士兵", camp = "天影", hp = 100, x = 1, y = 1, role = "天影士兵", patrol = [(14,1),(15,18)]);
+        addActor(name = "皇家士兵", camp = "皇家", hp = 100, x = 28, y = 18, role = "皇家士兵", patrol = [(15,18),(14,1)]);
     }
 }

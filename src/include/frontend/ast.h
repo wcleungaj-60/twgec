@@ -59,6 +59,17 @@ public:
   BoolValueNode(bool value, Location loc) : ValueNode(loc), value(value) {}
 };
 
+class MetadataNode {
+public:
+  Location loc;
+  std::string key;
+  std::unique_ptr<ValueNode> value;
+  MetadataNode(const std::string &key, std::unique_ptr<ValueNode> &value,
+               Location loc)
+      : key(key), value(std::move(value)), loc(loc) {}
+  void print(int indent = 0) const;
+};
+
 class ChecksNode {
 public:
   Location loc;
@@ -113,22 +124,12 @@ class BlockNode {
 public:
   Location loc;
   std::string identifier;
+  std::vector<std::unique_ptr<MetadataNode>> metadatas;
   std::unique_ptr<ChecksNode> checksNode;
   std::unique_ptr<TriggersNode> triggersNode;
   std::unique_ptr<ActionsNode> actionsNode;
 
   BlockNode(const std::string &id, Location loc) : identifier(id), loc(loc) {}
-  void print(int indent = 0) const;
-};
-
-class MetadataNode {
-public:
-  Location loc;
-  std::string key;
-  std::unique_ptr<ValueNode> value;
-  MetadataNode(const std::string &key, std::unique_ptr<ValueNode> &value,
-               Location loc)
-      : key(key), value(std::move(value)), loc(loc) {}
   void print(int indent = 0) const;
 };
 

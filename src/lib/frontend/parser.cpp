@@ -73,18 +73,27 @@ std::unique_ptr<BlockNode> Parser::parseBlock() {
       if (!actionsNode)
         return nullptr;
       blockNode->actionsNode = std::move(actionsNode);
-    }
-    if (tokens.front().type == TokenType::CHECKS) {
+    } else if (tokens.front().type == TokenType::CHECKS) {
       auto checksNode = parseChecks();
       if (!checksNode)
         return nullptr;
       blockNode->checksNode = std::move(checksNode);
-    }
-    if (tokens.front().type == TokenType::TRIGGERS) {
+    } else if (tokens.front().type == TokenType::TRIGGERS) {
       auto triggersNode = parseTriggers();
       if (!triggersNode)
         return nullptr;
       blockNode->triggersNode = std::move(triggersNode);
+    } else if(tokens.front().type == TokenType::METADATA) {
+      if (auto metadataNode = parseMetadata())
+        blockNode->metadatas.push_back(std::move(metadataNode));
+      else
+      return nullptr;
+    } else {
+      std::cerr << "SyntaxError: Expecting a triggers/checks/actions block or "
+                   "metadata definition at "
+                << tokens.front().location << ". Found \'"
+                << tokens.front().value << "\'\n";
+      return nullptr;
     }
   }
   if (!consume(TokenType::CLOSECUR))

@@ -1,4 +1,5 @@
 #include "codegen.h"
+#include "ast.h"
 #include "twge_action.h"
 #include "utils/utils.h"
 #include <fstream>
@@ -143,14 +144,27 @@ void CodeGen::codegenBlocks(std::ofstream &of) {
   of << std::endl;
   for (auto i = 0; i < moduleNode->blocks.size(); i++) {
     auto &block = moduleNode->blocks[i];
+    int delay = 0;
+    int repeat = 0;
+    int repeatInterval = 0;
+    for(auto& metadata: block->metadatas){
+      if(auto intNode = dynamic_cast<IntValueNode*>(metadata->value.get())){
+      if(metadata->key == "delay")
+         delay = intNode->value;
+      if(metadata->key == "repeat")
+         repeat = intNode->value;
+      if(metadata->key == "repeatInterval")
+         repeatInterval = intNode->value;
+      }
+    }
     of << inden(8) << "{" << std::endl;
     of << inden(12) << "\"id\": \"" << block->identifier << "\"," << std::endl;
     of << inden(12) << "\"disabled\": false," << std::endl;
     of << inden(12) << "\"folder\": \"\"," << std::endl;
-    of << inden(12) << "\"startTime\": 0," << std::endl;
+    of << inden(12) << "\"startTime\": " << delay << "," << std::endl;
     of << inden(12) << "\"checkInterval\": 10," << std::endl;
-    of << inden(12) << "\"repeats\": 0," << std::endl;
-    of << inden(12) << "\"repeatInterval\": 0," << std::endl;
+    of << inden(12) << "\"repeats\": " << repeat << "," << std::endl;
+    of << inden(12) << "\"repeatInterval\": " << repeatInterval << "," << std::endl;
     of << inden(12) << "\"devOnly\": false," << std::endl;
     codegenActions(of, block->actionsNode);
     codegenChecks(of, block->checksNode);

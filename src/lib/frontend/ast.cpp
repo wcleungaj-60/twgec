@@ -17,13 +17,16 @@ void MetadataNode::print(int indent) const {
 }
 
 void BlockNode::print(int indent) const {
-  std::cout << inden(indent) << "BlockNode: " << identifier << "\n";
+  std::cout << inden(indent) << "BlockNode: " << identifier << " {\n";
+  for (auto &metadata : metadatas)
+    metadata->print(indent + 4);
   if (checksNode)
     checksNode->print(indent + 4);
   if (triggersNode)
     triggersNode->print(indent + 4);
   if (actionsNode)
     actionsNode->print(indent + 4);
+  std::cout << inden(indent) << "}\n";
 }
 
 void ChecksNode::print(int indent) const {
