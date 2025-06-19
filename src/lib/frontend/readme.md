@@ -23,12 +23,12 @@
 ```c
 // Basic Node
 ModuleNode := [BlockNode | MetadataNode]*
-- MetadataNode := MetadataToken AssignToken ValueNode SemicolonToken
-- BlockNode := BlockToken IdentifierToken OpenCurToken [ActionsNode | ChecksNode | TriggersNode] CloseCurToken
+- BlockNode := BlockToken IdentifierToken OpenCurToken [ MetadataNode | ActionsNode | ChecksNode | TriggersNode] CloseCurToken
   - ActionsNode := ActionsToken OpenCurToken ActionNode* CloseCurToken
     - ActionNode := IdentifierToken [DotToken IdentifierToken]* OpenParToken PositionalArgNode? CloseParToken SemicolonToken
   - ChecksNode := ChecksToken OpenCurToken CheckNode* CloseCurToken
   - TriggersNode := TriggersToken OpenCurToken TriggerNode* CloseCurToken
+- MetadataNode := MetadataToken AssignToken ValueNode SemicolonToken
 // Arguments
 PositionalArgNode = [IdentifierToken AssignToken ValueNode [CommaToken NamedArgNode]?] | 
                     [ValueNode [CommaToken PositionalArgNode]?]

@@ -1,51 +1,62 @@
 #include "codegen/metadata.h"
 #include "codegen_transformer.h"
 #include "utils/utils.h"
+#include <fstream>
+#include <iostream>
 
-DefaultMap MetadataLegalizer::defaultMap = DefaultMap({
-    {metadata::stageWidth, {AST_INT, CODEGEN_INT, "600"}},
-    {metadata::stageHeight, {AST_INT, CODEGEN_INT, "500"}},
-    {metadata::roomSize, {AST_INT, CODEGEN_INT, "4"}},
-    {metadata::lives, {AST_INT, CODEGEN_INT, "3"}},
-    {metadata::maxAbilityLevel, {AST_INT, CODEGEN_INT, "2"}},
-    {metadata::bornDuration, {AST_INT, CODEGEN_INT, "300"}},
-    {metadata::bornLockDuration, {AST_INT, CODEGEN_INT, "100"}},
-    {metadata::minPlayers, {AST_INT, CODEGEN_INT, "1"}},
-    {metadata::supportSignin, {AST_BOOL, CODEGEN_BOOL, "true"}},
-    {metadata::mustLogin, {AST_BOOL, CODEGEN_BOOL, "true"}},
-    {metadata::allowGuest, {AST_BOOL, CODEGEN_BOOL, "true"}},
-    {metadata::supportMsgServer, {AST_BOOL, CODEGEN_BOOL, "true"}},
-    {metadata::runGame, {AST_BOOL, CODEGEN_BOOL, "true"}},
-    {metadata::campOpSkydow, {AST_BOOL, CODEGEN_BOOL, "true"}},
-    {metadata::campOpRoyal, {AST_BOOL, CODEGEN_BOOL, "true"}},
-    {metadata::campOpThird, {AST_BOOL, CODEGEN_BOOL, "true"}},
-    {metadata::setInitFocus, {AST_BOOL, CODEGEN_BOOL, "false"}},
-    {metadata::setBornDuration, {AST_BOOL, CODEGEN_BOOL, "false"}},
-    {metadata::nextGameEnabled, {AST_BOOL, CODEGEN_BOOL, "true"}},
-    {metadata::playDefaultMusic, {AST_BOOL, CODEGEN_BOOL, "true"}},
-    {metadata::disableNextGameOnMissionComplete,
+DefaultMap codegen::metadata::ConfigSetup::defaultMap = DefaultMap({
+    {keyword::config::stageWidth, {AST_INT, CODEGEN_INT, "600"}},
+    {keyword::config::stageHeight, {AST_INT, CODEGEN_INT, "500"}},
+    {keyword::config::roomSize, {AST_INT, CODEGEN_INT, "4"}},
+    {keyword::config::lives, {AST_INT, CODEGEN_INT, "3"}},
+    {keyword::config::maxAbilityLevel, {AST_INT, CODEGEN_INT, "2"}},
+    {keyword::config::bornDuration, {AST_INT, CODEGEN_INT, "300"}},
+    {keyword::config::bornLockDuration, {AST_INT, CODEGEN_INT, "100"}},
+    {keyword::config::minPlayers, {AST_INT, CODEGEN_INT, "1"}},
+    {keyword::config::supportSignin, {AST_BOOL, CODEGEN_BOOL, "true"}},
+    {keyword::config::mustLogin, {AST_BOOL, CODEGEN_BOOL, "true"}},
+    {keyword::config::allowGuest, {AST_BOOL, CODEGEN_BOOL, "true"}},
+    {keyword::config::supportMsgServer, {AST_BOOL, CODEGEN_BOOL, "true"}},
+    {keyword::config::runGame, {AST_BOOL, CODEGEN_BOOL, "true"}},
+    {keyword::config::campOpSkydow, {AST_BOOL, CODEGEN_BOOL, "true"}},
+    {keyword::config::campOpRoyal, {AST_BOOL, CODEGEN_BOOL, "true"}},
+    {keyword::config::campOpThird, {AST_BOOL, CODEGEN_BOOL, "true"}},
+    {keyword::config::setInitFocus, {AST_BOOL, CODEGEN_BOOL, "false"}},
+    {keyword::config::setBornDuration, {AST_BOOL, CODEGEN_BOOL, "false"}},
+    {keyword::config::nextGameEnabled, {AST_BOOL, CODEGEN_BOOL, "true"}},
+    {keyword::config::playDefaultMusic, {AST_BOOL, CODEGEN_BOOL, "true"}},
+    {keyword::config::disableNextGameOnMissionComplete,
      {AST_BOOL, CODEGEN_BOOL, "false"}},
-    {metadata::useDefaultItems, {AST_BOOL, CODEGEN_BOOL, "false"}},
-    {metadata::defCarryItems, {AST_BOOL, CODEGEN_BOOL, "false"}},
-    {metadata::useDefaultCampLocs, {AST_BOOL, CODEGEN_BOOL, "false"}},
-    {metadata::useCustomWeapons, {AST_BOOL, CODEGEN_BOOL, "false"}},
-    {metadata::useCustomFarWeapons, {AST_BOOL, CODEGEN_BOOL, "false"}},
-    {metadata::useCustomItems, {AST_BOOL, CODEGEN_BOOL, "false"}},
-    {metadata::title, {AST_STRING, CODEGEN_STRING, "我的任務"}},
-    {metadata::map,
+    {keyword::config::useDefaultItems, {AST_BOOL, CODEGEN_BOOL, "false"}},
+    {keyword::config::defCarryItems, {AST_BOOL, CODEGEN_BOOL, "false"}},
+    {keyword::config::useDefaultCampLocs, {AST_BOOL, CODEGEN_BOOL, "false"}},
+    {keyword::config::useCustomWeapons, {AST_BOOL, CODEGEN_BOOL, "false"}},
+    {keyword::config::useCustomFarWeapons, {AST_BOOL, CODEGEN_BOOL, "false"}},
+    {keyword::config::useCustomItems, {AST_BOOL, CODEGEN_BOOL, "false"}},
+    {keyword::config::title, {AST_STRING, CODEGEN_STRING, "我的任務"}},
+    {keyword::config::map,
      {AST_STRING, CODEGEN_STRING, "CG.TWEventsGameTemplate/gamemap.twmap"}},
-    {metadata::schema,
+    {keyword::config::schema,
      {AST_STRING, CODEGEN_STRING,
       "https://code.gamelet.com/gassets/schema/events/v1"}},
-    {metadata::stageBackgroundColor, {AST_STRING, CODEGEN_STRING, "#999999"}},
-    {metadata::gamezoneCode, {AST_STRING, CODEGEN_STRING, "mission"}},
-    {metadata::skydowLocs, {AST_LIST_POINT, CODEGEN_LIST_POINT, "[]"}},
-    {metadata::royalLocs, {AST_LIST_POINT, CODEGEN_LIST_POINT, "[]"}},
-    {metadata::thirdLocs, {AST_LIST_POINT, CODEGEN_LIST_POINT, "[]"}},
-    {metadata::preloadSources, {AST_LIST_STRING, CODEGEN_LIST_STRING, "[]"}},
-    {metadata::preloadResourcesExclude,
+    {keyword::config::stageBackgroundColor,
+     {AST_STRING, CODEGEN_STRING, "#999999"}},
+    {keyword::config::gamezoneCode, {AST_STRING, CODEGEN_STRING, "mission"}},
+    {keyword::config::skydowLocs, {AST_LIST_POINT, CODEGEN_LIST_POINT, "[]"}},
+    {keyword::config::royalLocs, {AST_LIST_POINT, CODEGEN_LIST_POINT, "[]"}},
+    {keyword::config::thirdLocs, {AST_LIST_POINT, CODEGEN_LIST_POINT, "[]"}},
+    {keyword::config::preloadSources,
      {AST_LIST_STRING, CODEGEN_LIST_STRING, "[]"}},
-    {metadata::carryItemCodes, {AST_LIST_STRING, CODEGEN_LIST_STRING, "[]"}},
+    {keyword::config::preloadResourcesExclude,
+     {AST_LIST_STRING, CODEGEN_LIST_STRING, "[]"}},
+    {keyword::config::carryItemCodes,
+     {AST_LIST_STRING, CODEGEN_LIST_STRING, "[]"}},
+});
+
+DefaultMap codegen::metadata::BlockSetup::defaultMap = DefaultMap({
+    {"delay", {AST_INT, CODEGEN_INT, "0"}},
+    {"repeat", {AST_INT, CODEGEN_INT, "0"}},
+    {"repeatInterval", {AST_INT, CODEGEN_INT, "0"}},
 });
 
 // Enum
@@ -71,7 +82,184 @@ DefaultMap MetadataLegalizer::defaultMap = DefaultMap({
 // std::make_unique<MetadataList<std::string>>("debugCamp", {"third", "royal",
 // "skydow"},
 //                           {"third", "royal", "skydow", "random"}),
-// INIT_META_UNSUPPORT(metaMap, metadata::initFocus);
-// INIT_META_UNSUPPORT(metaMap, metadata::customWeapons);
-// INIT_META_UNSUPPORT(metaMap, metadata::customFarWeapons);
-// INIT_META_UNSUPPORT(metaMap, metadata::customItems);
+// INIT_META_UNSUPPORT(metaMap, keyword::config::initFocus);
+// INIT_META_UNSUPPORT(metaMap, keyword::config::customWeapons);
+// INIT_META_UNSUPPORT(metaMap, keyword::config::customFarWeapons);
+// INIT_META_UNSUPPORT(metaMap, keyword::config::customItems);
+
+void codegen::metadata::ConfigSetup::setup(
+    std::ofstream &of, std::vector<std::unique_ptr<MetadataNode>> &metadatas) {
+  std::unordered_map<std::string, const std::shared_ptr<ValueNode>> inputMap;
+  for (auto &metadata : metadatas)
+    inputMap.insert({metadata->key, std::move(metadata->value)});
+  of << inden(4) << "\"$schema\": "
+     << defaultMap.get(keyword::config::schema,
+                       inputMap[keyword::config::schema])
+     << "," << std::endl;
+  of << inden(4) << "\"config\": {" << std::endl;
+  of << inden(8) << "\"stage\": {" << std::endl;
+  of << inden(12) << "\"width\": "
+     << defaultMap.get(keyword::config::stageWidth,
+                       inputMap[keyword::config::stageWidth])
+     << "," << std::endl;
+  of << inden(12) << "\"height\": "
+     << defaultMap.get(keyword::config::stageHeight,
+                       inputMap[keyword::config::stageHeight])
+     << "," << std::endl;
+  of << inden(12) << "\"backgroundColor\": "
+     << defaultMap.get(keyword::config::stageBackgroundColor,
+                       inputMap[keyword::config::stageBackgroundColor])
+     << "," << std::endl;
+  of << inden(12) << "\"resolutionPolicy\": \"showAll\"," << std::endl;
+  of << inden(12) << "\"alignHorizontal\": \"center\"," << std::endl;
+  of << inden(12) << "\"alignVertical\": \"middle\"" << std::endl;
+  of << inden(8) << "}," << std::endl;
+  of << inden(8) << "\"preload\": {" << std::endl;
+  of << inden(12) << "\"sources\": []," << std::endl;
+  of << inden(12) << "\"resourcesExclude\": []" << std::endl;
+  of << inden(8) << "}," << std::endl;
+  of << inden(8) << "\"configs\": {" << std::endl;
+  of << inden(12) << "\"TwilightWarsConfig\": {" << std::endl;
+  of << inden(16) << "\"title\": "
+     << defaultMap.get(keyword::config::title, inputMap[keyword::config::title])
+     << "," << std::endl;
+  of << inden(16) << "\"serverConfig\": {" << std::endl;
+  of << inden(20) << "\"minPlayers\": "
+     << defaultMap.get(keyword::config::minPlayers,
+                       inputMap[keyword::config::minPlayers])
+     << "," << std::endl;
+  of << inden(20) << "\"supportSignin\": "
+     << defaultMap.get(keyword::config::supportSignin,
+                       inputMap[keyword::config::supportSignin])
+     << "," << std::endl;
+  of << inden(20) << "\"mustLogin\": "
+     << defaultMap.get(keyword::config::mustLogin,
+                       inputMap[keyword::config::mustLogin])
+     << "," << std::endl;
+  of << inden(20) << "\"allowGuest\": "
+     << defaultMap.get(keyword::config::allowGuest,
+                       inputMap[keyword::config::allowGuest])
+     << "," << std::endl;
+  of << inden(20) << "\"supportMsgServer\": "
+     << defaultMap.get(keyword::config::supportMsgServer,
+                       inputMap[keyword::config::supportMsgServer])
+     << "," << std::endl;
+  of << inden(20) << "\"gamezoneCode\": "
+     << defaultMap.get(keyword::config::gamezoneCode,
+                       inputMap[keyword::config::gamezoneCode])
+     << "," << std::endl;
+  of << inden(20) << "\"roomType\": \"close\"," << std::endl;
+  of << inden(20) << "\"roomSize\": "
+     << defaultMap.get(keyword::config::roomSize,
+                       inputMap[keyword::config::roomSize])
+     << std::endl;
+  of << inden(16) << "}," << std::endl;
+  of << inden(16) << "\"runGame\": "
+     << defaultMap.get(keyword::config::runGame,
+                       inputMap[keyword::config::runGame])
+     << "," << std::endl;
+  of << inden(16) << "\"gameStartFadein\": \"fadein\"," << std::endl;
+  of << inden(16) << "\"lives\": "
+     << defaultMap.get(keyword::config::lives, inputMap[keyword::config::lives])
+     << "," << std::endl;
+  of << inden(16) << "\"debugCamp\": \"ask\"," << std::endl;
+  of << inden(16) << "\"releaseCamp\": \"ask\"," << std::endl;
+  of << inden(16) << "\"setInitFocus\": "
+     << defaultMap.get(keyword::config::setInitFocus,
+                       inputMap[keyword::config::setInitFocus])
+     << "," << std::endl;
+  of << inden(16) << "\"initFocus\": {" << std::endl;
+  of << inden(20) << "\"x\": \"0\"," << std::endl;
+  of << inden(20) << "\"y\": \"0\"" << std::endl;
+  of << inden(16) << "}," << std::endl;
+  of << inden(16) << "\"campOptions\": {" << std::endl;
+  of << inden(20) << "\"campOpSkydow\": "
+     << defaultMap.get(keyword::config::campOpSkydow,
+                       inputMap[keyword::config::campOpSkydow])
+     << "," << std::endl;
+  of << inden(20) << "\"campOpRoyal\": "
+     << defaultMap.get(keyword::config::campOpRoyal,
+                       inputMap[keyword::config::campOpRoyal])
+     << "," << std::endl;
+  of << inden(20) << "\"campOpThird\": "
+     << defaultMap.get(keyword::config::campOpThird,
+                       inputMap[keyword::config::campOpThird])
+     << std::endl;
+  of << inden(16) << "}," << std::endl;
+  of << inden(16) << "\"map\": "
+     << defaultMap.get(keyword::config::map, inputMap[keyword::config::map])
+     << "," << std::endl;
+  of << inden(16) << "\"maxAbilityLevel\": "
+     << defaultMap.get(keyword::config::maxAbilityLevel,
+                       inputMap[keyword::config::maxAbilityLevel])
+     << "," << std::endl;
+  of << inden(16) << "\"nextGameEnabled\": "
+     << defaultMap.get(keyword::config::nextGameEnabled,
+                       inputMap[keyword::config::nextGameEnabled])
+     << "," << std::endl;
+  of << inden(16) << "\"disableNextGameOnMissionComplete\": "
+     << defaultMap.get(
+            keyword::config::disableNextGameOnMissionComplete,
+            inputMap[keyword::config::disableNextGameOnMissionComplete])
+     << "," << std::endl;
+  of << inden(16) << "\"playDefaultMusic\": "
+     << defaultMap.get(keyword::config::playDefaultMusic,
+                       inputMap[keyword::config::playDefaultMusic])
+     << "," << std::endl;
+  of << inden(16) << "\"cameraAfterOver\": \"restrict\"," << std::endl;
+  of << inden(16) << "\"useDefaultItems\": "
+     << defaultMap.get(keyword::config::useDefaultItems,
+                       inputMap[keyword::config::useDefaultItems])
+     << "," << std::endl;
+  of << inden(16) << "\"useDefaultCampLocs\": "
+     << defaultMap.get(keyword::config::useDefaultCampLocs,
+                       inputMap[keyword::config::useDefaultCampLocs])
+     << "," << std::endl;
+  of << inden(16) << "\"skydowLocs\": "
+     << defaultMap.get(keyword::config::skydowLocs,
+                       inputMap[keyword::config::skydowLocs])
+     << "," << std::endl;
+  of << inden(16) << "\"royalLocs\": "
+     << defaultMap.get(keyword::config::royalLocs,
+                       inputMap[keyword::config::royalLocs])
+     << "," << std::endl;
+  of << inden(16) << "\"thirdLocs\": "
+     << defaultMap.get(keyword::config::thirdLocs,
+                       inputMap[keyword::config::thirdLocs])
+     << "," << std::endl;
+  of << inden(16) << "\"useCustomWeapons\": "
+     << defaultMap.get(keyword::config::useCustomWeapons,
+                       inputMap[keyword::config::useCustomWeapons])
+     << "," << std::endl;
+  of << inden(16) << "\"customWeapons\": []," << std::endl;
+  of << inden(16) << "\"useCustomItems\": "
+     << defaultMap.get(keyword::config::useCustomItems,
+                       inputMap[keyword::config::useCustomItems])
+     << "," << std::endl;
+  of << inden(16) << "\"customItems\": []," << std::endl;
+  of << inden(16) << "\"enabled\": true," << std::endl;
+  of << inden(16) << "\"@use\": 0" << std::endl;
+  of << inden(12) << "}" << std::endl;
+  of << inden(8) << "}" << std::endl;
+  of << inden(4) << "}," << std::endl;
+}
+
+void codegen::metadata::BlockSetup::setup(
+    std::ofstream &of, std::vector<std::unique_ptr<MetadataNode>> &metadatas) {
+  std::unordered_map<std::string, const std::shared_ptr<ValueNode>> inputMap;
+  for (auto &metadata : metadatas)
+    inputMap.insert({metadata->key, std::move(metadata->value)});
+  of << inden(12) << "\"disabled\": false," << std::endl;
+  of << inden(12) << "\"folder\": \"\"," << std::endl;
+  of << inden(12)
+     << "\"startTime\": " << defaultMap.get("delay", inputMap["delay"]) << ","
+     << std::endl;
+  of << inden(12) << "\"checkInterval\": 10," << std::endl;
+  of << inden(12)
+     << "\"repeats\": " << defaultMap.get("repeat", inputMap["repeat"]) << ","
+     << std::endl;
+  of << inden(12) << "\"repeatInterval\": "
+     << defaultMap.get("repeatInterval", inputMap["repeatInterval"]) << ","
+     << std::endl;
+  of << inden(12) << "\"devOnly\": false," << std::endl;
+}

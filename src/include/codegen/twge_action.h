@@ -4,7 +4,7 @@
 #include "ast.h"
 #include "codegen_transformer.h"
 
-namespace twge {
+namespace codegen {
 namespace action {
 void console(std::ofstream &of, std::unique_ptr<ActionNode> &);
 
@@ -14,6 +14,6 @@ public:
   static void addActor(std::ofstream &of, std::unique_ptr<ActionNode> &action);
 };
 } // namespace action
-} // namespace twge
+} // namespace codegen
 
 #endif

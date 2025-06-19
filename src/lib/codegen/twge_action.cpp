@@ -6,7 +6,7 @@
 #include <iostream>
 #include <unordered_map>
 
-DefaultMap twge::action::ActionAddActor::defaultMap = DefaultMap({
+DefaultMap codegen::action::ActionAddActor::defaultMap = DefaultMap({
     {"id", {AST_STRING, CODEGEN_STRING, "ai*"}},
     {"name", {AST_STRING, CODEGEN_STRING, ""}},
     {"camp", {AST_STRING, CODEGEN_STRING, "skydow"}},
@@ -20,8 +20,8 @@ DefaultMap twge::action::ActionAddActor::defaultMap = DefaultMap({
     {"patrol", {AST_LIST_POINT, CODEGEN_LIST_PATROL, "[]"}},
 });
 
-void twge::action::console(std::ofstream &of,
-                           std::unique_ptr<ActionNode> &action) {
+void codegen::action::console(std::ofstream &of,
+                              std::unique_ptr<ActionNode> &action) {
   if (action->identifier.size() != 2 ||
       (action->identifier[1] != "log" && action->identifier[1] != "error")) {
     std::cerr << "Expecting console.log or console.error for the action at "
@@ -48,7 +48,7 @@ void twge::action::console(std::ofstream &of,
   of << inden(20) << "}" << std::endl;
 }
 
-void twge::action::ActionAddActor::addActor(
+void codegen::action::ActionAddActor::addActor(
     std::ofstream &of, std::unique_ptr<ActionNode> &action) {
   std::unordered_map<std::string, const std::shared_ptr<ValueNode>> inputMap;
   for (auto &namedArg : action->named_args)

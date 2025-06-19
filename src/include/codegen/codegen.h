@@ -7,7 +7,6 @@ class CodeGen {
 private:
   const std::unique_ptr<ModuleNode> &moduleNode;
   void codegenModuleNode(std::ofstream &of);
-  void codegenMetaData(std::ofstream &of);
   void codegenBlocks(std::ofstream &of);
   void codegenAction(std::ofstream &of, std::unique_ptr<ActionNode> &);
   void codegenActions(std::ofstream &of, std::unique_ptr<ActionsNode> &);
