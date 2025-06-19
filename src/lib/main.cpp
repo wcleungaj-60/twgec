@@ -73,8 +73,7 @@ int main(int argc, char *argv[]) {
     moduleNode->print();
   }
 
-  MetadataLegalizer metadataLegalizer(moduleNode);
-  CodeGen codegen(moduleNode, metadataLegalizer);
+  CodeGen codegen(moduleNode);
   codegen.codegen("game.events");
 
   return 0;

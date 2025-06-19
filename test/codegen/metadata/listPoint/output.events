@@ -50,35 +50,35 @@
                 "useDefaultItems": false,
                 "useDefaultCampLocs": false,
                 "skydowLocs": [
-                        {
-                            "x": "5",
-                            "y": "20"
-                        },
-                        {
-                            "x": "20",
-                            "y": "20"
-                        }
-                    ],
+                    {
+                        "x": "5",
+                        "y": "20"
+                    },
+                    {
+                        "x": "20",
+                        "y": "20"
+                    }
+                ],
                 "royalLocs": [
-                        {
-                            "x": "10",
-                            "y": "25"
-                        },
-                        {
-                            "x": "20",
-                            "y": "20"
-                        }
-                    ],
+                    {
+                        "x": "10",
+                        "y": "25"
+                    },
+                    {
+                        "x": "20",
+                        "y": "20"
+                    }
+                ],
                 "thirdLocs": [
-                        {
-                            "x": "10",
-                            "y": "20"
-                        },
-                        {
-                            "x": "20",
-                            "y": "20"
-                        }
-                    ],
+                    {
+                        "x": "10",
+                        "y": "20"
+                    },
+                    {
+                        "x": "20",
+                        "y": "20"
+                    }
+                ],
                 "useCustomWeapons": false,
                 "customWeapons": [],
                 "useCustomItems": false,

@@ -6,7 +6,6 @@
 class CodeGen {
 private:
   const std::unique_ptr<ModuleNode> &moduleNode;
-  MetadataLegalizer &metadataLegalizer;
   void codegenModuleNode(std::ofstream &of);
   void codegenMetaData(std::ofstream &of);
   void codegenBlocks(std::ofstream &of);
@@ -16,9 +15,8 @@ private:
   void codegenTriggers(std::ofstream &of, std::unique_ptr<TriggersNode> &);
 
 public:
-  CodeGen(const std::unique_ptr<ModuleNode> &moduleNode,
-          MetadataLegalizer &metadataLegalizer)
-      : moduleNode(moduleNode), metadataLegalizer(metadataLegalizer){};
+  CodeGen(const std::unique_ptr<ModuleNode> &moduleNode)
+      : moduleNode(moduleNode){};
   void codegen(std::string filepath);
 };
 

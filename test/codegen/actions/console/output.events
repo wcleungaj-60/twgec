@@ -49,15 +49,9 @@
                 "cameraAfterOver": "restrict",
                 "useDefaultItems": false,
                 "useDefaultCampLocs": false,
-                "skydowLocs": [
-
-                    ],
-                "royalLocs": [
-
-                    ],
-                "thirdLocs": [
-
-                    ],
+                "skydowLocs": [],
+                "royalLocs": [],
+                "thirdLocs": [],
                 "useCustomWeapons": false,
                 "customWeapons": [],
                 "useCustomItems": false,

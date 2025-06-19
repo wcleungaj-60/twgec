@@ -2,6 +2,7 @@
 #define METADATA_H
 
 #include "ast.h"
+#include "codegen_transformer.h"
 #include <memory>
 #include <unordered_map>
 
@@ -137,6 +138,7 @@ private:
   std::unordered_map<std::string, std::unique_ptr<MetadataAbstract>> metaMap;
 
 public:
+  static DefaultMap defaultMap;
   MetadataLegalizer(const std::unique_ptr<ModuleNode> &moduleNode)
       : moduleNode(moduleNode) {
     initDefaultMap();
