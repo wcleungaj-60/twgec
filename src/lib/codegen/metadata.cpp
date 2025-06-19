@@ -90,27 +90,20 @@ DefaultMap metadata::BlockSetup::defaultMap = DefaultMap({
 
 void metadata::ConfigSetup::setup(
     std::ofstream &of, std::vector<std::unique_ptr<MetadataNode>> &metadatas) {
-  std::unordered_map<std::string, const std::shared_ptr<ValueNode>> inputMap;
-  for (auto &metadata : metadatas)
-    inputMap.insert({metadata->key, std::move(metadata->value)});
-  of << inden(4) << "\"$schema\": "
-     << defaultMap.get(keyword::config::schema,
-                       inputMap[keyword::config::schema])
+  defaultMap.addInputMap(metadatas);
+  of << inden(4) << "\"$schema\": " << defaultMap.get(keyword::config::schema)
      << "," << std::endl;
   of << inden(4) << "\"config\": {" << std::endl;
   of << inden(8) << "\"stage\": {" << std::endl;
-  of << inden(12) << "\"width\": "
-     << defaultMap.get(keyword::config::stageWidth,
-                       inputMap[keyword::config::stageWidth])
-     << "," << std::endl;
-  of << inden(12) << "\"height\": "
-     << defaultMap.get(keyword::config::stageHeight,
-                       inputMap[keyword::config::stageHeight])
-     << "," << std::endl;
+  of << inden(12)
+     << "\"width\": " << defaultMap.get(keyword::config::stageWidth) << ","
+     << std::endl;
+  of << inden(12)
+     << "\"height\": " << defaultMap.get(keyword::config::stageHeight) << ","
+     << std::endl;
   of << inden(12) << "\"backgroundColor\": "
-     << defaultMap.get(keyword::config::stageBackgroundColor,
-                       inputMap[keyword::config::stageBackgroundColor])
-     << "," << std::endl;
+     << defaultMap.get(keyword::config::stageBackgroundColor) << ","
+     << std::endl;
   of << inden(12) << "\"resolutionPolicy\": \"showAll\"," << std::endl;
   of << inden(12) << "\"alignHorizontal\": \"center\"," << std::endl;
   of << inden(12) << "\"alignVertical\": \"middle\"" << std::endl;
@@ -121,122 +114,86 @@ void metadata::ConfigSetup::setup(
   of << inden(8) << "}," << std::endl;
   of << inden(8) << "\"configs\": {" << std::endl;
   of << inden(12) << "\"TwilightWarsConfig\": {" << std::endl;
-  of << inden(16) << "\"title\": "
-     << defaultMap.get(keyword::config::title, inputMap[keyword::config::title])
+  of << inden(16) << "\"title\": " << defaultMap.get(keyword::config::title)
      << "," << std::endl;
   of << inden(16) << "\"serverConfig\": {" << std::endl;
-  of << inden(20) << "\"minPlayers\": "
-     << defaultMap.get(keyword::config::minPlayers,
-                       inputMap[keyword::config::minPlayers])
+  of << inden(20)
+     << "\"minPlayers\": " << defaultMap.get(keyword::config::minPlayers) << ","
+     << std::endl;
+  of << inden(20)
+     << "\"supportSignin\": " << defaultMap.get(keyword::config::supportSignin)
      << "," << std::endl;
-  of << inden(20) << "\"supportSignin\": "
-     << defaultMap.get(keyword::config::supportSignin,
-                       inputMap[keyword::config::supportSignin])
-     << "," << std::endl;
-  of << inden(20) << "\"mustLogin\": "
-     << defaultMap.get(keyword::config::mustLogin,
-                       inputMap[keyword::config::mustLogin])
-     << "," << std::endl;
-  of << inden(20) << "\"allowGuest\": "
-     << defaultMap.get(keyword::config::allowGuest,
-                       inputMap[keyword::config::allowGuest])
-     << "," << std::endl;
+  of << inden(20)
+     << "\"mustLogin\": " << defaultMap.get(keyword::config::mustLogin) << ","
+     << std::endl;
+  of << inden(20)
+     << "\"allowGuest\": " << defaultMap.get(keyword::config::allowGuest) << ","
+     << std::endl;
   of << inden(20) << "\"supportMsgServer\": "
-     << defaultMap.get(keyword::config::supportMsgServer,
-                       inputMap[keyword::config::supportMsgServer])
-     << "," << std::endl;
-  of << inden(20) << "\"gamezoneCode\": "
-     << defaultMap.get(keyword::config::gamezoneCode,
-                       inputMap[keyword::config::gamezoneCode])
+     << defaultMap.get(keyword::config::supportMsgServer) << "," << std::endl;
+  of << inden(20)
+     << "\"gamezoneCode\": " << defaultMap.get(keyword::config::gamezoneCode)
      << "," << std::endl;
   of << inden(20) << "\"roomType\": \"close\"," << std::endl;
-  of << inden(20) << "\"roomSize\": "
-     << defaultMap.get(keyword::config::roomSize,
-                       inputMap[keyword::config::roomSize])
+  of << inden(20)
+     << "\"roomSize\": " << defaultMap.get(keyword::config::roomSize)
      << std::endl;
   of << inden(16) << "}," << std::endl;
-  of << inden(16) << "\"runGame\": "
-     << defaultMap.get(keyword::config::runGame,
-                       inputMap[keyword::config::runGame])
+  of << inden(16) << "\"runGame\": " << defaultMap.get(keyword::config::runGame)
      << "," << std::endl;
   of << inden(16) << "\"gameStartFadein\": \"fadein\"," << std::endl;
-  of << inden(16) << "\"lives\": "
-     << defaultMap.get(keyword::config::lives, inputMap[keyword::config::lives])
+  of << inden(16) << "\"lives\": " << defaultMap.get(keyword::config::lives)
      << "," << std::endl;
   of << inden(16) << "\"debugCamp\": \"ask\"," << std::endl;
   of << inden(16) << "\"releaseCamp\": \"ask\"," << std::endl;
-  of << inden(16) << "\"setInitFocus\": "
-     << defaultMap.get(keyword::config::setInitFocus,
-                       inputMap[keyword::config::setInitFocus])
+  of << inden(16)
+     << "\"setInitFocus\": " << defaultMap.get(keyword::config::setInitFocus)
      << "," << std::endl;
   of << inden(16) << "\"initFocus\": {" << std::endl;
   of << inden(20) << "\"x\": \"0\"," << std::endl;
   of << inden(20) << "\"y\": \"0\"" << std::endl;
   of << inden(16) << "}," << std::endl;
   of << inden(16) << "\"campOptions\": {" << std::endl;
-  of << inden(20) << "\"campOpSkydow\": "
-     << defaultMap.get(keyword::config::campOpSkydow,
-                       inputMap[keyword::config::campOpSkydow])
+  of << inden(20)
+     << "\"campOpSkydow\": " << defaultMap.get(keyword::config::campOpSkydow)
      << "," << std::endl;
-  of << inden(20) << "\"campOpRoyal\": "
-     << defaultMap.get(keyword::config::campOpRoyal,
-                       inputMap[keyword::config::campOpRoyal])
+  of << inden(20)
+     << "\"campOpRoyal\": " << defaultMap.get(keyword::config::campOpRoyal)
      << "," << std::endl;
-  of << inden(20) << "\"campOpThird\": "
-     << defaultMap.get(keyword::config::campOpThird,
-                       inputMap[keyword::config::campOpThird])
+  of << inden(20)
+     << "\"campOpThird\": " << defaultMap.get(keyword::config::campOpThird)
      << std::endl;
   of << inden(16) << "}," << std::endl;
-  of << inden(16) << "\"map\": "
-     << defaultMap.get(keyword::config::map, inputMap[keyword::config::map])
-     << "," << std::endl;
+  of << inden(16) << "\"map\": " << defaultMap.get(keyword::config::map) << ","
+     << std::endl;
   of << inden(16) << "\"maxAbilityLevel\": "
-     << defaultMap.get(keyword::config::maxAbilityLevel,
-                       inputMap[keyword::config::maxAbilityLevel])
-     << "," << std::endl;
+     << defaultMap.get(keyword::config::maxAbilityLevel) << "," << std::endl;
   of << inden(16) << "\"nextGameEnabled\": "
-     << defaultMap.get(keyword::config::nextGameEnabled,
-                       inputMap[keyword::config::nextGameEnabled])
-     << "," << std::endl;
+     << defaultMap.get(keyword::config::nextGameEnabled) << "," << std::endl;
   of << inden(16) << "\"disableNextGameOnMissionComplete\": "
-     << defaultMap.get(
-            keyword::config::disableNextGameOnMissionComplete,
-            inputMap[keyword::config::disableNextGameOnMissionComplete])
-     << "," << std::endl;
+     << defaultMap.get(keyword::config::disableNextGameOnMissionComplete) << ","
+     << std::endl;
   of << inden(16) << "\"playDefaultMusic\": "
-     << defaultMap.get(keyword::config::playDefaultMusic,
-                       inputMap[keyword::config::playDefaultMusic])
-     << "," << std::endl;
+     << defaultMap.get(keyword::config::playDefaultMusic) << "," << std::endl;
   of << inden(16) << "\"cameraAfterOver\": \"restrict\"," << std::endl;
   of << inden(16) << "\"useDefaultItems\": "
-     << defaultMap.get(keyword::config::useDefaultItems,
-                       inputMap[keyword::config::useDefaultItems])
-     << "," << std::endl;
+     << defaultMap.get(keyword::config::useDefaultItems) << "," << std::endl;
   of << inden(16) << "\"useDefaultCampLocs\": "
-     << defaultMap.get(keyword::config::useDefaultCampLocs,
-                       inputMap[keyword::config::useDefaultCampLocs])
-     << "," << std::endl;
-  of << inden(16) << "\"skydowLocs\": "
-     << defaultMap.get(keyword::config::skydowLocs,
-                       inputMap[keyword::config::skydowLocs])
-     << "," << std::endl;
-  of << inden(16) << "\"royalLocs\": "
-     << defaultMap.get(keyword::config::royalLocs,
-                       inputMap[keyword::config::royalLocs])
-     << "," << std::endl;
-  of << inden(16) << "\"thirdLocs\": "
-     << defaultMap.get(keyword::config::thirdLocs,
-                       inputMap[keyword::config::thirdLocs])
-     << "," << std::endl;
+     << defaultMap.get(keyword::config::useDefaultCampLocs) << "," << std::endl;
+  of << inden(16)
+     << "\"skydowLocs\": " << defaultMap.get(keyword::config::skydowLocs) << ","
+     << std::endl;
+  of << inden(16)
+     << "\"royalLocs\": " << defaultMap.get(keyword::config::royalLocs) << ","
+     << std::endl;
+  of << inden(16)
+     << "\"thirdLocs\": " << defaultMap.get(keyword::config::thirdLocs) << ","
+     << std::endl;
   of << inden(16) << "\"useCustomWeapons\": "
-     << defaultMap.get(keyword::config::useCustomWeapons,
-                       inputMap[keyword::config::useCustomWeapons])
-     << "," << std::endl;
+     << defaultMap.get(keyword::config::useCustomWeapons) << "," << std::endl;
   of << inden(16) << "\"customWeapons\": []," << std::endl;
   of << inden(16) << "\"useCustomItems\": "
-     << defaultMap.get(keyword::config::useCustomItems,
-                       inputMap[keyword::config::useCustomItems])
-     << "," << std::endl;
+     << defaultMap.get(keyword::config::useCustomItems) << "," << std::endl;
   of << inden(16) << "\"customItems\": []," << std::endl;
   of << inden(16) << "\"enabled\": true," << std::endl;
   of << inden(16) << "\"@use\": 0" << std::endl;
@@ -252,15 +209,12 @@ void metadata::BlockSetup::setup(
     inputMap.insert({metadata->key, std::move(metadata->value)});
   of << inden(12) << "\"disabled\": false," << std::endl;
   of << inden(12) << "\"folder\": \"\"," << std::endl;
-  of << inden(12)
-     << "\"startTime\": " << defaultMap.get("delay", inputMap["delay"]) << ","
+  of << inden(12) << "\"startTime\": " << defaultMap.get("delay") << ","
      << std::endl;
   of << inden(12) << "\"checkInterval\": 10," << std::endl;
-  of << inden(12)
-     << "\"repeats\": " << defaultMap.get("repeat", inputMap["repeat"]) << ","
+  of << inden(12) << "\"repeats\": " << defaultMap.get("repeat") << ","
      << std::endl;
-  of << inden(12) << "\"repeatInterval\": "
-     << defaultMap.get("repeatInterval", inputMap["repeatInterval"]) << ","
-     << std::endl;
+  of << inden(12) << "\"repeatInterval\": " << defaultMap.get("repeatInterval")
+     << "," << std::endl;
   of << inden(12) << "\"devOnly\": false," << std::endl;
 }

@@ -16,4 +16,3 @@ __useDefaultCampLocs__ = false;
 __useCustomWeapons__ = false;
 __useCustomFarWeapons__ = false;
 __useCustomItems__ = false;
-__allowGuest__ = true;

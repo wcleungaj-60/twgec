@@ -4,14 +4,15 @@
 using namespace codegen;
 
 std::string DefaultMap::get(std::string key,
-                            const std::shared_ptr<ValueNode> &value,
                             std::shared_ptr<keyword::KeywordEnum> keywordEnum) {
   if (defaultMap.find(key) == defaultMap.end()) {
     std::cerr << "Compiler Implementation Error: Found unknown key \'" << key
               << "\'\n";
     return "";
   }
+
   // Variable Initialization
+  const std::shared_ptr<ValueNode> &input = inputMap[key];
   IntValueNode *intNode = nullptr;
   BoolValueNode *boolNode = nullptr;
   StringValueNode *stringNode = nullptr;
@@ -21,62 +22,42 @@ std::string DefaultMap::get(std::string key,
   bool astString = defaultMap.at(key).astType == AST_STRING;
   bool astPointList = defaultMap.at(key).astType == AST_LIST_POINT;
   if (astInt)
-    intNode = dynamic_cast<IntValueNode *>(value.get());
+    intNode = dynamic_cast<IntValueNode *>(input.get());
   if (astBool)
-    boolNode = dynamic_cast<BoolValueNode *>(value.get());
+    boolNode = dynamic_cast<BoolValueNode *>(input.get());
   if (astString)
-    stringNode = dynamic_cast<StringValueNode *>(value.get());
+    stringNode = dynamic_cast<StringValueNode *>(input.get());
   if (astPointList)
-    listNode = dynamic_cast<ListValueNode *>(value.get());
+    listNode = dynamic_cast<ListValueNode *>(input.get());
   bool codegenBool = defaultMap.at(key).codegenType == CODEGEN_BOOL;
   bool codegenInt = defaultMap.at(key).codegenType == CODEGEN_INT;
   bool codegenString = defaultMap.at(key).codegenType == CODEGEN_STRING;
   bool codegenListPatrol =
       defaultMap.at(key).codegenType == CODEGEN_LIST_PATROL;
   bool codegenListPoint = defaultMap.at(key).codegenType == CODEGEN_LIST_POINT;
-  // Default Value
-  if (!value) {
-    if (codegenString)
-      return "\"" + defaultMap.at(key).defaultValue + "\"";
-    else
-      return defaultMap.at(key).defaultValue;
+
+  auto format = [codegenString](std::string text) -> std::string {
+    return codegenString ? "\"" + text + "\"" : text;
+  };
+
+  // Return search result
+  if (!input)
+    return format(defaultMap.at(key).defaultValue);
+  if (intNode)
+    return format(std::to_string(intNode->value));
+  if (boolNode)
+    return format(boolNode->value ? "true" : "false");
+  if (stringNode && !keywordEnum)
+    return format(stringNode->value);
+  // Enum Input Geneartion
+  if (stringNode && keywordEnum) {
+    std::pair<bool, std::string> enumResult =
+        keywordEnum.get()->get(stringNode->value);
+    if (!enumResult.first)
+      std::cerr << " ->  Found at " << stringNode->loc << "\n";
+    return format(enumResult.second);
   }
-  // Int
-  if (intNode) {
-    if (codegenString)
-      return "\"" + std::to_string(intNode->value) + "\"";
-    else if (codegenInt)
-      return std::to_string(intNode->value);
-  }
-  // Bool
-  if (boolNode) {
-    if (codegenBool)
-      return boolNode->value ? "true" : "false";
-  }
-  if (stringNode) {
-    if (codegenString) {
-      if (!keywordEnum) {
-        return "\"" + stringNode->value + "\"";
-      } else {
-        std::pair<bool, std::string> enumResult =
-            keywordEnum.get()->get(stringNode->value);
-        if (!enumResult.first)
-          std::cerr << " ->  Found at " << stringNode->loc << "\n";
-        return "\"" + enumResult.second + "\"";
-      }
-    }
-    if (codegenInt) {
-      if (!keywordEnum) {
-        return stringNode->value;
-      } else {
-        std::pair<bool, std::string> enumResult =
-            keywordEnum.get()->get(stringNode->value);
-        if (!enumResult.first)
-          std::cerr << " ->  Found at " << stringNode->loc << "\n";
-        return enumResult.second;
-      }
-    }
-  }
+  // List Input Generation
   if (listNode) {
     if (codegenListPatrol) {
       std::string ret = "[\n";
@@ -123,6 +104,6 @@ std::string DefaultMap::get(std::string key,
     }
   }
   std::cerr << "Compiler Implementation Error: incorrect type conversion at "
-            << value->loc << "\n";
+            << input->loc << "\n";
   return "";
 }
