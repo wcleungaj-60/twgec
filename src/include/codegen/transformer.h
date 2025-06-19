@@ -6,6 +6,7 @@
 #include <string>
 #include <unordered_map>
 
+namespace codegen {
 enum ASTType {
   AST_INVALID,
   AST_INT,
@@ -39,5 +40,5 @@ public:
   std::string get(std::string key, const std::shared_ptr<ValueNode> &value,
                   std::shared_ptr<keyword::KeywordEnum> keywordEnum = nullptr);
 };
-
+} // namespace codegen
 #endif

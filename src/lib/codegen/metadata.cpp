@@ -1,10 +1,11 @@
 #include "codegen/metadata.h"
-#include "codegen_transformer.h"
 #include "utils/utils.h"
 #include <fstream>
 #include <iostream>
 
-DefaultMap codegen::metadata::ConfigSetup::defaultMap = DefaultMap({
+using namespace codegen;
+
+DefaultMap metadata::ConfigSetup::defaultMap = DefaultMap({
     {keyword::config::stageWidth, {AST_INT, CODEGEN_INT, "600"}},
     {keyword::config::stageHeight, {AST_INT, CODEGEN_INT, "500"}},
     {keyword::config::roomSize, {AST_INT, CODEGEN_INT, "4"}},
@@ -53,7 +54,7 @@ DefaultMap codegen::metadata::ConfigSetup::defaultMap = DefaultMap({
      {AST_LIST_STRING, CODEGEN_LIST_STRING, "[]"}},
 });
 
-DefaultMap codegen::metadata::BlockSetup::defaultMap = DefaultMap({
+DefaultMap metadata::BlockSetup::defaultMap = DefaultMap({
     {"delay", {AST_INT, CODEGEN_INT, "0"}},
     {"repeat", {AST_INT, CODEGEN_INT, "0"}},
     {"repeatInterval", {AST_INT, CODEGEN_INT, "0"}},
@@ -87,7 +88,7 @@ DefaultMap codegen::metadata::BlockSetup::defaultMap = DefaultMap({
 // INIT_META_UNSUPPORT(metaMap, keyword::config::customFarWeapons);
 // INIT_META_UNSUPPORT(metaMap, keyword::config::customItems);
 
-void codegen::metadata::ConfigSetup::setup(
+void metadata::ConfigSetup::setup(
     std::ofstream &of, std::vector<std::unique_ptr<MetadataNode>> &metadatas) {
   std::unordered_map<std::string, const std::shared_ptr<ValueNode>> inputMap;
   for (auto &metadata : metadatas)
@@ -244,7 +245,7 @@ void codegen::metadata::ConfigSetup::setup(
   of << inden(4) << "}," << std::endl;
 }
 
-void codegen::metadata::BlockSetup::setup(
+void metadata::BlockSetup::setup(
     std::ofstream &of, std::vector<std::unique_ptr<MetadataNode>> &metadatas) {
   std::unordered_map<std::string, const std::shared_ptr<ValueNode>> inputMap;
   for (auto &metadata : metadatas)

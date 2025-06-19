@@ -1,5 +1,7 @@
-#include "codegen/codegen_transformer.h"
+#include "codegen/transformer.h"
 #include <iostream>
+
+using namespace codegen;
 
 std::string DefaultMap::get(std::string key,
                             const std::shared_ptr<ValueNode> &value,

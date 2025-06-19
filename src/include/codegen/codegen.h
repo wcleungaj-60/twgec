@@ -1,9 +1,11 @@
 #ifndef CODEGEN_H
 #define CODEGEN_H
 
-#include "metadata.h"
+#include "ast.h"
+#include <string>
 
-class CodeGen {
+namespace codegen {
+class CodeGenerator {
 private:
   const std::unique_ptr<ModuleNode> &moduleNode;
   void codegenModuleNode(std::ofstream &of);
@@ -14,9 +16,9 @@ private:
   void codegenTriggers(std::ofstream &of, std::unique_ptr<TriggersNode> &);
 
 public:
-  CodeGen(const std::unique_ptr<ModuleNode> &moduleNode)
+  CodeGenerator(const std::unique_ptr<ModuleNode> &moduleNode)
       : moduleNode(moduleNode){};
   void codegen(std::string filepath);
 };
-
+} // namespace codegen
 #endif

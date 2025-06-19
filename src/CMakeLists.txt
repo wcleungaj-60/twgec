@@ -4,10 +4,10 @@ add_executable(twgec
     lib/frontend/ast.cpp
     lib/frontend/lexer.cpp
     lib/frontend/parser.cpp
-    lib/codegen/codegen_transfromer.cpp
+    lib/codegen/transfromer.cpp
     lib/codegen/metadata.cpp
     lib/codegen/codegen.cpp
-    lib/codegen/twge_action.cpp
+    lib/codegen/action.cpp
     lib/main.cpp
 )
 

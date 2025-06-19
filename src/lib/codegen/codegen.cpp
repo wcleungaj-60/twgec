@@ -1,12 +1,14 @@
 #include "codegen.h"
 #include "ast.h"
 #include "metadata.h"
-#include "twge_action.h"
+#include "action.h"
 #include "utils/utils.h"
 #include <fstream>
 #include <iostream>
 
-void CodeGen::codegen(std::string filepath) {
+using namespace codegen;
+
+void CodeGenerator::codegen(std::string filepath) {
   std::ofstream outputFile(filepath);
   if (!outputFile)
     return;
@@ -14,7 +16,7 @@ void CodeGen::codegen(std::string filepath) {
   outputFile.close();
 }
 
-void CodeGen::codegenBlocks(std::ofstream &of) {
+void CodeGenerator::codegenBlocks(std::ofstream &of) {
   of << inden(4) << "\"events\": [";
   if (moduleNode->blocks.size() == 0) {
     of << "]" << std::endl;
@@ -25,7 +27,7 @@ void CodeGen::codegenBlocks(std::ofstream &of) {
     auto &block = moduleNode->blocks[i];
     of << inden(8) << "{" << std::endl;
     of << inden(12) << "\"id\": \"" << block->identifier << "\"," << std::endl;
-    codegen::metadata::BlockSetup::setup(of, block->metadatas);
+    metadata::BlockSetup::setup(of, block->metadatas);
     codegenActions(of, block->actionsNode);
     codegenChecks(of, block->checksNode);
     codegenTriggers(of, block->triggersNode);
@@ -37,7 +39,7 @@ void CodeGen::codegenBlocks(std::ofstream &of) {
   of << inden(4) << "]" << std::endl;
 }
 
-void CodeGen::codegenActions(std::ofstream &of,
+void CodeGenerator::codegenActions(std::ofstream &of,
                              std::unique_ptr<ActionsNode> &actions) {
   of << inden(12) << "\"actions\": [";
   if (actions->actions.empty()) {
@@ -56,29 +58,29 @@ void CodeGen::codegenActions(std::ofstream &of,
   of << inden(12) << "]," << std::endl;
 }
 
-void CodeGen::codegenAction(std::ofstream &of,
+void CodeGenerator::codegenAction(std::ofstream &of,
                             std::unique_ptr<ActionNode> &action) {
   if (action->identifier[0] == "console")
-    return codegen::action::console(of, action);
+    return action::ActionConsole::console(of, action);
   if (action->identifier[0] == "addActor")
-    return codegen::action::ActionAddActor::addActor(of, action);
+    return action::ActionAddActor::addActor(of, action);
   std::cerr << "Codegen error at " << action.get()->loc << ": ";
   action->print();
 }
 
-void CodeGen::codegenChecks(std::ofstream &of,
+void CodeGenerator::codegenChecks(std::ofstream &of,
                             std::unique_ptr<ChecksNode> &checks) {
   of << inden(12) << "\"checks\": []," << std::endl;
 }
 
-void CodeGen::codegenTriggers(std::ofstream &of,
+void CodeGenerator::codegenTriggers(std::ofstream &of,
                               std::unique_ptr<TriggersNode> &triggers) {
   of << inden(12) << "\"triggers\": []" << std::endl;
 }
 
-void CodeGen::codegenModuleNode(std::ofstream &of) {
+void CodeGenerator::codegenModuleNode(std::ofstream &of) {
   of << "{" << std::endl;
-  codegen::metadata::ConfigSetup::setup(of, moduleNode->metadatas);
+  metadata::ConfigSetup::setup(of, moduleNode->metadatas);
   codegenBlocks(of);
   of << "}" << std::endl;
 }

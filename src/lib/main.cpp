@@ -73,8 +73,8 @@ int main(int argc, char *argv[]) {
     moduleNode->print();
   }
 
-  CodeGen codegen(moduleNode);
-  codegen.codegen("game.events");
+  codegen::CodeGenerator generator(moduleNode);
+  generator.codegen("game.events");
 
   return 0;
 }

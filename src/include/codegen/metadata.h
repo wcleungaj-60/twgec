@@ -1,7 +1,7 @@
-#ifndef METADATA_H
-#define METADATA_H
+#ifndef CODEGEN_METADATA_H
+#define CODEGEN_METADATA_H
 
-#include "codegen_transformer.h"
+#include "transformer.h"
 
 namespace codegen {
 namespace metadata {
