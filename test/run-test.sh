@@ -1,18 +1,18 @@
 check_error() {
-    local input_file="$1"
-    local output_file="$2"
+    local input_file="$1/test.twge"
+    local output_file="$1/error.log"
     twgec "$input_file" 2> error.log
     if diff error.log "$output_file"; then
-        echo "twge test success:    $1"
+        echo "twge test success:    $input_file"
     else
-        echo "twge test fail:       $1"
+        echo "twge test fail:       $input_file"
     fi
     rm error.log
 }
 
 check_output() {
-    local input_file="$1"
-    local output_file="$2"
+    local input_file="$1/test.twge"
+    local output_file="$1/output.events"
     twgec "$input_file" 2> error.log
     if [[ ! -s error.log ]]; then
         if diff game.events "$output_file"; then
@@ -42,17 +42,17 @@ check_smoke() {
 }
 
 
-check_output "test/codegen/actions/addAction/test.twge" "test/codegen/actions/addAction/output.events"
-check_output "test/codegen/actions/console/test.twge" "test/codegen/actions/console/output.events"
-check_output "test/codegen/metadata/bool/test.twge" "test/codegen/metadata/bool/output.events"
-check_output "test/codegen/metadata/int/test.twge" "test/codegen/metadata/int/output.events"
-check_output "test/codegen/metadata/listPoint/test.twge" "test/codegen/metadata/listPoint/output.events"
-check_output "test/codegen/metadata/string/test.twge" "test/codegen/metadata/string/output.events"
-check_error "test/codegen/actions/error_camp/test.twge" "test/codegen/actions/error_camp/error.log"
-check_error "test/codegen/actions/error_undef_redef_arg/test.twge" "test/codegen/actions/error_undef_redef_arg/error.log"
-check_error "test/parser/error_action/test.twge" "test/parser/error_action/error.log"
-check_error "test/parser/error_actions/test.twge" "test/parser/error_actions/error.log"
-check_error "test/parser/error_block/test.twge" "test/parser/error_block/error.log"
-check_error "test/parser/error_module/test.twge" "test/parser/error_module/error.log"
+check_output "test/codegen/actions/addAction"
+check_output "test/codegen/actions/console"
+check_output "test/codegen/metadata/bool"
+check_output "test/codegen/metadata/int"
+check_output "test/codegen/metadata/listPoint"
+check_output "test/codegen/metadata/string"
+check_error "test/codegen/actions/error_camp"
+check_error "test/codegen/actions/error_undef_redef_arg"
+check_error "test/parser/error_action"
+check_error "test/parser/error_actions"
+check_error "test/parser/error_block"
+check_error "test/parser/error_module"
 # check_smoke "example/metadata_all.twge"
 check_smoke "example/royalVsSkydow.twge"
