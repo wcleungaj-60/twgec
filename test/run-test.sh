@@ -1,34 +1,40 @@
-check_error() {
-    local input_file="$1"
-    local output_file="$2"
-    twgec "$input_file" 2> error.log
-    if diff error.log "$output_file"; then
-        echo "twge test success:    $1"
-    else
-        echo "twge test fail:       $1"
-    fi
-    rm error.log
-}
+TEST_DIR="test"
+SMOKE_DIR="example"
 
-check_output() {
-    local input_file="$1"
-    local output_file="$2"
-    twgec "$input_file" 2> error.log
-    if [[ ! -s error.log ]]; then
-        if diff game.events "$output_file"; then
-            echo "twge test success:    $input_file"
+unit_test() {
+    local path=$1
+    local test_file="$1/test.twge"
+    local test_result="$1/output.events"
+    local test_error="$1/error.log"
+    twgec $test_file 2> error.log
+    if [[ -s "$test_file" ]]; then
+        if [[ -s $test_error ]] &&  [[ ! -s $test_result ]]; then
+            if diff error.log $test_error ; then
+                echo "twge test success:    $test_file"
+            else
+                echo "twge test fail:       $test_file"
+            fi
+            rm error.log
+        elif [[ -s $test_result ]] &&  [[ ! -s $test_error ]]; then
+            if [[ ! -s error.log ]]; then
+                if diff game.events "$test_result"; then
+                    echo "twge test success:    $test_file"
+                else
+                    echo "twge test fail:       $test_file"
+                fi
+            else
+                cat error.log
+                echo "twge test fail:       $test_file"
+                rm error.log
+            fi
+            rm game.events
         else
-            echo "twge test fail:       $input_file"
+            echo "Please provide exactly ONE \"output.events\" or \"error.log\" under \"$path\""
         fi
-    else
-        cat error.log
-        echo "twge test fail:       $input_file"
     fi
-    rm game.events
-    rm error.log
 }
 
-check_smoke() {
+smoke_test() {
     local input_file="$1"
     twgec "$input_file" 2> error.log
     if [[ ! -s error.log ]]; then
@@ -41,18 +47,10 @@ check_smoke() {
     rm error.log
 }
 
+for dir in $(find $TEST_DIR -type d); do
+    unit_test $dir
+done
 
-check_output "test/codegen/actions/addAction/test.twge" "test/codegen/actions/addAction/output.events"
-check_output "test/codegen/actions/console/test.twge" "test/codegen/actions/console/output.events"
-check_output "test/codegen/metadata/bool/test.twge" "test/codegen/metadata/bool/output.events"
-check_output "test/codegen/metadata/int/test.twge" "test/codegen/metadata/int/output.events"
-check_output "test/codegen/metadata/listPoint/test.twge" "test/codegen/metadata/listPoint/output.events"
-check_output "test/codegen/metadata/string/test.twge" "test/codegen/metadata/string/output.events"
-check_error "test/codegen/actions/error_camp/test.twge" "test/codegen/actions/error_camp/error.log"
-check_error "test/codegen/actions/error_undef_redef_arg/test.twge" "test/codegen/actions/error_undef_redef_arg/error.log"
-check_error "test/parser/error_action/test.twge" "test/parser/error_action/error.log"
-check_error "test/parser/error_actions/test.twge" "test/parser/error_actions/error.log"
-check_error "test/parser/error_block/test.twge" "test/parser/error_block/error.log"
-check_error "test/parser/error_module/test.twge" "test/parser/error_module/error.log"
-# check_smoke "example/metadata_all.twge"
-check_smoke "example/royalVsSkydow.twge"
+for file in $(find $SMOKE_DIR -type f -name "*.twge"); do
+    smoke_test $file
+done
