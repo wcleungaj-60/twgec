@@ -204,9 +204,7 @@ void metadata::ConfigSetup::setup(
 
 void metadata::BlockSetup::setup(
     std::ofstream &of, std::vector<std::unique_ptr<MetadataNode>> &metadatas) {
-  std::unordered_map<std::string, const std::shared_ptr<ValueNode>> inputMap;
-  for (auto &metadata : metadatas)
-    inputMap.insert({metadata->key, std::move(metadata->value)});
+  defaultMap.addInputMap(metadatas);
   of << inden(12) << "\"disabled\": false," << std::endl;
   of << inden(12) << "\"folder\": \"\"," << std::endl;
   of << inden(12) << "\"startTime\": " << defaultMap.get("delay") << ","

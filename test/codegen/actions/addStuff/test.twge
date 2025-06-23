@@ -1,0 +1,6 @@
+block init {
+    actions {
+        addStuff(item = "magazine", refill = true, refillInterval = 10000, x = 9, y = 4);
+        addStuff(item = "snipegun", x = 20, y = 15);
+    }
+}

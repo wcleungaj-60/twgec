@@ -1,0 +1,8 @@
+block spawn {
+    __delay__ = 5000;
+    __repeat__ = 100;
+    __repeatInterval__ = 10000;
+    actions {
+        console.log("test");
+    }
+}

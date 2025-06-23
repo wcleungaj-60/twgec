@@ -21,33 +21,16 @@ DefaultMap action::ActionAddActor::defaultMap = DefaultMap({
     {"patrol", {AST_LIST_POINT, CODEGEN_LIST_PATROL, "[]"}},
 });
 
-void action::ActionConsole::console(std::ofstream &of,
-                                    std::unique_ptr<ActionNode> &action) {
-  if (action->identifier.size() != 2 ||
-      (action->identifier[1] != "log" && action->identifier[1] != "error")) {
-    std::cerr << "Expecting console.log or console.error for the action at "
-              << action->loc << "\n";
-    return;
-  }
-  if (action->named_args.size() != 0 || action->positional_args.size() != 1) {
-    std::cerr << "Expecting only one positional arg for console action at "
-              << action->loc << "\n";
-    return;
-  }
-  auto paramNode = dynamic_cast<StringValueNode *>(
-      action->positional_args[0]->valueNode.get());
-  if (!paramNode) {
-    std::cerr << "Expecting string type paramter at " << action->loc << "\n";
-    return;
-  }
-  of << inden(20) << "\"type\": \"Console\"," << std::endl;
-  of << inden(20) << "\"data\": {" << std::endl;
-  of << inden(24) << "\"logType\": \"" << action->identifier[1] << "\","
-     << std::endl;
-  of << inden(24) << "\"text\": \"" << paramNode->value << "\"," << std::endl;
-  of << inden(24) << "\"value\": \"\"" << std::endl;
-  of << inden(20) << "}" << std::endl;
-}
+DefaultMap action::ActionAddStuff::defaultMap = DefaultMap({
+    {"code", {AST_STRING, CODEGEN_STRING, "item*"}},
+    {"item", {AST_STRING, CODEGEN_STRING, "magazine"}},
+    {"refill", {AST_BOOL, CODEGEN_BOOL, "true"}},
+    {"refillInterval", {AST_INT, CODEGEN_STRING, "10000"}},
+    {"x", {AST_INT, CODEGEN_STRING, "0"}},
+    {"y", {AST_INT, CODEGEN_STRING, "0"}},
+    {"range", {AST_INT, CODEGEN_STRING, "0"}},
+    {"rotation", {AST_INT, CODEGEN_STRING, "0"}},
+});
 
 void action::ActionAddActor::addActor(std::ofstream &of,
                                       std::unique_ptr<ActionNode> &action) {
@@ -118,5 +101,52 @@ void action::ActionAddActor::addActor(std::ofstream &of,
   of << inden(24) << "\"bornAnim\": \"fadein\"," << std::endl;
   of << inden(24) << "\"localVarname\": \"actor\"," << std::endl;
   of << inden(24) << "\"globalVarname\": \"\"" << std::endl;
+  of << inden(20) << "}" << std::endl;
+}
+
+void action::ActionAddStuff::addStuff(std::ofstream &of, std::unique_ptr<ActionNode> &action) {
+  defaultMap.addInputMap(action->named_args);
+  of << inden(20) << "\"type\": \"AddStuff\"," << std::endl;
+  of << inden(20) << "\"data\": {" << std::endl;
+  of << inden(24) << "\"itemCode\": " << defaultMap.get("code") << "," << std::endl;
+  of << inden(24) << "\"itemType\": " << defaultMap.get("item") << "," << std::endl;
+  of << inden(24) << "\"loop\": " << defaultMap.get("refill") << "," << std::endl;
+  of << inden(24) << "\"loopInterval\": " << defaultMap.get("refillInterval") << "," << std::endl;
+  of << inden(24) << "\"location\": {" << std::endl;
+  of << inden(28) << "\"x\": " << defaultMap.get("x") << "," << std::endl;
+  of << inden(28) << "\"y\": " << defaultMap.get("y") << "," << std::endl;
+  of << inden(28) << "\"range\": " << defaultMap.get("range") << std::endl;
+  of << inden(24) << "}," << std::endl;
+  of << inden(24) << "\"rotation\": " << defaultMap.get("rotation") << "," << std::endl;
+  of << inden(24) << "\"cameraZoomPolicy\": \"none\"," << std::endl;
+  of << inden(24) << "\"localVarname\": \"item\"" << std::endl;
+  of << inden(20) << "}" << std::endl;
+}
+
+void action::ActionConsole::console(std::ofstream &of,
+                                    std::unique_ptr<ActionNode> &action) {
+  if (action->identifier.size() != 2 ||
+      (action->identifier[1] != "log" && action->identifier[1] != "error")) {
+    std::cerr << "Expecting console.log or console.error for the action at "
+              << action->loc << "\n";
+    return;
+  }
+  if (action->named_args.size() != 0 || action->positional_args.size() != 1) {
+    std::cerr << "Expecting only one positional arg for console action at "
+              << action->loc << "\n";
+    return;
+  }
+  auto paramNode = dynamic_cast<StringValueNode *>(
+      action->positional_args[0]->valueNode.get());
+  if (!paramNode) {
+    std::cerr << "Expecting string type paramter at " << action->loc << "\n";
+    return;
+  }
+  of << inden(20) << "\"type\": \"Console\"," << std::endl;
+  of << inden(20) << "\"data\": {" << std::endl;
+  of << inden(24) << "\"logType\": \"" << action->identifier[1] << "\","
+     << std::endl;
+  of << inden(24) << "\"text\": \"" << paramNode->value << "\"," << std::endl;
+  of << inden(24) << "\"value\": \"\"" << std::endl;
   of << inden(20) << "}" << std::endl;
 }

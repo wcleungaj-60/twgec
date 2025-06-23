@@ -64,8 +64,15 @@ void CodeGenerator::codegenAction(std::ofstream &of,
     return action::ActionConsole::console(of, action);
   if (action->identifier[0] == "addActor")
     return action::ActionAddActor::addActor(of, action);
-  std::cerr << "Codegen error at " << action.get()->loc << ": ";
-  action->print();
+  if (action->identifier[0] == "addStuff")
+    return action::ActionAddStuff::addStuff(of, action);
+  std::cerr << "Codegen error: Cannot found the corresponding action name \"";
+  for(auto i = 0; i < action->identifier.size(); i++){
+    std::cerr << action->identifier[i];
+    if(i != action->identifier.size() - 1)
+      std::cerr << ".";
+  }
+  std::cerr << "\" at " << action.get()->loc << "\n";
 }
 
 void CodeGenerator::codegenChecks(std::ofstream &of,
