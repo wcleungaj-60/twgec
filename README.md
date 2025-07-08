@@ -29,30 +29,45 @@ In the leaf directory, there must be
 
 # Language Feature
 
-## Alias
-Instead of repeating the actor parameters as follows:
+## Trait
 ```
-block my_block {
-    actions {
-        addActor(camp = "royal", x = 5, y = 10, name = "狙擊手", hp = "150", range = "0");
-        addActor(camp = "royal", x = 10, y = 5, name = "狙擊手", hp = "150", range = "0");
-        addActor(camp = "royal", x = 8, y = 18, name = "狙擊手", hp = "150", range = "0");
-        addActor(camp = "royal", x = 18, y = 8, name = "狙擊手", hp = "150", range = "0");
-    }
+// Trait definition
+@default_weapon = addActor(weapon1_default = true, weapon2_default = true);
+
+// Trait Example
+block myBlock {
+  actions {
+    addActor(name = "actor1", weapon1 = "knife") @default_weapon;
+    addActor(name = "actor2", weapon1 = "knife") @default_weapon;
+  }
 }
 ```
-The `alias` keyword is supported. It acts like a function that allows the user to customize the alias parameters to convert that `alias` into a valid action as follows:
+
+## Alias
 ```
+// Alias Definition
 alias addSnipperActor(camp, x, y) {
     addActor(camp = camp, x = x, y = y, name = "狙擊手", hp = "150", range = "0");
 }
 
+// Alias Example
 block my_block {
     actions {
         addSnipperActor(camp = "royal", x = 5, y = 10);
         addSnipperActor(camp = "royal", x = 10, y = 5);
-        addSnipperActor(camp = "royal", x = 8, y = 18);
-        addSnipperActor(camp = "royal", x = 18, y = 8);
     }
 }
 ```
+
+## File including
+```
+#include "../occupation/ninja.twge"
+#include "../occupation/mage.twge"
+#include "../occupation/warrior.twge"
+```
+
+|Langauge Feature|Abstraction Level|Description|
+| --- | --- | --- |
+|Trait|One instruction multiple param| - Overloading is supported when trait is used by different instruction <br> - Overwritting is not supported (Earlier trait is kept)|
+|Alias|One block multiple instructions| - Primitive parameter can be passed <br> - Trait cannot be passed|
+|File including|One file multiple block| - Block redefinition will be checked|
