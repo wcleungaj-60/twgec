@@ -8,19 +8,19 @@ namespace action {
 class ActionAddActor {
 public:
   static DefaultMap defaultMap;
-  static void addActor(std::ofstream &of, std::unique_ptr<ActionNode> &action);
+  static void addActor(std::ofstream &of, std::unique_ptr<InstructionNode> &action);
 };
 
 class ActionAddStuff {
 public:
   static DefaultMap defaultMap;
-  static void addStuff(std::ofstream &of, std::unique_ptr<ActionNode> &action);
+  static void addStuff(std::ofstream &of, std::unique_ptr<InstructionNode> &action);
 };
 
 class ActionConsole {
 public:
   static DefaultMap defaultMap;
-  static void console(std::ofstream &of, std::unique_ptr<ActionNode> &action);
+  static void console(std::ofstream &of, std::unique_ptr<InstructionNode> &action);
 };
 } // namespace action
 } // namespace codegen

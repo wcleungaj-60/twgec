@@ -4,6 +4,8 @@
 void ModuleNode::print(int indent) const {
   std::cout << inden(indent) << "ModuleNode: "
             << "\n";
+  for (auto &alias : aliases)
+    alias.second->print(indent + 4);
   for (auto &metadata : metadatas)
     metadata->print(indent + 4);
   for (auto &block : blocks)
@@ -39,23 +41,36 @@ void TriggersNode::print(int indent) const {
 
 void ActionsNode::print(int indent) const {
   std::cout << inden(indent) << "ActionsNode {\n";
-  for (auto &a : actions)
-    a.get()->print(indent + 4);
+  for (auto &ins : instructions)
+    ins.get()->print(indent + 4);
   std::cout << inden(indent) << "}\n";
 }
 
-void ActionNode::print(int indent) const {
+void AliasNode::print(int indent) const {
+  std::cout << inden(indent) << "alias " << identifier << "(";
+  for (int i = 0; i < params.size(); i++) {
+    std::cout << params[i];
+    if (i != params.size() - 1)
+      std::cout << ", ";
+  }
+  std::cout << ") {\n";
+  for (auto &ins : instructions)
+    ins.get()->print(indent + 4);
+  std::cout << inden(indent) << "}\n";
+}
+
+void InstructionNode::print(int indent) const {
   std::cout << inden(indent) << join(identifier, ".") << "(";
   for (int i = 0; i < positional_args.size(); i++) {
     positional_args[i]->valueNode->print();
     if (i != positional_args.size() - 1 || !named_args.empty())
-      std::cout << ",";
+      std::cout << ", ";
   }
   for (int i = 0; i < named_args.size(); i++) {
     std::cout << named_args[i].get()->key << "=";
     named_args[i]->valueNode->print();
     if (i != named_args.size() - 1)
-      std::cout << ",";
+      std::cout << ", ";
   }
   std::cout << ")\n";
 }

@@ -36,7 +36,7 @@ DefaultMap action::ActionAddStuff::defaultMap = DefaultMap({
 });
 
 void action::ActionAddActor::addActor(std::ofstream &of,
-                                      std::unique_ptr<ActionNode> &action) {
+                                      std::unique_ptr<InstructionNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode roleNode =
       JsonObjectNode().addNode("dr", defaultMap.get("role", role::keywordEnum));
@@ -97,7 +97,7 @@ void action::ActionAddActor::addActor(std::ofstream &of,
 }
 
 void action::ActionAddStuff::addStuff(std::ofstream &of,
-                                      std::unique_ptr<ActionNode> &action) {
+                                      std::unique_ptr<InstructionNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode locationNode = JsonObjectNode()
                                     .addNode("x", defaultMap.get("x"))
@@ -121,7 +121,7 @@ void action::ActionAddStuff::addStuff(std::ofstream &of,
 }
 
 void action::ActionConsole::console(std::ofstream &of,
-                                    std::unique_ptr<ActionNode> &action) {
+                                    std::unique_ptr<InstructionNode> &action) {
   if (action->identifier.size() != 2 ||
       (action->identifier[1] != "log" && action->identifier[1] != "error")) {
     std::cerr << "Expecting console.log or console.error for the action at "

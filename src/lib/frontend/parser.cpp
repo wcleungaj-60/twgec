@@ -34,6 +34,19 @@ std::unique_ptr<ModuleNode> Parser::parse() {
         moduleNode->metadatas.push_back(std::move(metadataNode));
       else
         return nullptr;
+    } else if (tokens.front().type == TokenType::ALIAS) {
+      if (auto aliasNode = parseAlias()) {
+        if (moduleNode->aliases.count(aliasNode->identifier) != 0) {
+          std::cerr << "SyntaxError: Redefinition of alias \'"
+                    << aliasNode->identifier << "\' at " << aliasNode->loc
+                    << ".\n";
+          return nullptr;
+        }
+        moduleNode->aliases.insert(
+            {aliasNode->identifier, std::move(aliasNode)});
+      } else {
+        return nullptr;
+      }
     } else {
       std::cerr << "SyntaxError: Expecting block or metadata declaration at "
                 << tokens.front().location << ". Found \'"
@@ -60,6 +73,35 @@ std::unique_ptr<MetadataNode> Parser::parseMetadata() {
   return metadataNode;
 }
 
+std::unique_ptr<AliasNode> Parser::parseAlias() {
+  consume(TokenType::ALIAS);
+  std::string name = tokens.front().value;
+  Location loc = tokens.front().location;
+  if (!consume(TokenType::IDENTIFIER) || !consume(TokenType::OPENPAR))
+    return nullptr;
+  std::unique_ptr<AliasNode> aliasNode = std::make_unique<AliasNode>(name, loc);
+  if (tokens.front().type == TokenType::IDENTIFIER)
+    while (true) {
+      std::string paramName = tokens.front().value;
+      consume(TokenType::IDENTIFIER);
+      aliasNode->params.push_back(paramName);
+      if (tokens.front().type == TokenType::CLOSEPAR)
+        break;
+      consume(TokenType::COMMA);
+    }
+  if (!consume(TokenType::CLOSEPAR) || !consume(TokenType::OPENCUR))
+    return nullptr;
+  while (tokens.front().type != TokenType::CLOSECUR) {
+    auto instructionNode = parseInstruction();
+    if (!instructionNode)
+      return nullptr;
+    aliasNode->instructions.push_back(std::move(instructionNode));
+  }
+  if (!consume(TokenType::CLOSECUR))
+    return nullptr;
+  return aliasNode;
+}
+
 std::unique_ptr<BlockNode> Parser::parseBlock() {
   consume(TokenType::BLOCK);
   std::string name = tokens.front().value;
@@ -83,11 +125,11 @@ std::unique_ptr<BlockNode> Parser::parseBlock() {
       if (!triggersNode)
         return nullptr;
       blockNode->triggersNode = std::move(triggersNode);
-    } else if(tokens.front().type == TokenType::METADATA) {
+    } else if (tokens.front().type == TokenType::METADATA) {
       if (auto metadataNode = parseMetadata())
         blockNode->metadatas.push_back(std::move(metadataNode));
       else
-      return nullptr;
+        return nullptr;
     } else {
       std::cerr << "SyntaxError: Expecting a triggers/checks/actions block or "
                    "metadata definition at "
@@ -107,42 +149,43 @@ std::unique_ptr<ActionsNode> Parser::parseActions() {
     return nullptr;
   std::unique_ptr<ActionsNode> actionsNode = std::make_unique<ActionsNode>(loc);
   while (tokens.front().type != TokenType::CLOSECUR) {
-    auto actionNode = parseAction();
-    if (!actionNode)
+    auto instructionNode = parseInstruction();
+    if (!instructionNode)
       return nullptr;
-    actionsNode->actions.push_back(std::move(actionNode));
+    actionsNode->instructions.push_back(std::move(instructionNode));
   }
   if (!consume(TokenType::CLOSECUR))
     return nullptr;
   return actionsNode;
 }
 
-std::unique_ptr<ActionNode> Parser::parseAction() {
+std::unique_ptr<InstructionNode> Parser::parseInstruction() {
   std::string id = tokens.front().value;
   Location loc = tokens.front().location;
-  std::unique_ptr<ActionNode> actionNode = std::make_unique<ActionNode>(loc);
+  std::unique_ptr<InstructionNode> instructionNode =
+      std::make_unique<InstructionNode>(loc);
   if (!consume(TokenType::IDENTIFIER))
     return nullptr;
-  actionNode->identifier.push_back(id);
+  instructionNode->identifier.push_back(id);
   while (tokens.front().type != TokenType::OPENPAR) {
     if (!consume(TokenType::DOT))
       return nullptr;
     id = tokens.front().value;
     if (!consume(TokenType::IDENTIFIER))
       return nullptr;
-    actionNode->identifier.push_back(id);
+    instructionNode->identifier.push_back(id);
   }
   consume(TokenType::OPENPAR);
   while (tokens.front().type != TokenType::CLOSEPAR) {
-    if (!parseActionArgs(actionNode))
+    if (!parseActionArgs(instructionNode))
       return nullptr;
   }
   if (!consume(TokenType::CLOSEPAR) || !consume(TokenType::SEMICOLON))
     return nullptr;
-  return actionNode;
+  return instructionNode;
 }
 
-bool Parser::parseActionArgs(std::unique_ptr<ActionNode> &actionNode,
+bool Parser::parseActionArgs(std::unique_ptr<InstructionNode> &actionNode,
                              bool foundNamed) {
   std::string identifierToken = tokens.front().value;
   Location loc = tokens.front().location;
@@ -171,7 +214,7 @@ bool Parser::parseActionArgs(std::unique_ptr<ActionNode> &actionNode,
         std::make_unique<NamedArgNode>(identifierToken, valueNode, loc);
     actionNode->named_args.push_back(std::move(namedArgNode));
     if (consume(TokenType::COMMA, /*errorThrowing*/ false))
-      return parseActionArgs(actionNode, true);
+      return parseActionArgs(actionNode, /*foundNamed*/ true);
   }
   return tokens.front().type == TokenType::CLOSEPAR;
 }
@@ -203,6 +246,8 @@ std::unique_ptr<ValueNode> Parser::parseValue() {
         value.substr(1, value.length() - 2), loc);
   if (consume(TokenType::INT, false))
     return std::make_unique<IntValueNode>(std::stoi(value), loc);
+  if (consume(TokenType::IDENTIFIER, false))
+    return std::make_unique<VariableValueNode>(value, loc);
   if (consume(TokenType::TRUE, false))
     return std::make_unique<BoolValueNode>(true, loc);
   if (consume(TokenType::FALSE, false))

@@ -42,14 +42,14 @@ void CodeGenerator::codegenBlocks(std::ofstream &of) {
 void CodeGenerator::codegenActions(std::ofstream &of,
                                    std::unique_ptr<ActionsNode> &actions) {
   of << inden(12) << "\"actions\": [";
-  if (actions->actions.empty()) {
+  if (actions->instructions.empty()) {
     of << "]," << std::endl;
     return;
   }
   of << std::endl;
-  for (auto i = 0; i < actions->actions.size(); i++) {
-    codegenAction(of, actions->actions[i]);
-    if (i != actions->actions.size() - 1)
+  for (auto i = 0; i < actions->instructions.size(); i++) {
+    codegenAction(of, actions->instructions[i]);
+    if (i != actions->instructions.size() - 1)
       of << ",";
     of << std::endl;
   }
@@ -57,7 +57,7 @@ void CodeGenerator::codegenActions(std::ofstream &of,
 }
 
 void CodeGenerator::codegenAction(std::ofstream &of,
-                                  std::unique_ptr<ActionNode> &action) {
+                                  std::unique_ptr<InstructionNode> &action) {
   if (action->identifier[0] == "console")
     return action::ActionConsole::console(of, action);
   if (action->identifier[0] == "addActor")

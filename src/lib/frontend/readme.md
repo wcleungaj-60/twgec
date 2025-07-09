@@ -22,20 +22,25 @@
 
 ```c
 // Basic Node
-ModuleNode := [BlockNode | MetadataNode]*
+ModuleNode := [BlockNode | MetadataNode | AliasNode]*
 - BlockNode := BlockToken IdentifierToken OpenCurToken [ MetadataNode | ActionsNode | ChecksNode | TriggersNode] CloseCurToken
-  - ActionsNode := ActionsToken OpenCurToken ActionNode* CloseCurToken
-    - ActionNode := IdentifierToken [DotToken IdentifierToken]* OpenParToken PositionalArgNode? CloseParToken SemicolonToken
+  - ActionsNode := ActionsToken OpenCurToken InstructionNode* CloseCurToken
   - ChecksNode := ChecksToken OpenCurToken CheckNode* CloseCurToken
   - TriggersNode := TriggersToken OpenCurToken TriggerNode* CloseCurToken
+    - InstructionNode := IdentifierToken [DotToken IdentifierToken]* OpenParToken ArgsNode CloseParToken SemicolonToken
 - MetadataNode := MetadataToken AssignToken ValueNode SemicolonToken
-// Arguments
-PositionalArgNode = [IdentifierToken AssignToken ValueNode [CommaToken NamedArgNode]?] | 
-                    [ValueNode [CommaToken PositionalArgNode]?]
-NamedArgNode = IdentifierToken AssignToken ValueNode [CommaToken NamedArgNode]?
+- AliasNode := AliasToken IdentifierToken OpenParToken ParamsNode CloseParToken OpenCurToken InstructionNode* CloseCurToken
+// Parameter (The function definition)
+ParamsNode = [IdentifierToken [CommaToken IdentifierToken]*]?
+// Arguments (The function application)
+ArgsNode = PositionalArgsNode?
+PositionalArgsNode = [IdentifierToken AssignToken ValueNode [CommaToken NamedArgsNode]?] | 
+                    [ValueNode [CommaToken PositionalArgsNode]?]
+NamedArgsNode = IdentifierToken AssignToken ValueNode [CommaToken NamedArgsNode]?
 // Value
-ValueNode := StringValueNode | IntValueNode | BoolValueNode
+ValueNode := StringValueNode | IntValueNode | BoolValueNode | VariableValueNode
 StringValueNode := StringToken
 IntValueNode := IntToken
 BoolValueNode := TrueToken | FalseToken
+VariableValueNode := IdentifierToken
 ```
