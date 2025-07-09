@@ -9,6 +9,9 @@
 #include <unordered_map>
 
 namespace codegen {
+namespace {
+static keyword::KeywordEnum emptyKeywordEnum = keyword::KeywordEnum("", {});
+}
 enum ASTType {
   AST_INVALID,
   AST_INT,
@@ -76,7 +79,7 @@ public:
     verifyInputMap();
   }
   std::string get(std::string key,
-                  std::shared_ptr<keyword::KeywordEnum> keywordEnum = nullptr);
+                  keyword::KeywordEnum keywordEnum = emptyKeywordEnum);
 };
 } // namespace codegen
 #endif

@@ -1,4 +1,5 @@
 #include "codegen/action.h"
+#include "formatter.h"
 #include "keyword.h"
 #include "utils/utils.h"
 #include <fstream>
@@ -6,6 +7,8 @@
 #include <unordered_map>
 
 using namespace codegen;
+using namespace formatter;
+using namespace keyword;
 
 DefaultMap action::ActionAddActor::defaultMap = DefaultMap({
     {"id", {AST_STRING, CODEGEN_STRING, "ai*"}},
@@ -35,92 +38,86 @@ DefaultMap action::ActionAddStuff::defaultMap = DefaultMap({
 void action::ActionAddActor::addActor(std::ofstream &of,
                                       std::unique_ptr<ActionNode> &action) {
   defaultMap.addInputMap(action->named_args);
-  of << inden(20) << "\"type\": \"AddActor\"," << std::endl;
-  of << inden(20) << "\"data\": {" << std::endl;
-  of << inden(24) << "\"actorCode\": " << defaultMap.get("id") << ","
-     << std::endl;
-  of << inden(24) << "\"name\": " << defaultMap.get("name") << "," << std::endl;
-  of << inden(24) << "\"role\": {" << std::endl;
-  of << inden(28) << "\"dr\": "
-     << defaultMap.get("role", std::make_shared<keyword::KeywordEnum>(
-                                   keyword::role::keywordEnum))
-     << std::endl;
-  of << inden(24) << "}," << std::endl;
-  of << inden(24) << "\"actorType\": \"defaultType\"," << std::endl;
-  of << inden(24) << "\"weapon0\": {" << std::endl;
-  of << inden(28) << "\"w0Type\": "
-     << defaultMap.get("weapon1", std::make_shared<keyword::KeywordEnum>(
-                                      keyword::weapon::keywordEnum))
-     << std::endl;
-  of << inden(24) << "}," << std::endl;
-  of << inden(24) << "\"weapon1\": {" << std::endl;
-  of << inden(28) << "\"w1Type\": "
-     << defaultMap.get("weapon2", std::make_shared<keyword::KeywordEnum>(
-                                      keyword::weapon::keywordEnum))
-     << std::endl;
-  of << inden(24) << "}," << std::endl;
-  of << inden(24) << "\"camp\": "
-     << defaultMap.get("camp", std::make_shared<keyword::KeywordEnum>(
-                                   keyword::camp::keywordEnum))
-     << "," << std::endl;
-  of << inden(24) << "\"group\": \"0\"," << std::endl;
-  of << inden(24) << "\"location\": {" << std::endl;
-  of << inden(28) << "\"x\": " << defaultMap.get("x") << "," << std::endl;
-  of << inden(28) << "\"y\": " << defaultMap.get("y") << "," << std::endl;
-  of << inden(28) << "\"range\": \"0\"" << std::endl;
-  of << inden(24) << "}," << std::endl;
-  of << inden(24) << "\"shiftX\": 0," << std::endl;
-  of << inden(24) << "\"shiftY\": 0," << std::endl;
-  of << inden(24) << "\"spawnLoc\": true," << std::endl;
-  of << inden(24) << "\"rotation\": \"0\"," << std::endl;
-  of << inden(24) << "\"idleRotate\": true," << std::endl;
-  of << inden(24) << "\"maxhp\": " << defaultMap.get("hp") << "," << std::endl;
-  of << inden(24) << "\"manaPower\": \"0\"," << std::endl;
-  of << inden(24) << "\"lives\": \"1\"," << std::endl;
-  of << inden(24) << "\"preferAbilityLevel\": \"smart\"," << std::endl;
-  of << inden(24) << "\"maxAbilityLevel\": 1," << std::endl;
-  of << inden(24) << "\"weight\": \"4\"," << std::endl;
-  of << inden(24) << "\"strength\": \"1\"," << std::endl;
-  of << inden(24) << "\"vision\": \"300\"," << std::endl;
-  of << inden(24) << "\"range\": " << defaultMap.get("range") << ","
-     << std::endl;
-  of << inden(24) << "\"score\": \"10\"," << std::endl;
-  of << inden(24) << "\"bloodType\": \"default\"," << std::endl;
-  of << inden(24) << "\"unbrokenArmor\": true," << std::endl;
-  of << inden(24) << "\"tornadoRes\": \"none\"," << std::endl;
-  of << inden(24) << "\"distractWhenHit\": true," << std::endl;
-  of << inden(24) << "\"thinkInterval\": 60," << std::endl;
-  of << inden(24) << "\"farAutoLevel\": \"0\"," << std::endl;
-  of << inden(24) << "\"patrols\": true," << std::endl;
-  of << inden(24) << "\"patrolPath\": " << defaultMap.get("patrol") << ","
-     << std::endl;
-  of << inden(24) << "\"bornDelayDuration\": \"0\"," << std::endl;
-  of << inden(24) << "\"bornDuration\": \"1000\"," << std::endl;
-  of << inden(24) << "\"bornLockDuration\": \"1000\"," << std::endl;
-  of << inden(24) << "\"bornEffect\": \"none\"," << std::endl;
-  of << inden(24) << "\"bornAnim\": \"fadein\"," << std::endl;
-  of << inden(24) << "\"localVarname\": \"actor\"," << std::endl;
-  of << inden(24) << "\"globalVarname\": \"\"" << std::endl;
-  of << inden(20) << "}" << std::endl;
+  JsonObjectNode roleNode =
+      JsonObjectNode().addNode("dr", defaultMap.get("role", role::keywordEnum));
+  JsonObjectNode weapon0Node = JsonObjectNode().addNode(
+      "w0Type", defaultMap.get("weapon1", weapon::keywordEnum));
+  JsonObjectNode weapon1Node = JsonObjectNode().addNode(
+      "w1Type", defaultMap.get("weapon2", weapon::keywordEnum));
+  JsonObjectNode locationNode = JsonObjectNode()
+                                    .addNode("x", defaultMap.get("x"))
+                                    .addNode("y", defaultMap.get("y"))
+                                    .addNode("range", "\"0\"");
+  JsonObjectNode dataNode =
+      JsonObjectNode()
+          .addNode("actorCode", defaultMap.get("id"))
+          .addNode("name", defaultMap.get("name"))
+          .addNode("role", std::make_shared<JsonObjectNode>(roleNode))
+          .addNode("actorType", "\"defaultType\"")
+          .addNode("weapon0", std::make_shared<JsonObjectNode>(weapon0Node))
+          .addNode("weapon1", std::make_shared<JsonObjectNode>(weapon1Node))
+          .addNode("camp", defaultMap.get("camp", camp::keywordEnum))
+          .addNode("group", "\"0\"")
+          .addNode("location", std::make_shared<JsonObjectNode>(locationNode))
+          .addNode("shiftX", "0")
+          .addNode("shiftY", "0")
+          .addNode("spawnLoc", "true")
+          .addNode("rotation", "\"0\"")
+          .addNode("idleRotate", "true")
+          .addNode("maxhp", defaultMap.get("hp"))
+          .addNode("manaPower", "\"0\"")
+          .addNode("lives", "\"1\"")
+          .addNode("preferAbilityLevel", "\"smart\"")
+          .addNode("maxAbilityLevel", "1")
+          .addNode("weight", "\"4\"")
+          .addNode("strength", "\"1\"")
+          .addNode("vision", "\"300\"")
+          .addNode("range", defaultMap.get("range"))
+          .addNode("score", "\"10\"")
+          .addNode("bloodType", "\"default\"")
+          .addNode("unbrokenArmor", "true")
+          .addNode("tornadoRes", "\"none\"")
+          .addNode("distractWhenHit", "true")
+          .addNode("thinkInterval", "60")
+          .addNode("farAutoLevel", "\"0\"")
+          .addNode("patrols", "true")
+          .addNode("patrolPath", defaultMap.get("patrol"))
+          .addNode("bornDelayDuration", "\"0\"")
+          .addNode("bornDuration", "\"1000\"")
+          .addNode("bornLockDuration", "\"1000\"")
+          .addNode("bornEffect", "\"none\"")
+          .addNode("bornAnim", "\"fadein\"")
+          .addNode("localVarname", "\"actor\"")
+          .addNode("globalVarname", "\"\"");
+  JsonObjectNode rootNode =
+      JsonObjectNode()
+          .addNode("type", "\"AddActor\"")
+          .addNode("data", std::make_shared<JsonObjectNode>(dataNode));
+  of << inden(16) << rootNode.to_string(16);
 }
 
-void action::ActionAddStuff::addStuff(std::ofstream &of, std::unique_ptr<ActionNode> &action) {
+void action::ActionAddStuff::addStuff(std::ofstream &of,
+                                      std::unique_ptr<ActionNode> &action) {
   defaultMap.addInputMap(action->named_args);
-  of << inden(20) << "\"type\": \"AddStuff\"," << std::endl;
-  of << inden(20) << "\"data\": {" << std::endl;
-  of << inden(24) << "\"itemCode\": " << defaultMap.get("code") << "," << std::endl;
-  of << inden(24) << "\"itemType\": " << defaultMap.get("item") << "," << std::endl;
-  of << inden(24) << "\"loop\": " << defaultMap.get("refill") << "," << std::endl;
-  of << inden(24) << "\"loopInterval\": " << defaultMap.get("refillInterval") << "," << std::endl;
-  of << inden(24) << "\"location\": {" << std::endl;
-  of << inden(28) << "\"x\": " << defaultMap.get("x") << "," << std::endl;
-  of << inden(28) << "\"y\": " << defaultMap.get("y") << "," << std::endl;
-  of << inden(28) << "\"range\": " << defaultMap.get("range") << std::endl;
-  of << inden(24) << "}," << std::endl;
-  of << inden(24) << "\"rotation\": " << defaultMap.get("rotation") << "," << std::endl;
-  of << inden(24) << "\"cameraZoomPolicy\": \"none\"," << std::endl;
-  of << inden(24) << "\"localVarname\": \"item\"" << std::endl;
-  of << inden(20) << "}" << std::endl;
+  JsonObjectNode locationNode = JsonObjectNode()
+                                    .addNode("x", defaultMap.get("x"))
+                                    .addNode("y", defaultMap.get("y"))
+                                    .addNode("range", defaultMap.get("range"));
+  JsonObjectNode dataNode =
+      JsonObjectNode()
+          .addNode("itemCode", defaultMap.get("code"))
+          .addNode("itemType", defaultMap.get("item"))
+          .addNode("loop", defaultMap.get("refill"))
+          .addNode("loopInterval", defaultMap.get("refillInterval"))
+          .addNode("location", std::make_shared<JsonObjectNode>(locationNode))
+          .addNode("rotation", defaultMap.get("rotation"))
+          .addNode("cameraZoomPolicy", "\"none\"")
+          .addNode("localVarname", "\"item\"");
+  JsonObjectNode rootNode =
+      JsonObjectNode()
+          .addNode("type", "\"AddStuff\"")
+          .addNode("data", std::make_shared<JsonObjectNode>(dataNode));
+  of << inden(16) << rootNode.to_string(16);
 }
 
 void action::ActionConsole::console(std::ofstream &of,
@@ -142,11 +139,14 @@ void action::ActionConsole::console(std::ofstream &of,
     std::cerr << "Expecting string type paramter at " << action->loc << "\n";
     return;
   }
-  of << inden(20) << "\"type\": \"Console\"," << std::endl;
-  of << inden(20) << "\"data\": {" << std::endl;
-  of << inden(24) << "\"logType\": \"" << action->identifier[1] << "\","
-     << std::endl;
-  of << inden(24) << "\"text\": \"" << paramNode->value << "\"," << std::endl;
-  of << inden(24) << "\"value\": \"\"" << std::endl;
-  of << inden(20) << "}" << std::endl;
+  JsonObjectNode dataNode =
+      JsonObjectNode()
+          .addNode("logType", "\"" + action->identifier[1] + "\"")
+          .addNode("text", "\"" + paramNode->value + "\"")
+          .addNode("value", "\"\"");
+  JsonObjectNode rootNode =
+      JsonObjectNode()
+          .addNode("type", "\"Console\"")
+          .addNode("data", std::make_shared<JsonObjectNode>(dataNode));
+  of << inden(16) << rootNode.to_string(16);
 }

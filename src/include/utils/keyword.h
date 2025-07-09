@@ -15,6 +15,7 @@ public:
   KeywordEnum(const std::string enumType,
               const std::map<std::string, std::string> codegenMap)
       : enumType(enumType), codegenMap(codegenMap){};
+  bool isEmpty() { return codegenMap.empty(); }
   const std::pair<bool, std::string> get(std::string key,
                                          bool warningEn = true) {
     if (codegenMap.find(key) != codegenMap.end()) {

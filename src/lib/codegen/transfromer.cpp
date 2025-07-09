@@ -3,8 +3,7 @@
 
 using namespace codegen;
 
-std::string DefaultMap::get(std::string key,
-                            std::shared_ptr<keyword::KeywordEnum> keywordEnum) {
+std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
   if (defaultMap.find(key) == defaultMap.end()) {
     std::cerr << "Compiler Implementation Error: Found unknown key \'" << key
               << "\'\n";
@@ -47,12 +46,12 @@ std::string DefaultMap::get(std::string key,
     return format(std::to_string(intNode->value));
   if (boolNode)
     return format(boolNode->value ? "true" : "false");
-  if (stringNode && !keywordEnum)
+  if (stringNode && keywordEnum.isEmpty())
     return format(stringNode->value);
   // Enum Input Geneartion
-  if (stringNode && keywordEnum) {
+  if (stringNode && !keywordEnum.isEmpty()) {
     std::pair<bool, std::string> enumResult =
-        keywordEnum.get()->get(stringNode->value);
+        keywordEnum.get(stringNode->value);
     if (!enumResult.first)
       std::cerr << " ->  Found at " << stringNode->loc << "\n";
     return format(enumResult.second);

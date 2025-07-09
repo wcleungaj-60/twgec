@@ -1,7 +1,7 @@
 #include "codegen.h"
+#include "action.h"
 #include "ast.h"
 #include "metadata.h"
-#include "action.h"
 #include "utils/utils.h"
 #include <fstream>
 #include <iostream>
@@ -40,7 +40,7 @@ void CodeGenerator::codegenBlocks(std::ofstream &of) {
 }
 
 void CodeGenerator::codegenActions(std::ofstream &of,
-                             std::unique_ptr<ActionsNode> &actions) {
+                                   std::unique_ptr<ActionsNode> &actions) {
   of << inden(12) << "\"actions\": [";
   if (actions->actions.empty()) {
     of << "]," << std::endl;
@@ -48,9 +48,7 @@ void CodeGenerator::codegenActions(std::ofstream &of,
   }
   of << std::endl;
   for (auto i = 0; i < actions->actions.size(); i++) {
-    of << inden(16) << "{" << std::endl;
     codegenAction(of, actions->actions[i]);
-    of << inden(16) << "}";
     if (i != actions->actions.size() - 1)
       of << ",";
     of << std::endl;
@@ -59,7 +57,7 @@ void CodeGenerator::codegenActions(std::ofstream &of,
 }
 
 void CodeGenerator::codegenAction(std::ofstream &of,
-                            std::unique_ptr<ActionNode> &action) {
+                                  std::unique_ptr<ActionNode> &action) {
   if (action->identifier[0] == "console")
     return action::ActionConsole::console(of, action);
   if (action->identifier[0] == "addActor")
@@ -67,21 +65,21 @@ void CodeGenerator::codegenAction(std::ofstream &of,
   if (action->identifier[0] == "addStuff")
     return action::ActionAddStuff::addStuff(of, action);
   std::cerr << "Codegen error: Cannot found the corresponding action name \"";
-  for(auto i = 0; i < action->identifier.size(); i++){
+  for (auto i = 0; i < action->identifier.size(); i++) {
     std::cerr << action->identifier[i];
-    if(i != action->identifier.size() - 1)
+    if (i != action->identifier.size() - 1)
       std::cerr << ".";
   }
   std::cerr << "\" at " << action.get()->loc << "\n";
 }
 
 void CodeGenerator::codegenChecks(std::ofstream &of,
-                            std::unique_ptr<ChecksNode> &checks) {
+                                  std::unique_ptr<ChecksNode> &checks) {
   of << inden(12) << "\"checks\": []," << std::endl;
 }
 
 void CodeGenerator::codegenTriggers(std::ofstream &of,
-                              std::unique_ptr<TriggersNode> &triggers) {
+                                    std::unique_ptr<TriggersNode> &triggers) {
   of << inden(12) << "\"triggers\": []" << std::endl;
 }
 
