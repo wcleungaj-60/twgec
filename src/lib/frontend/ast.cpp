@@ -74,3 +74,23 @@ void InstructionNode::print(int indent) const {
   }
   std::cout << ")\n";
 }
+
+std::unique_ptr<NamedArgNode> NamedArgNode::clone() {
+  auto newValue = std::move(valueNode.get()->clone());
+  return std::make_unique<NamedArgNode>(key, newValue, loc);
+}
+
+std::unique_ptr<PositionalArgNode> PositionalArgNode::clone() {
+  auto newValue = std::move(valueNode.get()->clone());
+  return std::make_unique<PositionalArgNode>(newValue, loc);
+}
+
+std::unique_ptr<InstructionNode> InstructionNode::clone() {
+  auto newNode = std::make_unique<InstructionNode>(loc);
+  newNode.get()->identifier = identifier;
+  for (auto &namedArg : named_args)
+    newNode.get()->named_args.push_back(namedArg.get()->clone());
+  for (auto &positionalArg : positional_args)
+    newNode.get()->positional_args.push_back(positionalArg.get()->clone());
+  return newNode;
+}

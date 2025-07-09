@@ -14,7 +14,8 @@ public:
   Location loc;
   // Function
   ValueNode(Location loc) : loc(loc) {}
-  virtual void print() const {};
+  virtual void print() const {}
+  virtual std::unique_ptr<ValueNode> clone() const { return nullptr; }
 };
 
 class ListValueNode : public ValueNode {
@@ -32,6 +33,12 @@ public:
     }
     std::cout << "]";
   };
+  std::unique_ptr<ValueNode> clone() const {
+    auto newNode = std::make_unique<ListValueNode>(loc);
+    for (auto &item : items)
+      newNode.get()->items.push_back(item->clone());
+    return newNode;
+  };
 };
 
 class PointValueNode : public ValueNode {
@@ -42,6 +49,9 @@ public:
   // Function
   PointValueNode(int x, int y, Location loc) : ValueNode(loc), x(x), y(y) {}
   virtual void print() const { std::cout << "(" << x << "," << y << ")"; };
+  std::unique_ptr<ValueNode> clone() const {
+    return std::make_unique<PointValueNode>(x, y, loc);
+  };
 };
 
 class StringValueNode : public ValueNode {
@@ -52,6 +62,9 @@ public:
   StringValueNode(std::string value, Location loc)
       : ValueNode(loc), value(value) {}
   void print() const { std::cout << value; }
+  std::unique_ptr<ValueNode> clone() const {
+    return std::make_unique<StringValueNode>(value, loc);
+  };
 };
 
 class IntValueNode : public ValueNode {
@@ -61,6 +74,9 @@ public:
   // Function
   IntValueNode(int value, Location loc) : ValueNode(loc), value(value) {}
   void print() const { std::cout << value; }
+  std::unique_ptr<ValueNode> clone() const {
+    return std::make_unique<IntValueNode>(value, loc);
+  };
 };
 
 class BoolValueNode : public ValueNode {
@@ -70,6 +86,9 @@ public:
   // Function
   BoolValueNode(bool value, Location loc) : ValueNode(loc), value(value) {}
   void print() const { std::cout << (value ? "true" : "false"); }
+  std::unique_ptr<ValueNode> clone() const {
+    return std::make_unique<BoolValueNode>(value, loc);
+  };
 };
 
 class VariableValueNode : public ValueNode {
@@ -80,6 +99,9 @@ public:
   VariableValueNode(std::string value, Location loc)
       : ValueNode(loc), value(value) {}
   void print() const { std::cout << value; }
+  std::unique_ptr<ValueNode> clone() const {
+    return std::make_unique<VariableValueNode>(value, loc);
+  };
 };
 
 class MetadataNode {
@@ -121,6 +143,7 @@ public:
   // Function
   PositionalArgNode(std::unique_ptr<ValueNode> &valueNode, Location loc)
       : valueNode(std::move(valueNode)), loc(loc) {}
+  std::unique_ptr<PositionalArgNode> clone();
 };
 
 class NamedArgNode {
@@ -133,6 +156,7 @@ public:
   NamedArgNode(const std::string &key, std::unique_ptr<ValueNode> &valueNode,
                Location loc)
       : key(key), valueNode(std::move(valueNode)), loc(loc) {}
+  std::unique_ptr<NamedArgNode> clone();
 };
 
 class InstructionNode {
@@ -145,6 +169,7 @@ public:
   // Function
   InstructionNode(Location loc) : loc(loc) {}
   void print(int indent = 0) const;
+  std::unique_ptr<InstructionNode> clone();
 };
 
 class ActionsNode {
