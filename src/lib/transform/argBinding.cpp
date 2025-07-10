@@ -8,6 +8,8 @@ using std::unique_ptr;
 bool argBinding(const unique_ptr<ModuleNode> &moduleNode) {
   auto &aliases = moduleNode->aliases;
   for (auto &blockNode : moduleNode->blocks) {
+    if(!blockNode.get()->actionsNode.get())
+      continue;
     for (auto &instr : blockNode.get()->actionsNode->instructions) {
       if (instr->positional_args.empty())
         continue;

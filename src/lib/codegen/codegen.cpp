@@ -42,7 +42,7 @@ void CodeGenerator::codegenBlocks(std::ofstream &of) {
 void CodeGenerator::codegenActions(std::ofstream &of,
                                    std::unique_ptr<ActionsNode> &actions) {
   of << inden(12) << "\"actions\": [";
-  if (actions->instructions.empty()) {
+  if (!actions.get() || actions->instructions.empty()) {
     of << "]," << std::endl;
     return;
   }

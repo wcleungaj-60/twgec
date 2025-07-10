@@ -56,6 +56,8 @@ bool isValidAliasCaller(std::unique_ptr<InstructionNode> &action,
 bool aliasInling(const unique_ptr<ModuleNode> &moduleNode) {
   auto &aliases = moduleNode->aliases;
   for (auto &blockNode : moduleNode->blocks) {
+    if(!blockNode.get()->actionsNode.get())
+      continue;
     auto &blockInstrs = blockNode.get()->actionsNode->instructions;
     std::vector<int> aliasIdxes;
     // Step 1: Get the Alias Index
