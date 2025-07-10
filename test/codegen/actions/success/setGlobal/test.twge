@@ -1,0 +1,11 @@
+__schema__ = "https://code.gamelet.com/gassets/schema/events/v1";
+__title__ = "我的任務";
+__map__ = "CG.TWEventsGameTemplate/gamemap.twmap";
+
+block init {
+    actions {
+        setGlobal(key = "integer", type = "integer", value = 100);
+        setGlobal(key = "int", type = "int", value = 100);
+        setGlobal(key = "test", type = "string", value = "test{int}");
+    }
+}

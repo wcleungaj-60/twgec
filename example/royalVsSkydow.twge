@@ -5,15 +5,20 @@ __title__ = "皇家天影之爭";
 __map__ = "CG.TWEventsGameTemplate/gamemap.twmap";
 
 alias addSniper(camp, role, x, y) {
-    addActor(name = "狙擊手", camp = camp, hp = 200, x = x, y = y, range = 0, weapon1 = "盾牌", weapon2 = "狙擊槍", role = role);
+    addActor(name = "狙擊手(200)", camp = camp, hp = 200, x = x, y = y, range = 0, weapon1 = "盾牌", weapon2 = "狙擊槍", role = role);
 }
 
 alias addMagazine(x, y) {
     addStuff(item = "magazine", refill = true, refillInterval = 10000, x = x, y = y);
 }
 
+alias setInt(key, value) {
+    setGlobal(key = key, type = "integer", value = value);
+}
+
 block init {
     actions {
+        setInt("hp", 100);
         addSniper("天影", "天影武士1", 11, 7);
         addSniper("皇家", "皇家機械人", 18, 12);
         addMagazine(9, 4);
@@ -28,8 +33,8 @@ block spawn {
     __repeat__ = 9999;
     __repeatInterval__ = 10000;
     actions {
-        print(text = "生成士兵");
-        addActor(name = "天影士兵", camp = "天影", hp = 100, x = 1, y = 1, role = "天影士兵", patrol = [(14,1),(15,18)]);
-        addActor(name = "皇家士兵", camp = "皇家", hp = 100, x = 28, y = 18, role = "皇家士兵", patrol = [(15,18),(14,1)]);
+        addActor(name = "天影士兵({hp})", camp = "天影", hp = "{hp}", x = 1, y = 1, role = "天影士兵", patrol = [(14,1),(15,18)]);
+        addActor(name = "皇家士兵({hp})", camp = "皇家", hp = "{hp}", x = 28, y = 18, role = "皇家士兵", patrol = [(15,18),(14,1)]);
+        setInt("hp", "{hp} + 1");
     }
 }

@@ -3,7 +3,6 @@
 #include "keyword.h"
 #include "utils/utils.h"
 #include <fstream>
-#include <iostream>
 #include <unordered_map>
 
 using namespace codegen;
@@ -35,13 +34,17 @@ DefaultMap action::ActionAddStuff::defaultMap = DefaultMap({
     {"rotation", {AST_INT, CODEGEN_STRING, "0"}},
 });
 
-DefaultMap action::ActionConsole::defaultMap = DefaultMap({
-    {"type", {AST_STRING, CODEGEN_STRING, "log"}},
-    {"text", {AST_STRING, CODEGEN_STRING, ""}}
-});
+DefaultMap action::ActionConsole::defaultMap =
+    DefaultMap({{"type", {AST_STRING, CODEGEN_STRING, "log"}},
+                {"text", {AST_STRING, CODEGEN_STRING, ""}}});
 
-void action::ActionAddActor::addActor(std::ofstream &of,
-                                      std::unique_ptr<InstructionNode> &action) {
+DefaultMap action::ActionSetGlobal::defaultMap =
+    DefaultMap({{"key", {AST_STRING, CODEGEN_STRING, ""}},
+                {"type", {AST_STRING, CODEGEN_STRING, "string"}},
+                {"value", {AST_INT, CODEGEN_STRING, ""}}});
+
+void action::ActionAddActor::addActor(
+    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode roleNode =
       JsonObjectNode().addNode("dr", defaultMap.get("role", role::keywordEnum));
@@ -101,8 +104,8 @@ void action::ActionAddActor::addActor(std::ofstream &of,
   of << inden(16) << rootNode.to_string(16);
 }
 
-void action::ActionAddStuff::addStuff(std::ofstream &of,
-                                      std::unique_ptr<InstructionNode> &action) {
+void action::ActionAddStuff::addStuff(
+    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode locationNode = JsonObjectNode()
                                     .addNode("x", defaultMap.get("x"))
@@ -128,14 +131,28 @@ void action::ActionAddStuff::addStuff(std::ofstream &of,
 void action::ActionConsole::console(std::ofstream &of,
                                     std::unique_ptr<InstructionNode> &action) {
   defaultMap.addInputMap(action->named_args);
-  JsonObjectNode dataNode =
-      JsonObjectNode()
-          .addNode("logType", defaultMap.get("type"))
-          .addNode("text", defaultMap.get("text"))
-          .addNode("value", "\"\"");
+  JsonObjectNode dataNode = JsonObjectNode()
+                                .addNode("logType", defaultMap.get("type"))
+                                .addNode("text", defaultMap.get("text"))
+                                .addNode("value", "\"\"");
   JsonObjectNode rootNode =
       JsonObjectNode()
           .addNode("type", "\"Console\"")
+          .addNode("data", std::make_shared<JsonObjectNode>(dataNode));
+  of << inden(16) << rootNode.to_string(16);
+}
+
+void action::ActionSetGlobal::setGlobal(
+    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
+  defaultMap.addInputMap(action->named_args);
+  JsonObjectNode dataNode =
+      JsonObjectNode()
+          .addNode("key", defaultMap.get("key"))
+          .addNode("valueType", defaultMap.get("type", valueType::keywordEnum))
+          .addNode("value", defaultMap.get("value"));
+  JsonObjectNode rootNode =
+      JsonObjectNode()
+          .addNode("type", "\"SetGlobal\"")
           .addNode("data", std::make_shared<JsonObjectNode>(dataNode));
   of << inden(16) << rootNode.to_string(16);
 }

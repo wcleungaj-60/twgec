@@ -320,6 +320,28 @@ const std::string customWeapons = "customWeapons";
 const std::string customFarWeapons = "customFarWeapons";
 const std::string customItems = "customItems";
 } // namespace config
+
+namespace valueType {
+
+const std::string keywordString = "string";
+const std::string keywordInteger = "integer";
+const std::string keywordInt = "int";
+const std::string keywordNumber = "number";
+const std::string keywordNum = "num";
+const std::string keywordBoolean = "boolean";
+const std::string keywordBool = "bool";
+const std::string keywordJson = "json";
+static KeywordEnum keywordEnum("value type", {
+                                           {keywordString, keywordString},
+                                           {keywordInteger, keywordInteger},
+                                           {keywordInt, keywordInteger},
+                                           {keywordNumber, keywordNumber},
+                                           {keywordNum, keywordNumber},
+                                           {keywordBoolean, keywordBoolean},
+                                           {keywordBool, keywordBoolean},
+                                           {keywordJson, keywordJson},
+                                       });
+} // namespace valueType
 } // namespace keyword
 
 #endif

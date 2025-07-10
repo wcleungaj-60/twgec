@@ -20,8 +20,10 @@ std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
   bool astInt = defaultMap.at(key).astType == AST_INT;
   bool astString = defaultMap.at(key).astType == AST_STRING;
   bool astPointList = defaultMap.at(key).astType == AST_LIST_POINT;
-  if (astInt)
+  if (astInt) {
     intNode = dynamic_cast<IntValueNode *>(input.get());
+    stringNode = dynamic_cast<StringValueNode *>(input.get());
+  }
   if (astBool)
     boolNode = dynamic_cast<BoolValueNode *>(input.get());
   if (astString)

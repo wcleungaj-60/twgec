@@ -22,6 +22,12 @@ public:
   static DefaultMap defaultMap;
   static void console(std::ofstream &of, std::unique_ptr<InstructionNode> &action);
 };
+
+class ActionSetGlobal {
+public:
+  static DefaultMap defaultMap;
+  static void setGlobal(std::ofstream &of, std::unique_ptr<InstructionNode> &action);
+};
 } // namespace action
 } // namespace codegen
 
