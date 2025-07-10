@@ -1,5 +1,0 @@
-// Work In progress. TODO: Support transformation
-
-alias addSolider(name, camp, x, y, role, patrol) {
-    addActor(name = name, camp = camp, hp = 100, x = x, y = y, role = role, patrol = patrol);
-}

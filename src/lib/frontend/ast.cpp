@@ -4,10 +4,10 @@
 void ModuleNode::print(int indent) const {
   std::cout << inden(indent) << "ModuleNode: "
             << "\n";
-  for (auto &alias : aliases)
-    alias.second->print(indent + 4);
   for (auto &metadata : metadatas)
     metadata->print(indent + 4);
+  for (auto &alias : aliases)
+    alias.second->print(indent + 4);
   for (auto &block : blocks)
     block->print(indent + 4);
 }

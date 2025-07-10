@@ -4,12 +4,20 @@ __thirdLocs__ = [(28,1),(1,28)];
 __title__ = "皇家天影之爭";
 __map__ = "CG.TWEventsGameTemplate/gamemap.twmap";
 
+alias addSniper(name, camp, x, y, role) {
+    addActor(name = "狙擊手", camp = camp, hp = 200, x = x, y = y, range = 0, weapon1 = "盾牌", weapon2 = "狙擊槍", role = role);
+}
+
+alias addMagazine(x, y) {
+    addStuff(item = "magazine", refill = true, refillInterval = 10000, x = x, y = y);
+}
+
 block init {
     actions {
-        addActor(name = "天影武士", camp = "天影", hp = 200, x = 11, y = 7, range = 0, weapon1 = "盾牌", weapon2 = "狙擊槍", role = "天影武士1");
-        addActor(name = "皇家騎士", camp = "皇家", hp = 200, x = 18, y = 12, range = 0, weapon1 = "盾牌", weapon2 = "狙擊槍", role = "皇家機械人");
-        addStuff(item = "magazine", refill = true, refillInterval = 10000, x = 9, y = 4);
-        addStuff(item = "magazine", refill = true, refillInterval = 10000, x = 20, y = 15);
+        addSniper(name = "狙擊手", camp = "天影", x = 11, y = 7, role = "天影武士1");
+        addSniper(name = "狙擊手", camp = "皇家", x = 18, y = 12, role = "皇家機械人");
+        addMagazine(x = 9, y = 4);
+        addMagazine(x = 20, y = 15);
         addStuff(item = "snipegun", x = 9, y = 10);
         addStuff(item = "snipegun", x = 20, y = 9);
     }
@@ -17,7 +25,7 @@ block init {
 
 block spawn {
     __delay__ = 5000;
-    __repeat__ = 100;
+    __repeat__ = 9999;
     __repeatInterval__ = 10000;
     actions {
         addActor(name = "天影士兵", camp = "天影", hp = 100, x = 1, y = 1, role = "天影士兵", patrol = [(14,1),(15,18)]);

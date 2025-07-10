@@ -220,4 +220,17 @@ public:
   void print(int indent = 0) const;
 };
 
+static std::unique_ptr<ValueNode>
+valueNodeClone(std::unique_ptr<ValueNode>& valueNode) {
+  if (auto *stringNode = dynamic_cast<StringValueNode *>(valueNode.get()))
+    return stringNode->clone();
+  if (auto *intNode = dynamic_cast<IntValueNode *>(valueNode.get()))
+    return intNode->clone();
+  if (auto *boolNode = dynamic_cast<BoolValueNode *>(valueNode.get()))
+    return boolNode->clone();
+  if (auto *listNode = dynamic_cast<ListValueNode *>(valueNode.get()))
+    return listNode->clone();
+  return nullptr;
+}
+
 #endif
