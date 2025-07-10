@@ -11,11 +11,10 @@ bool argBinding(const unique_ptr<ModuleNode> &moduleNode) {
     for (auto &instr : blockNode.get()->actionsNode->instructions) {
       if (instr->positional_args.empty())
         continue;
-      string actionName = instr->identifier.front();
-      if (aliases.count(actionName) == 0)
+      if (aliases.count(instr->identifier) == 0)
         continue;
       // Currently only the alias can map positional arg into named arg
-      auto aliasParam = aliases.find(actionName)->second->params;
+      auto aliasParam = aliases.find(instr->identifier)->second->params;
       if (instr->positional_args.size() > aliasParam.size()) {
         std::cerr << "Syntax Error: Too much positional arguments. Found at "
                   << instr->loc << "\n";

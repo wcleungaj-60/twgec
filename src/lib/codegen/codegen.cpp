@@ -58,19 +58,14 @@ void CodeGenerator::codegenActions(std::ofstream &of,
 
 void CodeGenerator::codegenAction(std::ofstream &of,
                                   std::unique_ptr<InstructionNode> &action) {
-  if (action->identifier[0] == "print")
+  if (action->identifier == "print")
     return action::ActionConsole::console(of, action);
-  if (action->identifier[0] == "addActor")
+  if (action->identifier == "addActor")
     return action::ActionAddActor::addActor(of, action);
-  if (action->identifier[0] == "addStuff")
+  if (action->identifier == "addStuff")
     return action::ActionAddStuff::addStuff(of, action);
-  std::cerr << "Codegen error: Cannot found the corresponding action name \"";
-  for (auto i = 0; i < action->identifier.size(); i++) {
-    std::cerr << action->identifier[i];
-    if (i != action->identifier.size() - 1)
-      std::cerr << ".";
-  }
-  std::cerr << "\" at " << action.get()->loc << "\n";
+  std::cerr << "Codegen error: Cannot found the corresponding action name \""
+            << action->identifier << "\" at " << action.get()->loc << "\n";
 }
 
 void CodeGenerator::codegenChecks(std::ofstream &of,

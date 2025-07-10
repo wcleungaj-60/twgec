@@ -75,11 +75,20 @@ std::unique_ptr<MetadataNode> Parser::parseMetadata() {
 
 std::unique_ptr<AliasNode> Parser::parseAlias() {
   consume(TokenType::ALIAS);
-  std::string name = tokens.front().value;
+  std::string identifier = tokens.front().value;
   Location loc = tokens.front().location;
-  if (!consume(TokenType::IDENTIFIER) || !consume(TokenType::OPENPAR))
+  if (!consume(TokenType::IDENTIFIER))
     return nullptr;
-  std::unique_ptr<AliasNode> aliasNode = std::make_unique<AliasNode>(name, loc);
+  while (tokens.front().type != TokenType::OPENPAR) {
+    if (!consume(TokenType::DOT))
+      return nullptr;
+    identifier += "." + tokens.front().value;
+    if (!consume(TokenType::IDENTIFIER))
+      return nullptr;
+  }
+  consume(TokenType::OPENPAR);
+  std::unique_ptr<AliasNode> aliasNode =
+      std::make_unique<AliasNode>(identifier, loc);
   if (tokens.front().type == TokenType::IDENTIFIER)
     while (true) {
       std::string paramName = tokens.front().value;
@@ -160,21 +169,19 @@ std::unique_ptr<ActionsNode> Parser::parseActions() {
 }
 
 std::unique_ptr<InstructionNode> Parser::parseInstruction() {
-  std::string id = tokens.front().value;
+  std::string identifier = tokens.front().value;
   Location loc = tokens.front().location;
-  std::unique_ptr<InstructionNode> instructionNode =
-      std::make_unique<InstructionNode>(loc);
   if (!consume(TokenType::IDENTIFIER))
     return nullptr;
-  instructionNode->identifier.push_back(id);
   while (tokens.front().type != TokenType::OPENPAR) {
     if (!consume(TokenType::DOT))
       return nullptr;
-    id = tokens.front().value;
+    identifier += "." + tokens.front().value;
     if (!consume(TokenType::IDENTIFIER))
       return nullptr;
-    instructionNode->identifier.push_back(id);
   }
+  std::unique_ptr<InstructionNode> instructionNode =
+      std::make_unique<InstructionNode>(identifier, loc);
   consume(TokenType::OPENPAR);
   while (tokens.front().type != TokenType::CLOSEPAR) {
     if (!parseActionArgs(instructionNode))

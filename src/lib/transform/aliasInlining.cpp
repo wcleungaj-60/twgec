@@ -15,17 +15,11 @@ using std::vector;
 
 bool isValidAliasCaller(std::unique_ptr<InstructionNode> &action,
                         unordered_map<string, unique_ptr<AliasNode>> &aliases) {
-  AliasNode *alias = aliases[action->identifier.front()].get();
+  AliasNode *alias = aliases[action->identifier].get();
   auto aliasParamNum = alias->params.size();
   auto actionArgNum = action->named_args.size();
   set<string> paramSet;
   set<string> argSet;
-  if (!action->positional_args.empty()) {
-    std::cerr << "Syntax Error: Alias application cannot pass any "
-                 "positional args. Found at "
-              << action->loc << "\n";
-    return false;
-  }
   if (aliasParamNum != actionArgNum) {
     std::cerr << "Syntax Error: Unmatched alias parameters number. "
               << aliasParamNum << " parameters are expected at " << alias->loc
@@ -67,7 +61,7 @@ bool aliasInling(const unique_ptr<ModuleNode> &moduleNode) {
     // Step 1: Get the Alias Index
     for (int idx = 0; idx < blockInstrs.size(); idx++) {
       auto &action = blockInstrs[idx];
-      string actionName = action->identifier.front();
+      string actionName = action->identifier;
       if (aliases.count(actionName) == 0)
         continue;
       AliasNode *alias = aliases[actionName].get();
@@ -81,7 +75,7 @@ bool aliasInling(const unique_ptr<ModuleNode> &moduleNode) {
       std::unordered_map<std::string, unique_ptr<ValueNode>> callerMap;
       auto &callerInstr = blockInstrs[idx];
       auto pos = blockInstrs.begin() + idx;
-      auto &aliasNode = aliases[callerInstr->identifier.front()];
+      auto &aliasNode = aliases[callerInstr->identifier];
       for (auto &arg : callerInstr->named_args)
         callerMap.insert({arg->key, valueNodeClone(arg->valueNode)});
       blockInstrs.erase(pos);

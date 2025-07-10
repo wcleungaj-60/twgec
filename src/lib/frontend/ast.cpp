@@ -60,7 +60,7 @@ void AliasNode::print(int indent) const {
 }
 
 void InstructionNode::print(int indent) const {
-  std::cout << inden(indent) << join(identifier, ".") << "(";
+  std::cout << inden(indent) << identifier << "(";
   for (int i = 0; i < positional_args.size(); i++) {
     positional_args[i]->valueNode->print();
     if (i != positional_args.size() - 1 || !named_args.empty())
@@ -86,8 +86,7 @@ std::unique_ptr<PositionalArgNode> PositionalArgNode::clone() {
 }
 
 std::unique_ptr<InstructionNode> InstructionNode::clone() {
-  auto newNode = std::make_unique<InstructionNode>(loc);
-  newNode.get()->identifier = identifier;
+  auto newNode = std::make_unique<InstructionNode>(identifier, loc);
   for (auto &namedArg : named_args)
     newNode.get()->named_args.push_back(namedArg.get()->clone());
   for (auto &positionalArg : positional_args)

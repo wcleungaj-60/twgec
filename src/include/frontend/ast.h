@@ -163,11 +163,12 @@ class InstructionNode {
 public:
   // Variable
   Location loc;
-  std::vector<std::string> identifier;
+  std::string identifier;
   std::vector<std::unique_ptr<PositionalArgNode>> positional_args;
   std::vector<std::unique_ptr<NamedArgNode>> named_args;
   // Function
-  InstructionNode(Location loc) : loc(loc) {}
+  InstructionNode(std::string identifier, Location loc)
+      : identifier(identifier), loc(loc) {}
   void print(int indent = 0) const;
   std::unique_ptr<InstructionNode> clone();
 };
@@ -221,7 +222,7 @@ public:
 };
 
 static std::unique_ptr<ValueNode>
-valueNodeClone(std::unique_ptr<ValueNode>& valueNode) {
+valueNodeClone(std::unique_ptr<ValueNode> &valueNode) {
   if (auto *stringNode = dynamic_cast<StringValueNode *>(valueNode.get()))
     return stringNode->clone();
   if (auto *intNode = dynamic_cast<IntValueNode *>(valueNode.get()))
