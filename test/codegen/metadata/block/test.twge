@@ -3,6 +3,6 @@ block spawn {
     __repeat__ = 100;
     __repeatInterval__ = 10000;
     actions {
-        console.log("test");
+        print(text = "test");
     }
 }

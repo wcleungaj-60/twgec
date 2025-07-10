@@ -35,6 +35,11 @@ DefaultMap action::ActionAddStuff::defaultMap = DefaultMap({
     {"rotation", {AST_INT, CODEGEN_STRING, "0"}},
 });
 
+DefaultMap action::ActionConsole::defaultMap = DefaultMap({
+    {"type", {AST_STRING, CODEGEN_STRING, "log"}},
+    {"text", {AST_STRING, CODEGEN_STRING, ""}}
+});
+
 void action::ActionAddActor::addActor(std::ofstream &of,
                                       std::unique_ptr<InstructionNode> &action) {
   defaultMap.addInputMap(action->named_args);
@@ -122,27 +127,11 @@ void action::ActionAddStuff::addStuff(std::ofstream &of,
 
 void action::ActionConsole::console(std::ofstream &of,
                                     std::unique_ptr<InstructionNode> &action) {
-  if (action->identifier.size() != 2 ||
-      (action->identifier[1] != "log" && action->identifier[1] != "error")) {
-    std::cerr << "Expecting console.log or console.error for the action at "
-              << action->loc << "\n";
-    return;
-  }
-  if (action->named_args.size() != 0 || action->positional_args.size() != 1) {
-    std::cerr << "Expecting only one positional arg for console action at "
-              << action->loc << "\n";
-    return;
-  }
-  auto paramNode = dynamic_cast<StringValueNode *>(
-      action->positional_args[0]->valueNode.get());
-  if (!paramNode) {
-    std::cerr << "Expecting string type paramter at " << action->loc << "\n";
-    return;
-  }
+  defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode =
       JsonObjectNode()
-          .addNode("logType", "\"" + action->identifier[1] + "\"")
-          .addNode("text", "\"" + paramNode->value + "\"")
+          .addNode("logType", defaultMap.get("type"))
+          .addNode("text", defaultMap.get("text"))
           .addNode("value", "\"\"");
   JsonObjectNode rootNode =
       JsonObjectNode()

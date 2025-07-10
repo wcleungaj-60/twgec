@@ -28,6 +28,7 @@ block spawn {
     __repeat__ = 9999;
     __repeatInterval__ = 10000;
     actions {
+        print(text = "生成士兵");
         addActor(name = "天影士兵", camp = "天影", hp = 100, x = 1, y = 1, role = "天影士兵", patrol = [(14,1),(15,18)]);
         addActor(name = "皇家士兵", camp = "皇家", hp = 100, x = 28, y = 18, role = "皇家士兵", patrol = [(15,18),(14,1)]);
     }

@@ -58,7 +58,7 @@ void CodeGenerator::codegenActions(std::ofstream &of,
 
 void CodeGenerator::codegenAction(std::ofstream &of,
                                   std::unique_ptr<InstructionNode> &action) {
-  if (action->identifier[0] == "console")
+  if (action->identifier[0] == "print")
     return action::ActionConsole::console(of, action);
   if (action->identifier[0] == "addActor")
     return action::ActionAddActor::addActor(of, action);
