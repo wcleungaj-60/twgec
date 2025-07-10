@@ -29,7 +29,7 @@ bool isValidAliasCaller(std::unique_ptr<InstructionNode> &action,
   if (aliasParamNum != actionArgNum) {
     std::cerr << "Syntax Error: Unmatched alias parameters number. "
               << aliasParamNum << " parameters are expected at " << alias->loc
-              << ". " << actionArgNum << "paramters are found at "
+              << ". " << actionArgNum << " paramters are found at "
               << action->loc << ".\n";
     return false;
   }
@@ -46,6 +46,16 @@ bool isValidAliasCaller(std::unique_ptr<InstructionNode> &action,
               << "(alias application).\n";
     return false;
   }
+  for (auto &instr : alias->instructions)
+    for (auto &arg : instr->named_args)
+      if (auto varNode =
+              dynamic_cast<VariableValueNode *>(arg->valueNode.get()))
+        if (!paramSet.count(varNode->value)) {
+          std::cerr << "Syntax Error: Unknown variable at " << varNode->loc
+                    << ".\n";
+          return false;
+        }
+
   return true;
 }
 
