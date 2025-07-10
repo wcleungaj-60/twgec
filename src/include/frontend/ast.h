@@ -61,7 +61,7 @@ public:
   // Function
   StringValueNode(std::string value, Location loc)
       : ValueNode(loc), value(value) {}
-  void print() const { std::cout << value; }
+  void print() const { std::cout << "\"" << value << "\""; }
   std::unique_ptr<ValueNode> clone() const {
     return std::make_unique<StringValueNode>(value, loc);
   };

@@ -5,6 +5,7 @@ add_executable(twgec
     lib/frontend/lexer.cpp
     lib/frontend/parser.cpp
     lib/transform/aliasInlining.cpp
+    lib/transform/argBinding.cpp
     lib/codegen/transfromer.cpp
     lib/codegen/metadata.cpp
     lib/codegen/codegen.cpp

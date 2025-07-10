@@ -4,7 +4,7 @@ __thirdLocs__ = [(28,1),(1,28)];
 __title__ = "皇家天影之爭";
 __map__ = "CG.TWEventsGameTemplate/gamemap.twmap";
 
-alias addSniper(name, camp, x, y, role) {
+alias addSniper(camp, role, x, y) {
     addActor(name = "狙擊手", camp = camp, hp = 200, x = x, y = y, range = 0, weapon1 = "盾牌", weapon2 = "狙擊槍", role = role);
 }
 
@@ -14,10 +14,10 @@ alias addMagazine(x, y) {
 
 block init {
     actions {
-        addSniper(name = "狙擊手", camp = "天影", x = 11, y = 7, role = "天影武士1");
-        addSniper(name = "狙擊手", camp = "皇家", x = 18, y = 12, role = "皇家機械人");
-        addMagazine(x = 9, y = 4);
-        addMagazine(x = 20, y = 15);
+        addSniper("天影", "天影武士1", 11, 7);
+        addSniper("皇家", "皇家機械人", 18, 12);
+        addMagazine(9, 4);
+        addMagazine(20, 15);
         addStuff(item = "snipegun", x = 9, y = 10);
         addStuff(item = "snipegun", x = 20, y = 9);
     }

@@ -67,7 +67,7 @@ void InstructionNode::print(int indent) const {
       std::cout << ", ";
   }
   for (int i = 0; i < named_args.size(); i++) {
-    std::cout << named_args[i].get()->key << "=";
+    std::cout << named_args[i].get()->key << " = ";
     named_args[i]->valueNode->print();
     if (i != named_args.size() - 1)
       std::cout << ", ";

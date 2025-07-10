@@ -1,7 +1,8 @@
 #include "codegen/codegen.h"
-#include "transform/aliasInlining.h"
 #include "frontend/lexer.h"
 #include "frontend/parser.h"
+#include "transform/aliasInlining.h"
+#include "transform/argBinding.h"
 #include <algorithm>
 #include <fstream>
 
@@ -69,12 +70,21 @@ int main(int argc, char *argv[]) {
     return 1;
   }
   if (printAST) {
+    std::cout << "===== Print AST Before Arg Binding =====\n";
+    moduleNode->print();
+  }
+
+  if (!transform::argBinding(std::move(moduleNode)))
+    return 1;
+
+  if (printAST) {
     std::cout << "===== Print AST Before Alias Inlining =====\n";
     moduleNode->print();
   }
-  if(!transform::aliasInling(std::move(moduleNode)))
+
+  if (!transform::aliasInling(std::move(moduleNode)))
     return 1;
-  
+
   if (printAST) {
     std::cout << "===== Print AST Before Code Generation =====\n";
     moduleNode->print();
