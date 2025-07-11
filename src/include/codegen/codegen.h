@@ -12,7 +12,9 @@ private:
   void codegenBlocks(std::ofstream &of);
   void codegenAction(std::ofstream &of, std::unique_ptr<InstructionNode> &);
   void codegenActions(std::ofstream &of, std::unique_ptr<ActionsNode> &);
+  void codegenCheck(std::ofstream &of, std::unique_ptr<InstructionNode> &);
   void codegenChecks(std::ofstream &of, std::unique_ptr<ChecksNode> &);
+  void codegenTrigger(std::ofstream &of, std::unique_ptr<InstructionNode> &);
   void codegenTriggers(std::ofstream &of, std::unique_ptr<TriggersNode> &);
 
 public:

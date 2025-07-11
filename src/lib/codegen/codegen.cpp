@@ -72,12 +72,48 @@ void CodeGenerator::codegenAction(std::ofstream &of,
 
 void CodeGenerator::codegenChecks(std::ofstream &of,
                                   std::unique_ptr<ChecksNode> &checks) {
-  of << inden(12) << "\"checks\": []," << std::endl;
+  of << inden(12) << "\"checks\": [";
+  if (!checks.get() || checks->instructions.empty()) {
+    of << "]," << std::endl;
+    return;
+  }
+  of << std::endl;
+  for (auto i = 0; i < checks->instructions.size(); i++) {
+    codegenTrigger(of, checks->instructions[i]);
+    if (i != checks->instructions.size() - 1)
+      of << ",";
+    of << std::endl;
+  }
+  of << inden(12) << "]," << std::endl;
+}
+
+void CodeGenerator::codegenCheck(std::ofstream &of,
+                                 std::unique_ptr<InstructionNode> &action) {
+  std::cerr << "Codegen error: Cannot found the corresponding check name \""
+            << action->identifier << "\" at " << action.get()->loc << "\n";
 }
 
 void CodeGenerator::codegenTriggers(std::ofstream &of,
                                     std::unique_ptr<TriggersNode> &triggers) {
-  of << inden(12) << "\"triggers\": []" << std::endl;
+  of << inden(12) << "\"triggers\": [";
+  if (!triggers.get() || triggers->instructions.empty()) {
+    of << "]" << std::endl;
+    return;
+  }
+  of << std::endl;
+  for (auto i = 0; i < triggers->instructions.size(); i++) {
+    codegenTrigger(of, triggers->instructions[i]);
+    if (i != triggers->instructions.size() - 1)
+      of << ",";
+    of << std::endl;
+  }
+  of << inden(12) << "]" << std::endl;
+}
+
+void CodeGenerator::codegenTrigger(std::ofstream &of,
+                                   std::unique_ptr<InstructionNode> &action) {
+  std::cerr << "Codegen error: Cannot found the corresponding trigger name \""
+            << action->identifier << "\" at " << action.get()->loc << "\n";
 }
 
 void CodeGenerator::codegenModuleNode(std::ofstream &of) {

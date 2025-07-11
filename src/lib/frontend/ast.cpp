@@ -33,10 +33,16 @@ void BlockNode::print(int indent) const {
 
 void ChecksNode::print(int indent) const {
   std::cout << inden(indent) << "ChecksNode\n";
+  for (auto &ins : instructions)
+    ins.get()->print(indent + 4);
+  std::cout << inden(indent) << "}\n";
 }
 
 void TriggersNode::print(int indent) const {
   std::cout << inden(indent) << "TriggersNode\n";
+  for (auto &ins : instructions)
+    ins.get()->print(indent + 4);
+  std::cout << inden(indent) << "}\n";
 }
 
 void ActionsNode::print(int indent) const {

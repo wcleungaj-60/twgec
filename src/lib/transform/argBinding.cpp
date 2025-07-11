@@ -5,12 +5,10 @@ namespace transform {
 using std::string;
 using std::unique_ptr;
 
-bool argBinding(const unique_ptr<ModuleNode> &moduleNode) {
-  auto &aliases = moduleNode->aliases;
-  for (auto &blockNode : moduleNode->blocks) {
-    if(!blockNode.get()->actionsNode.get())
-      continue;
-    for (auto &instr : blockNode.get()->actionsNode->instructions) {
+bool argBinding(
+    std::unordered_map<std::string, std::unique_ptr<AliasNode>> &aliases,
+    std::vector<std::unique_ptr<InstructionNode>> &instructions){
+    for (auto &instr : instructions) {
       if (instr->positional_args.empty())
         continue;
       if (aliases.count(instr->identifier) == 0)
@@ -33,7 +31,20 @@ bool argBinding(const unique_ptr<ModuleNode> &moduleNode) {
                                std::make_move_iterator(bindedArgs.end()));
       instr->positional_args.clear();
     }
+    return true;
+}
+
+bool argBinding(const unique_ptr<ModuleNode> &moduleNode) {
+  bool ret = true;
+  auto &aliases = moduleNode->aliases;
+  for (auto &blockNode : moduleNode->blocks) {
+    if(blockNode.get()->actionsNode.get())
+      ret &= argBinding(aliases, blockNode.get()->actionsNode.get()->instructions);
+    if(blockNode.get()->checksNode.get())
+      ret &= argBinding(aliases, blockNode.get()->checksNode.get()->instructions);
+    if(blockNode.get()->triggersNode.get())
+      ret &= argBinding(aliases, blockNode.get()->triggersNode.get()->instructions);
   }
-  return true;
+  return ret;
 }
 } // namespace transform

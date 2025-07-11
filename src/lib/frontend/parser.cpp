@@ -168,6 +168,39 @@ std::unique_ptr<ActionsNode> Parser::parseActions() {
   return actionsNode;
 }
 
+std::unique_ptr<ChecksNode> Parser::parseChecks() {
+  Location loc = tokens.front().location;
+  if (!consume(TokenType::CHECKS) || !consume(TokenType::OPENCUR))
+    return nullptr;
+  std::unique_ptr<ChecksNode> checksNode = std::make_unique<ChecksNode>(loc);
+  while (tokens.front().type != TokenType::CLOSECUR) {
+    auto instructionNode = parseInstruction();
+    if (!instructionNode)
+      return nullptr;
+    checksNode->instructions.push_back(std::move(instructionNode));
+  }
+  if (!consume(TokenType::CLOSECUR))
+    return nullptr;
+  return checksNode;
+}
+
+std::unique_ptr<TriggersNode> Parser::parseTriggers() {
+  Location loc = tokens.front().location;
+  if (!consume(TokenType::TRIGGERS) || !consume(TokenType::OPENCUR))
+    return nullptr;
+  std::unique_ptr<TriggersNode> triggersNode =
+      std::make_unique<TriggersNode>(loc);
+  while (tokens.front().type != TokenType::CLOSECUR) {
+    auto instructionNode = parseInstruction();
+    if (!instructionNode)
+      return nullptr;
+    triggersNode->instructions.push_back(std::move(instructionNode));
+  }
+  if (!consume(TokenType::CLOSECUR))
+    return nullptr;
+  return triggersNode;
+}
+
 std::unique_ptr<InstructionNode> Parser::parseInstruction() {
   std::string identifier = tokens.front().value;
   Location loc = tokens.front().location;
@@ -184,7 +217,7 @@ std::unique_ptr<InstructionNode> Parser::parseInstruction() {
       std::make_unique<InstructionNode>(identifier, loc);
   consume(TokenType::OPENPAR);
   while (tokens.front().type != TokenType::CLOSEPAR) {
-    if (!parseActionArgs(instructionNode))
+    if (!parseInstructionArgs(instructionNode))
       return nullptr;
   }
   if (!consume(TokenType::CLOSEPAR) || !consume(TokenType::SEMICOLON))
@@ -192,8 +225,8 @@ std::unique_ptr<InstructionNode> Parser::parseInstruction() {
   return instructionNode;
 }
 
-bool Parser::parseActionArgs(std::unique_ptr<InstructionNode> &actionNode,
-                             bool foundNamed) {
+bool Parser::parseInstructionArgs(std::unique_ptr<InstructionNode> &actionNode,
+                                  bool foundNamed) {
   std::string identifierToken = tokens.front().value;
   Location loc = tokens.front().location;
   if (!consume(TokenType::IDENTIFIER, /*errorThrowing*/ false)) {
@@ -210,7 +243,7 @@ bool Parser::parseActionArgs(std::unique_ptr<InstructionNode> &actionNode,
         std::make_unique<PositionalArgNode>(valueNode, loc);
     actionNode->positional_args.push_back(std::move(posArgNode));
     if (consume(TokenType::COMMA, /*errorThrowing*/ false))
-      return parseActionArgs(actionNode);
+      return parseInstructionArgs(actionNode);
   } else {
     if (!consume(TokenType::ASSIGN))
       return false;
@@ -221,28 +254,9 @@ bool Parser::parseActionArgs(std::unique_ptr<InstructionNode> &actionNode,
         std::make_unique<NamedArgNode>(identifierToken, valueNode, loc);
     actionNode->named_args.push_back(std::move(namedArgNode));
     if (consume(TokenType::COMMA, /*errorThrowing*/ false))
-      return parseActionArgs(actionNode, /*foundNamed*/ true);
+      return parseInstructionArgs(actionNode, /*foundNamed*/ true);
   }
   return tokens.front().type == TokenType::CLOSEPAR;
-}
-
-std::unique_ptr<ChecksNode> Parser::parseChecks() {
-  Location loc = tokens.front().location;
-  if (!consume(TokenType::CHECKS) || !consume(TokenType::OPENCUR) ||
-      !consume(TokenType::CLOSECUR))
-    return nullptr;
-  std::unique_ptr<ChecksNode> checksNode = std::make_unique<ChecksNode>(loc);
-  return checksNode;
-}
-
-std::unique_ptr<TriggersNode> Parser::parseTriggers() {
-  Location loc = tokens.front().location;
-  if (!consume(TokenType::TRIGGERS) || !consume(TokenType::OPENCUR) ||
-      !consume(TokenType::CLOSECUR))
-    return nullptr;
-  std::unique_ptr<TriggersNode> triggersNode =
-      std::make_unique<TriggersNode>(loc);
-  return triggersNode;
 }
 
 std::unique_ptr<ValueNode> Parser::parseValue() {

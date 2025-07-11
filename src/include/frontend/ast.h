@@ -117,24 +117,6 @@ public:
   void print(int indent = 0) const;
 };
 
-class ChecksNode {
-public:
-  // Variable
-  Location loc;
-  // Function
-  ChecksNode(Location loc) : loc(loc) {}
-  void print(int indent = 0) const;
-};
-
-class TriggersNode {
-public:
-  // Variable
-  Location loc;
-  // Function
-  TriggersNode(Location loc) : loc(loc) {}
-  void print(int indent = 0) const;
-};
-
 class PositionalArgNode {
 public:
   // Variable
@@ -180,6 +162,26 @@ public:
   std::vector<std::unique_ptr<InstructionNode>> instructions;
   // Function
   ActionsNode(Location loc) : loc(loc) {}
+  void print(int indent = 0) const;
+};
+
+class ChecksNode {
+public:
+  // Variable
+  Location loc;
+  std::vector<std::unique_ptr<InstructionNode>> instructions;
+  // Function
+  ChecksNode(Location loc) : loc(loc) {}
+  void print(int indent = 0) const;
+};
+
+class TriggersNode {
+public:
+  // Variable
+  Location loc;
+  std::vector<std::unique_ptr<InstructionNode>> instructions;
+  // Function
+  TriggersNode(Location loc) : loc(loc) {}
   void print(int indent = 0) const;
 };
 

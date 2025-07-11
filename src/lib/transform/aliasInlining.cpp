@@ -13,30 +13,30 @@ using std::unique_ptr;
 using std::unordered_map;
 using std::vector;
 
-bool isValidAliasCaller(std::unique_ptr<InstructionNode> &action,
+bool isValidAliasCaller(std::unique_ptr<InstructionNode> &caller,
                         unordered_map<string, unique_ptr<AliasNode>> &aliases) {
-  AliasNode *alias = aliases[action->identifier].get();
+  AliasNode *alias = aliases[caller->identifier].get();
   auto aliasParamNum = alias->params.size();
-  auto actionArgNum = action->named_args.size();
+  auto callerArgNum = caller->named_args.size();
   set<string> paramSet;
   set<string> argSet;
-  if (aliasParamNum != actionArgNum) {
+  if (aliasParamNum != callerArgNum) {
     std::cerr << "Syntax Error: Unmatched alias parameters number. "
               << aliasParamNum << " parameters are expected at " << alias->loc
-              << ". " << actionArgNum << " paramters are found at "
-              << action->loc << ".\n";
+              << ". " << callerArgNum << " paramters are found at "
+              << caller->loc << ".\n";
     return false;
   }
   std::unordered_map<string, unique_ptr<ValueNode>> namedArgsMap;
   for (string param : alias->params)
     paramSet.insert(param);
-  for (auto &namedArg : action->named_args) {
+  for (auto &namedArg : caller->named_args) {
     namedArgsMap.insert({namedArg->key, namedArg->valueNode->clone()});
     argSet.insert(namedArg->key);
   }
   if (paramSet != argSet) {
     std::cerr << "Syntax Error: Unmatched paramter naming at " << alias->loc
-              << "(alias definition) and " << action->loc
+              << "(alias definition) and " << caller->loc
               << "(alias application).\n";
     return false;
   }
@@ -53,45 +53,55 @@ bool isValidAliasCaller(std::unique_ptr<InstructionNode> &action,
   return true;
 }
 
-bool aliasInling(const unique_ptr<ModuleNode> &moduleNode) {
-  auto &aliases = moduleNode->aliases;
-  for (auto &blockNode : moduleNode->blocks) {
-    if(!blockNode.get()->actionsNode.get())
+bool aliasInling(
+    std::unordered_map<std::string, std::unique_ptr<AliasNode>> &aliases,
+    std::vector<std::unique_ptr<InstructionNode>> &instructions) {
+  std::vector<int> aliasIdxes;
+  // Step 1: Get the Alias Index
+  for (int idx = 0; idx < instructions.size(); idx++) {
+    auto &caller = instructions[idx];
+    string callerName = caller->identifier;
+    if (aliases.count(callerName) == 0)
       continue;
-    auto &blockInstrs = blockNode.get()->actionsNode->instructions;
-    std::vector<int> aliasIdxes;
-    // Step 1: Get the Alias Index
-    for (int idx = 0; idx < blockInstrs.size(); idx++) {
-      auto &action = blockInstrs[idx];
-      string actionName = action->identifier;
-      if (aliases.count(actionName) == 0)
-        continue;
-      AliasNode *alias = aliases[actionName].get();
-      if (!isValidAliasCaller(action, aliases))
-        return false;
-      aliasIdxes.push_back(idx);
-    }
-    std::reverse(aliasIdxes.begin(), aliasIdxes.end());
-    // Step 2: Inline the Alias
-    for (auto idx : aliasIdxes) {
-      std::unordered_map<std::string, unique_ptr<ValueNode>> callerMap;
-      auto &callerInstr = blockInstrs[idx];
-      auto pos = blockInstrs.begin() + idx;
-      auto &aliasNode = aliases[callerInstr->identifier];
-      for (auto &arg : callerInstr->named_args)
-        callerMap.insert({arg->key, valueNodeClone(arg->valueNode)});
-      blockInstrs.erase(pos);
-      for (auto &aliasIns : aliasNode.get()->instructions) {
-        auto clonedIns = aliasIns->clone();
-        for (auto &arg : clonedIns->named_args)
-          if (auto *varNode =
-                  dynamic_cast<VariableValueNode *>(arg->valueNode.get()))
-            arg->valueNode = valueNodeClone(callerMap[varNode->value]);
-        blockInstrs.insert(pos, std::move(clonedIns));
-      }
+    AliasNode *alias = aliases[callerName].get();
+    if (!isValidAliasCaller(caller, aliases))
+      return false;
+    aliasIdxes.push_back(idx);
+  }
+  std::reverse(aliasIdxes.begin(), aliasIdxes.end());
+  // Step 2: Inline the Alias
+  for (auto idx : aliasIdxes) {
+    std::unordered_map<std::string, unique_ptr<ValueNode>> callerMap;
+    auto &callerInstr = instructions[idx];
+    auto pos = instructions.begin() + idx;
+    auto &aliasNode = aliases[callerInstr->identifier];
+    for (auto &arg : callerInstr->named_args)
+      callerMap.insert({arg->key, valueNodeClone(arg->valueNode)});
+    instructions.erase(pos);
+    for (auto &aliasIns : aliasNode.get()->instructions) {
+      auto clonedIns = aliasIns->clone();
+      for (auto &arg : clonedIns->named_args)
+        if (auto *varNode =
+                dynamic_cast<VariableValueNode *>(arg->valueNode.get()))
+          arg->valueNode = valueNodeClone(callerMap[varNode->value]);
+      instructions.insert(pos, std::move(clonedIns));
     }
   }
-  aliases.clear();
   return true;
+}
+
+bool aliasInling(const unique_ptr<ModuleNode> &moduleNode) {
+  bool ret = true;
+  auto &aliases = moduleNode->aliases;
+  for (auto &blockNode : moduleNode->blocks) {
+    if (blockNode.get()->actionsNode.get())
+      ret &= aliasInling(aliases, blockNode.get()->actionsNode->instructions);
+    if (blockNode.get()->checksNode.get())
+      ret &= aliasInling(aliases, blockNode.get()->checksNode->instructions);
+    if (blockNode.get()->triggersNode.get())
+      ret &= aliasInling(aliases, blockNode.get()->triggersNode->instructions);
+  }
+  aliases.clear();
+  return ret;
 }
 } // namespace transform

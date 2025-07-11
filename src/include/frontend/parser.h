@@ -16,7 +16,8 @@ private:
   std::unique_ptr<AliasNode> parseAlias();
   std::unique_ptr<ActionsNode> parseActions();
   std::unique_ptr<InstructionNode> parseInstruction();
-  bool parseActionArgs(std::unique_ptr<InstructionNode> &, bool foundNamed = false);
+  bool parseInstructionArgs(std::unique_ptr<InstructionNode> &,
+                            bool foundNamed = false);
   std::unique_ptr<ChecksNode> parseChecks();
   std::unique_ptr<TriggersNode> parseTriggers();
   std::unique_ptr<ValueNode> parseValue();
