@@ -2,6 +2,7 @@
 #include "action.h"
 #include "ast.h"
 #include "metadata.h"
+#include "trigger.h"
 #include "utils/utils.h"
 #include <fstream>
 #include <iostream>
@@ -112,6 +113,8 @@ void CodeGenerator::codegenTriggers(std::ofstream &of,
 
 void CodeGenerator::codegenTrigger(std::ofstream &of,
                                    std::unique_ptr<InstructionNode> &action) {
+  if (action->identifier == "actorFire")
+    return trigger::TriggerActorFire::actorFire(of, action);
   std::cerr << "Codegen error: Cannot found the corresponding trigger name \""
             << action->identifier << "\" at " << action.get()->loc << "\n";
 }

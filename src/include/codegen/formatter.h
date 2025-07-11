@@ -29,10 +29,11 @@ public:
 
 class JsonArrayNode : public JsonNode {
 public:
-  string key;
   vector<shared_ptr<JsonNode>> nodeList;
-  JsonArrayNode(string key) : JsonNode(), key(key){};
-  void addNode(shared_ptr<JsonNode> node) { nodeList.push_back(node); };
+  JsonArrayNode addNode(shared_ptr<JsonNode> node) {
+    nodeList.push_back(node);
+    return *this;
+  };
   string to_string(int indentation) override {
     string ret = "[\n";
     for (auto idx = 0; idx < nodeList.size(); idx++) {
@@ -41,7 +42,7 @@ public:
         ret += ",";
       ret += "\n";
     }
-    ret += inden(indentation) + "]\n";
+    ret += inden(indentation) + "]";
     return ret;
   }
 };

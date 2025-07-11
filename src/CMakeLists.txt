@@ -7,6 +7,7 @@ add_executable(twgec
     lib/transform/aliasInlining.cpp
     lib/transform/argBinding.cpp
     lib/codegen/transfromer.cpp
+    lib/codegen/trigger.cpp
     lib/codegen/metadata.cpp
     lib/codegen/codegen.cpp
     lib/codegen/action.cpp
