@@ -67,6 +67,8 @@ void CodeGenerator::codegenAction(std::ofstream &of,
     return action::ActionConsole::console(of, action);
   if (action->identifier == "setGlobal")
     return action::ActionSetGlobal::setGlobal(of, action);
+  if (action->identifier == "enblastEffect")
+    return action::ActionEnblastEffect::enblastEffect(of, action);
   std::cerr << "Codegen error: Cannot found the corresponding action name \""
             << action->identifier << "\" at " << action.get()->loc << "\n";
 }

@@ -5,28 +5,38 @@
 
 namespace codegen {
 namespace action {
+
+using std::ofstream;
+using std::unique_ptr;
+
 class ActionAddActor {
 public:
   static DefaultMap defaultMap;
-  static void addActor(std::ofstream &of, std::unique_ptr<InstructionNode> &action);
+  static void addActor(ofstream &of, unique_ptr<InstructionNode> &action);
 };
 
 class ActionAddStuff {
 public:
   static DefaultMap defaultMap;
-  static void addStuff(std::ofstream &of, std::unique_ptr<InstructionNode> &action);
+  static void addStuff(ofstream &of, unique_ptr<InstructionNode> &action);
 };
 
 class ActionConsole {
 public:
   static DefaultMap defaultMap;
-  static void console(std::ofstream &of, std::unique_ptr<InstructionNode> &action);
+  static void console(ofstream &of, unique_ptr<InstructionNode> &action);
+};
+
+class ActionEnblastEffect {
+public:
+  static DefaultMap defaultMap;
+  static void enblastEffect(ofstream &of, unique_ptr<InstructionNode> &action);
 };
 
 class ActionSetGlobal {
 public:
   static DefaultMap defaultMap;
-  static void setGlobal(std::ofstream &of, std::unique_ptr<InstructionNode> &action);
+  static void setGlobal(ofstream &of, unique_ptr<InstructionNode> &action);
 };
 } // namespace action
 } // namespace codegen

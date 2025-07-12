@@ -34,14 +34,26 @@ DefaultMap action::ActionAddStuff::defaultMap = DefaultMap({
     {"rotation", {AST_INT, CODEGEN_STRING, "0"}},
 });
 
-DefaultMap action::ActionConsole::defaultMap =
-    DefaultMap({{"type", {AST_STRING, CODEGEN_STRING, "log"}},
-                {"text", {AST_STRING, CODEGEN_STRING, ""}}});
+DefaultMap action::ActionConsole::defaultMap = DefaultMap({
+    {"type", {AST_STRING, CODEGEN_STRING, "log"}},
+    {"text", {AST_STRING, CODEGEN_STRING, ""}},
+});
 
-DefaultMap action::ActionSetGlobal::defaultMap =
-    DefaultMap({{"key", {AST_STRING, CODEGEN_STRING, ""}},
-                {"type", {AST_STRING, CODEGEN_STRING, "string"}},
-                {"value", {AST_INT, CODEGEN_STRING, ""}}});
+DefaultMap action::ActionEnblastEffect::defaultMap = DefaultMap({
+    {"fromType", {AST_STRING, CODEGEN_STRING, "actor"}},
+    {"fromActor", {AST_STRING, CODEGEN_STRING, "instance"}},
+    {"toType", {AST_STRING, CODEGEN_STRING, "angle"}},
+    {"toAngle", {AST_INT, CODEGEN_STRING, "0"}},
+    {"damage", {AST_INT, CODEGEN_STRING, "30"}},
+    {"scale", {AST_INT, CODEGEN_STRING, "1"}},
+    {"speed", {AST_INT, CODEGEN_STRING, "0.7"}},
+});
+
+DefaultMap action::ActionSetGlobal::defaultMap = DefaultMap({
+    {"key", {AST_STRING, CODEGEN_STRING, ""}},
+    {"type", {AST_STRING, CODEGEN_STRING, "string"}},
+    {"value", {AST_INT, CODEGEN_STRING, ""}},
+});
 
 void action::ActionAddActor::addActor(
     std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
@@ -138,6 +150,29 @@ void action::ActionConsole::console(std::ofstream &of,
   JsonObjectNode rootNode =
       JsonObjectNode()
           .addNode("type", "\"Console\"")
+          .addNode("data", std::make_shared<JsonObjectNode>(dataNode));
+  of << inden(16) << rootNode.to_string(16);
+}
+
+void action::ActionEnblastEffect::enblastEffect(
+    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
+  defaultMap.addInputMap(action->named_args);
+  JsonObjectNode fromPosNode =
+      JsonObjectNode()
+          .addNode("posType", defaultMap.get("fromType"))
+          .addNode("actorCode", defaultMap.get("fromActor"))
+          .addNode("alive", "true");
+  JsonObjectNode dataNode =
+      JsonObjectNode()
+          .addNode("fromPos", std::make_shared<JsonObjectNode>(fromPosNode))
+          .addNode("toType", defaultMap.get("toType"))
+          .addNode("toAngle", defaultMap.get("toAngle"))
+          .addNode("damage", defaultMap.get("damage"))
+          .addNode("scale", defaultMap.get("scale"))
+          .addNode("speed", defaultMap.get("speed"));
+  JsonObjectNode rootNode =
+      JsonObjectNode()
+          .addNode("type", "\"EnblastEffect\"")
           .addNode("data", std::make_shared<JsonObjectNode>(dataNode));
   of << inden(16) << rootNode.to_string(16);
 }
