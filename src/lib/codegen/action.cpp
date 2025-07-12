@@ -58,136 +58,142 @@ DefaultMap action::ActionSetGlobal::defaultMap = DefaultMap({
 void action::ActionAddActor::addActor(
     std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
   defaultMap.addInputMap(action->named_args);
-  JsonObjectNode roleNode =
-      JsonObjectNode().addNode("dr", defaultMap.get("role", role::keywordEnum));
-  JsonObjectNode weapon0Node = JsonObjectNode().addNode(
-      "w0Type", defaultMap.get("weapon1", weapon::keywordEnum));
-  JsonObjectNode weapon1Node = JsonObjectNode().addNode(
-      "w1Type", defaultMap.get("weapon2", weapon::keywordEnum));
-  JsonObjectNode locationNode = JsonObjectNode()
-                                    .addNode("x", defaultMap.get("x"))
-                                    .addNode("y", defaultMap.get("y"))
-                                    .addNode("range", "\"0\"");
-  JsonObjectNode dataNode =
-      JsonObjectNode()
-          .addNode("actorCode", defaultMap.get("id"))
-          .addNode("name", defaultMap.get("name"))
-          .addNode("role", std::make_shared<JsonObjectNode>(roleNode))
-          .addNode("actorType", "\"defaultType\"")
-          .addNode("weapon0", std::make_shared<JsonObjectNode>(weapon0Node))
-          .addNode("weapon1", std::make_shared<JsonObjectNode>(weapon1Node))
-          .addNode("camp", defaultMap.get("camp", camp::keywordEnum))
-          .addNode("group", "\"0\"")
-          .addNode("location", std::make_shared<JsonObjectNode>(locationNode))
-          .addNode("shiftX", "0")
-          .addNode("shiftY", "0")
-          .addNode("spawnLoc", "true")
-          .addNode("rotation", "\"0\"")
-          .addNode("idleRotate", "true")
-          .addNode("maxhp", defaultMap.get("hp"))
-          .addNode("manaPower", "\"0\"")
-          .addNode("lives", "\"1\"")
-          .addNode("preferAbilityLevel", "\"smart\"")
-          .addNode("maxAbilityLevel", "1")
-          .addNode("weight", "\"4\"")
-          .addNode("strength", "\"1\"")
-          .addNode("vision", "\"300\"")
-          .addNode("range", defaultMap.get("range"))
-          .addNode("score", "\"10\"")
-          .addNode("bloodType", "\"default\"")
-          .addNode("unbrokenArmor", "true")
-          .addNode("tornadoRes", "\"none\"")
-          .addNode("distractWhenHit", "true")
-          .addNode("thinkInterval", "60")
-          .addNode("farAutoLevel", "\"0\"")
-          .addNode("patrols", "true")
-          .addNode("patrolPath", defaultMap.get("patrol"))
-          .addNode("bornDelayDuration", "\"0\"")
-          .addNode("bornDuration", "\"1000\"")
-          .addNode("bornLockDuration", "\"1000\"")
-          .addNode("bornEffect", "\"none\"")
-          .addNode("bornAnim", "\"fadein\"")
-          .addNode("localVarname", "\"actor\"")
-          .addNode("globalVarname", "\"\"");
-  JsonObjectNode rootNode =
-      JsonObjectNode()
-          .addNode("type", "\"AddActor\"")
-          .addNode("data", std::make_shared<JsonObjectNode>(dataNode));
+  JsonObjectNode roleNode = JsonObjectNode({
+      {"dr", defaultMap.get("role", role::keywordEnum)},
+  });
+  JsonObjectNode weapon0Node = JsonObjectNode({
+      {"w0Type", defaultMap.get("weapon1", weapon::keywordEnum)},
+  });
+  JsonObjectNode weapon1Node = JsonObjectNode({
+      {"w1Type", defaultMap.get("weapon2", weapon::keywordEnum)},
+  });
+  JsonObjectNode locationNode = JsonObjectNode({
+      {"x", defaultMap.get("x")},
+      {"y", defaultMap.get("y")},
+      {"range", "\"0\""},
+  });
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"actorCode", defaultMap.get("id")},
+      {"name", defaultMap.get("name")},
+      {"role", roleNode.to_string(24)},
+      {"actorType", "\"defaultType\""},
+      {"weapon0", weapon0Node.to_string(24)},
+      {"weapon1", weapon1Node.to_string(24)},
+      {"camp", defaultMap.get("camp", camp::keywordEnum)},
+      {"group", "\"0\""},
+      {"location", locationNode.to_string(24)},
+      {"shiftX", "0"},
+      {"shiftY", "0"},
+      {"spawnLoc", "true"},
+      {"rotation", "\"0\""},
+      {"idleRotate", "true"},
+      {"maxhp", defaultMap.get("hp")},
+      {"manaPower", "\"0\""},
+      {"lives", "\"1\""},
+      {"preferAbilityLevel", "\"smart\""},
+      {"maxAbilityLevel", "1"},
+      {"weight", "\"4\""},
+      {"strength", "\"1\""},
+      {"vision", "\"300\""},
+      {"range", defaultMap.get("range")},
+      {"score", "\"10\""},
+      {"bloodType", "\"default\""},
+      {"unbrokenArmor", "true"},
+      {"tornadoRes", "\"none\""},
+      {"distractWhenHit", "true"},
+      {"thinkInterval", "60"},
+      {"farAutoLevel", "\"0\""},
+      {"patrols", "true"},
+      {"patrolPath", defaultMap.get("patrol")},
+      {"bornDelayDuration", "\"0\""},
+      {"bornDuration", "\"1000\""},
+      {"bornLockDuration", "\"1000\""},
+      {"bornEffect", "\"none\""},
+      {"bornAnim", "\"fadein\""},
+      {"localVarname", "\"actor\""},
+      {"globalVarname", "\"\""},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"AddActor\""},
+      {"data", dataNode.to_string(20)},
+  });
   of << inden(16) << rootNode.to_string(16);
 }
 
 void action::ActionAddStuff::addStuff(
     std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
   defaultMap.addInputMap(action->named_args);
-  JsonObjectNode locationNode = JsonObjectNode()
-                                    .addNode("x", defaultMap.get("x"))
-                                    .addNode("y", defaultMap.get("y"))
-                                    .addNode("range", defaultMap.get("range"));
-  JsonObjectNode dataNode =
-      JsonObjectNode()
-          .addNode("itemCode", defaultMap.get("code"))
-          .addNode("itemType", defaultMap.get("item"))
-          .addNode("loop", defaultMap.get("refill"))
-          .addNode("loopInterval", defaultMap.get("refillInterval"))
-          .addNode("location", std::make_shared<JsonObjectNode>(locationNode))
-          .addNode("rotation", defaultMap.get("rotation"))
-          .addNode("cameraZoomPolicy", "\"none\"")
-          .addNode("localVarname", "\"item\"");
-  JsonObjectNode rootNode =
-      JsonObjectNode()
-          .addNode("type", "\"AddStuff\"")
-          .addNode("data", std::make_shared<JsonObjectNode>(dataNode));
+  JsonObjectNode locationNode = JsonObjectNode({
+      {"x", defaultMap.get("x")},
+      {"y", defaultMap.get("y")},
+      {"range", defaultMap.get("range")},
+  });
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"itemCode", defaultMap.get("code")},
+      {"itemType", defaultMap.get("item")},
+      {"loop", defaultMap.get("refill")},
+      {"loopInterval", defaultMap.get("refillInterval")},
+      {"location", locationNode.to_string(24)},
+      {"rotation", defaultMap.get("rotation")},
+      {"cameraZoomPolicy", "\"none\""},
+      {"localVarname", "\"item\""},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"AddStuff\""},
+      {"data", dataNode.to_string(20)},
+  });
   of << inden(16) << rootNode.to_string(16);
 }
 
 void action::ActionConsole::console(std::ofstream &of,
                                     std::unique_ptr<InstructionNode> &action) {
   defaultMap.addInputMap(action->named_args);
-  JsonObjectNode dataNode = JsonObjectNode()
-                                .addNode("logType", defaultMap.get("type"))
-                                .addNode("text", defaultMap.get("text"))
-                                .addNode("value", "\"\"");
-  JsonObjectNode rootNode =
-      JsonObjectNode()
-          .addNode("type", "\"Console\"")
-          .addNode("data", std::make_shared<JsonObjectNode>(dataNode));
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"logType", defaultMap.get("type")},
+      {"text", defaultMap.get("text")},
+      {"value", "\"\""},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"Console\""},
+      {"data", dataNode.to_string(20)},
+  });
   of << inden(16) << rootNode.to_string(16);
 }
 
 void action::ActionEnblastEffect::enblastEffect(
     std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
   defaultMap.addInputMap(action->named_args);
-  JsonObjectNode fromPosNode =
-      JsonObjectNode()
-          .addNode("posType", defaultMap.get("fromType"))
-          .addNode("actorCode", defaultMap.get("fromActor"))
-          .addNode("alive", "true");
-  JsonObjectNode dataNode =
-      JsonObjectNode()
-          .addNode("fromPos", std::make_shared<JsonObjectNode>(fromPosNode))
-          .addNode("toType", defaultMap.get("toType"))
-          .addNode("toAngle", defaultMap.get("toAngle"))
-          .addNode("damage", defaultMap.get("damage"))
-          .addNode("scale", defaultMap.get("scale"))
-          .addNode("speed", defaultMap.get("speed"));
-  JsonObjectNode rootNode =
-      JsonObjectNode()
-          .addNode("type", "\"EnblastEffect\"")
-          .addNode("data", std::make_shared<JsonObjectNode>(dataNode));
+  JsonObjectNode fromPosNode = JsonObjectNode({
+      {"posType", defaultMap.get("fromType")},
+      {"actorCode", defaultMap.get("fromActor")},
+      {"alive", "true"},
+  });
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"fromPos", fromPosNode.to_string(24)},
+      {"toType", defaultMap.get("toType")},
+      {"toAngle", defaultMap.get("toAngle")},
+      {"damage", defaultMap.get("damage")},
+      {"scale", defaultMap.get("scale")},
+      {"speed", defaultMap.get("speed")},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"EnblastEffect\""},
+      {"data", dataNode.to_string(20)},
+  });
   of << inden(16) << rootNode.to_string(16);
 }
 
 void action::ActionSetGlobal::setGlobal(
     std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
   defaultMap.addInputMap(action->named_args);
-  JsonObjectNode dataNode =
-      JsonObjectNode()
-          .addNode("key", defaultMap.get("key"))
-          .addNode("valueType", defaultMap.get("type", valueType::keywordEnum))
-          .addNode("value", defaultMap.get("value"));
-  JsonObjectNode rootNode =
-      JsonObjectNode()
-          .addNode("type", "\"SetGlobal\"")
-          .addNode("data", std::make_shared<JsonObjectNode>(dataNode));
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"key", defaultMap.get("key")},
+      {"valueType", defaultMap.get("type", valueType::keywordEnum)},
+      {"value", defaultMap.get("value")},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"SetGlobal\""},
+      {"data", dataNode.to_string(20)},
+  });
   of << inden(16) << rootNode.to_string(16);
 }

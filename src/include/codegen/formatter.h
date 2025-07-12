@@ -30,6 +30,7 @@ public:
 class JsonArrayNode : public JsonNode {
 public:
   vector<shared_ptr<JsonNode>> nodeList;
+  JsonArrayNode(shared_ptr<JsonNode> node) { addNode(node); };
   JsonArrayNode addNode(shared_ptr<JsonNode> node) {
     nodeList.push_back(node);
     return *this;
@@ -50,6 +51,13 @@ public:
 class JsonObjectNode : public JsonNode {
 public:
   JsonObjectNode() : JsonNode(){};
+  JsonObjectNode(string key, string value) : JsonNode() {
+    addNode(key, value);
+  };
+  JsonObjectNode(vector<pair<string, string>> contexts) : JsonNode() {
+    for (auto ctx : contexts)
+      addNode(ctx.first, ctx.second);
+  };
   vector<pair<string, shared_ptr<JsonNode>>> nodeList;
   JsonObjectNode &addNode(string key, string value) {
     nodeList.push_back({key, std::make_shared<JsonValueNode>(value)});
