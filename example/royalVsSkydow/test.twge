@@ -8,6 +8,10 @@ alias addSniper(camp, role, x, y) {
     addActor(name = "狙擊手(200)", id = "sniper*", camp = camp, hp = 200, x = x, y = y, range = 0, weapon1 = "盾牌", weapon2 = "狙擊槍", role = role);
 }
 
+alias addCamp(camp, x, y) {
+    addActor(name = "軍營(500)", id = "sniper*", camp = camp, hp = 500, x = x, y = y, range = 0, weapon1 = "拳頭", weapon2 = "拳頭", role = "男平民");
+}
+
 alias addMagazine(x, y) {
     addStuff(item = "magazine", refill = true, refillInterval = 10000, x = x, y = y);
 }
@@ -25,6 +29,8 @@ block init {
         setInt("hp", 100);
         addSniper("天影", "天影武士1", 11, 7);
         addSniper("皇家", "皇家機械人", 18, 12);
+        addCamp("天影", 9, 6);
+        addCamp("皇家", 20, 13);
         addMagazine(9, 4);
         addMagazine(20, 15);
         addStuff(item = "snipegun", x = 9, y = 10);
