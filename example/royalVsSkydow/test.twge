@@ -9,7 +9,7 @@ alias addSniper(camp, role, x, y) {
 }
 
 alias addCamp(camp, x, y) {
-    addActor(name = "軍營(500)", id = "sniper*", camp = camp, hp = 500, x = x, y = y, range = 0, weapon1 = "拳頭", weapon2 = "拳頭", role = "男平民");
+    addActor(name = "軍營(500)", id = "sniper*", camp = camp, hp = 500, x = x, y = y, range = 0, weapon1 = "拳頭", weapon2 = "拳頭", externRole = "TWilightGameEventCompiler.character_camp");
 }
 
 alias addMagazine(x, y) {

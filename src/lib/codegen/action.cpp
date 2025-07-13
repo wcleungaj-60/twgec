@@ -20,6 +20,7 @@ DefaultMap action::ActionAddActor::defaultMap = DefaultMap({
     {"hp", {AST_INT, CODEGEN_STRING, "100"}},
     {"range", {AST_INT, CODEGEN_STRING, "10000"}},
     {"role", {AST_STRING, CODEGEN_INT, "0"}},
+    {"externRole", {AST_STRING, CODEGEN_STRING, ""}},
     {"patrol", {AST_LIST_POINT, CODEGEN_LIST_PATROL, "[]"}},
 });
 
@@ -58,9 +59,14 @@ DefaultMap action::ActionSetGlobal::defaultMap = DefaultMap({
 void action::ActionAddActor::addActor(
     std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
   defaultMap.addInputMap(action->named_args);
-  JsonObjectNode roleNode = JsonObjectNode({
-      {"dr", defaultMap.get("role", role::keywordEnum)},
-  });
+  std::string externRole = defaultMap.get("externRole");
+  bool hasExternRole = externRole != "\"\"";
+  std::string role =
+      hasExternRole ? "8" : defaultMap.get("role", role::keywordEnum);
+  JsonObjectNode roleNode = JsonObjectNode({{"dr", role}});
+  if (hasExternRole)
+    roleNode.addNode("rsrc", externRole);
+
   JsonObjectNode weapon0Node = JsonObjectNode({
       {"w0Type", defaultMap.get("weapon1", weapon::keywordEnum)},
   });
