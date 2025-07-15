@@ -20,7 +20,7 @@ void trigger::TriggerActorFire::actorFire(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode actorCodeNode = JsonObjectNode({
-      {"method", defaultMap.get("matchKind")},
+      {"method", defaultMap.get("matchKind", matchKind::keywordEnum)},
       {"actorCode", defaultMap.get("actorId")},
   });
   JsonArrayNode actorCodesNode =

@@ -322,7 +322,6 @@ const std::string customItems = "customItems";
 } // namespace config
 
 namespace valueType {
-
 const std::string keywordString = "string";
 const std::string keywordInteger = "integer";
 const std::string keywordInt = "int";
@@ -331,17 +330,33 @@ const std::string keywordNum = "num";
 const std::string keywordBoolean = "boolean";
 const std::string keywordBool = "bool";
 const std::string keywordJson = "json";
-static KeywordEnum keywordEnum("value type", {
-                                           {keywordString, keywordString},
-                                           {keywordInteger, keywordInteger},
-                                           {keywordInt, keywordInteger},
-                                           {keywordNumber, keywordNumber},
-                                           {keywordNum, keywordNumber},
-                                           {keywordBoolean, keywordBoolean},
-                                           {keywordBool, keywordBoolean},
-                                           {keywordJson, keywordJson},
-                                       });
+static KeywordEnum keywordEnum("value type",
+                               {
+                                   {keywordString, keywordString},
+                                   {keywordInteger, keywordInteger},
+                                   {keywordInt, keywordInteger},
+                                   {keywordNumber, keywordNumber},
+                                   {keywordNum, keywordNumber},
+                                   {keywordBoolean, keywordBoolean},
+                                   {keywordBool, keywordBoolean},
+                                   {keywordJson, keywordJson},
+                               });
 } // namespace valueType
+
+namespace matchKind {
+const std::string keywordContain = "contain";
+const std::string keywordEqual = "equal";
+const std::string keywordRegexp = "regexp";
+const std::string keywordRegex = "regex";
+static KeywordEnum keywordEnum("match kind",
+                               {
+                                   {keywordContain, keywordContain},
+                                   {keywordEqual, keywordEqual},
+                                   {keywordRegexp, keywordRegexp},
+                                   {keywordRegex, keywordRegexp},
+                               });
+} // namespace matchKind
+
 } // namespace keyword
 
 #endif

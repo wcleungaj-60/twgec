@@ -1,6 +1,7 @@
 #include "check.h"
 #include "codegen/check.h"
 #include "formatter.h"
+#include "keyword.h"
 #include "utils/utils.h"
 #include <fstream>
 #include <memory>
@@ -22,7 +23,7 @@ void check::CheckString::checkString(std::ofstream &of,
   JsonObjectNode _logiNode = JsonObjectNode("_and_or", "\"\"");
   JsonObjectNode dataNode = JsonObjectNode({
       {"value", defaultMap.get("value")},
-      {"method", defaultMap.get("matchKind")},
+      {"method", defaultMap.get("matchKind", matchKind::keywordEnum)},
       {"str", defaultMap.get("str")},
       {"eventLocal", "\"\""},
       {"_logi", _logiNode.to_string(24)},
