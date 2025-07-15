@@ -38,6 +38,12 @@ public:
   static DefaultMap defaultMap;
   static void setGlobal(ofstream &of, unique_ptr<InstructionNode> &action);
 };
+
+class ActionSetObjectVar {
+public:
+  static DefaultMap defaultMap;
+  static void setObjectVar(ofstream &of, unique_ptr<InstructionNode> &action);
+};
 } // namespace action
 } // namespace codegen
 

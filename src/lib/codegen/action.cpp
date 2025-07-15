@@ -56,6 +56,13 @@ DefaultMap action::ActionSetGlobal::defaultMap = DefaultMap({
     {"value", {AST_INT, CODEGEN_STRING, ""}},
 });
 
+DefaultMap action::ActionSetObjectVar::defaultMap = DefaultMap({
+    {"object", {AST_STRING, CODEGEN_STRING, ""}},
+    {"key", {AST_STRING, CODEGEN_STRING, ""}},
+    {"type", {AST_STRING, CODEGEN_STRING, "string"}},
+    {"value", {AST_INT, CODEGEN_STRING, ""}},
+});
+
 void action::ActionAddActor::addActor(
     std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
   defaultMap.addInputMap(action->named_args);
@@ -199,6 +206,22 @@ void action::ActionSetGlobal::setGlobal(
   });
   JsonObjectNode rootNode = JsonObjectNode({
       {"type", "\"SetGlobal\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
+
+void action::ActionSetObjectVar::setObjectVar(
+    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
+  defaultMap.addInputMap(action->named_args);
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"object", defaultMap.get("object")},
+      {"key", defaultMap.get("key")},
+      {"valueType", defaultMap.get("type", valueType::keywordEnum)},
+      {"value", defaultMap.get("value")},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"SetObjectVar\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);

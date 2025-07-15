@@ -63,12 +63,14 @@ void CodeGenerator::codegenAction(std::ofstream &of,
     return action::ActionAddActor::addActor(of, action);
   if (action->identifier == "addStuff")
     return action::ActionAddStuff::addStuff(of, action);
+  if (action->identifier == "enblastEffect")
+    return action::ActionEnblastEffect::enblastEffect(of, action);
   if (action->identifier == "print")
     return action::ActionConsole::console(of, action);
   if (action->identifier == "setGlobal")
     return action::ActionSetGlobal::setGlobal(of, action);
-  if (action->identifier == "enblastEffect")
-    return action::ActionEnblastEffect::enblastEffect(of, action);
+  if (action->identifier == "setObjectVar")
+    return action::ActionSetObjectVar::setObjectVar(of, action);
   std::cerr << "Codegen error: Cannot found the corresponding action name \""
             << action->identifier << "\" at " << action.get()->loc << "\n";
 }

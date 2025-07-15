@@ -1,0 +1,10 @@
+__schema__ = "https://code.gamelet.com/gassets/schema/events/v1";
+__title__ = "我的任務";
+__map__ = "CG.TWEventsGameTemplate/gamemap.twmap";
+
+block init {
+    actions {
+        addActor(name = "天影武士", camp = "天影", id = "instance");
+        setObjectVar(object = "{instance}", key = "camp", type = "string", value = "skydow");
+    }
+}
