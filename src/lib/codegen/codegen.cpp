@@ -1,6 +1,7 @@
 #include "codegen.h"
 #include "action.h"
 #include "ast.h"
+#include "check.h"
 #include "metadata.h"
 #include "trigger.h"
 #include "utils/utils.h"
@@ -84,7 +85,7 @@ void CodeGenerator::codegenChecks(std::ofstream &of,
   }
   of << std::endl;
   for (auto i = 0; i < checks->instructions.size(); i++) {
-    codegenTrigger(of, checks->instructions[i]);
+    codegenCheck(of, checks->instructions[i]);
     if (i != checks->instructions.size() - 1)
       of << ",";
     of << std::endl;
@@ -94,6 +95,8 @@ void CodeGenerator::codegenChecks(std::ofstream &of,
 
 void CodeGenerator::codegenCheck(std::ofstream &of,
                                  std::unique_ptr<InstructionNode> &action) {
+  if (action->identifier == "checkString")
+    return check::CheckString::checkString(of, action);
   std::cerr << "Codegen error: Cannot found the corresponding check name \""
             << action->identifier << "\" at " << action.get()->loc << "\n";
 }
