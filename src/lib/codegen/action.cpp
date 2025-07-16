@@ -9,6 +9,14 @@ using namespace codegen;
 using namespace formatter;
 using namespace keyword;
 
+DefaultMap action::ActionActorTalk::defaultMap = DefaultMap({
+    {"cleanTalk", {AST_BOOL, CODEGEN_BOOL, "true"}},
+    {"text", {AST_STRING, CODEGEN_STRING, ""}},
+    {"duration", {AST_INT, CODEGEN_STRING, "3000"}},
+    {"wait", {AST_BOOL, CODEGEN_BOOL, "true"}},
+    {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
+});
+
 DefaultMap action::ActionAddActor::defaultMap = DefaultMap({
     {"id", {AST_STRING, CODEGEN_STRING, "ai*"}},
     {"name", {AST_STRING, CODEGEN_STRING, ""}},
@@ -72,6 +80,24 @@ DefaultMap action::ActionSetObjectVar::defaultMap = DefaultMap({
     {"type", {AST_STRING, CODEGEN_STRING, "string"}},
     {"value", {AST_INT, CODEGEN_STRING, ""}},
 });
+
+void action::ActionActorTalk::actorTalk(std::ofstream &of,
+                                    std::unique_ptr<InstructionNode> &action) {
+  defaultMap.addInputMap(action->named_args);
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"cleanTalk", defaultMap.get("cleanTalk")},
+      {"speech", defaultMap.get("text")},
+      {"duration", defaultMap.get("duration")},
+      {"wait", defaultMap.get("wait")},
+      {"waitMore", "\"100\""},
+      {"actorCode", defaultMap.get("actorId")},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"ActorTalk\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
 
 void action::ActionAddActor::addActor(
     std::ofstream &of, std::unique_ptr<InstructionNode> &action) {

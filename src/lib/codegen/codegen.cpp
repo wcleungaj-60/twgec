@@ -60,6 +60,8 @@ void CodeGenerator::codegenActions(std::ofstream &of,
 
 void CodeGenerator::codegenAction(std::ofstream &of,
                                   std::unique_ptr<InstructionNode> &action) {
+  if (action->identifier == "actorTalk")
+    return action::ActionActorTalk::actorTalk(of, action);
   if (action->identifier == "addActor")
     return action::ActionAddActor::addActor(of, action);
   if (action->identifier == "addMapSign")

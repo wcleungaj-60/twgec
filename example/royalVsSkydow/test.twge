@@ -28,6 +28,11 @@ alias addJobMapSign(x, y, rotation, text, buttonCode) {
     addMapSign(x = x, y = y, rotation = rotation, text = text, buttonCode = buttonCode, buttonLabel = "選擇");
 }
 
+alias chooseJob(jobName) {
+    setObjectVar(object = "instance", key = "job", type = "string", value = jobName);
+    actorTalk(actorId = "instance", text = "已選擇職業：{instance.job}");
+}
+
 block init {
     actions {
         setInt("royalHp", 100);
@@ -79,7 +84,7 @@ block chooseJobR1 {
         checkString(value = "{instance.job}", matchKind = "equal", str = "undefined");
     }
     actions {
-        setObjectVar(object = "instance", key = "job", type = "string", value = "守望者");
+        chooseJob("守望者");
         // TODO
     }
 }
@@ -93,7 +98,7 @@ block chooseJobR2 {
         checkString(value = "{instance.job}", matchKind = "equal", str = "undefined");
     }
     actions {
-        setObjectVar(object = "instance", key = "job", type = "string", value = "新兵訓練師");
+        chooseJob("新兵訓練師");
         setInt("royalHp", "{royalHp} + 10");
     }
 }
@@ -107,7 +112,7 @@ block chooseJobS1 {
         checkString(value = "{instance.job}", matchKind = "equal", str = "undefined");
     }
     actions {
-        setObjectVar(object = "instance", key = "job", type = "string", value = "龍騎士");
+        chooseJob("龍騎士");
         // TODO
     }
 }
@@ -121,7 +126,7 @@ block chooseJobS2 {
         checkString(value = "{instance.job}", matchKind = "equal", str = "undefined");
     }
     actions {
-        setObjectVar(object = "instance", key = "job", type = "string", value = "忍者");
+        chooseJob("忍者");
         // TODO
     }
 }

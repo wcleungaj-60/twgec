@@ -78,8 +78,9 @@ bool aliasInling(
     for (auto &arg : callerInstr->named_args)
       callerMap.insert({arg->key, valueNodeClone(arg->valueNode)});
     instructions.erase(pos);
-    for (auto &aliasIns : aliasNode.get()->instructions) {
-      auto clonedIns = aliasIns->clone();
+    for (auto it = aliasNode.get()->instructions.rbegin();
+         it != aliasNode.get()->instructions.rend(); ++it) {
+      auto clonedIns = it->get()->clone();
       for (auto &arg : clonedIns->named_args)
         if (auto *varNode =
                 dynamic_cast<VariableValueNode *>(arg->valueNode.get()))

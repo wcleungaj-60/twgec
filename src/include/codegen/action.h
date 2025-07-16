@@ -9,6 +9,12 @@ namespace action {
 using std::ofstream;
 using std::unique_ptr;
 
+class ActionActorTalk {
+public:
+  static DefaultMap defaultMap;
+  static void actorTalk(ofstream &of, unique_ptr<InstructionNode> &action);
+};
+
 class ActionAddActor {
 public:
   static DefaultMap defaultMap;
