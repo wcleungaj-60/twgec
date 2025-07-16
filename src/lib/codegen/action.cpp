@@ -24,6 +24,16 @@ DefaultMap action::ActionAddActor::defaultMap = DefaultMap({
     {"patrol", {AST_LIST_POINT, CODEGEN_LIST_PATROL, "[]"}},
 });
 
+DefaultMap action::ActionAddMapSign::defaultMap = DefaultMap({
+    {"text", {AST_STRING, CODEGEN_STRING, ""}},
+    {"buttonCode", {AST_STRING, CODEGEN_STRING, ""}},
+    {"buttonLabel", {AST_STRING, CODEGEN_STRING, ""}},
+    {"x", {AST_INT, CODEGEN_STRING, "0"}},
+    {"y", {AST_INT, CODEGEN_STRING, "0"}},
+    {"range", {AST_INT, CODEGEN_STRING, "0"}},
+    {"rotation", {AST_INT, CODEGEN_STRING, "0"}},
+});
+
 DefaultMap action::ActionAddStuff::defaultMap = DefaultMap({
     {"code", {AST_STRING, CODEGEN_STRING, "item*"}},
     {"item", {AST_STRING, CODEGEN_STRING, "magazine"}},
@@ -128,6 +138,48 @@ void action::ActionAddActor::addActor(
   });
   JsonObjectNode rootNode = JsonObjectNode({
       {"type", "\"AddActor\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
+
+void action::ActionAddMapSign::addMapSign(
+    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
+  defaultMap.addInputMap(action->named_args);
+  JsonObjectNode btnNode = JsonObjectNode({
+      {"buttonCode", defaultMap.get("buttonCode")},
+      {"close", "true"},
+      {"label", defaultMap.get("buttonLabel")},
+      {"icon", "\"\""},
+  });
+  JsonArrayNode btnsNode =
+      JsonArrayNode(std::make_shared<JsonObjectNode>(btnNode));
+  JsonObjectNode btnsGroupNode = JsonObjectNode({
+      {"rowSize", "\"1\""},
+      {"btnMinWidth", "\"1\""},
+      {"textAlign", "\"center\""},
+      {"varnameButton", "\"\""},
+      {"btns", btnsNode.to_string(28)},
+  });
+  JsonObjectNode locNode = JsonObjectNode({
+      {"x", defaultMap.get("x")},
+      {"y", defaultMap.get("y")},
+      {"range", defaultMap.get("range")},
+  });
+  JsonArrayNode locsNode =
+      JsonArrayNode(std::make_shared<JsonObjectNode>(locNode));
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"localVarname", "\"\""},
+      {"locs", locsNode.to_string(24)},
+      {"shape", "\"wood\""},
+      {"rotation", defaultMap.get("rotation")},
+      {"speech", defaultMap.get("text")},
+      {"parsePolicy", "\"view\""},
+      {"showButtons", "true"},
+      {"btnsGroup", btnsGroupNode.to_string(24)},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"AddMapSIgn\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);

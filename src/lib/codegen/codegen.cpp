@@ -62,6 +62,8 @@ void CodeGenerator::codegenAction(std::ofstream &of,
                                   std::unique_ptr<InstructionNode> &action) {
   if (action->identifier == "addActor")
     return action::ActionAddActor::addActor(of, action);
+  if (action->identifier == "addMapSign")
+    return action::ActionAddMapSign::addMapSign(of, action);
   if (action->identifier == "addStuff")
     return action::ActionAddStuff::addStuff(of, action);
   if (action->identifier == "enblastEffect")

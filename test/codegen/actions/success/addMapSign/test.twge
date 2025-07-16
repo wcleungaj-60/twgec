@@ -1,0 +1,5 @@
+block init {
+    actions {
+        addMapSign(x = 9, y = 4,text = "新兵訓練官\n我方士兵血量上限+10", buttonCode = "chooseJob1", buttonLabel = "選擇");
+    }
+}

@@ -15,6 +15,13 @@ public:
   static void addActor(ofstream &of, unique_ptr<InstructionNode> &action);
 };
 
+class ActionAddMapSign {
+public:
+  static DefaultMap defaultMap;
+  static void addMapSign(ofstream &of, unique_ptr<InstructionNode> &action);
+};
+
+
 class ActionAddStuff {
 public:
   static DefaultMap defaultMap;

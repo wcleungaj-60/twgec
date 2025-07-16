@@ -24,6 +24,10 @@ alias setNum(key, value) {
     setGlobal(key = key, type = "number", value = value);
 }
 
+alias addJobMapSign(x, y, rotation, text, buttonCode) {
+    addMapSign(x = x, y = y, rotation = rotation, text = text, buttonCode = buttonCode, buttonLabel = "選擇");
+}
+
 block init {
     actions {
         setInt("hp", 100);
@@ -35,6 +39,10 @@ block init {
         addMagazine(20, 15);
         addStuff(item = "snipegun", x = 9, y = 10);
         addStuff(item = "snipegun", x = 20, y = 9);
+        addJobMapSign(27, 17, 0, "【守望者】\n使用防護罩時，恢復30點體力", "chooseJobR1");
+        addJobMapSign(27, 16, 0, "【新兵訓練師】\n我方士兵血量上限加10", "chooseJobR2");
+        addJobMapSign(2, 2, 180, "【龍騎士】\n使用黑龍波時，會額外召喚出一條黑龍波", "chooseJobS1");
+        addJobMapSign(2, 3, 180, "【忍者】\n使用影分身時，會召喚一個持續10秒的100血分身", "chooseJobS2");
     }
 }
 
