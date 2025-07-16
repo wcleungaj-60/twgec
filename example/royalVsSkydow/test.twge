@@ -30,7 +30,8 @@ alias addJobMapSign(x, y, rotation, text, buttonCode) {
 
 block init {
     actions {
-        setInt("hp", 100);
+        setInt("royalHp", 100);
+        setInt("skydowHp", 100);
         addSniper("天影", "天影武士1", 11, 7);
         addSniper("皇家", "皇家機械人", 18, 12);
         addCamp("天影", 9, 6);
@@ -51,9 +52,10 @@ block spawn {
     __repeat__ = 9999;
     __repeatInterval__ = 10000;
     actions {
-        addActor(name = "天影士兵({hp})", camp = "天影", hp = "{hp}", x = 1, y = 1, role = "天影士兵", patrol = [(14,1),(15,18)]);
-        addActor(name = "皇家士兵({hp})", camp = "皇家", hp = "{hp}", x = 28, y = 18, role = "皇家士兵", patrol = [(15,18),(14,1)]);
-        setInt("hp", "{hp} + 1");
+        addActor(name = "天影士兵({skydowHp})", camp = "天影", hp = "{skydowHp}", x = 1, y = 1, role = "天影士兵", patrol = [(14,1),(15,18)]);
+        addActor(name = "皇家士兵({royalHp})", camp = "皇家", hp = "{royalHp}", x = 28, y = 18, role = "皇家士兵", patrol = [(15,18),(14,1)]);
+        setInt("skydowHp", "{skydowHp} + 1");
+        setInt("royalHp", "{royalHp} + 1");
     }
 }
 
@@ -65,5 +67,61 @@ block sniperAttack {
     actions {
         setNum("angle", "{instance.bodyRotation}*180/3.14");
         enblastEffect(fromActor = "{instance}", toAngle = "{angle}");
+    }
+}
+
+block chooseJobR1 {
+    __repeat__ = 9999;
+    triggers {
+        clickButton(varName = "instance", buttonId = "chooseJobR1");
+    }
+    checks {
+        checkString(value = "{instance.job}", matchKind = "equal", str = "undefined");
+    }
+    actions {
+        setObjectVar(object = "instance", key = "job", type = "string", value = "守望者");
+        // TODO
+    }
+}
+
+block chooseJobR2 {
+    __repeat__ = 9999;
+    triggers {
+        clickButton(varName = "instance", buttonId = "chooseJobR2");
+    }
+    checks {
+        checkString(value = "{instance.job}", matchKind = "equal", str = "undefined");
+    }
+    actions {
+        setObjectVar(object = "instance", key = "job", type = "string", value = "新兵訓練師");
+        setInt("royalHp", "{royalHp} + 10");
+    }
+}
+
+block chooseJobS1 {
+    __repeat__ = 9999;
+    triggers {
+        clickButton(varName = "instance", buttonId = "chooseJobS1");
+    }
+    checks {
+        checkString(value = "{instance.job}", matchKind = "equal", str = "undefined");
+    }
+    actions {
+        setObjectVar(object = "instance", key = "job", type = "string", value = "龍騎士");
+        // TODO
+    }
+}
+
+block chooseJobS2 {
+    __repeat__ = 9999;
+    triggers {
+        clickButton(varName = "instance", buttonId = "chooseJobS2");
+    }
+    checks {
+        checkString(value = "{instance.job}", matchKind = "equal", str = "undefined");
+    }
+    actions {
+        setObjectVar(object = "instance", key = "job", type = "string", value = "忍者");
+        // TODO
     }
 }

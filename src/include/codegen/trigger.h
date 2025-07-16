@@ -11,6 +11,13 @@ public:
   static void actorFire(std::ofstream &of,
                         std::unique_ptr<InstructionNode> &trigger);
 };
+
+class TriggerClickButton {
+public:
+  static DefaultMap defaultMap;
+  static void clickButton(std::ofstream &of,
+                        std::unique_ptr<InstructionNode> &trigger);
+};
 } // namespace trigger
 } // namespace codegen
 

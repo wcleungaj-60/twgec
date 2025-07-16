@@ -129,7 +129,7 @@
                 {
                     "type": "SetObjectVar",
                     "data": {
-                        "object": "{instance}",
+                        "objectId": "{instance}",
                         "key": "camp",
                         "valueType": "string",
                         "value": "skydow"

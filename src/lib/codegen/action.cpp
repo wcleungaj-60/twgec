@@ -267,7 +267,7 @@ void action::ActionSetObjectVar::setObjectVar(
     std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
-      {"object", defaultMap.get("object")},
+      {"objectId", defaultMap.get("object")},
       {"key", defaultMap.get("key")},
       {"valueType", defaultMap.get("type", valueType::keywordEnum)},
       {"value", defaultMap.get("value")},

@@ -124,6 +124,8 @@ void CodeGenerator::codegenTrigger(std::ofstream &of,
                                    std::unique_ptr<InstructionNode> &action) {
   if (action->identifier == "actorFire")
     return trigger::TriggerActorFire::actorFire(of, action);
+  if (action->identifier == "clickButton")
+    return trigger::TriggerClickButton::clickButton(of, action);
   std::cerr << "Codegen error: Cannot found the corresponding trigger name \""
             << action->identifier << "\" at " << action.get()->loc << "\n";
 }

@@ -16,6 +16,13 @@ DefaultMap trigger::TriggerActorFire::defaultMap = DefaultMap({
     {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
 });
 
+DefaultMap trigger::TriggerClickButton::defaultMap = DefaultMap({
+    {"buttonId", {AST_STRING, CODEGEN_STRING, ""}},
+    {"matchKind", {AST_STRING, CODEGEN_STRING, "contain"}},
+    {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
+    {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
+});
+
 void trigger::TriggerActorFire::actorFire(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
   defaultMap.addInputMap(trigger->named_args);
@@ -42,6 +49,38 @@ void trigger::TriggerActorFire::actorFire(
   });
   JsonObjectNode rootNode = JsonObjectNode({
       {"type", "\"ActorFire\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
+
+void trigger::TriggerClickButton::clickButton(
+    std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
+  defaultMap.addInputMap(trigger->named_args);
+  JsonObjectNode actorCodeNode = JsonObjectNode({
+      {"method", defaultMap.get("matchKind", matchKind::keywordEnum)},
+      {"actorCode", defaultMap.get("actorId")},
+  });
+  JsonArrayNode actorCodesNode =
+      JsonArrayNode(std::make_shared<JsonObjectNode>(actorCodeNode));
+  JsonObjectNode campNode = JsonObjectNode("campAll", "true");
+  JsonObjectNode actorMatchNode = JsonObjectNode({
+      {"actorCodes", actorCodesNode.to_string(32)},
+      {"brain", "\"all\""},
+      {"camp", campNode.to_string(32)},
+      {"excludeActorCodes", "[]"},
+  });
+  JsonArrayNode actorMatchesNode =
+      JsonArrayNode(std::make_shared<JsonObjectNode>(actorMatchNode));
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"actorMatches", actorMatchesNode.to_string(24)},
+      {"varname", defaultMap.get("varName")},
+      {"checkButtoncode", "true"},
+      {"buttonCode", defaultMap.get("buttonId")},
+      {"varnameDevice", "\"\""},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"TalkButton\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
