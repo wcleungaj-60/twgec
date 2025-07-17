@@ -357,6 +357,150 @@ static KeywordEnum keywordEnum("match kind",
                                });
 } // namespace matchKind
 
+namespace ability {
+const std::string keywordEnblastShield = "enblastShield";
+const std::string keywordWarp = "warp";
+const std::string keywordBugform = "bugform";
+const std::string keywordGiant = "giant";
+const std::string keywordShrink = "shrink";
+const std::string keywordShocked = "shocked";
+const std::string keywordAnaestheticShot = "anaestheticShot";
+const std::string keywordDizzy = "dizzy";
+const std::string keywordDrain = "drain";
+const std::string keywordFireShield = "fireShield";
+const std::string keywordHiddenEyes = "hiddenEyes";
+const std::string keywordHelong = "helong";
+const std::string keywordIceShocked = "iceShocked";
+const std::string keywordJump = "jump";
+const std::string keywordNinjatsu = "ninjatsu";
+const std::string keywordNunchakuPower = "nunchakuPower";
+const std::string keywordRaged = "raged";
+const std::string keywordRebirth = "rebirth";
+const std::string keywordShield = "shield";
+const std::string keywordEagleEyes = "eagleEyes";
+const std::string keywordShieldRepair = "shieldRepair";
+const std::string keywordShieldWave = "shieldWave";
+const std::string keywordTornado = "tornado";
+const std::string keywordTornadoUp = "tornadoUp";
+const std::string keywordZombie = "zombie";
+const std::string keywordSkeleton = "skeleton";
+const std::string keywordTreeman = "treeman";
+const std::string keywordSoulsplit = "soulsplit";
+const std::string keywordDazed = "dazed";
+const std::string keywordAxeWhirl = "axeWhirl";
+const std::string keywordSurroundFrisbee = "surroundFrisbee";
+const std::string keywordNineDragons = "nineDragons";
+const std::string keywordSkyJumps = "skyJumps";
+const std::string keywordDarkRainstorm = "darkRainstorm";
+const std::string keywordEnblastShieldZh = "光牙風甲";
+const std::string keywordWarpZh = "閃現術";
+const std::string keywordBugformZh = "蟲化術";
+const std::string keywordGiantZh = "巨人術";
+const std::string keywordShrinkZh = "縮骨功";
+const std::string keywordShockedZh = "被震暈";
+const std::string keywordAnaestheticShotZh = "被麻醉";
+const std::string keywordDizzyZh = "暈眩";
+const std::string keywordDrainZh = "吸血術";
+const std::string keywordFireShieldZh = "天火護甲";
+const std::string keywordHiddenEyesZh = "天隱之眼";
+const std::string keywordHelongZh = "黑龍領主";
+const std::string keywordIceShockedZh = "被冰凍";
+const std::string keywordJumpZh = "輕功跳躍";
+const std::string keywordNinjatsuZh = "分身術";
+const std::string keywordNunchakuPowerZh = "雙刃亂舞";
+const std::string keywordRagedZh = "血刃";
+const std::string keywordRebirthZh = "爆血轉生";
+const std::string keywordShieldZh = "防護罩";
+const std::string keywordEagleEyesZh = "鷹眼";
+const std::string keywordShieldRepairZh = "修復盾牌";
+const std::string keywordShieldWaveZh = "盾衝擊波";
+const std::string keywordTornadoZh = "真氣風暴";
+const std::string keywordTornadoUpZh = "被真氣風暴捲入";
+const std::string keywordZombieZh = "噬魂秘藥";
+const std::string keywordSkeletonZh = "響骨衣";
+const std::string keywordTreemanZh = "樹人";
+const std::string keywordSoulsplitZh = "靈魂出竅";
+const std::string keywordDazedZh = "眼冒金星";
+const std::string keywordAxeWhirlZh = "旋風斧";
+const std::string keywordSurroundFrisbeeZh = "護身迴旋鏢";
+const std::string keywordNineDragonsZh = "九龍閃";
+const std::string keywordSkyJumpsZh = "影天縱";
+const std::string keywordDarkRainstormZh = "黑炎暴雨";
+
+static KeywordEnum
+    keywordEnum("ability",
+                {
+                    {keywordEnblastShield, keywordEnblastShield},
+                    {keywordWarp, keywordWarp},
+                    {keywordBugform, keywordBugform},
+                    {keywordGiant, keywordGiant},
+                    {keywordShrink, keywordShrink},
+                    {keywordShocked, keywordShocked},
+                    {keywordAnaestheticShot, keywordAnaestheticShot},
+                    {keywordDizzy, keywordDizzy},
+                    {keywordDrain, keywordDrain},
+                    {keywordFireShield, keywordFireShield},
+                    {keywordHiddenEyes, keywordHiddenEyes},
+                    {keywordHelong, keywordHelong},
+                    {keywordIceShocked, keywordIceShocked},
+                    {keywordJump, keywordJump},
+                    {keywordNinjatsu, keywordNinjatsu},
+                    {keywordNunchakuPower, keywordNunchakuPower},
+                    {keywordRaged, keywordRaged},
+                    {keywordRebirth, keywordRebirth},
+                    {keywordShield, keywordShield},
+                    {keywordEagleEyes, keywordEagleEyes},
+                    {keywordShieldRepair, keywordShieldRepair},
+                    {keywordShieldWave, keywordShieldWave},
+                    {keywordTornado, keywordTornado},
+                    {keywordTornadoUp, keywordTornadoUp},
+                    {keywordZombie, keywordZombie},
+                    {keywordSkeleton, keywordSkeleton},
+                    {keywordTreeman, keywordTreeman},
+                    {keywordSoulsplit, keywordSoulsplit},
+                    {keywordDazed, keywordDazed},
+                    {keywordAxeWhirl, keywordAxeWhirl},
+                    {keywordSurroundFrisbee, keywordSurroundFrisbee},
+                    {keywordNineDragons, keywordNineDragons},
+                    {keywordSkyJumps, keywordSkyJumps},
+                    {keywordDarkRainstorm, keywordDarkRainstorm},
+                    {keywordEnblastShieldZh, keywordEnblastShield},
+                    {keywordWarpZh, keywordWarp},
+                    {keywordBugformZh, keywordBugform},
+                    {keywordGiantZh, keywordGiant},
+                    {keywordShrinkZh, keywordShrink},
+                    {keywordShockedZh, keywordShocked},
+                    {keywordAnaestheticShotZh, keywordAnaestheticShot},
+                    {keywordDizzyZh, keywordDizzy},
+                    {keywordDrainZh, keywordDrain},
+                    {keywordFireShieldZh, keywordFireShield},
+                    {keywordHiddenEyesZh, keywordHiddenEyes},
+                    {keywordHelongZh, keywordHelong},
+                    {keywordIceShockedZh, keywordIceShocked},
+                    {keywordJumpZh, keywordJump},
+                    {keywordNinjatsuZh, keywordNinjatsu},
+                    {keywordNunchakuPowerZh, keywordNunchakuPower},
+                    {keywordRagedZh, keywordRaged},
+                    {keywordRebirthZh, keywordRebirth},
+                    {keywordShieldZh, keywordShield},
+                    {keywordEagleEyesZh, keywordEagleEyes},
+                    {keywordShieldRepairZh, keywordShieldRepair},
+                    {keywordShieldWaveZh, keywordShieldWave},
+                    {keywordTornadoZh, keywordTornado},
+                    {keywordTornadoUpZh, keywordTornadoUp},
+                    {keywordZombieZh, keywordZombie},
+                    {keywordSkeletonZh, keywordSkeleton},
+                    {keywordTreemanZh, keywordTreeman},
+                    {keywordSoulsplitZh, keywordSoulsplit},
+                    {keywordDazedZh, keywordDazed},
+                    {keywordAxeWhirlZh, keywordAxeWhirl},
+                    {keywordSurroundFrisbeeZh, keywordSurroundFrisbee},
+                    {keywordNineDragonsZh, keywordNineDragons},
+                    {keywordSkyJumpsZh, keywordSkyJumps},
+                    {keywordDarkRainstormZh, keywordDarkRainstorm},
+                });
+} // namespace ability
+
 } // namespace keyword
 
 #endif

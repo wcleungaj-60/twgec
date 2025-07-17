@@ -18,6 +18,13 @@ public:
   static void clickButton(std::ofstream &of,
                         std::unique_ptr<InstructionNode> &trigger);
 };
+
+class TriggerReleasePower {
+public:
+  static DefaultMap defaultMap;
+  static void releasePower(std::ofstream &of,
+                        std::unique_ptr<InstructionNode> &trigger);
+};
 } // namespace trigger
 } // namespace codegen
 
