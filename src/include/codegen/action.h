@@ -40,6 +40,12 @@ public:
   static void console(ofstream &of, unique_ptr<InstructionNode> &action);
 };
 
+class ActionDeltaHp {
+public:
+  static DefaultMap defaultMap;
+  static void deltaHp(ofstream &of, unique_ptr<InstructionNode> &action);
+};
+
 class ActionEnblastEffect {
 public:
   static DefaultMap defaultMap;

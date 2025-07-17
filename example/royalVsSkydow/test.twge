@@ -85,7 +85,6 @@ block chooseJobR1 {
     }
     actions {
         chooseJob("守望者");
-        // TODO
     }
 }
 
@@ -128,5 +127,18 @@ block chooseJobS2 {
     actions {
         chooseJob("忍者");
         // TODO
+    }
+}
+
+block releasePowerR1 {
+    __repeat__ = 9999;
+    triggers {
+        releasePower(varName = "instance", ability = "防護罩");
+    }
+    checks {
+        checkString(value = "{instance.job}", matchKind = "equal", str = "守望者");
+    }
+    actions {
+        deltaHp(actorCode = "instance", value = 30);
     }
 }

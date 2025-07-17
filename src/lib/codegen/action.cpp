@@ -1,6 +1,7 @@
 #include "codegen/action.h"
 #include "formatter.h"
 #include "keyword.h"
+#include "transformer.h"
 #include "utils/utils.h"
 #include <fstream>
 #include <unordered_map>
@@ -56,6 +57,13 @@ DefaultMap action::ActionAddStuff::defaultMap = DefaultMap({
 DefaultMap action::ActionConsole::defaultMap = DefaultMap({
     {"type", {AST_STRING, CODEGEN_STRING, "log"}},
     {"text", {AST_STRING, CODEGEN_STRING, ""}},
+});
+
+DefaultMap action::ActionDeltaHp::defaultMap = DefaultMap({
+    {"actorCode", {AST_STRING, CODEGEN_STRING, ""}},
+    {"type", {AST_STRING, CODEGEN_STRING, "heal"}},
+    {"value", {AST_INT, CODEGEN_STRING, ""}},
+    {"casterCode", {AST_STRING, CODEGEN_STRING, ""}},
 });
 
 DefaultMap action::ActionEnblastEffect::defaultMap = DefaultMap({
@@ -246,6 +254,22 @@ void action::ActionConsole::console(std::ofstream &of,
   });
   JsonObjectNode rootNode = JsonObjectNode({
       {"type", "\"Console\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
+
+void action::ActionDeltaHp::deltaHp(std::ofstream &of,
+                                    std::unique_ptr<InstructionNode> &action) {
+  defaultMap.addInputMap(action->named_args);
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"actorCode", defaultMap.get("actorCode")},
+      {"deltaType", defaultMap.get("type")},
+      {"hp", defaultMap.get("value")},
+      {"casterCode", defaultMap.get("casterCode")},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"DeltaHp\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
