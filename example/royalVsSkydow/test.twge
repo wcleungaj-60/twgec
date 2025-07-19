@@ -105,7 +105,6 @@ block chooseJobS1 {
     }
     actions {
         chooseJob("龍騎士");
-        // TODO
     }
 }
 
@@ -119,7 +118,6 @@ block chooseJobS2 {
     }
     actions {
         chooseJob("忍者");
-        // TODO
     }
 }
 
@@ -133,5 +131,27 @@ block releasePowerR1 {
     }
     actions {
         deltaHp(actorCode = "instance", value = 30);
+    }
+}
+
+block releasePowerS1 {
+    __repeat__ = 9999;
+    // TODO
+}
+
+block releasePowerS2 {
+    __repeat__ = 9999;
+    triggers {
+        releasePower(varName = "instance", ability = "分身術");
+    }
+    checks {
+        checkString(value = "{instance.job}", matchKind = "equal", str = "忍者");
+    }
+    actions {
+        setNum("tempX", "{instance.x}/32");
+        setNum("tempY", "{instance.y}/32");
+        addActor(name = "分身", localVarname = "actor", camp = "天影", hp = 100, x = "{tempX}", y = "{tempY}", weapon1 = "爪子", weapon2 = "步槍", role = "天影武士1");
+        wait(duration = 10000);
+        actorDisappear(actorId = "actor");
     }
 }

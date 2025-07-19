@@ -9,6 +9,12 @@ namespace action {
 using std::ofstream;
 using std::unique_ptr;
 
+class ActionActorDisappear {
+public:
+  static DefaultMap defaultMap;
+  static void actorDisappear(ofstream &of, unique_ptr<InstructionNode> &action);
+};
+
 class ActionActorTalk {
 public:
   static DefaultMap defaultMap;
@@ -26,7 +32,6 @@ public:
   static DefaultMap defaultMap;
   static void addMapSign(ofstream &of, unique_ptr<InstructionNode> &action);
 };
-
 
 class ActionAddStuff {
 public:
@@ -63,6 +68,13 @@ public:
   static DefaultMap defaultMap;
   static void setObjectVar(ofstream &of, unique_ptr<InstructionNode> &action);
 };
+
+class ActionWait {
+public:
+  static DefaultMap defaultMap;
+  static void wait(ofstream &of, unique_ptr<InstructionNode> &action);
+};
+
 } // namespace action
 } // namespace codegen
 

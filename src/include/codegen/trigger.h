@@ -5,6 +5,7 @@
 
 namespace codegen {
 namespace trigger {
+
 class TriggerActorFire {
 public:
   static DefaultMap defaultMap;
@@ -16,15 +17,16 @@ class TriggerClickButton {
 public:
   static DefaultMap defaultMap;
   static void clickButton(std::ofstream &of,
-                        std::unique_ptr<InstructionNode> &trigger);
+                          std::unique_ptr<InstructionNode> &trigger);
 };
 
 class TriggerReleasePower {
 public:
   static DefaultMap defaultMap;
   static void releasePower(std::ofstream &of,
-                        std::unique_ptr<InstructionNode> &trigger);
+                           std::unique_ptr<InstructionNode> &trigger);
 };
+
 } // namespace trigger
 } // namespace codegen
 

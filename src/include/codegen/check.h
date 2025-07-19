@@ -5,13 +5,15 @@
 
 namespace codegen {
 namespace check {
+
 class CheckString {
 public:
   static DefaultMap defaultMap;
   static void checkString(std::ofstream &of,
-                        std::unique_ptr<InstructionNode> &check);
+                          std::unique_ptr<InstructionNode> &check);
 };
-} // namespace trigger
+
+} // namespace check
 } // namespace codegen
 
 #endif

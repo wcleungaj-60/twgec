@@ -10,6 +10,12 @@ using namespace codegen;
 using namespace formatter;
 using namespace keyword;
 
+DefaultMap action::ActionActorDisappear::defaultMap = DefaultMap({
+    {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
+    {"duration", {AST_INT, CODEGEN_STRING, "600"}},
+    {"delay", {AST_INT, CODEGEN_STRING, "0"}},
+});
+
 DefaultMap action::ActionActorTalk::defaultMap = DefaultMap({
     {"cleanTalk", {AST_BOOL, CODEGEN_BOOL, "true"}},
     {"text", {AST_STRING, CODEGEN_STRING, ""}},
@@ -24,6 +30,7 @@ DefaultMap action::ActionAddActor::defaultMap = DefaultMap({
     {"camp", {AST_STRING, CODEGEN_STRING, "skydow"}},
     {"weapon1", {AST_STRING, CODEGEN_STRING, "default"}},
     {"weapon2", {AST_STRING, CODEGEN_STRING, "default"}},
+    {"localVarname", {AST_STRING, CODEGEN_STRING, "actor"}},
     {"x", {AST_INT, CODEGEN_STRING, "0"}},
     {"y", {AST_INT, CODEGEN_STRING, "0"}},
     {"hp", {AST_INT, CODEGEN_STRING, "100"}},
@@ -89,8 +96,27 @@ DefaultMap action::ActionSetObjectVar::defaultMap = DefaultMap({
     {"value", {AST_INT, CODEGEN_STRING, ""}},
 });
 
-void action::ActionActorTalk::actorTalk(std::ofstream &of,
-                                    std::unique_ptr<InstructionNode> &action) {
+DefaultMap action::ActionWait::defaultMap = DefaultMap({
+    {"duration", {AST_INT, CODEGEN_STRING, "0"}},
+});
+
+void action::ActionActorDisappear::actorDisappear(
+    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
+  defaultMap.addInputMap(action->named_args);
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"actorCode", defaultMap.get("actorId")},
+      {"duration", defaultMap.get("duration")},
+      {"delay", defaultMap.get("delay")},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"ActorDisappear\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
+
+void action::ActionActorTalk::actorTalk(
+    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"cleanTalk", defaultMap.get("cleanTalk")},
@@ -167,7 +193,7 @@ void action::ActionAddActor::addActor(
       {"bornLockDuration", "\"1000\""},
       {"bornEffect", "\"none\""},
       {"bornAnim", "\"fadein\""},
-      {"localVarname", "\"actor\""},
+      {"localVarname", defaultMap.get("localVarname")},
       {"globalVarname", "\"\""},
   });
   JsonObjectNode rootNode = JsonObjectNode({
@@ -324,6 +350,19 @@ void action::ActionSetObjectVar::setObjectVar(
   });
   JsonObjectNode rootNode = JsonObjectNode({
       {"type", "\"SetObjectVar\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
+
+void action::ActionWait::wait(
+    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
+  defaultMap.addInputMap(action->named_args);
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"duration", defaultMap.get("duration")},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"Wait\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);

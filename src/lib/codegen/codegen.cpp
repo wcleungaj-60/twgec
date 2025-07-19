@@ -60,6 +60,8 @@ void CodeGenerator::codegenActions(std::ofstream &of,
 
 void CodeGenerator::codegenAction(std::ofstream &of,
                                   std::unique_ptr<InstructionNode> &action) {
+  if (action->identifier == "actorDisappear")
+    return action::ActionActorDisappear::actorDisappear(of, action);
   if (action->identifier == "actorTalk")
     return action::ActionActorTalk::actorTalk(of, action);
   if (action->identifier == "addActor")
@@ -78,6 +80,8 @@ void CodeGenerator::codegenAction(std::ofstream &of,
     return action::ActionSetGlobal::setGlobal(of, action);
   if (action->identifier == "setObjectVar")
     return action::ActionSetObjectVar::setObjectVar(of, action);
+  if (action->identifier == "wait")
+    return action::ActionWait::wait(of, action);
   std::cerr << "Codegen error: Cannot found the corresponding action name \""
             << action->identifier << "\" at " << action.get()->loc << "\n";
 }
