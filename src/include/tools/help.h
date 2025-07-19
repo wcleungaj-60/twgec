@@ -26,6 +26,7 @@ Supported Checks:
     checkString     比對字串
 
 Supported Triggers:
+    actorDead       角色死亡
     actorFire       角色發動攻擊
     clickButton     告示牌按鈕
     releasePower    發動技能

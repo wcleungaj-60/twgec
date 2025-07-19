@@ -10,6 +10,15 @@ using namespace codegen;
 using namespace formatter;
 using namespace keyword;
 
+DefaultMap trigger::TriggerActorDead::defaultMap = DefaultMap(
+    {
+        {"matchKind", {AST_STRING, CODEGEN_STRING, "contain"}},
+        {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
+        {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
+        {"hitterVarName", {AST_STRING, CODEGEN_STRING, ""}},
+    },
+    "actorDead");
+
 DefaultMap trigger::TriggerActorFire::defaultMap = DefaultMap(
     {
         {"matchKind", {AST_STRING, CODEGEN_STRING, "contain"}},
@@ -36,6 +45,39 @@ DefaultMap trigger::TriggerReleasePower::defaultMap = DefaultMap(
         {"weapon", {AST_STRING, CODEGEN_STRING, ""}},
     },
     "releasePower");
+
+void trigger::TriggerActorDead::method(
+    std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
+  defaultMap.addInputMap(trigger->named_args);
+  JsonObjectNode actorCodeNode = JsonObjectNode({
+      {"method", defaultMap.get("matchKind", matchKind::keywordEnum)},
+      {"actorCode", defaultMap.get("actorId")},
+  });
+  JsonArrayNode actorCodesNode =
+      JsonArrayNode(std::make_shared<JsonObjectNode>(actorCodeNode));
+  JsonObjectNode campNode = JsonObjectNode("campAll", "true");
+  JsonObjectNode actorMatchNode = JsonObjectNode({
+      {"actorCodes", actorCodesNode.to_string(32)},
+      {"brain", "\"all\""},
+      {"camp", campNode.to_string(32)},
+      {"excludeActorCodes", "[]"},
+  });
+  JsonArrayNode actorMatchesNode =
+      JsonArrayNode(std::make_shared<JsonObjectNode>(actorMatchNode));
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"actorMatches", actorMatchesNode.to_string(24)},
+      {"varname", defaultMap.get("varName")},
+      {"timing", "\"over\""},
+      {"deathsVarname", "\"deaths\""},
+      {"hitterMatches", "[]"},
+      {"hitterVarname", defaultMap.get("hitterVarName")},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"ActorDead\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
 
 void trigger::TriggerActorFire::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {

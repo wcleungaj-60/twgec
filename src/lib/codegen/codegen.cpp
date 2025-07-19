@@ -138,6 +138,7 @@ void CodeGenerator::codegenCheck(std::ofstream &of,
 
 void CodeGenerator::codegenTrigger(std::ofstream &of,
                                    std::unique_ptr<InstructionNode> &trigger) {
+  CODEGEN_TRIGGER("actorDead", ActorDead);
   CODEGEN_TRIGGER("actorFire", ActorFire);
   CODEGEN_TRIGGER("clickButton", ClickButton);
   CODEGEN_TRIGGER("releasePower", ReleasePower);

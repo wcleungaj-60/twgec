@@ -14,6 +14,7 @@ namespace trigger {
                        std::unique_ptr<InstructionNode> &action);              \
   };
 
+REGISTER_CODE_GEN_TRIGGER(ActorDead);
 REGISTER_CODE_GEN_TRIGGER(ActorFire);
 REGISTER_CODE_GEN_TRIGGER(ClickButton);
 REGISTER_CODE_GEN_TRIGGER(ReleasePower);
