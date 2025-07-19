@@ -2,6 +2,7 @@ __skydowLocs__ = [(7,1)];
 __royalLocs__ = [(22,18)];
 __thirdLocs__ = [(28,1),(1,28)];
 __title__ = "皇家天影之爭";
+__useDefaultItems__ = true;
 __map__ = "CG.TWEventsGameTemplate/gamemap.twmap";
 
 alias addSniper(camp, role, x, y) {
@@ -10,10 +11,6 @@ alias addSniper(camp, role, x, y) {
 
 alias addCamp(camp, x, y) {
     addActor(name = "軍營(500)", id = "sniper*", camp = camp, hp = 500, x = x, y = y, range = 0, weapon1 = "拳頭", weapon2 = "拳頭", externRole = "TWilightGameEventCompiler.character_camp");
-}
-
-alias addMagazine(x, y) {
-    addStuff(item = "magazine", refill = true, refillInterval = 10000, x = x, y = y);
 }
 
 alias setInt(key, value) {
@@ -41,10 +38,6 @@ block init {
         addSniper("皇家", "皇家機械人", 18, 12);
         addCamp("天影", 9, 6);
         addCamp("皇家", 20, 13);
-        addMagazine(9, 4);
-        addMagazine(20, 15);
-        addStuff(item = "snipegun", x = 9, y = 10);
-        addStuff(item = "snipegun", x = 20, y = 9);
         addJobMapSign(27, 17, 0, "【守望者】\n使用防護罩時，恢復30點體力", "chooseJobR1");
         addJobMapSign(27, 16, 0, "【新兵訓練師】\n我方士兵血量上限加10", "chooseJobR2");
         addJobMapSign(2, 2, 180, "【龍騎士】\n使用黑龍波時，會額外召喚出一條黑龍波", "chooseJobS1");
