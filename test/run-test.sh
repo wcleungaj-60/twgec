@@ -1,3 +1,4 @@
+BUILD_DIR="build"
 TEST_DIR="test"
 SMOKE_DIR="example"
 
@@ -6,7 +7,7 @@ unit_test() {
     local test_file="$1/test.twge"
     local test_result="$1/output.events"
     local test_error="$1/error.log"
-    twgec $test_file 2> error.log
+    $BUILD_DIR/twgec $test_file 2> error.log
     if [[ -s "$test_file" ]]; then
         if [[ -s $test_error ]] &&  [[ ! -s $test_result ]]; then
             if diff error.log $test_error ; then
@@ -36,7 +37,7 @@ unit_test() {
 
 smoke_test() {
     local input_file="$1"
-    twgec "$input_file" 2> error.log
+    $BUILD_DIR/twgec "$input_file" 2> error.log
     if [[ ! -s error.log ]]; then
         echo "twge test success:    $input_file"
     else
