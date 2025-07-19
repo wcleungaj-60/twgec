@@ -28,6 +28,7 @@ DefaultMap trigger::TriggerReleasePower::defaultMap = DefaultMap({
     {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
     {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
     {"ability", {AST_STRING, CODEGEN_STRING, ""}},
+    {"weapon", {AST_STRING, CODEGEN_STRING, ""}},
 });
 
 void trigger::TriggerActorFire::actorFire(
@@ -97,6 +98,7 @@ void trigger::TriggerReleasePower::releasePower(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
   defaultMap.addInputMap(trigger->named_args);
   std::string ability = defaultMap.get("ability", ability::keywordEnum);
+  std::string weaponType = defaultMap.get("weapon", weapon::keywordEnum);
 
   JsonObjectNode actorCodeNode = JsonObjectNode({
       {"method", defaultMap.get("matchKind", matchKind::keywordEnum)},
@@ -125,6 +127,9 @@ void trigger::TriggerReleasePower::releasePower(
   if (ability != "\"\"")
     dataNode.addNode("checkAbility", "true")
         .addNode("ability", abilityNode.to_string(24));
+  if (weaponType != "\"\"")
+    dataNode.addNode("checkWeaponType", "true")
+        .addNode("weaponType", weaponType);
 
   JsonObjectNode rootNode = JsonObjectNode({
       {"type", "\"ReleasePower\""},

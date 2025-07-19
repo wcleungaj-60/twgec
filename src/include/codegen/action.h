@@ -57,6 +57,12 @@ public:
   static void enblastEffect(ofstream &of, unique_ptr<InstructionNode> &action);
 };
 
+class ActionLongBo {
+public:
+  static DefaultMap defaultMap;
+  static void longBo(ofstream &of, unique_ptr<InstructionNode> &action);
+};
+
 class ActionSetGlobal {
 public:
   static DefaultMap defaultMap;

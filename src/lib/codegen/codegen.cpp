@@ -70,10 +70,12 @@ void CodeGenerator::codegenAction(std::ofstream &of,
     return action::ActionAddMapSign::addMapSign(of, action);
   if (action->identifier == "addStuff")
     return action::ActionAddStuff::addStuff(of, action);
-  if (action->identifier == "enblastEffect")
-    return action::ActionEnblastEffect::enblastEffect(of, action);
   if (action->identifier == "deltaHp")
     return action::ActionDeltaHp::deltaHp(of, action);
+  if (action->identifier == "enblastEffect")
+    return action::ActionEnblastEffect::enblastEffect(of, action);
+  if (action->identifier == "longBo")
+    return action::ActionLongBo::longBo(of, action);
   if (action->identifier == "print")
     return action::ActionConsole::console(of, action);
   if (action->identifier == "setGlobal")

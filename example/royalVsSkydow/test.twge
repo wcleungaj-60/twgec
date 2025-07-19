@@ -136,7 +136,15 @@ block releasePowerR1 {
 
 block releasePowerS1 {
     __repeat__ = 9999;
-    // TODO
+    triggers {
+        releasePower(varName = "instance", weapon = "大刀");
+    }
+    checks {
+        checkString(value = "{instance.job}", matchKind = "equal", str = "龍騎士");
+    }
+    actions {
+        longBo(actorCode = "instance");
+    }
 }
 
 block releasePowerS2 {

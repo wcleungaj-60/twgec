@@ -83,6 +83,10 @@ DefaultMap action::ActionEnblastEffect::defaultMap = DefaultMap({
     {"speed", {AST_INT, CODEGEN_STRING, "0.7"}},
 });
 
+DefaultMap action::ActionLongBo::defaultMap = DefaultMap({
+    {"actorCode", {AST_STRING, CODEGEN_STRING, ""}},
+});
+
 DefaultMap action::ActionSetGlobal::defaultMap = DefaultMap({
     {"key", {AST_STRING, CODEGEN_STRING, ""}},
     {"type", {AST_STRING, CODEGEN_STRING, "string"}},
@@ -324,6 +328,29 @@ void action::ActionEnblastEffect::enblastEffect(
   of << inden(16) << rootNode.to_string(16);
 }
 
+void action::ActionLongBo::longBo(std::ofstream &of,
+                                  std::unique_ptr<InstructionNode> &action) {
+  defaultMap.addInputMap(action->named_args);
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"posType", "\"actor\""},
+      {"actorCode", defaultMap.get("actorCode")},
+      {"alive", "true"},
+      {"longBoType", "\"he\""},
+      {"moveType", "\"path\""},
+      {"setRotation", "\"default\""},
+      {"pathLen", "\"40\""},
+      {"maxTurns", "\"5\""},
+      {"headScale", "\"1\""},
+      {"tailScale", "\"1\""},
+      {"speed", "\"1\""},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"Longbo\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
+
 void action::ActionSetGlobal::setGlobal(
     std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
   defaultMap.addInputMap(action->named_args);
@@ -355,8 +382,8 @@ void action::ActionSetObjectVar::setObjectVar(
   of << inden(16) << rootNode.to_string(16);
 }
 
-void action::ActionWait::wait(
-    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
+void action::ActionWait::wait(std::ofstream &of,
+                              std::unique_ptr<InstructionNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"duration", defaultMap.get("duration")},
