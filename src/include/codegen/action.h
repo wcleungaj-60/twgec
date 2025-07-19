@@ -6,80 +6,26 @@
 namespace codegen {
 namespace action {
 
-using std::ofstream;
-using std::unique_ptr;
+#define REGISTER_CODE_GEN_ACTION(name)                                         \
+  class Action##name {                                                         \
+  public:                                                                      \
+    static DefaultMap defaultMap;                                              \
+    static void method(std::ofstream &of,                                      \
+                       std::unique_ptr<InstructionNode> &action);              \
+  };
 
-class ActionActorDisappear {
-public:
-  static DefaultMap defaultMap;
-  static void actorDisappear(ofstream &of, unique_ptr<InstructionNode> &action);
-};
-
-class ActionActorTalk {
-public:
-  static DefaultMap defaultMap;
-  static void actorTalk(ofstream &of, unique_ptr<InstructionNode> &action);
-};
-
-class ActionAddActor {
-public:
-  static DefaultMap defaultMap;
-  static void addActor(ofstream &of, unique_ptr<InstructionNode> &action);
-};
-
-class ActionAddMapSign {
-public:
-  static DefaultMap defaultMap;
-  static void addMapSign(ofstream &of, unique_ptr<InstructionNode> &action);
-};
-
-class ActionAddStuff {
-public:
-  static DefaultMap defaultMap;
-  static void addStuff(ofstream &of, unique_ptr<InstructionNode> &action);
-};
-
-class ActionConsole {
-public:
-  static DefaultMap defaultMap;
-  static void console(ofstream &of, unique_ptr<InstructionNode> &action);
-};
-
-class ActionDeltaHp {
-public:
-  static DefaultMap defaultMap;
-  static void deltaHp(ofstream &of, unique_ptr<InstructionNode> &action);
-};
-
-class ActionEnblastEffect {
-public:
-  static DefaultMap defaultMap;
-  static void enblastEffect(ofstream &of, unique_ptr<InstructionNode> &action);
-};
-
-class ActionLongBo {
-public:
-  static DefaultMap defaultMap;
-  static void longBo(ofstream &of, unique_ptr<InstructionNode> &action);
-};
-
-class ActionSetGlobal {
-public:
-  static DefaultMap defaultMap;
-  static void setGlobal(ofstream &of, unique_ptr<InstructionNode> &action);
-};
-
-class ActionSetObjectVar {
-public:
-  static DefaultMap defaultMap;
-  static void setObjectVar(ofstream &of, unique_ptr<InstructionNode> &action);
-};
-
-class ActionWait {
-public:
-  static DefaultMap defaultMap;
-  static void wait(ofstream &of, unique_ptr<InstructionNode> &action);
-};
+REGISTER_CODE_GEN_ACTION(ActorDisappear);
+REGISTER_CODE_GEN_ACTION(ActorTalk);
+REGISTER_CODE_GEN_ACTION(AddActor);
+REGISTER_CODE_GEN_ACTION(AddMapSign);
+REGISTER_CODE_GEN_ACTION(AddStuff);
+REGISTER_CODE_GEN_ACTION(Console);
+REGISTER_CODE_GEN_ACTION(DeltaHp);
+REGISTER_CODE_GEN_ACTION(EnblastEffect);
+REGISTER_CODE_GEN_ACTION(LongBo);
+REGISTER_CODE_GEN_ACTION(SetGlobal);
+REGISTER_CODE_GEN_ACTION(SetObjectVar);
+REGISTER_CODE_GEN_ACTION(Wait);
 
 } // namespace action
 } // namespace codegen

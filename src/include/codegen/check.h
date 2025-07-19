@@ -6,12 +6,15 @@
 namespace codegen {
 namespace check {
 
-class CheckString {
-public:
-  static DefaultMap defaultMap;
-  static void checkString(std::ofstream &of,
-                          std::unique_ptr<InstructionNode> &check);
-};
+#define REGISTER_CODE_GEN_CHECK(name)                                         \
+  class Check##name {                                                         \
+  public:                                                                      \
+    static DefaultMap defaultMap;                                              \
+    static void method(std::ofstream &of,                                      \
+                       std::unique_ptr<InstructionNode> &action);              \
+  };
+
+REGISTER_CODE_GEN_CHECK(String);
 
 } // namespace check
 } // namespace codegen

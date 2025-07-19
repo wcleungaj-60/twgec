@@ -1,4 +1,5 @@
 #include "ast.h"
+#include "transform.h"
 #include <algorithm>
 #include <iostream>
 #include <memory>

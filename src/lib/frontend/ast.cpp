@@ -1,7 +1,8 @@
 #include "frontend/ast.h"
 #include "utils/utils.h"
 
-void ModuleNode::print(int indent) const {
+void ModuleNode::print(std::string title, int indent) const {
+  std::cout << "//--- " << title << " ---//\n";
   std::cout << inden(indent) << "ModuleNode: "
             << "\n";
   for (auto &metadata : metadatas)
@@ -32,14 +33,14 @@ void BlockNode::print(int indent) const {
 }
 
 void ChecksNode::print(int indent) const {
-  std::cout << inden(indent) << "ChecksNode\n";
+  std::cout << inden(indent) << "ChecksNode {\n";
   for (auto &ins : instructions)
     ins.get()->print(indent + 4);
   std::cout << inden(indent) << "}\n";
 }
 
 void TriggersNode::print(int indent) const {
-  std::cout << inden(indent) << "TriggersNode\n";
+  std::cout << inden(indent) << "TriggersNode {\n";
   for (auto &ins : instructions)
     ins.get()->print(indent + 4);
   std::cout << inden(indent) << "}\n";

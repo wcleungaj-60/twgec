@@ -1,4 +1,5 @@
 #include "frontend/lexer.h"
+#include <algorithm>
 
 namespace keyword {
 std::string _true = "true";
@@ -12,6 +13,41 @@ std::string alias = "alias";
 
 int Lexer::line = 1;
 int Lexer::column = 1;
+
+std::vector<Token> Lexer::getTokens() {
+  std::vector<Token> tokens;
+  Token token = nextToken();
+
+  while (token.type != TokenType::END) {
+    tokens.push_back(token);
+    token = nextToken();
+  }
+
+  tokens.erase(std::remove_if(tokens.begin(), tokens.end(),
+                              [](const Token &token) {
+                                return token.type == TokenType::COMMENT;
+                              }),
+               tokens.end());
+
+  return tokens;
+}
+
+bool Lexer::raiseLexicalError(std::vector<Token> tokens) {
+  bool hasLexicalError = false;
+  for (const auto &t : tokens)
+    if (t.type == TokenType::UNKNOWN) {
+      hasLexicalError = true;
+      std::cerr << "InvalidCharacterError: Unexpected character \'" << t.value
+                << "\' at " << t.location << "\n";
+    }
+  return hasLexicalError;
+}
+
+void Lexer::print(std::vector<Token> tokens) {
+  std::cout << "===== Print Tokens =====\n";
+  for (const auto &t : tokens)
+    std::cout << t << "\n";
+}
 
 Token Lexer::nextToken() {
   while (pos < input.length()) {
@@ -129,7 +165,8 @@ Token Lexer::stringToken() {
   int startColumn = column;
   size_t start = pos++;
   column++;
-  while (pos < input.length() && (input[pos] != '"' || input[pos - 1] == '\\')) {
+  while (pos < input.length() &&
+         (input[pos] != '"' || input[pos - 1] == '\\')) {
     column++;
     pos++;
   }

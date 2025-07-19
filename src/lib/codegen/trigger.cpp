@@ -31,7 +31,7 @@ DefaultMap trigger::TriggerReleasePower::defaultMap = DefaultMap({
     {"weapon", {AST_STRING, CODEGEN_STRING, ""}},
 });
 
-void trigger::TriggerActorFire::actorFire(
+void trigger::TriggerActorFire::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode actorCodeNode = JsonObjectNode({
@@ -62,7 +62,7 @@ void trigger::TriggerActorFire::actorFire(
   of << inden(16) << rootNode.to_string(16);
 }
 
-void trigger::TriggerClickButton::clickButton(
+void trigger::TriggerClickButton::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode actorCodeNode = JsonObjectNode({
@@ -94,7 +94,7 @@ void trigger::TriggerClickButton::clickButton(
   of << inden(16) << rootNode.to_string(16);
 }
 
-void trigger::TriggerReleasePower::releasePower(
+void trigger::TriggerReleasePower::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
   defaultMap.addInputMap(trigger->named_args);
   std::string ability = defaultMap.get("ability", ability::keywordEnum);

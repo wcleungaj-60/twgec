@@ -6,26 +6,17 @@
 namespace codegen {
 namespace trigger {
 
-class TriggerActorFire {
-public:
-  static DefaultMap defaultMap;
-  static void actorFire(std::ofstream &of,
-                        std::unique_ptr<InstructionNode> &trigger);
-};
+#define REGISTER_CODE_GEN_TRIGGER(name)                                         \
+  class Trigger##name {                                                         \
+  public:                                                                      \
+    static DefaultMap defaultMap;                                              \
+    static void method(std::ofstream &of,                                      \
+                       std::unique_ptr<InstructionNode> &action);              \
+  };
 
-class TriggerClickButton {
-public:
-  static DefaultMap defaultMap;
-  static void clickButton(std::ofstream &of,
-                          std::unique_ptr<InstructionNode> &trigger);
-};
-
-class TriggerReleasePower {
-public:
-  static DefaultMap defaultMap;
-  static void releasePower(std::ofstream &of,
-                           std::unique_ptr<InstructionNode> &trigger);
-};
+REGISTER_CODE_GEN_TRIGGER(ActorFire);
+REGISTER_CODE_GEN_TRIGGER(ClickButton);
+REGISTER_CODE_GEN_TRIGGER(ReleasePower);
 
 } // namespace trigger
 } // namespace codegen

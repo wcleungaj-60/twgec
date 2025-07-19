@@ -17,7 +17,7 @@ DefaultMap check::CheckString::defaultMap = DefaultMap({
     {"str", {AST_STRING, CODEGEN_STRING, ""}},
 });
 
-void check::CheckString::checkString(std::ofstream &of,
+void check::CheckString::method(std::ofstream &of,
                                      std::unique_ptr<InstructionNode> &check) {
   defaultMap.addInputMap(check->named_args);
   JsonObjectNode _logiNode = JsonObjectNode("_and_or", "\"\"");

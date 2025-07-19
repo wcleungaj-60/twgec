@@ -8,6 +8,18 @@
 #include <fstream>
 #include <iostream>
 
+#define CODEGEN_ACTION(inputName, outputClass)                                 \
+  if (action->identifier == inputName)                                         \
+  return action::Action##outputClass::method(of, action)
+
+#define CODEGEN_CHECK(inputName, outputClass)                                  \
+  if (check->identifier == inputName)                                          \
+  return check::Check##outputClass::method(of, check)
+
+#define CODEGEN_TRIGGER(inputName, outputClass)                                \
+  if (trigger->identifier == inputName)                                        \
+  return trigger::Trigger##outputClass::method(of, trigger)
+
 using namespace codegen;
 
 void CodeGenerator::codegen(std::string filepath) {
@@ -16,6 +28,13 @@ void CodeGenerator::codegen(std::string filepath) {
     return;
   codegenModuleNode(outputFile);
   outputFile.close();
+}
+
+void CodeGenerator::codegenModuleNode(std::ofstream &of) {
+  of << "{" << std::endl;
+  metadata::ConfigSetup::setup(of, moduleNode->metadatas);
+  codegenBlocks(of);
+  of << "}" << std::endl;
 }
 
 void CodeGenerator::codegenBlocks(std::ofstream &of) {
@@ -58,36 +77,6 @@ void CodeGenerator::codegenActions(std::ofstream &of,
   of << inden(12) << "]," << std::endl;
 }
 
-void CodeGenerator::codegenAction(std::ofstream &of,
-                                  std::unique_ptr<InstructionNode> &action) {
-  if (action->identifier == "actorDisappear")
-    return action::ActionActorDisappear::actorDisappear(of, action);
-  if (action->identifier == "actorTalk")
-    return action::ActionActorTalk::actorTalk(of, action);
-  if (action->identifier == "addActor")
-    return action::ActionAddActor::addActor(of, action);
-  if (action->identifier == "addMapSign")
-    return action::ActionAddMapSign::addMapSign(of, action);
-  if (action->identifier == "addStuff")
-    return action::ActionAddStuff::addStuff(of, action);
-  if (action->identifier == "deltaHp")
-    return action::ActionDeltaHp::deltaHp(of, action);
-  if (action->identifier == "enblastEffect")
-    return action::ActionEnblastEffect::enblastEffect(of, action);
-  if (action->identifier == "longBo")
-    return action::ActionLongBo::longBo(of, action);
-  if (action->identifier == "print")
-    return action::ActionConsole::console(of, action);
-  if (action->identifier == "setGlobal")
-    return action::ActionSetGlobal::setGlobal(of, action);
-  if (action->identifier == "setObjectVar")
-    return action::ActionSetObjectVar::setObjectVar(of, action);
-  if (action->identifier == "wait")
-    return action::ActionWait::wait(of, action);
-  std::cerr << "Codegen error: Cannot found the corresponding action name \""
-            << action->identifier << "\" at " << action.get()->loc << "\n";
-}
-
 void CodeGenerator::codegenChecks(std::ofstream &of,
                                   std::unique_ptr<ChecksNode> &checks) {
   of << inden(12) << "\"checks\": [";
@@ -103,14 +92,6 @@ void CodeGenerator::codegenChecks(std::ofstream &of,
     of << std::endl;
   }
   of << inden(12) << "]," << std::endl;
-}
-
-void CodeGenerator::codegenCheck(std::ofstream &of,
-                                 std::unique_ptr<InstructionNode> &action) {
-  if (action->identifier == "checkString")
-    return check::CheckString::checkString(of, action);
-  std::cerr << "Codegen error: Cannot found the corresponding check name \""
-            << action->identifier << "\" at " << action.get()->loc << "\n";
 }
 
 void CodeGenerator::codegenTriggers(std::ofstream &of,
@@ -130,21 +111,36 @@ void CodeGenerator::codegenTriggers(std::ofstream &of,
   of << inden(12) << "]" << std::endl;
 }
 
-void CodeGenerator::codegenTrigger(std::ofstream &of,
-                                   std::unique_ptr<InstructionNode> &action) {
-  if (action->identifier == "actorFire")
-    return trigger::TriggerActorFire::actorFire(of, action);
-  if (action->identifier == "clickButton")
-    return trigger::TriggerClickButton::clickButton(of, action);
-  if (action->identifier == "releasePower")
-    return trigger::TriggerReleasePower::releasePower(of, action);
-  std::cerr << "Codegen error: Cannot found the corresponding trigger name \""
+void CodeGenerator::codegenAction(std::ofstream &of,
+                                  std::unique_ptr<InstructionNode> &action) {
+  CODEGEN_ACTION("actorDisappear", ActorDisappear);
+  CODEGEN_ACTION("actorTalk", ActorTalk);
+  CODEGEN_ACTION("addActor", AddActor);
+  CODEGEN_ACTION("addMapSign", AddMapSign);
+  CODEGEN_ACTION("addStuff", AddStuff);
+  CODEGEN_ACTION("deltaHp", DeltaHp);
+  CODEGEN_ACTION("enblastEffect", EnblastEffect);
+  CODEGEN_ACTION("longBo", LongBo);
+  CODEGEN_ACTION("print", Console);
+  CODEGEN_ACTION("setGlobal", SetGlobal);
+  CODEGEN_ACTION("setObjectVar", SetObjectVar);
+  CODEGEN_ACTION("wait", Wait);
+  std::cerr << "Codegen error: Cannot found the corresponding action name \""
             << action->identifier << "\" at " << action.get()->loc << "\n";
 }
 
-void CodeGenerator::codegenModuleNode(std::ofstream &of) {
-  of << "{" << std::endl;
-  metadata::ConfigSetup::setup(of, moduleNode->metadatas);
-  codegenBlocks(of);
-  of << "}" << std::endl;
+void CodeGenerator::codegenCheck(std::ofstream &of,
+                                 std::unique_ptr<InstructionNode> &check) {
+  CODEGEN_CHECK("checkString", String);
+  std::cerr << "Codegen error: Cannot found the corresponding check name \""
+            << check->identifier << "\" at " << check.get()->loc << "\n";
+}
+
+void CodeGenerator::codegenTrigger(std::ofstream &of,
+                                   std::unique_ptr<InstructionNode> &trigger) {
+  CODEGEN_TRIGGER("actorFire", ActorFire);
+  CODEGEN_TRIGGER("clickButton", ClickButton);
+  CODEGEN_TRIGGER("releasePower", ReleasePower);
+  std::cerr << "Codegen error: Cannot found the corresponding trigger name \""
+            << trigger->identifier << "\" at " << trigger.get()->loc << "\n";
 }

@@ -220,7 +220,7 @@ public:
   std::unordered_map<std::string, std::unique_ptr<AliasNode>> aliases;
   // Function
   ModuleNode(Location loc) : loc(loc) {}
-  void print(int indent = 0) const;
+  void print(std::string title, int indent = 0) const;
 };
 
 static std::unique_ptr<ValueNode>

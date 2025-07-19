@@ -1,95 +1,75 @@
 #include "codegen/codegen.h"
 #include "frontend/lexer.h"
 #include "frontend/parser.h"
-#include "transform/aliasInlining.h"
-#include "transform/argBinding.h"
-#include <algorithm>
+#include "transform/transform.h"
 #include <fstream>
+
+bool loweringPipeline(const std::unique_ptr<ModuleNode> &moduleNode,
+                      bool printAST = false) {
+  if (printAST)
+    moduleNode->print("AST Before Arg Binding");
+  if (!transform::argBinding(std::move(moduleNode)))
+    return false;
+  if (printAST)
+    moduleNode->print("AST Before Arg Inlining");
+  if (!transform::aliasInling(std::move(moduleNode)))
+    return false;
+  if (printAST)
+    moduleNode->print("AST Before Code Generation");
+  return true;
+}
 
 int main(int argc, char *argv[]) {
   if (argc < 2) {
-    std::cerr << "Usage: " << argv[0] << " <input_file> <argument>*\n";
+    std::cerr << "Please run `twgec --help` for help.\n";
     return 1;
   }
 
-  std::ifstream inputFile(argv[1]);
+  bool optPrintToken = false;
+  bool optPrintAST = false;
+  std::string argFilePath = "";
+
+  for (int i = 1; i < argc; i++) {
+    if (std::string(argv[i]) == "--print-token") {
+      optPrintToken = true;
+    } else if (std::string(argv[i]) == "--print-ast") {
+      optPrintAST = true;
+    } else if (argFilePath == "") {
+      argFilePath = argv[i];
+    } else {
+      std::cerr << "Unknown arugment \"" << argv[i]
+                << "\" found. Please run `twgec --help` for help.\n";
+      return 1;
+    }
+  }
+
+  std::ifstream inputFile(argFilePath);
   if (!inputFile.is_open()) {
-    std::cerr << "Error: Could not open file " << argv[1] << "\n";
+    std::cerr << "Error: Could not open file " << argFilePath << "\n";
     return 1;
-  }
-
-  bool printToken = false;
-  bool printAST = false;
-
-  for (int i = 2; i < argc; i++) {
-    if (std::string(argv[i]) == "--print-token")
-      printToken = true;
-    if (std::string(argv[i]) == "--print-ast")
-      printAST = true;
   }
 
   std::string input((std::istreambuf_iterator<char>(inputFile)),
                     (std::istreambuf_iterator<char>()));
   inputFile.close();
-
+  // Lexer
   Lexer lexer(input);
-  std::vector<Token> tokens;
-  Token token = lexer.nextToken();
-
-  while (token.type != TokenType::END) {
-    tokens.push_back(token);
-    token = lexer.nextToken();
-  }
-
-  bool hasLexicalError = false;
-  for (const auto &t : tokens)
-    if (t.type == TokenType::UNKNOWN) {
-      hasLexicalError = true;
-      std::cerr << "InvalidCharacterError: Unexpected character \'" << t.value
-                << "\' at " << t.location << "\n";
-    }
-  if (hasLexicalError)
+  std::vector<Token> tokens = lexer.getTokens();
+  if (Lexer::raiseLexicalError(tokens))
     return 1;
-
-  if (printToken) {
-    std::cout << "===== Print Tokens =====\n";
-    for (const auto &t : tokens)
-      std::cout << t << "\n";
-  }
-
-  tokens.erase(std::remove_if(tokens.begin(), tokens.end(),
-                              [](const Token &token) {
-                                return token.type == TokenType::COMMENT;
-                              }),
-               tokens.end());
-
+  if (optPrintToken)
+    Lexer::print(tokens);
+  // Parser
   Parser parser(tokens);
   std::unique_ptr<ModuleNode> moduleNode = parser.parse();
   if (moduleNode == nullptr) {
     std::cerr << "SyntaxError: Cannot convert the token in a valid AST\n";
     return 1;
   }
-  if (printAST) {
-    std::cout << "===== Print AST Before Arg Binding =====\n";
-    moduleNode->print();
-  }
-
-  if (!transform::argBinding(std::move(moduleNode)))
+  // Lowering
+  if (!loweringPipeline(moduleNode, optPrintAST))
     return 1;
-
-  if (printAST) {
-    std::cout << "===== Print AST Before Alias Inlining =====\n";
-    moduleNode->print();
-  }
-
-  if (!transform::aliasInling(std::move(moduleNode)))
-    return 1;
-
-  if (printAST) {
-    std::cout << "===== Print AST Before Code Generation =====\n";
-    moduleNode->print();
-  }
-
+  // Codegen
   codegen::CodeGenerator generator(moduleNode);
   generator.codegen("game.events");
 
