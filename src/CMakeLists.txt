@@ -21,4 +21,5 @@ target_include_directories(twgec PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include/transform
     ${CMAKE_CURRENT_SOURCE_DIR}/include/codegen
     ${CMAKE_CURRENT_SOURCE_DIR}/include/utils
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/tools
 )

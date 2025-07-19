@@ -2,20 +2,20 @@
 #include "transform.h"
 #include <algorithm>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <set>
-#include <unordered_map>
 #include <vector>
 namespace transform {
 
+using std::map;
 using std::set;
 using std::string;
 using std::unique_ptr;
-using std::unordered_map;
 using std::vector;
 
 bool isValidAliasCaller(std::unique_ptr<InstructionNode> &caller,
-                        unordered_map<string, unique_ptr<AliasNode>> &aliases) {
+                        map<string, unique_ptr<AliasNode>> &aliases) {
   AliasNode *alias = aliases[caller->identifier].get();
   auto aliasParamNum = alias->params.size();
   auto callerArgNum = caller->named_args.size();
@@ -28,7 +28,7 @@ bool isValidAliasCaller(std::unique_ptr<InstructionNode> &caller,
               << caller->loc << ".\n";
     return false;
   }
-  std::unordered_map<string, unique_ptr<ValueNode>> namedArgsMap;
+  std::map<string, unique_ptr<ValueNode>> namedArgsMap;
   for (string param : alias->params)
     paramSet.insert(param);
   for (auto &namedArg : caller->named_args) {
@@ -54,9 +54,8 @@ bool isValidAliasCaller(std::unique_ptr<InstructionNode> &caller,
   return true;
 }
 
-bool aliasInling(
-    std::unordered_map<std::string, std::unique_ptr<AliasNode>> &aliases,
-    std::vector<std::unique_ptr<InstructionNode>> &instructions) {
+bool aliasInling(std::map<std::string, std::unique_ptr<AliasNode>> &aliases,
+                 std::vector<std::unique_ptr<InstructionNode>> &instructions) {
   std::vector<int> aliasIdxes;
   // Step 1: Get the Alias Index
   for (int idx = 0; idx < instructions.size(); idx++) {
@@ -72,7 +71,7 @@ bool aliasInling(
   std::reverse(aliasIdxes.begin(), aliasIdxes.end());
   // Step 2: Inline the Alias
   for (auto idx : aliasIdxes) {
-    std::unordered_map<std::string, unique_ptr<ValueNode>> callerMap;
+    std::map<std::string, unique_ptr<ValueNode>> callerMap;
     auto &callerInstr = instructions[idx];
     auto pos = instructions.begin() + idx;
     auto &aliasNode = aliases[callerInstr->identifier];

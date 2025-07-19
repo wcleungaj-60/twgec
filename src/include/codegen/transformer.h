@@ -4,9 +4,9 @@
 #include "ast.h"
 #include "keyword.h"
 #include <iostream>
+#include <map>
 #include <set>
 #include <string>
-#include <unordered_map>
 
 namespace codegen {
 namespace {
@@ -40,18 +40,59 @@ struct DefaultMapValue {
 class DefaultMap {
 private:
   void verifyInputMap() {
-    for (auto &input : inputMap) {
-      if (defaultMap.find(input.first) == defaultMap.end())
+    for (auto &input : inputMap)
+      if (defaultMap.find(input.first) == defaultMap.end()) {
         std::cerr << "Codegen Warnings: Undefined key \"" << input.first
                   << "\" at " << input.second->loc << "\n";
-    }
+        if (!functionName.empty())
+          std::cerr << "Please following this function signature:\n"
+                    << print() << "\n";
+        // TODO: handle metadata
+      }
   };
 
+  std::string print() {
+    std::string ret = functionName + "(";
+    for (auto it = defaultMap.begin(); it != defaultMap.end(); ++it) {
+      switch (it->second.astType) {
+      case AST_BOOL:
+        ret += "bool";
+        break;
+      case AST_INT:
+        ret += "int|string";
+        break;
+      case AST_LIST_POINT:
+        ret += "list[point]";
+        break;
+      case AST_STRING:
+        ret += "string";
+        break;
+      case AST_LIST_STRING:
+        ret += "list[string]";
+        break;
+      case AST_INVALID:
+        ret += "?";
+        break;
+      }
+      ret += " " + it->first + " = ";
+      if (it->second.codegenType == CODEGEN_STRING)
+        ret += "\"" + it->second.defaultValue + "\"";
+      else
+        ret += it->second.defaultValue;
+      if (std::next(it) != defaultMap.end())
+        ret += ", ";
+    }
+    ret += ")";
+    return ret;
+  }
+
 public:
-  const std::unordered_map<std::string, DefaultMapValue> defaultMap;
-  std::unordered_map<std::string, const std::shared_ptr<ValueNode>> inputMap;
-  DefaultMap(std::unordered_map<std::string, DefaultMapValue> defaultMap)
-      : defaultMap(defaultMap) {}
+  const std::map<std::string, DefaultMapValue> defaultMap;
+  const std::string functionName;
+  std::map<std::string, const std::shared_ptr<ValueNode>> inputMap;
+  DefaultMap(std::map<std::string, DefaultMapValue> defaultMap,
+             std::string functionName = "")
+      : functionName(functionName), defaultMap(defaultMap) {}
   void addInputMap(std::vector<std::unique_ptr<MetadataNode>> &metadatas) {
     inputMap = {};
     std::set<std::string> keySet;

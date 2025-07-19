@@ -3,9 +3,9 @@
 
 #include "utils/location.h"
 #include <iostream>
+#include <map>
 #include <memory>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 class ValueNode {
@@ -217,7 +217,7 @@ public:
   Location loc;
   std::vector<std::unique_ptr<MetadataNode>> metadatas;
   std::vector<std::unique_ptr<BlockNode>> blocks;
-  std::unordered_map<std::string, std::unique_ptr<AliasNode>> aliases;
+  std::map<std::string, std::unique_ptr<AliasNode>> aliases;
   // Function
   ModuleNode(Location loc) : loc(loc) {}
   void print(std::string title, int indent = 0) const;

@@ -3,33 +3,39 @@
 #include "keyword.h"
 #include "utils/utils.h"
 #include <fstream>
+#include <map>
 #include <memory>
-#include <unordered_map>
 
 using namespace codegen;
 using namespace formatter;
 using namespace keyword;
 
-DefaultMap trigger::TriggerActorFire::defaultMap = DefaultMap({
-    {"matchKind", {AST_STRING, CODEGEN_STRING, "contain"}},
-    {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
-    {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
-});
+DefaultMap trigger::TriggerActorFire::defaultMap = DefaultMap(
+    {
+        {"matchKind", {AST_STRING, CODEGEN_STRING, "contain"}},
+        {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
+        {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
+    },
+    "actorFire");
 
-DefaultMap trigger::TriggerClickButton::defaultMap = DefaultMap({
-    {"matchKind", {AST_STRING, CODEGEN_STRING, "contain"}},
-    {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
-    {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
-    {"buttonId", {AST_STRING, CODEGEN_STRING, ""}},
-});
+DefaultMap trigger::TriggerClickButton::defaultMap = DefaultMap(
+    {
+        {"matchKind", {AST_STRING, CODEGEN_STRING, "contain"}},
+        {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
+        {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
+        {"buttonId", {AST_STRING, CODEGEN_STRING, ""}},
+    },
+    "clickButton");
 
-DefaultMap trigger::TriggerReleasePower::defaultMap = DefaultMap({
-    {"matchKind", {AST_STRING, CODEGEN_STRING, "contain"}},
-    {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
-    {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
-    {"ability", {AST_STRING, CODEGEN_STRING, ""}},
-    {"weapon", {AST_STRING, CODEGEN_STRING, ""}},
-});
+DefaultMap trigger::TriggerReleasePower::defaultMap = DefaultMap(
+    {
+        {"matchKind", {AST_STRING, CODEGEN_STRING, "contain"}},
+        {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
+        {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
+        {"ability", {AST_STRING, CODEGEN_STRING, ""}},
+        {"weapon", {AST_STRING, CODEGEN_STRING, ""}},
+    },
+    "releasePower");
 
 void trigger::TriggerActorFire::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {

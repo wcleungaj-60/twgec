@@ -4,105 +4,129 @@
 #include "transformer.h"
 #include "utils/utils.h"
 #include <fstream>
-#include <unordered_map>
+#include <map>
 
 using namespace codegen;
 using namespace formatter;
 using namespace keyword;
 
-DefaultMap action::ActionActorDisappear::defaultMap = DefaultMap({
-    {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
-    {"duration", {AST_INT, CODEGEN_STRING, "600"}},
-    {"delay", {AST_INT, CODEGEN_STRING, "0"}},
-});
+DefaultMap action::ActionActorDisappear::defaultMap = DefaultMap(
+    {
+        {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
+        {"duration", {AST_INT, CODEGEN_STRING, "600"}},
+        {"delay", {AST_INT, CODEGEN_STRING, "0"}},
+    },
+    "actorDisappear");
 
-DefaultMap action::ActionActorTalk::defaultMap = DefaultMap({
-    {"cleanTalk", {AST_BOOL, CODEGEN_BOOL, "true"}},
-    {"text", {AST_STRING, CODEGEN_STRING, ""}},
-    {"duration", {AST_INT, CODEGEN_STRING, "3000"}},
-    {"wait", {AST_BOOL, CODEGEN_BOOL, "true"}},
-    {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
-});
+DefaultMap action::ActionActorTalk::defaultMap = DefaultMap(
+    {
+        {"cleanTalk", {AST_BOOL, CODEGEN_BOOL, "true"}},
+        {"text", {AST_STRING, CODEGEN_STRING, ""}},
+        {"duration", {AST_INT, CODEGEN_STRING, "3000"}},
+        {"wait", {AST_BOOL, CODEGEN_BOOL, "true"}},
+        {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
+    },
+    "actorTalk");
 
-DefaultMap action::ActionAddActor::defaultMap = DefaultMap({
-    {"id", {AST_STRING, CODEGEN_STRING, "ai*"}},
-    {"name", {AST_STRING, CODEGEN_STRING, ""}},
-    {"camp", {AST_STRING, CODEGEN_STRING, "skydow"}},
-    {"weapon1", {AST_STRING, CODEGEN_STRING, "default"}},
-    {"weapon2", {AST_STRING, CODEGEN_STRING, "default"}},
-    {"localVarname", {AST_STRING, CODEGEN_STRING, "actor"}},
-    {"x", {AST_INT, CODEGEN_STRING, "0"}},
-    {"y", {AST_INT, CODEGEN_STRING, "0"}},
-    {"hp", {AST_INT, CODEGEN_STRING, "100"}},
-    {"range", {AST_INT, CODEGEN_STRING, "10000"}},
-    {"role", {AST_STRING, CODEGEN_INT, "0"}},
-    {"externRole", {AST_STRING, CODEGEN_STRING, ""}},
-    {"patrol", {AST_LIST_POINT, CODEGEN_LIST_PATROL, "[]"}},
-});
+DefaultMap action::ActionAddActor::defaultMap = DefaultMap(
+    {
+        {"id", {AST_STRING, CODEGEN_STRING, "ai*"}},
+        {"name", {AST_STRING, CODEGEN_STRING, ""}},
+        {"camp", {AST_STRING, CODEGEN_STRING, "skydow"}},
+        {"weapon1", {AST_STRING, CODEGEN_STRING, "default"}},
+        {"weapon2", {AST_STRING, CODEGEN_STRING, "default"}},
+        {"localVarname", {AST_STRING, CODEGEN_STRING, "actor"}},
+        {"x", {AST_INT, CODEGEN_STRING, "0"}},
+        {"y", {AST_INT, CODEGEN_STRING, "0"}},
+        {"hp", {AST_INT, CODEGEN_STRING, "100"}},
+        {"range", {AST_INT, CODEGEN_STRING, "10000"}},
+        {"role", {AST_STRING, CODEGEN_INT, "0"}},
+        {"externRole", {AST_STRING, CODEGEN_STRING, ""}},
+        {"patrol", {AST_LIST_POINT, CODEGEN_LIST_PATROL, "[]"}},
+    },
+    "addActor");
 
-DefaultMap action::ActionAddMapSign::defaultMap = DefaultMap({
-    {"text", {AST_STRING, CODEGEN_STRING, ""}},
-    {"buttonCode", {AST_STRING, CODEGEN_STRING, ""}},
-    {"buttonLabel", {AST_STRING, CODEGEN_STRING, ""}},
-    {"x", {AST_INT, CODEGEN_STRING, "0"}},
-    {"y", {AST_INT, CODEGEN_STRING, "0"}},
-    {"range", {AST_INT, CODEGEN_STRING, "0"}},
-    {"rotation", {AST_INT, CODEGEN_STRING, "0"}},
-});
+DefaultMap action::ActionAddMapSign::defaultMap = DefaultMap(
+    {
+        {"text", {AST_STRING, CODEGEN_STRING, ""}},
+        {"buttonCode", {AST_STRING, CODEGEN_STRING, ""}},
+        {"buttonLabel", {AST_STRING, CODEGEN_STRING, ""}},
+        {"x", {AST_INT, CODEGEN_STRING, "0"}},
+        {"y", {AST_INT, CODEGEN_STRING, "0"}},
+        {"range", {AST_INT, CODEGEN_STRING, "0"}},
+        {"rotation", {AST_INT, CODEGEN_STRING, "0"}},
+    },
+    "addMapSign");
 
-DefaultMap action::ActionAddStuff::defaultMap = DefaultMap({
-    {"code", {AST_STRING, CODEGEN_STRING, "item*"}},
-    {"item", {AST_STRING, CODEGEN_STRING, "magazine"}},
-    {"refill", {AST_BOOL, CODEGEN_BOOL, "true"}},
-    {"refillInterval", {AST_INT, CODEGEN_STRING, "10000"}},
-    {"x", {AST_INT, CODEGEN_STRING, "0"}},
-    {"y", {AST_INT, CODEGEN_STRING, "0"}},
-    {"range", {AST_INT, CODEGEN_STRING, "0"}},
-    {"rotation", {AST_INT, CODEGEN_STRING, "0"}},
-});
+DefaultMap action::ActionAddStuff::defaultMap = DefaultMap(
+    {
+        {"code", {AST_STRING, CODEGEN_STRING, "item*"}},
+        {"item", {AST_STRING, CODEGEN_STRING, "magazine"}},
+        {"refill", {AST_BOOL, CODEGEN_BOOL, "true"}},
+        {"refillInterval", {AST_INT, CODEGEN_STRING, "10000"}},
+        {"x", {AST_INT, CODEGEN_STRING, "0"}},
+        {"y", {AST_INT, CODEGEN_STRING, "0"}},
+        {"range", {AST_INT, CODEGEN_STRING, "0"}},
+        {"rotation", {AST_INT, CODEGEN_STRING, "0"}},
+    },
+    "addStuff");
 
-DefaultMap action::ActionConsole::defaultMap = DefaultMap({
-    {"type", {AST_STRING, CODEGEN_STRING, "log"}},
-    {"text", {AST_STRING, CODEGEN_STRING, ""}},
-});
+DefaultMap action::ActionConsole::defaultMap = DefaultMap(
+    {
+        {"type", {AST_STRING, CODEGEN_STRING, "log"}},
+        {"text", {AST_STRING, CODEGEN_STRING, ""}},
+    },
+    "print");
 
-DefaultMap action::ActionDeltaHp::defaultMap = DefaultMap({
-    {"actorCode", {AST_STRING, CODEGEN_STRING, ""}},
-    {"type", {AST_STRING, CODEGEN_STRING, "heal"}},
-    {"value", {AST_INT, CODEGEN_STRING, ""}},
-    {"casterCode", {AST_STRING, CODEGEN_STRING, ""}},
-});
+DefaultMap action::ActionDeltaHp::defaultMap = DefaultMap(
+    {
+        {"actorCode", {AST_STRING, CODEGEN_STRING, ""}},
+        {"type", {AST_STRING, CODEGEN_STRING, "heal"}},
+        {"value", {AST_INT, CODEGEN_STRING, ""}},
+        {"casterCode", {AST_STRING, CODEGEN_STRING, ""}},
+    },
+    "deltaHp");
 
-DefaultMap action::ActionEnblastEffect::defaultMap = DefaultMap({
-    {"fromType", {AST_STRING, CODEGEN_STRING, "actor"}},
-    {"fromActor", {AST_STRING, CODEGEN_STRING, "instance"}},
-    {"toType", {AST_STRING, CODEGEN_STRING, "angle"}},
-    {"toAngle", {AST_INT, CODEGEN_STRING, "0"}},
-    {"damage", {AST_INT, CODEGEN_STRING, "30"}},
-    {"scale", {AST_INT, CODEGEN_STRING, "1"}},
-    {"speed", {AST_INT, CODEGEN_STRING, "0.7"}},
-});
+DefaultMap action::ActionEnblastEffect::defaultMap = DefaultMap(
+    {
+        {"fromType", {AST_STRING, CODEGEN_STRING, "actor"}},
+        {"fromActor", {AST_STRING, CODEGEN_STRING, "instance"}},
+        {"toType", {AST_STRING, CODEGEN_STRING, "angle"}},
+        {"toAngle", {AST_INT, CODEGEN_STRING, "0"}},
+        {"damage", {AST_INT, CODEGEN_STRING, "30"}},
+        {"scale", {AST_INT, CODEGEN_STRING, "1"}},
+        {"speed", {AST_INT, CODEGEN_STRING, "0.7"}},
+    },
+    "enblastEffect");
 
-DefaultMap action::ActionLongBo::defaultMap = DefaultMap({
-    {"actorCode", {AST_STRING, CODEGEN_STRING, ""}},
-});
+DefaultMap action::ActionLongBo::defaultMap = DefaultMap(
+    {
+        {"actorCode", {AST_STRING, CODEGEN_STRING, ""}},
+    },
+    "longBo");
 
-DefaultMap action::ActionSetGlobal::defaultMap = DefaultMap({
-    {"key", {AST_STRING, CODEGEN_STRING, ""}},
-    {"type", {AST_STRING, CODEGEN_STRING, "string"}},
-    {"value", {AST_INT, CODEGEN_STRING, ""}},
-});
+DefaultMap action::ActionSetGlobal::defaultMap = DefaultMap(
+    {
+        {"key", {AST_STRING, CODEGEN_STRING, ""}},
+        {"type", {AST_STRING, CODEGEN_STRING, "string"}},
+        {"value", {AST_INT, CODEGEN_STRING, ""}},
+    },
+    "setGlobal");
 
-DefaultMap action::ActionSetObjectVar::defaultMap = DefaultMap({
-    {"object", {AST_STRING, CODEGEN_STRING, ""}},
-    {"key", {AST_STRING, CODEGEN_STRING, ""}},
-    {"type", {AST_STRING, CODEGEN_STRING, "string"}},
-    {"value", {AST_INT, CODEGEN_STRING, ""}},
-});
+DefaultMap action::ActionSetObjectVar::defaultMap = DefaultMap(
+    {
+        {"object", {AST_STRING, CODEGEN_STRING, ""}},
+        {"key", {AST_STRING, CODEGEN_STRING, ""}},
+        {"type", {AST_STRING, CODEGEN_STRING, "string"}},
+        {"value", {AST_INT, CODEGEN_STRING, ""}},
+    },
+    "setObjectVar");
 
-DefaultMap action::ActionWait::defaultMap = DefaultMap({
-    {"duration", {AST_INT, CODEGEN_STRING, "0"}},
-});
+DefaultMap action::ActionWait::defaultMap = DefaultMap(
+    {
+        {"duration", {AST_INT, CODEGEN_STRING, "0"}},
+    },
+    "wait");
 
 void action::ActionActorDisappear::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &action) {

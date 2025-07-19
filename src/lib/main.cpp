@@ -1,6 +1,7 @@
 #include "codegen/codegen.h"
 #include "frontend/lexer.h"
 #include "frontend/parser.h"
+#include "tools/help.h"
 #include "transform/transform.h"
 #include <fstream>
 
@@ -27,6 +28,7 @@ int main(int argc, char *argv[]) {
 
   bool optPrintToken = false;
   bool optPrintAST = false;
+  bool optHelp = false;
   std::string argFilePath = "";
 
   for (int i = 1; i < argc; i++) {
@@ -34,13 +36,20 @@ int main(int argc, char *argv[]) {
       optPrintToken = true;
     } else if (std::string(argv[i]) == "--print-ast") {
       optPrintAST = true;
+    } else if (std::string(argv[i]) == "--help") {
+      optHelp = true;
     } else if (argFilePath == "") {
       argFilePath = argv[i];
     } else {
       std::cerr << "Unknown arugment \"" << argv[i]
-                << "\" found. Please run `twgec --help` for help.\n";
+                << "\" found.\nPlease run `twgec --help` for help.\n";
       return 1;
     }
+  }
+
+  if (optHelp) {
+    std::cout << helpMessage;
+    return 0;
   }
 
   std::ifstream inputFile(argFilePath);

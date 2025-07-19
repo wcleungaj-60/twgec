@@ -4,21 +4,23 @@
 #include "keyword.h"
 #include "utils/utils.h"
 #include <fstream>
+#include <map>
 #include <memory>
-#include <unordered_map>
 
 using namespace codegen;
 using namespace formatter;
 using namespace keyword;
 
-DefaultMap check::CheckString::defaultMap = DefaultMap({
-    {"value", {AST_STRING, CODEGEN_STRING, ""}},
-    {"matchKind", {AST_STRING, CODEGEN_STRING, "contain"}},
-    {"str", {AST_STRING, CODEGEN_STRING, ""}},
-});
+DefaultMap check::CheckString::defaultMap = DefaultMap(
+    {
+        {"value", {AST_STRING, CODEGEN_STRING, ""}},
+        {"matchKind", {AST_STRING, CODEGEN_STRING, "contain"}},
+        {"str", {AST_STRING, CODEGEN_STRING, ""}},
+    },
+    "checkString");
 
 void check::CheckString::method(std::ofstream &of,
-                                     std::unique_ptr<InstructionNode> &check) {
+                                std::unique_ptr<InstructionNode> &check) {
   defaultMap.addInputMap(check->named_args);
   JsonObjectNode _logiNode = JsonObjectNode("_and_or", "\"\"");
   JsonObjectNode dataNode = JsonObjectNode({

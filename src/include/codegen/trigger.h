@@ -6,8 +6,8 @@
 namespace codegen {
 namespace trigger {
 
-#define REGISTER_CODE_GEN_TRIGGER(name)                                         \
-  class Trigger##name {                                                         \
+#define REGISTER_CODE_GEN_TRIGGER(name)                                        \
+  class Trigger##name {                                                        \
   public:                                                                      \
     static DefaultMap defaultMap;                                              \
     static void method(std::ofstream &of,                                      \

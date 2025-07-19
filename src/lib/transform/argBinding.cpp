@@ -6,9 +6,8 @@ namespace transform {
 using std::string;
 using std::unique_ptr;
 
-bool argBinding(
-    std::unordered_map<std::string, std::unique_ptr<AliasNode>> &aliases,
-    std::vector<std::unique_ptr<InstructionNode>> &instructions) {
+bool argBinding(std::map<std::string, std::unique_ptr<AliasNode>> &aliases,
+                std::vector<std::unique_ptr<InstructionNode>> &instructions) {
   for (auto &instr : instructions) {
     if (instr->positional_args.empty())
       continue;
