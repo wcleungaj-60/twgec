@@ -120,6 +120,7 @@ void CodeGenerator::codegenAction(std::ofstream &of,
   CODEGEN_ACTION("addStuff", AddStuff);
   CODEGEN_ACTION("deltaHp", DeltaHp);
   CODEGEN_ACTION("enblastEffect", EnblastEffect);
+  CODEGEN_ACTION("missionComplete", MissionComplete);
   CODEGEN_ACTION("longBo", LongBo);
   CODEGEN_ACTION("print", Console);
   CODEGEN_ACTION("setGlobal", SetGlobal);

@@ -16,6 +16,7 @@ Supported Actions:
     addStuff        +武器道具
     deltaHp         角色加減血
     enblastEffect   光彈特效
+    missionComplete 任務完成
     longBo          +龍波
     print           控制台輸出
     setGlobal       儲存全域變數

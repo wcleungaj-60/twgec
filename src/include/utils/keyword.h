@@ -54,6 +54,27 @@ static KeywordEnum keywordEnum("camp", {
                                        });
 } // namespace camp
 
+namespace campMissionComplete {
+const std::string keywordSkydow = "skydow";
+const std::string keywordSkydowZh = "天影";
+const std::string keywordRoyal = "royal";
+const std::string keywordRoyalZh = "皇家";
+const std::string keywordThird = "third";
+const std::string keywordThirdZh = "第三";
+const std::string keywordAll = "all";
+const std::string keywordAllZh = "所有";
+static KeywordEnum keywordEnum("camp", {
+                                           {keywordSkydow, keywordSkydow},
+                                           {keywordSkydowZh, keywordSkydow},
+                                           {keywordRoyal, keywordRoyal},
+                                           {keywordRoyalZh, keywordRoyal},
+                                           {keywordThird, keywordThird},
+                                           {keywordThirdZh, keywordThird},
+                                           {keywordAll, keywordAll},
+                                           {keywordAllZh, keywordAll},
+                                       });
+} // namespace campMissionComplete
+
 namespace weapon {
 const std::string keywordDefault = "default";
 const std::string keywordKungFu = "kungfu";

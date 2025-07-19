@@ -9,8 +9,8 @@ alias addSniper(camp, role, x, y) {
     addActor(name = "狙擊手(200)", id = "sniper*", camp = camp, hp = 200, x = x, y = y, range = 0, weapon1 = "盾牌", weapon2 = "狙擊槍", role = role);
 }
 
-alias addCamp(camp, x, y) {
-    addActor(name = "軍營(500)", id = "sniper*", camp = camp, hp = 500, x = x, y = y, range = 0, weapon1 = "拳頭", weapon2 = "拳頭", externRole = "TWilightGameEventCompiler.character_camp");
+alias addCamp(camp, id, x, y) {
+    addActor(name = "軍營(500)", id = id, camp = camp, hp = 500, x = x, y = y, range = 0, weapon1 = "拳頭", weapon2 = "拳頭", externRole = "TWilightGameEventCompiler.character_camp");
 }
 
 alias setInt(key, value) {
@@ -36,8 +36,8 @@ block init {
         setInt("skydowHp", 100);
         addSniper("天影", "天影武士1", 11, 7);
         addSniper("皇家", "皇家機械人", 18, 12);
-        addCamp("天影", 9, 6);
-        addCamp("皇家", 20, 13);
+        addCamp("天影", "camp_skydow", 9, 6);
+        addCamp("皇家", "camp_royal", 20, 13);
         addJobMapSign(27, 17, 0, "【守望者】\n使用防護罩時，恢復30點體力", "chooseJobR1");
         addJobMapSign(27, 16, 0, "【新兵訓練師】\n我方士兵血量上限加10", "chooseJobR2");
         addJobMapSign(2, 2, 180, "【龍騎士】\n使用黑龍波時，會額外召喚出一條黑龍波", "chooseJobS1");
@@ -161,5 +161,23 @@ block releasePowerS2 {
         addActor(name = "分身", localVarname = "actor", camp = "天影", hp = 100, x = "{tempX}", y = "{tempY}", weapon1 = "爪子", weapon2 = "步槍", role = "天影武士1");
         wait(duration = 10000);
         actorDisappear(actorId = "actor");
+    }
+}
+
+block royalWin {
+    triggers {
+        actorDead(actorId = "camp_skydow");
+    }
+    actions {
+        missionComplete(camp = "royal");
+    }
+}
+
+block skydowWin {
+    triggers {
+        actorDead(actorId = "camp_royal");
+    }
+    actions {
+        missionComplete(camp = "skydow");
     }
 }

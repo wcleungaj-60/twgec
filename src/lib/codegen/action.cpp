@@ -99,6 +99,12 @@ DefaultMap action::ActionEnblastEffect::defaultMap = DefaultMap(
     },
     "enblastEffect");
 
+DefaultMap action::ActionMissionComplete::defaultMap = DefaultMap(
+    {
+        {"camp", {AST_STRING, CODEGEN_STRING, "all"}},
+    },
+    "missionComplete");
+
 DefaultMap action::ActionLongBo::defaultMap = DefaultMap(
     {
         {"actorCode", {AST_STRING, CODEGEN_STRING, ""}},
@@ -347,6 +353,19 @@ void action::ActionEnblastEffect::method(
   });
   JsonObjectNode rootNode = JsonObjectNode({
       {"type", "\"EnblastEffect\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
+
+void action::ActionMissionComplete::method(
+    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
+  defaultMap.addInputMap(action->named_args);
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"targetGroup", defaultMap.get("camp", campMissionComplete::keywordEnum)},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"MissionComplete\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
