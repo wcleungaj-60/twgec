@@ -1,0 +1,31 @@
+__skydowLocs__ = [(4,15)];
+__royalLocs__ = [(4,15)];
+__thirdLocs__ = [(4,15)];
+__title__ = "三國混戰";
+__map__ = "CG.TWilightGameEventCompiler/threeKingdom.twmap";
+
+alias addCamp(name, teamId, x, y){
+    addActor(
+        name = name, camp = "third", teamId = teamId, weapon1 = "fist", weapon2="fist",
+        range = 0, externRole = "TWilightGameEventCompiler.character_camp", x = x, y = y
+    );
+}
+
+block init {
+    actions {
+        addCamp("天水",100,4,15);
+        addCamp("陳倉",100,20,29);
+        addCamp("漢中",100,5,50);
+        addCamp("成都",100,14,66);
+        addCamp("建寧",100,4,85);
+        addCamp("洛陽",100,38,32);
+        addCamp("鄴",100,65,30);
+        addCamp("合肥",100,60,46);
+        addCamp("烏丸",100,84,16);
+        addCamp("建康",100,83,58);
+        addCamp("太湖",100,67,63);
+        addCamp("江陵",100,32,61);
+        addCamp("武昌",100,57,61);
+        addCamp("交州",100,65,85);
+    }
+}
