@@ -3,6 +3,7 @@
 
 #include "ast.h"
 #include "keyword.h"
+#include "utils.h"
 #include <iostream>
 #include <map>
 #include <set>
@@ -52,26 +53,27 @@ private:
   };
 
   std::string print() {
-    std::string ret = functionName + "(";
+    std::string ret = functionName + "(\n";
     for (auto it = defaultMap.begin(); it != defaultMap.end(); ++it) {
+      ret += inden(4);
       switch (it->second.astType) {
       case AST_BOOL:
-        ret += "bool";
+        ret += "bool"+ inden(12);
         break;
       case AST_INT:
-        ret += "int|string";
+        ret += "int|string"+ inden(6);
         break;
       case AST_LIST_POINT:
-        ret += "list[point]";
+        ret += "list[point]" + inden(5);
         break;
       case AST_STRING:
-        ret += "string";
+        ret += "string"+ inden(10);
         break;
       case AST_LIST_STRING:
-        ret += "list[string]";
+        ret += "list[string]"+ inden(4);
         break;
       case AST_INVALID:
-        ret += "?";
+        ret += "?"+ inden(15);
         break;
       }
       ret += " " + it->first + " = ";
@@ -81,6 +83,7 @@ private:
         ret += it->second.defaultValue;
       if (std::next(it) != defaultMap.end())
         ret += ", ";
+      ret += "\n";
     }
     ret += ")";
     return ret;

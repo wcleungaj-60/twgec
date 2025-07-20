@@ -1,4 +1,19 @@
 Codegen Warnings: Redefined key "myKey" at 7:31
 Codegen Warnings: Undefined key "myKey" at 7:26
 Please following this function signature:
-addActor(string camp = "skydow", string externRole = "", int|string hp = "100", string id = "ai*", string localVarname = "actor", string name = "", list[point] patrol = [], int|string range = "10000", string role = 0, string weapon1 = "default", string weapon2 = "default", int|string x = "0", int|string y = "0")
+addActor(
+    string           camp = "skydow", 
+    string           externRole = "", 
+    int|string       hp = "100", 
+    string           id = "ai*", 
+    string           localVarname = "actor", 
+    string           name = "", 
+    list[point]      patrol = [], 
+    int|string       range = "10000", 
+    string           role = 0, 
+    int|string       teamId = "0", 
+    string           weapon1 = "default", 
+    string           weapon2 = "default", 
+    int|string       x = "0", 
+    int|string       y = "0"
+)
