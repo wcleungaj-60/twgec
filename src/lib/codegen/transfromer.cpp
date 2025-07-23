@@ -20,6 +20,12 @@ std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
   bool astInt = defaultMap.at(key).astType == AST_INT;
   bool astString = defaultMap.at(key).astType == AST_STRING;
   bool astPointList = defaultMap.at(key).astType == AST_LIST_POINT;
+  if (auto varNode = dynamic_cast<VariableValueNode *>(input.get())) {
+    std::cerr << "Codegen Error: Cannot find the definition of variable `"
+              << varNode->value << "` at " << input->loc
+              << ". Please define it globally or inside the alias\'s param.\n";
+    return "";
+  }
   if (astInt) {
     intNode = dynamic_cast<IntValueNode *>(input.get());
     stringNode = dynamic_cast<StringValueNode *>(input.get());

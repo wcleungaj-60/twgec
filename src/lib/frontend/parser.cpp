@@ -63,13 +63,13 @@ std::unique_ptr<MetadataNode> Parser::parseMetadata() {
   std::string strippedKey = key.substr(2, key.size() - 4);
   if (!consume(TokenType::METADATA) || !consume(TokenType::ASSIGN))
     return nullptr;
-  std::unique_ptr<ValueNode> value = parseValue();
-  if (!value)
+  std::unique_ptr<ExpressionNode> exp = parseExp();
+  if (!exp)
     return nullptr;
   if (!consume(TokenType::SEMICOLON))
     return nullptr;
   std::unique_ptr<MetadataNode> metadataNode =
-      std::make_unique<MetadataNode>(strippedKey, value, loc);
+      std::make_unique<MetadataNode>(strippedKey, exp, loc);
   return metadataNode;
 }
 
@@ -236,22 +236,22 @@ bool Parser::parseInstructionArgs(std::unique_ptr<InstructionNode> &actionNode,
                 << tokens.front().value << "\'\n";
       return false;
     }
-    std::unique_ptr<ValueNode> valueNode = parseValue();
-    if (!valueNode)
+    std::unique_ptr<ExpressionNode> expNode = parseExp();
+    if (!expNode)
       return false;
     std::unique_ptr<PositionalArgNode> posArgNode =
-        std::make_unique<PositionalArgNode>(valueNode, loc);
+        std::make_unique<PositionalArgNode>(expNode, loc);
     actionNode->positional_args.push_back(std::move(posArgNode));
     if (consume(TokenType::COMMA, /*errorThrowing*/ false))
       return parseInstructionArgs(actionNode);
   } else {
     if (!consume(TokenType::ASSIGN))
       return false;
-    auto valueNode = parseValue();
-    if (!valueNode)
+    std::unique_ptr<ExpressionNode> expNode = parseExp();
+    if (!expNode)
       return false;
     std::unique_ptr<NamedArgNode> namedArgNode =
-        std::make_unique<NamedArgNode>(identifierToken, valueNode, loc);
+        std::make_unique<NamedArgNode>(identifierToken, expNode, loc);
     actionNode->named_args.push_back(std::move(namedArgNode));
     if (consume(TokenType::COMMA, /*errorThrowing*/ false))
       return parseInstructionArgs(actionNode, /*foundNamed*/ true);
@@ -303,4 +303,27 @@ std::unique_ptr<ValueNode> Parser::parseValue() {
             << tokens.front().location << ". Found \'" << tokens.front().value
             << "\'\n";
   return nullptr;
+}
+
+std::unique_ptr<ExpressionNode> Parser::parseExp() {
+  Location lhsLoc = tokens.front().location;
+  std::unique_ptr<ValueNode> lhsValue = parseValue();
+  if (!lhsValue)
+    return nullptr;
+  std::unique_ptr<ExpressionNode> lhsExp =
+      std::make_unique<ExpressionNode>(std::move(lhsValue), lhsLoc);
+  if (tokens.front().type != TokenType::PLUS)
+    return lhsExp;
+  Location opLoc = tokens.front().location;
+  consume(TokenType::PLUS);
+  std::unique_ptr<OperationNode> opNode =
+      std::make_unique<OperationPlusNode>(opLoc);
+  Location rhsLoc = tokens.front().location;
+  std::unique_ptr<ValueNode> rhsValue = parseValue();
+  if (!rhsValue)
+    return nullptr;
+  std::unique_ptr<ExpressionNode> rhsExp =
+      std::make_unique<ExpressionNode>(std::move(rhsValue), rhsLoc);
+  return std::make_unique<ExpressionNode>(std::move(lhsExp), std::move(opNode),
+                                          std::move(rhsExp), lhsExp->loc);
 }

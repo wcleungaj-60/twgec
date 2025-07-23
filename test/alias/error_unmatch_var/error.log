@@ -1,1 +1,2 @@
-Syntax Error: Unknown variable at 2:34.
+Codegen Error: Cannot find the definition of variable `camp2` at 2:34. Please define it globally or inside the alias's param.
+Codegen Error: Cannot find the definition of variable `camp2` at 3:34. Please define it globally or inside the alias's param.

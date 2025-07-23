@@ -2,6 +2,7 @@
 #define AST_H
 
 #include "utils/location.h"
+#include <cassert>
 #include <iostream>
 #include <map>
 #include <memory>
@@ -15,7 +16,7 @@ public:
   // Function
   ValueNode(Location loc) : loc(loc) {}
   virtual void print() const {}
-  virtual std::unique_ptr<ValueNode> clone() const { return nullptr; }
+  virtual std::unique_ptr<ValueNode> clone() const;
 };
 
 class ListValueNode : public ValueNode {
@@ -104,16 +105,104 @@ public:
   };
 };
 
+class OperationNode {
+public:
+  // Variable
+  Location loc;
+  // Function
+  OperationNode(Location loc) : loc(loc) {}
+  virtual void print() const {}
+  virtual std::unique_ptr<OperationNode> clone() const { return nullptr; }
+};
+
+class OperationPlusNode : public OperationNode {
+public:
+  // Function
+  OperationPlusNode(Location loc) : OperationNode(loc) {}
+  void print() const { std::cout << "+"; }
+  std::unique_ptr<OperationNode> clone() const {
+    return std::make_unique<OperationPlusNode>(loc);
+  };
+};
+
+class OperationNoOpNode : public OperationNode {
+public:
+  // Function
+  OperationNoOpNode(Location loc) : OperationNode(loc) {}
+  void print() const { std::cout << ""; }
+  std::unique_ptr<OperationNode> clone() const {
+    return std::make_unique<OperationNoOpNode>(loc);
+  };
+};
+
+class ExpressionNode {
+public:
+  // Variable
+  bool isValue;
+  std::unique_ptr<ValueNode> value;
+
+  std::unique_ptr<ExpressionNode> lhs;
+  std::unique_ptr<OperationNode> op;
+  std::unique_ptr<ExpressionNode> rhs;
+
+  Location loc;
+  ExpressionNode(std::unique_ptr<ValueNode> value, Location loc)
+      : value(std::move(value)), op(std::make_unique<OperationNoOpNode>(loc)),
+        loc(loc), isValue(true) {}
+  ExpressionNode(std::unique_ptr<ExpressionNode> lhs,
+                 std::unique_ptr<OperationNode> op,
+                 std::unique_ptr<ExpressionNode> rhs, Location loc)
+      : lhs(std::move(lhs)), op(std::move(op)), rhs(std::move(rhs)), loc(loc),
+        isValue(false) {}
+
+  bool replaceVarValue(
+      std::map<std::string, std::unique_ptr<ValueNode>> &callerMap) {
+    bool ret = true;
+    if (isValue) {
+      if (auto *varNode = dynamic_cast<VariableValueNode *>(value.get())) {
+        if (callerMap.find(varNode->value) == callerMap.end())
+          return false;
+        value = callerMap[varNode->value]->clone();
+      }
+    } else {
+      ret &= lhs->replaceVarValue(callerMap);
+      ret &= rhs->replaceVarValue(callerMap);
+    }
+    return ret;
+  }
+
+  void print() const {
+    if (isValue) {
+      value->print();
+    } else {
+      std::cout << "(";
+      lhs->print();
+      std::cout << " ";
+      op->print();
+      std::cout << " ";
+      rhs->print();
+      std::cout << ")";
+    }
+  }
+  std::unique_ptr<ExpressionNode> clone() const {
+    if (isValue)
+      return std::make_unique<ExpressionNode>(value->clone(), loc);
+    else
+      return std::make_unique<ExpressionNode>(lhs->clone(), op->clone(),
+                                              rhs->clone(), loc);
+  };
+};
+
 class MetadataNode {
 public:
   // Variable
   Location loc;
   std::string key;
-  std::unique_ptr<ValueNode> value;
+  std::unique_ptr<ExpressionNode> expNode;
   // Function
-  MetadataNode(const std::string &key, std::unique_ptr<ValueNode> &value,
+  MetadataNode(const std::string &key, std::unique_ptr<ExpressionNode> &expNode,
                Location loc)
-      : key(key), value(std::move(value)), loc(loc) {}
+      : key(key), expNode(std::move(expNode)), loc(loc) {}
   void print(int indent = 0) const;
 };
 
@@ -121,10 +210,10 @@ class PositionalArgNode {
 public:
   // Variable
   Location loc;
-  std::unique_ptr<ValueNode> valueNode;
+  std::unique_ptr<ExpressionNode> expNode;
   // Function
-  PositionalArgNode(std::unique_ptr<ValueNode> &valueNode, Location loc)
-      : valueNode(std::move(valueNode)), loc(loc) {}
+  PositionalArgNode(std::unique_ptr<ExpressionNode> &expNode, Location loc)
+      : expNode(std::move(expNode)), loc(loc) {}
   std::unique_ptr<PositionalArgNode> clone();
 };
 
@@ -133,11 +222,11 @@ public:
   // Variable
   Location loc;
   std::string key;
-  std::unique_ptr<ValueNode> valueNode;
+  std::unique_ptr<ExpressionNode> expNode;
   // Function
-  NamedArgNode(const std::string &key, std::unique_ptr<ValueNode> &valueNode,
+  NamedArgNode(const std::string &key, std::unique_ptr<ExpressionNode> &expNode,
                Location loc)
-      : key(key), valueNode(std::move(valueNode)), loc(loc) {}
+      : key(key), expNode(std::move(expNode)), loc(loc) {}
   std::unique_ptr<NamedArgNode> clone();
 };
 
@@ -209,6 +298,7 @@ public:
   // Function
   AliasNode(const std::string &id, Location loc) : identifier(id), loc(loc) {}
   void print(int indent = 0) const;
+  std::unique_ptr<AliasNode> clone();
 };
 
 class ModuleNode {
@@ -222,18 +312,5 @@ public:
   ModuleNode(Location loc) : loc(loc) {}
   void print(std::string title, int indent = 0) const;
 };
-
-static std::unique_ptr<ValueNode>
-valueNodeClone(std::unique_ptr<ValueNode> &valueNode) {
-  if (auto *stringNode = dynamic_cast<StringValueNode *>(valueNode.get()))
-    return stringNode->clone();
-  if (auto *intNode = dynamic_cast<IntValueNode *>(valueNode.get()))
-    return intNode->clone();
-  if (auto *boolNode = dynamic_cast<BoolValueNode *>(valueNode.get()))
-    return boolNode->clone();
-  if (auto *listNode = dynamic_cast<ListValueNode *>(valueNode.get()))
-    return listNode->clone();
-  return nullptr;
-}
 
 #endif

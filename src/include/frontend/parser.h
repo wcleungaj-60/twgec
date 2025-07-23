@@ -21,6 +21,7 @@ private:
   std::unique_ptr<ChecksNode> parseChecks();
   std::unique_ptr<TriggersNode> parseTriggers();
   std::unique_ptr<ValueNode> parseValue();
+  std::unique_ptr<ExpressionNode> parseExp();
 
 public:
   Parser(const std::vector<Token> &inputTokens);

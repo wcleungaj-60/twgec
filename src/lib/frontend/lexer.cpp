@@ -108,6 +108,10 @@ Token Lexer::nextToken() {
       Lexer::column++;
       pos++;
       return Token(TokenType::SEMICOLON, Lexer::line, Lexer::column - 1, ";");
+    case '+':
+      Lexer::column++;
+      pos++;
+      return Token(TokenType::PLUS, Lexer::line, Lexer::column - 1, "+");
     case '_':
       return metadataToken();
     case '/':

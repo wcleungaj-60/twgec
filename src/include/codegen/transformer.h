@@ -104,7 +104,7 @@ public:
       if (keySet.count(key))
         std::cerr << "Codegen Warnings: Redefined key \"" << key << "\" at "
                   << metadata->loc << "\n";
-      inputMap.insert({key, std::move(metadata->value)});
+      inputMap.insert({key, std::move(metadata->expNode->value)});
       keySet.insert(key);
     }
     verifyInputMap();
@@ -117,7 +117,7 @@ public:
       if (keySet.count(key))
         std::cerr << "Codegen Warnings: Redefined key \"" << key << "\" at "
                   << namedArg->loc << "\n";
-      inputMap.insert({key, std::move(namedArg->valueNode)});
+      inputMap.insert({key, std::move(namedArg->expNode->value)});
       keySet.insert(key);
     }
     verifyInputMap();

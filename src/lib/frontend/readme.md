@@ -28,15 +28,19 @@ ModuleNode := [BlockNode | MetadataNode | AliasNode]*
   - ChecksNode := ChecksToken OpenCurToken CheckNode* CloseCurToken
   - TriggersNode := TriggersToken OpenCurToken TriggerNode* CloseCurToken
     - InstructionNode := IdentifierToken [DotToken IdentifierToken]* OpenParToken ArgsNode CloseParToken SemicolonToken
-- MetadataNode := MetadataToken AssignToken ValueNode SemicolonToken
+- MetadataNode := MetadataToken AssignToken ExpNode SemicolonToken
 - AliasNode := AliasToken IdentifierToken OpenParToken ParamsNode CloseParToken OpenCurToken InstructionNode* CloseCurToken
 // Parameter (The function definition)
 ParamsNode = [IdentifierToken [CommaToken IdentifierToken]*]?
 // Arguments (The function application)
 ArgsNode = PositionalArgsNode?
-PositionalArgsNode = [IdentifierToken AssignToken ValueNode [CommaToken NamedArgsNode]?] | 
-                    [ValueNode [CommaToken PositionalArgsNode]?]
-NamedArgsNode = IdentifierToken AssignToken ValueNode [CommaToken NamedArgsNode]?
+PositionalArgsNode = [IdentifierToken AssignToken ExpNode [CommaToken NamedArgsNode]?] | 
+                    [ExpNode [CommaToken PositionalArgsNode]?]
+NamedArgsNode = IdentifierToken AssignToken ExpNode [CommaToken NamedArgsNode]?
+// Operation
+OperationNode = PlusToken
+// Expression
+ExpNode = ValueNode [OperationNode ExpNode]?
 // Value
 ValueNode := StringValueNode | IntValueNode | BoolValueNode | VariableValueNode
 StringValueNode := StringToken

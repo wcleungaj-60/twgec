@@ -34,6 +34,7 @@ enum class TokenType {
   SEMICOLON, // ;
   DOT,       // .
   COMMA,     // ,
+  PLUS,      // +
   /* Others */
   INT,
   STRING,
@@ -64,6 +65,7 @@ inline std::ostream &operator<<(std::ostream &os, const TokenType &type) {
     LEXER_TOKEN_TYPE_PRINT(TokenType::SEMICOLON, "\';\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::DOT, "\'.\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::COMMA, "\',\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::PLUS, "\'+\'");
     // Otherwise
     LEXER_TOKEN_TYPE_PRINT(TokenType::INT, "int");
     LEXER_TOKEN_TYPE_PRINT(TokenType::STRING, "string");
@@ -106,6 +108,7 @@ struct Token {
       LEXER_TOKEN_PRINT(TokenType::SEMICOLON, ";");
       LEXER_TOKEN_PRINT(TokenType::DOT, ".");
       LEXER_TOKEN_PRINT(TokenType::COMMA, ",");
+      LEXER_TOKEN_PRINT(TokenType::PLUS, "+");
       // Otherwise
       LEXER_TOKEN_PRINT(TokenType::INT, "int@" + token.value);
       LEXER_TOKEN_PRINT(TokenType::STRING, "string@" + token.value);

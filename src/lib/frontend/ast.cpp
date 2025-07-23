@@ -15,7 +15,7 @@ void ModuleNode::print(std::string title, int indent) const {
 
 void MetadataNode::print(int indent) const {
   std::cout << inden(indent) << "MetadataNode: " << key << "=";
-  value->print();
+  expNode->print();
   std::cout << "\n";
 }
 
@@ -69,27 +69,43 @@ void AliasNode::print(int indent) const {
 void InstructionNode::print(int indent) const {
   std::cout << inden(indent) << identifier << "(";
   for (int i = 0; i < positional_args.size(); i++) {
-    positional_args[i]->valueNode->print();
+    positional_args[i]->expNode->print();
     if (i != positional_args.size() - 1 || !named_args.empty())
       std::cout << ", ";
   }
   for (int i = 0; i < named_args.size(); i++) {
     std::cout << named_args[i].get()->key << " = ";
-    named_args[i]->valueNode->print();
+    named_args[i]->expNode->print();
     if (i != named_args.size() - 1)
       std::cout << ", ";
   }
   std::cout << ")\n";
 }
 
+std::unique_ptr<ValueNode> ValueNode::clone() const {
+  if (auto *stringNode = dynamic_cast<const StringValueNode *>(this))
+    return stringNode->clone();
+  if (auto *intNode = dynamic_cast<const IntValueNode *>(this))
+    return intNode->clone();
+  if (auto *boolNode = dynamic_cast<const BoolValueNode *>(this))
+    return boolNode->clone();
+  if (auto *listNode = dynamic_cast<const ListValueNode *>(this))
+    return listNode->clone();
+  if (auto *varNode = dynamic_cast<const VariableValueNode *>(this))
+    return varNode->clone();
+  std::cerr << "Compiler Implementation Error: Unsupported cloning . Found at "
+            << loc << "\n";
+  return nullptr;
+}
+
 std::unique_ptr<NamedArgNode> NamedArgNode::clone() {
-  auto newValue = std::move(valueNode.get()->clone());
-  return std::make_unique<NamedArgNode>(key, newValue, loc);
+  auto newExp = std::move(expNode.get()->clone());
+  return std::make_unique<NamedArgNode>(key, newExp, loc);
 }
 
 std::unique_ptr<PositionalArgNode> PositionalArgNode::clone() {
-  auto newValue = std::move(valueNode.get()->clone());
-  return std::make_unique<PositionalArgNode>(newValue, loc);
+  auto newExp = std::move(expNode.get()->clone());
+  return std::make_unique<PositionalArgNode>(newExp, loc);
 }
 
 std::unique_ptr<InstructionNode> InstructionNode::clone() {
@@ -98,5 +114,14 @@ std::unique_ptr<InstructionNode> InstructionNode::clone() {
     newNode.get()->named_args.push_back(namedArg.get()->clone());
   for (auto &positionalArg : positional_args)
     newNode.get()->positional_args.push_back(positionalArg.get()->clone());
+  return newNode;
+}
+
+std::unique_ptr<AliasNode> AliasNode::clone() {
+  auto newNode = std::make_unique<AliasNode>(identifier, loc);
+  for (auto &param : params)
+    newNode.get()->params.push_back(param);
+  for (auto &instr : instructions)
+    newNode.get()->instructions.push_back(instr.get()->clone());
   return newNode;
 }

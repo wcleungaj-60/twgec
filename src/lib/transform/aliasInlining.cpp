@@ -28,11 +28,11 @@ bool isValidAliasCaller(std::unique_ptr<InstructionNode> &caller,
               << caller->loc << ".\n";
     return false;
   }
-  std::map<string, unique_ptr<ValueNode>> namedArgsMap;
+  std::map<string, unique_ptr<ExpressionNode>> namedArgsMap;
   for (string param : alias->params)
     paramSet.insert(param);
   for (auto &namedArg : caller->named_args) {
-    namedArgsMap.insert({namedArg->key, namedArg->valueNode->clone()});
+    namedArgsMap.insert({namedArg->key, namedArg->expNode->clone()});
     argSet.insert(namedArg->key);
   }
   if (paramSet != argSet) {
@@ -41,15 +41,6 @@ bool isValidAliasCaller(std::unique_ptr<InstructionNode> &caller,
               << "(alias application).\n";
     return false;
   }
-  for (auto &instr : alias->instructions)
-    for (auto &arg : instr->named_args)
-      if (auto varNode =
-              dynamic_cast<VariableValueNode *>(arg->valueNode.get()))
-        if (!paramSet.count(varNode->value)) {
-          std::cerr << "Syntax Error: Unknown variable at " << varNode->loc
-                    << ".\n";
-          return false;
-        }
 
   return true;
 }
@@ -74,17 +65,23 @@ bool aliasInling(std::map<std::string, std::unique_ptr<AliasNode>> &aliases,
     std::map<std::string, unique_ptr<ValueNode>> callerMap;
     auto &callerInstr = instructions[idx];
     auto pos = instructions.begin() + idx;
-    auto &aliasNode = aliases[callerInstr->identifier];
-    for (auto &arg : callerInstr->named_args)
-      callerMap.insert({arg->key, valueNodeClone(arg->valueNode)});
+    auto aliasNode = aliases[callerInstr->identifier]->clone();
+    for (auto &arg : callerInstr->named_args) {
+      if (!arg->expNode->isValue) {
+        std::cerr
+            << "Alias caller doesn\'t support an expression as its argument. "
+               "Found at "
+            << aliasNode->loc << "\n";
+        return false;
+      }
+      callerMap.insert({arg->key, arg->expNode->value->clone()});
+    }
     instructions.erase(pos);
     for (auto it = aliasNode.get()->instructions.rbegin();
          it != aliasNode.get()->instructions.rend(); ++it) {
       auto clonedIns = it->get()->clone();
       for (auto &arg : clonedIns->named_args)
-        if (auto *varNode =
-                dynamic_cast<VariableValueNode *>(arg->valueNode.get()))
-          arg->valueNode = valueNodeClone(callerMap[varNode->value]);
+        arg->expNode->replaceVarValue(callerMap);
       instructions.insert(pos, std::move(clonedIns));
     }
   }

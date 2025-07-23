@@ -24,7 +24,7 @@ bool argBinding(std::map<std::string, std::unique_ptr<AliasNode>> &aliases,
     for (int i = 0; i < instr->positional_args.size(); i++) {
       auto &posArg = instr->positional_args[i];
       bindedArgs.push_back(std::make_unique<NamedArgNode>(
-          aliasParam[i], posArg.get()->valueNode, posArg->loc));
+          aliasParam[i], posArg.get()->expNode, posArg->loc));
     }
     instr->named_args.insert(instr->named_args.begin(),
                              std::make_move_iterator(bindedArgs.begin()),
