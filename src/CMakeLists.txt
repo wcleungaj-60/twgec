@@ -6,6 +6,7 @@ add_executable(twgec
     lib/frontend/parser.cpp
     lib/transform/aliasInlining.cpp
     lib/transform/argBinding.cpp
+    lib/transform/constantFolding.cpp
     lib/codegen/action.cpp
     lib/codegen/check.cpp
     lib/codegen/codegen.cpp

@@ -319,11 +319,9 @@ std::unique_ptr<ExpressionNode> Parser::parseExp() {
   std::unique_ptr<OperationNode> opNode =
       std::make_unique<OperationPlusNode>(opLoc);
   Location rhsLoc = tokens.front().location;
-  std::unique_ptr<ValueNode> rhsValue = parseValue();
-  if (!rhsValue)
+  std::unique_ptr<ExpressionNode> rhsExp = parseExp();
+  if (!rhsExp)
     return nullptr;
-  std::unique_ptr<ExpressionNode> rhsExp =
-      std::make_unique<ExpressionNode>(std::move(rhsValue), rhsLoc);
   return std::make_unique<ExpressionNode>(std::move(lhsExp), std::move(opNode),
                                           std::move(rhsExp), lhsExp->loc);
 }

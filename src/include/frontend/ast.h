@@ -191,6 +191,26 @@ public:
       return std::make_unique<ExpressionNode>(lhs->clone(), op->clone(),
                                               rhs->clone(), loc);
   };
+
+  bool foldValue() {
+    if (isValue)
+      return true;
+    if (!lhs->foldValue() || !lhs->isValue)
+      return false;
+    if (!rhs->foldValue() || !rhs->isValue)
+      return false;
+    if (auto plusOp = dynamic_cast<OperationPlusNode *>(op.get()))
+      if (auto lhsStr = dynamic_cast<StringValueNode *>(lhs->value.get()))
+        if (auto rhsStr = dynamic_cast<StringValueNode *>(rhs->value.get())) {
+          value = std::make_unique<StringValueNode>(
+              lhsStr->value + rhsStr->value, lhsStr->loc);
+          isValue = true;
+          lhs = nullptr;
+          rhs = nullptr;
+          return true;
+        }
+    return false;
+  }
 };
 
 class MetadataNode {
