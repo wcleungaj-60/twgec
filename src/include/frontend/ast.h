@@ -158,8 +158,8 @@ public:
   // Function
   void print();
   std::unique_ptr<ExpressionNode> clone();
-  bool propagateAliasParam(std::map<std::string, std::unique_ptr<ValueNode>> &);
-  bool propagateConst(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
+  bool
+  propagateVarToExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
 };
 

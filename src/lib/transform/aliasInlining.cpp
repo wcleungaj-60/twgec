@@ -62,26 +62,18 @@ bool aliasInling(std::map<std::string, std::unique_ptr<AliasNode>> &aliases,
   std::reverse(aliasIdxes.begin(), aliasIdxes.end());
   // Step 2: Inline the Alias
   for (auto idx : aliasIdxes) {
-    std::map<std::string, unique_ptr<ValueNode>> callerMap;
+    std::map<std::string, unique_ptr<ExpressionNode>> callerMap;
     auto &callerInstr = instructions[idx];
     auto pos = instructions.begin() + idx;
     auto aliasNode = aliases[callerInstr->identifier]->clone();
-    for (auto &arg : callerInstr->named_args) {
-      if (!arg->expNode->isValue) {
-        std::cerr
-            << "Alias caller doesn\'t support an expression as its argument. "
-               "Found at "
-            << aliasNode->loc << "\n";
-        return false;
-      }
-      callerMap.insert({arg->key, arg->expNode->value->clone()});
-    }
+    for (auto &arg : callerInstr->named_args)
+      callerMap.insert({arg->key, std::move(arg->expNode)});
     instructions.erase(pos);
     for (auto it = aliasNode.get()->instructions.rbegin();
          it != aliasNode.get()->instructions.rend(); ++it) {
       auto clonedIns = it->get()->clone();
       for (auto &arg : clonedIns->named_args)
-        arg->expNode->propagateAliasParam(callerMap);
+        arg->expNode->propagateVarToExp(callerMap);
       instructions.insert(pos, std::move(clonedIns));
     }
   }

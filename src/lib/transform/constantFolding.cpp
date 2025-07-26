@@ -11,7 +11,7 @@ bool constantFolding(
     std::vector<std::unique_ptr<InstructionNode>> &instructions) {
   for (auto &instr : instructions)
     for (auto &arg : instr->named_args)
-      arg->expNode->propagateConst(constDefs);
+      arg->expNode->propagateVarToExp(constDefs);
   for (auto &instr : instructions)
     for (auto &arg : instr->named_args)
       arg->expNode->foldValue();
@@ -21,9 +21,8 @@ bool constantFolding(
 bool constantFolding(const unique_ptr<ModuleNode> &moduleNode) {
   bool ret = true;
   std::map<std::string, std::unique_ptr<ExpressionNode>> constDefMap;
-  for (auto &constDef : moduleNode->constDefs) {
+  for (auto &constDef : moduleNode->constDefs)
     constDefMap.insert({constDef->key, constDef->expNode->clone()});
-  }
   for (auto &blockNode : moduleNode->blocks) {
     if (blockNode.get()->actionsNode.get())
       ret &= constantFolding(constDefMap,

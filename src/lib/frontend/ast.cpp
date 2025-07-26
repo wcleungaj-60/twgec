@@ -229,30 +229,14 @@ std::unique_ptr<AliasNode> AliasNode::clone() {
 
 //------------ others ------------//
 
-bool ExpressionNode::propagateAliasParam(
-    std::map<std::string, std::unique_ptr<ValueNode>> &callerMap) {
+bool ExpressionNode::propagateVarToExp(
+    std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
   bool ret = true;
   if (isValue) {
     if (auto *varNode = dynamic_cast<VariableValueNode *>(value.get())) {
-      if (callerMap.find(varNode->value) == callerMap.end())
+      if (varExpMap.find(varNode->value) == varExpMap.end())
         return false;
-      value = callerMap[varNode->value]->clone();
-    }
-  } else {
-    ret &= lhs->propagateAliasParam(callerMap);
-    ret &= rhs->propagateAliasParam(callerMap);
-  }
-  return ret;
-}
-
-bool ExpressionNode::propagateConst(
-    std::map<std::string, std::unique_ptr<ExpressionNode>> &constDefMap) {
-  bool ret = true;
-  if (isValue) {
-    if (auto *varNode = dynamic_cast<VariableValueNode *>(value.get())) {
-      if (constDefMap.find(varNode->value) == constDefMap.end())
-        return false;
-      auto &constExp = constDefMap[varNode->value];
+      auto &constExp = varExpMap[varNode->value];
       if (constExp->isValue) {
         value = constExp->value->clone();
       } else {
@@ -264,8 +248,8 @@ bool ExpressionNode::propagateConst(
       }
     }
   } else {
-    ret &= lhs->propagateConst(constDefMap);
-    ret &= rhs->propagateConst(constDefMap);
+    ret &= lhs->propagateVarToExp(varExpMap);
+    ret &= rhs->propagateVarToExp(varExpMap);
   }
   return ret;
 }
