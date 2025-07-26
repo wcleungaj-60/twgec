@@ -14,63 +14,63 @@ using std::string;
 using std::unique_ptr;
 using std::vector;
 
-bool isValidAliasCaller(std::unique_ptr<InstructionNode> &caller,
-                        map<string, unique_ptr<AliasNode>> &aliases) {
-  AliasNode *alias = aliases[caller->identifier].get();
-  auto aliasParamNum = alias->params.size();
+bool isValidFuncCaller(std::unique_ptr<InstructionNode> &caller,
+                        map<string, unique_ptr<FunDefNode>> &funDefMap) {
+  FunDefNode *funDef = funDefMap[caller->identifier].get();
+  auto funParamNum = funDef->params.size();
   auto callerArgNum = caller->named_args.size();
   set<string> paramSet;
   set<string> argSet;
-  if (aliasParamNum != callerArgNum) {
-    std::cerr << "Syntax Error: Unmatched alias parameters number. "
-              << aliasParamNum << " parameters are expected at " << alias->loc
+  if (funParamNum != callerArgNum) {
+    std::cerr << "Syntax Error: Unmatched function parameters number. "
+              << funParamNum << " parameters are expected at " << funDef->loc
               << ". " << callerArgNum << " paramters are found at "
               << caller->loc << ".\n";
     return false;
   }
   std::map<string, unique_ptr<ExpressionNode>> namedArgsMap;
-  for (string param : alias->params)
+  for (string param : funDef->params)
     paramSet.insert(param);
   for (auto &namedArg : caller->named_args) {
     namedArgsMap.insert({namedArg->key, namedArg->expNode->clone()});
     argSet.insert(namedArg->key);
   }
   if (paramSet != argSet) {
-    std::cerr << "Syntax Error: Unmatched paramter naming at " << alias->loc
-              << "(alias definition) and " << caller->loc
-              << "(alias application).\n";
+    std::cerr << "Syntax Error: Unmatched paramter naming at " << funDef->loc
+              << "(function definition) and " << caller->loc
+              << "(function application).\n";
     return false;
   }
 
   return true;
 }
 
-bool aliasInling(std::map<std::string, std::unique_ptr<AliasNode>> &aliases,
+bool functionInling(std::map<std::string, std::unique_ptr<FunDefNode>> &funDefMap,
                  std::vector<std::unique_ptr<InstructionNode>> &instructions) {
-  std::vector<int> aliasIdxes;
-  // Step 1: Get the Alias Index
+  std::vector<int> funCallerIdxes;
+  // Step 1: Get the function caller index
   for (int idx = 0; idx < instructions.size(); idx++) {
     auto &caller = instructions[idx];
     string callerName = caller->identifier;
-    if (aliases.count(callerName) == 0)
+    if (funDefMap.count(callerName) == 0)
       continue;
-    AliasNode *alias = aliases[callerName].get();
-    if (!isValidAliasCaller(caller, aliases))
+    FunDefNode *funDef = funDefMap[callerName].get();
+    if (!isValidFuncCaller(caller, funDefMap))
       return false;
-    aliasIdxes.push_back(idx);
+    funCallerIdxes.push_back(idx);
   }
-  std::reverse(aliasIdxes.begin(), aliasIdxes.end());
-  // Step 2: Inline the Alias
-  for (auto idx : aliasIdxes) {
+  std::reverse(funCallerIdxes.begin(), funCallerIdxes.end());
+  // Step 2: Inline the function
+  for (auto idx : funCallerIdxes) {
     std::map<std::string, unique_ptr<ExpressionNode>> callerMap;
     auto &callerInstr = instructions[idx];
     auto pos = instructions.begin() + idx;
-    auto aliasNode = aliases[callerInstr->identifier]->clone();
+    auto funDefNode = funDefMap[callerInstr->identifier]->clone();
     for (auto &arg : callerInstr->named_args)
       callerMap.insert({arg->key, std::move(arg->expNode)});
     instructions.erase(pos);
-    for (auto it = aliasNode.get()->instructions.rbegin();
-         it != aliasNode.get()->instructions.rend(); ++it) {
+    for (auto it = funDefNode.get()->instructions.rbegin();
+         it != funDefNode.get()->instructions.rend(); ++it) {
       auto clonedIns = it->get()->clone();
       for (auto &arg : clonedIns->named_args)
         arg->expNode->propagateVarToExp(callerMap);
@@ -80,18 +80,18 @@ bool aliasInling(std::map<std::string, std::unique_ptr<AliasNode>> &aliases,
   return true;
 }
 
-bool aliasInling(const unique_ptr<ModuleNode> &moduleNode) {
+bool functionInling(const unique_ptr<ModuleNode> &moduleNode) {
   bool ret = true;
-  auto &aliases = moduleNode->aliases;
+  auto &funDefs = moduleNode->funDefs;
   for (auto &blockNode : moduleNode->blocks) {
     if (blockNode.get()->actionsNode.get())
-      ret &= aliasInling(aliases, blockNode.get()->actionsNode->instructions);
+      ret &= functionInling(funDefs, blockNode.get()->actionsNode->instructions);
     if (blockNode.get()->checksNode.get())
-      ret &= aliasInling(aliases, blockNode.get()->checksNode->instructions);
+      ret &= functionInling(funDefs, blockNode.get()->checksNode->instructions);
     if (blockNode.get()->triggersNode.get())
-      ret &= aliasInling(aliases, blockNode.get()->triggersNode->instructions);
+      ret &= functionInling(funDefs, blockNode.get()->triggersNode->instructions);
   }
-  aliases.clear();
+  funDefs.clear();
   return ret;
 }
 } // namespace transform

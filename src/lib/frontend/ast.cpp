@@ -49,8 +49,8 @@ void ModuleNode::print(std::string title, int indent) {
     metadata->print(indent + 4);
   for (auto &constDef : constDefs)
     constDef->print(indent + 4);
-  for (auto &alias : aliases)
-    alias.second->print(indent + 4);
+  for (auto &funDef : funDefs)
+    funDef.second->print(indent + 4);
   for (auto &block : blocks)
     block->print(indent + 4);
 }
@@ -101,8 +101,8 @@ void ActionsNode::print(int indent) {
   std::cout << inden(indent) << "}\n";
 }
 
-void AliasNode::print(int indent) {
-  std::cout << inden(indent) << "alias " << identifier << "(";
+void FunDefNode::print(int indent) {
+  std::cout << inden(indent) << "def " << identifier << "(";
   for (int i = 0; i < params.size(); i++) {
     std::cout << params[i];
     if (i != params.size() - 1)
@@ -218,8 +218,8 @@ std::unique_ptr<InstructionNode> InstructionNode::clone() {
   return newNode;
 }
 
-std::unique_ptr<AliasNode> AliasNode::clone() {
-  auto newNode = std::make_unique<AliasNode>(identifier, loc);
+std::unique_ptr<FunDefNode> FunDefNode::clone() {
+  auto newNode = std::make_unique<FunDefNode>(identifier, loc);
   for (auto &param : params)
     newNode.get()->params.push_back(param);
   for (auto &instr : instructions)

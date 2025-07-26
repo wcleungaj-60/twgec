@@ -2,11 +2,11 @@ __schema__ = "https://code.gamelet.com/gassets/schema/events/v1";
 __title__ = "我的任務";
 __map__ = "CG.TWEventsGameTemplate/gamemap.twmap";
 
-alias console.log(text){
+def console.log(text){
     print(type = "log", text = text);
 }
 
-alias console.error(text){
+def console.error(text){
     print(type = "error", text = text);
 }
 

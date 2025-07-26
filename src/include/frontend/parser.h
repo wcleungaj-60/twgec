@@ -14,7 +14,7 @@ private:
   std::unique_ptr<BlockNode> parseBlock();
   std::unique_ptr<MetadataNode> parseMetadata();
   std::unique_ptr<GlobalConstDefNode> parseConstDef();
-  std::unique_ptr<AliasNode> parseAlias();
+  std::unique_ptr<FunDefNode> parseFunDef();
   std::unique_ptr<ActionsNode> parseActions();
   std::unique_ptr<InstructionNode> parseInstruction();
   bool parseInstructionArgs(std::unique_ptr<InstructionNode> &,

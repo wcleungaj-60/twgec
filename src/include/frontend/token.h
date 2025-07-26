@@ -22,7 +22,7 @@ enum class TokenType {
   ACTIONS,  // actions
   TRIGGERS, // triggers
   CHECKS,   // checks
-  ALIAS,    // alias
+  DEF,      // def
   CONST,    // const
   /* Speical Character */
   OPENCUR,   // {
@@ -54,7 +54,7 @@ inline std::ostream &operator<<(std::ostream &os, const TokenType &type) {
     LEXER_TOKEN_TYPE_PRINT(TokenType::ACTIONS, "\'actions\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::TRIGGERS, "\'triggers\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::CHECKS, "\'checks\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::ALIAS, "\'alias\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::DEF, "\'def\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::CONST, "\'const\'");
     // Speical Character
     LEXER_TOKEN_TYPE_PRINT(TokenType::OPENCUR, "\'{\'");
@@ -98,7 +98,7 @@ struct Token {
       LEXER_TOKEN_PRINT(TokenType::ACTIONS, "actions");
       LEXER_TOKEN_PRINT(TokenType::TRIGGERS, "triggers");
       LEXER_TOKEN_PRINT(TokenType::CHECKS, "checks");
-      LEXER_TOKEN_PRINT(TokenType::ALIAS, "alias");
+      LEXER_TOKEN_PRINT(TokenType::DEF, "def");
       LEXER_TOKEN_PRINT(TokenType::CONST, "const");
       // Speical Character
       LEXER_TOKEN_PRINT(TokenType::OPENCUR, "{");

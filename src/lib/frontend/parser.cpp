@@ -39,16 +39,16 @@ std::unique_ptr<ModuleNode> Parser::parse() {
         moduleNode->constDefs.push_back(std::move(constDefNode));
       else
         return nullptr;
-    } else if (tokens.front().type == TokenType::ALIAS) {
-      if (auto aliasNode = parseAlias()) {
-        if (moduleNode->aliases.count(aliasNode->identifier) != 0) {
-          std::cerr << "SyntaxError: Redefinition of alias \'"
-                    << aliasNode->identifier << "\' at " << aliasNode->loc
+    } else if (tokens.front().type == TokenType::DEF) {
+      if (auto funDefNode = parseFunDef()) {
+        if (moduleNode->funDefs.count(funDefNode->identifier) != 0) {
+          std::cerr << "SyntaxError: Redefinition of function \'"
+                    << funDefNode->identifier << "\' at " << funDefNode->loc
                     << ".\n";
           return nullptr;
         }
-        moduleNode->aliases.insert(
-            {aliasNode->identifier, std::move(aliasNode)});
+        moduleNode->funDefs.insert(
+            {funDefNode->identifier, std::move(funDefNode)});
       } else {
         return nullptr;
       }
@@ -95,8 +95,8 @@ std::unique_ptr<GlobalConstDefNode> Parser::parseConstDef() {
   return constDefNode;
 }
 
-std::unique_ptr<AliasNode> Parser::parseAlias() {
-  consume(TokenType::ALIAS);
+std::unique_ptr<FunDefNode> Parser::parseFunDef() {
+  consume(TokenType::DEF);
   std::string identifier = tokens.front().value;
   Location loc = tokens.front().location;
   if (!consume(TokenType::IDENTIFIER))
@@ -109,13 +109,13 @@ std::unique_ptr<AliasNode> Parser::parseAlias() {
       return nullptr;
   }
   consume(TokenType::OPENPAR);
-  std::unique_ptr<AliasNode> aliasNode =
-      std::make_unique<AliasNode>(identifier, loc);
+  std::unique_ptr<FunDefNode> funDefNode =
+      std::make_unique<FunDefNode>(identifier, loc);
   if (tokens.front().type == TokenType::IDENTIFIER)
     while (true) {
       std::string paramName = tokens.front().value;
       consume(TokenType::IDENTIFIER);
-      aliasNode->params.push_back(paramName);
+      funDefNode->params.push_back(paramName);
       if (tokens.front().type == TokenType::CLOSEPAR)
         break;
       consume(TokenType::COMMA);
@@ -126,11 +126,11 @@ std::unique_ptr<AliasNode> Parser::parseAlias() {
     auto instructionNode = parseInstruction();
     if (!instructionNode)
       return nullptr;
-    aliasNode->instructions.push_back(std::move(instructionNode));
+    funDefNode->instructions.push_back(std::move(instructionNode));
   }
   if (!consume(TokenType::CLOSECUR))
     return nullptr;
-  return aliasNode;
+  return funDefNode;
 }
 
 std::unique_ptr<BlockNode> Parser::parseBlock() {

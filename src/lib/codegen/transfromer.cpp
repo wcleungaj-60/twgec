@@ -23,7 +23,7 @@ std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
   if (auto varNode = dynamic_cast<VariableValueNode *>(input.get())) {
     std::cerr << "Codegen Error: Cannot find the definition of variable `"
               << varNode->value << "` at " << input->loc
-              << ". Please define it globally or inside the alias\'s param.\n";
+              << ". Please define it globally or inside the function\'s param.\n";
     return "";
   }
   if (astInt) {

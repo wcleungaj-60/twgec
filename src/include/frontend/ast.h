@@ -296,7 +296,7 @@ public:
   void print(int indent = 0);
 };
 
-class AliasNode {
+class FunDefNode {
 public:
   // Variable
   Location loc;
@@ -305,11 +305,11 @@ public:
   std::vector<std::unique_ptr<InstructionNode>> instructions;
 
   // Constructor
-  AliasNode(const std::string &id, Location loc) : identifier(id), loc(loc) {}
+  FunDefNode(const std::string &id, Location loc) : identifier(id), loc(loc) {}
 
   // Function
   void print(int indent = 0);
-  std::unique_ptr<AliasNode> clone();
+  std::unique_ptr<FunDefNode> clone();
 };
 
 class ModuleNode {
@@ -318,7 +318,7 @@ public:
   Location loc;
   std::vector<std::unique_ptr<MetadataNode>> metadatas;
   std::vector<std::unique_ptr<BlockNode>> blocks;
-  std::map<std::string, std::unique_ptr<AliasNode>> aliases;
+  std::map<std::string, std::unique_ptr<FunDefNode>> funDefs;
   std::vector<std::unique_ptr<GlobalConstDefNode>> constDefs;
 
   // Constructor

@@ -8,7 +8,7 @@ std::string block = "block";
 std::string actions = "actions";
 std::string triggers = "triggers";
 std::string checks = "checks";
-std::string alias = "alias";
+std::string def = "def";
 std::string _const = "const";
 } // namespace keyword
 
@@ -135,8 +135,8 @@ Token Lexer::nextToken() {
                                      TokenType::CHECKS);
       LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::triggers,
                                      TokenType::TRIGGERS);
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::alias,
-                                     TokenType::ALIAS);
+      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::def,
+                                     TokenType::DEF);
       LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_const,
                                      TokenType::CONST);
       return identifierToken();

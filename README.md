@@ -16,7 +16,7 @@ The `lib` directory contains the cpp files.
 
 The `frontend` directory contains the lexer and parser. It converts the `twge` file into an AST.
 <br>
-The `transform` directory contains the IR transformation pass, such as alias inlining. It converts the AST into a legal form for code generation.
+The `transform` directory contains the IR transformation pass, such as function inlining. It converts the AST into a legal form for code generation.
 <br>
 The `codegen` directory will generate the `events.json` from a legal AST.
 
@@ -43,14 +43,14 @@ block myBlock {
 }
 ```
 
-## Alias
+## Function
 ```
-// Alias Definition
-alias addSnipperActor(camp, x, y) {
+// Function Definition
+def addSnipperActor(camp, x, y) {
     addActor(camp = camp, x = x, y = y, name = "狙擊手", hp = "150", range = "0");
 }
 
-// Alias Example
+// Function Example
 block my_block {
     actions {
         addSnipperActor(camp = "royal", x = 5, y = 10);
@@ -69,5 +69,5 @@ block my_block {
 |Langauge Feature|Abstraction Level|Description|
 | --- | --- | --- |
 |Trait|One instruction multiple param| - Overloading is supported when trait is used by different instruction <br> - Overwritting is not supported (Earlier trait is kept)|
-|Alias|One block multiple instructions| - Primitive parameter can be passed <br> - Trait cannot be passed|
+|Function|One block multiple instructions| - Primitive parameter can be passed <br> - Trait cannot be passed|
 |File including|One file multiple block| - Block redefinition will be checked|

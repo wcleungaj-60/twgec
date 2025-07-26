@@ -5,27 +5,27 @@ __title__ = "皇家天影之爭";
 __useDefaultItems__ = true;
 __map__ = "CG.TWEventsGameTemplate/gamemap.twmap";
 
-alias addSniper(camp, role, x, y) {
+def addSniper(camp, role, x, y) {
     addActor(name = "狙擊手(200)", id = "sniper*", camp = camp, hp = 200, x = x, y = y, range = 0, weapon1 = "盾牌", weapon2 = "狙擊槍", role = role);
 }
 
-alias addCamp(camp, id, x, y) {
+def addCamp(camp, id, x, y) {
     addActor(name = "軍營(500)", id = id, camp = camp, hp = 500, x = x, y = y, range = 0, weapon1 = "拳頭", weapon2 = "拳頭", externRole = "TWilightGameEventCompiler.character_camp");
 }
 
-alias setInt(key, value) {
+def setInt(key, value) {
     setGlobal(key = key, type = "integer", value = value);
 }
 
-alias setNum(key, value) {
+def setNum(key, value) {
     setGlobal(key = key, type = "number", value = value);
 }
 
-alias addJobMapSign(x, y, rotation, text, buttonCodeSuffix) {
+def addJobMapSign(x, y, rotation, text, buttonCodeSuffix) {
     addMapSign(x = x, y = y, rotation = rotation, text = text, buttonCode = "chooseJob" + buttonCodeSuffix, buttonLabel = "選擇");
 }
 
-alias chooseJob(jobName) {
+def chooseJob(jobName) {
     setObjectVar(object = "instance", key = "job", type = "string", value = jobName);
     actorTalk(actorId = "instance", text = "已選擇職業：{instance.job}");
 }
