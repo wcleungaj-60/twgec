@@ -120,7 +120,27 @@ std::unique_ptr<FunDefNode> Parser::parseFunDef() {
         break;
       consume(TokenType::COMMA);
     }
-  if (!consume(TokenType::CLOSEPAR) || !consume(TokenType::OPENCUR))
+  if (!consume(TokenType::CLOSEPAR))
+    return nullptr;
+  if (!consume(TokenType::COLON))
+    return nullptr;
+  if (tokens.front().type == TokenType::ACTIONS) {
+    consume(TokenType::ACTIONS);
+    funDefNode->type = FUN_DEF_TYPE_ACTIONS;
+  } else if (tokens.front().type == TokenType::CHECKS) {
+    consume(TokenType::CHECKS);
+    funDefNode->type = FUN_DEF_TYPE_CHECKS;
+  } else if (tokens.front().type == TokenType::TRIGGERS) {
+    consume(TokenType::TRIGGERS);
+    funDefNode->type = FUN_DEF_TYPE_TRIGGERS;
+  } else {
+    std::cerr << "SyntaxError: Expecting a triggers/checks/actions as the "
+                 "function type hint at "
+              << tokens.front().location << ". Found \'" << tokens.front().value
+              << "\'\n";
+    return nullptr;
+  }
+  if (!consume(TokenType::OPENCUR))
     return nullptr;
   while (tokens.front().type != TokenType::CLOSECUR) {
     auto instructionNode = parseInstruction();

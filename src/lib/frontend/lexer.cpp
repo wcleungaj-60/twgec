@@ -109,6 +109,10 @@ Token Lexer::nextToken() {
       Lexer::column++;
       pos++;
       return Token(TokenType::SEMICOLON, Lexer::line, Lexer::column - 1, ";");
+    case ':':
+      Lexer::column++;
+      pos++;
+      return Token(TokenType::COLON, Lexer::line, Lexer::column - 1, ":");
     case '+':
       Lexer::column++;
       pos++;

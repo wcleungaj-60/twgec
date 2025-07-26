@@ -219,7 +219,7 @@ std::unique_ptr<InstructionNode> InstructionNode::clone() {
 }
 
 std::unique_ptr<FunDefNode> FunDefNode::clone() {
-  auto newNode = std::make_unique<FunDefNode>(identifier, loc);
+  auto newNode = std::make_unique<FunDefNode>(identifier, loc, type);
   for (auto &param : params)
     newNode.get()->params.push_back(param);
   for (auto &instr : instructions)

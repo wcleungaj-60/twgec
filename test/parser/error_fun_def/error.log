@@ -1,0 +1,2 @@
+SyntaxError: Expecting a triggers/checks/actions as the function type hint at 1:11. Found 'unknown'
+SyntaxError: Cannot convert the token in a valid AST

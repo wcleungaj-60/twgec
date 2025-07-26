@@ -1,0 +1,6 @@
+def a() : unknown {
+
+}
+
+block my_block {
+}

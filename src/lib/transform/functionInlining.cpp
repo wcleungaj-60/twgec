@@ -15,8 +15,15 @@ using std::unique_ptr;
 using std::vector;
 
 bool isValidFuncCaller(std::unique_ptr<InstructionNode> &caller,
-                        map<string, unique_ptr<FunDefNode>> &funDefMap) {
+                       map<string, unique_ptr<FunDefNode>> &funDefMap,
+                       FunDefType expectedType) {
   FunDefNode *funDef = funDefMap[caller->identifier].get();
+  if (funDef->type != expectedType) {
+    std::cerr << "Syntax Error: Unmatched function type. " << funDef->type
+              << "-typed function cannot be called inside the " << expectedType
+              << " scope. Found at " << caller->loc << ".\n";
+    return false;
+  }
   auto funParamNum = funDef->params.size();
   auto callerArgNum = caller->named_args.size();
   set<string> paramSet;
@@ -45,8 +52,10 @@ bool isValidFuncCaller(std::unique_ptr<InstructionNode> &caller,
   return true;
 }
 
-bool functionInling(std::map<std::string, std::unique_ptr<FunDefNode>> &funDefMap,
-                 std::vector<std::unique_ptr<InstructionNode>> &instructions) {
+bool functionInling(
+    std::map<std::string, std::unique_ptr<FunDefNode>> &funDefMap,
+    std::vector<std::unique_ptr<InstructionNode>> &instructions,
+    FunDefType expectedType) {
   std::vector<int> funCallerIdxes;
   // Step 1: Get the function caller index
   for (int idx = 0; idx < instructions.size(); idx++) {
@@ -55,7 +64,7 @@ bool functionInling(std::map<std::string, std::unique_ptr<FunDefNode>> &funDefMa
     if (funDefMap.count(callerName) == 0)
       continue;
     FunDefNode *funDef = funDefMap[callerName].get();
-    if (!isValidFuncCaller(caller, funDefMap))
+    if (!isValidFuncCaller(caller, funDefMap, expectedType))
       return false;
     funCallerIdxes.push_back(idx);
   }
@@ -85,11 +94,15 @@ bool functionInling(const unique_ptr<ModuleNode> &moduleNode) {
   auto &funDefs = moduleNode->funDefs;
   for (auto &blockNode : moduleNode->blocks) {
     if (blockNode.get()->actionsNode.get())
-      ret &= functionInling(funDefs, blockNode.get()->actionsNode->instructions);
+      ret &= functionInling(funDefs, blockNode.get()->actionsNode->instructions,
+                            FUN_DEF_TYPE_ACTIONS);
     if (blockNode.get()->checksNode.get())
-      ret &= functionInling(funDefs, blockNode.get()->checksNode->instructions);
+      ret &= functionInling(funDefs, blockNode.get()->checksNode->instructions,
+                            FUN_DEF_TYPE_CHECKS);
     if (blockNode.get()->triggersNode.get())
-      ret &= functionInling(funDefs, blockNode.get()->triggersNode->instructions);
+      ret &=
+          functionInling(funDefs, blockNode.get()->triggersNode->instructions,
+                         FUN_DEF_TYPE_TRIGGERS);
   }
   funDefs.clear();
   return ret;

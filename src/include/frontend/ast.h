@@ -296,16 +296,36 @@ public:
   void print(int indent = 0);
 };
 
+enum FunDefType {
+  FUN_DEF_TYPE_INVALID,
+  FUN_DEF_TYPE_ACTIONS,
+  FUN_DEF_TYPE_CHECKS,
+  FUN_DEF_TYPE_TRIGGERS,
+};
+
+inline std::ostream& operator<<(std::ostream& os, FunDefType type) {
+    switch(type){
+      case FUN_DEF_TYPE_ACTIONS: os << "actions"; break;
+      case FUN_DEF_TYPE_CHECKS: os << "checks"; break;
+      case FUN_DEF_TYPE_TRIGGERS: os << "triggers"; break;
+      default: os << "invalid"; break;
+    }
+    return os;
+}
+
 class FunDefNode {
 public:
   // Variable
   Location loc;
+  FunDefType type;
   std::string identifier;
   std::vector<std::string> params;
   std::vector<std::unique_ptr<InstructionNode>> instructions;
 
   // Constructor
-  FunDefNode(const std::string &id, Location loc) : identifier(id), loc(loc) {}
+  FunDefNode(const std::string &id, Location loc,
+             FunDefType type = FUN_DEF_TYPE_INVALID)
+      : identifier(id), loc(loc), type(type) {}
 
   // Function
   void print(int indent = 0);

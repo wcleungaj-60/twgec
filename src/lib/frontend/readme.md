@@ -29,8 +29,10 @@ ModuleNode := [BlockNode | MetadataNode | FunDefNode | ConstDefNode ]*
   - TriggersNode := TriggersToken OpenCurToken TriggerNode* CloseCurToken
     - InstructionNode := IdentifierToken [DotToken IdentifierToken]* OpenParToken ArgsNode CloseParToken SemicolonToken
 - MetadataNode := MetadataToken AssignToken ExpNode SemicolonToken
-- FunDefNode := DefToken IdentifierToken OpenParToken ParamsNode CloseParToken OpenCurToken InstructionNode* CloseCurToken
+- FunDefNode := DefToken IdentifierToken OpenParToken ParamsNode CloseParToken ColonToken FunTypeToken OpenCurToken InstructionNode* CloseCurToken
 - ConstDefNode := ConstToken IdentifierToken AssignToken ExpNode SemicolonToken
+// Type
+FunTypeToken = ActionsToken | ChecksToken | TriggersToken
 // Parameter (The function definition)
 ParamsNode = [IdentifierToken [CommaToken IdentifierToken]*]?
 // Arguments (The function application)

@@ -1,0 +1,9 @@
+def checkUndef(value) : checks {
+    checkString(value = value, matchKind = "equal", str = "undefined");
+}
+
+block myBlock {
+    actions {
+        checkUndef("{instance.job}");
+    }
+}

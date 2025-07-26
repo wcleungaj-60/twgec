@@ -33,6 +33,7 @@ enum class TokenType {
   CLOSESQR,  // ]
   ASSIGN,    // =
   SEMICOLON, // ;
+  COLON,     // :
   DOT,       // .
   COMMA,     // ,
   PLUS,      // +
@@ -65,6 +66,7 @@ inline std::ostream &operator<<(std::ostream &os, const TokenType &type) {
     LEXER_TOKEN_TYPE_PRINT(TokenType::CLOSESQR, "\']\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::ASSIGN, "\'=\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::SEMICOLON, "\';\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::COLON, "\':\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::DOT, "\'.\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::COMMA, "\',\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::PLUS, "\'+\'");
@@ -109,6 +111,7 @@ struct Token {
       LEXER_TOKEN_PRINT(TokenType::CLOSESQR, "]");
       LEXER_TOKEN_PRINT(TokenType::ASSIGN, "=");
       LEXER_TOKEN_PRINT(TokenType::SEMICOLON, ";");
+      LEXER_TOKEN_PRINT(TokenType::COLON, ":");
       LEXER_TOKEN_PRINT(TokenType::DOT, ".");
       LEXER_TOKEN_PRINT(TokenType::COMMA, ",");
       LEXER_TOKEN_PRINT(TokenType::PLUS, "+");
