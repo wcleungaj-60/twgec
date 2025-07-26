@@ -243,6 +243,13 @@ std::unique_ptr<TriggersNode> Parser::parseTriggers() {
   return triggersNode;
 }
 
+/**
+ * Parser Instruction:
+ * In terms of syntax, instruction is a function call.
+ * In global scope, instruction can be called as the block-typed function application.
+ * In block scope, instruction can be called as the actions/checks/triggers-typed function application.
+ */
+
 std::unique_ptr<InstructionNode> Parser::parseInstruction() {
   std::string identifier = tokens.front().value;
   Location loc = tokens.front().location;
@@ -301,6 +308,33 @@ bool Parser::parseInstructionArgs(std::unique_ptr<InstructionNode> &actionNode,
   return tokens.front().type == TokenType::CLOSEPAR;
 }
 
+/**
+ * Parser Expression:
+ * ValueNode and OperationNode should only be accessible by the ExpNode
+ * ExpNode is the node that encapsulate the value and operation
+ */
+
+std::unique_ptr<ExpressionNode> Parser::parseExp() {
+  Location lhsLoc = tokens.front().location;
+  std::unique_ptr<ValueNode> lhsValue = parseValue();
+  if (!lhsValue)
+    return nullptr;
+  std::unique_ptr<ExpressionNode> lhsExp =
+      std::make_unique<ExpressionNode>(std::move(lhsValue), lhsLoc);
+  if (tokens.front().type != TokenType::PLUS)
+    return lhsExp;
+  Location opLoc = tokens.front().location;
+  consume(TokenType::PLUS);
+  std::unique_ptr<OperationNode> opNode =
+      std::make_unique<OperationPlusNode>(opLoc);
+  Location rhsLoc = tokens.front().location;
+  std::unique_ptr<ExpressionNode> rhsExp = parseExp();
+  if (!rhsExp)
+    return nullptr;
+  return std::make_unique<ExpressionNode>(std::move(lhsExp), std::move(opNode),
+                                          std::move(rhsExp), lhsExp->loc);
+}
+
 std::unique_ptr<ValueNode> Parser::parseValue() {
   Location loc = tokens.front().location;
   std::string value = tokens.front().value;
@@ -345,25 +379,4 @@ std::unique_ptr<ValueNode> Parser::parseValue() {
             << tokens.front().location << ". Found \'" << tokens.front().value
             << "\'\n";
   return nullptr;
-}
-
-std::unique_ptr<ExpressionNode> Parser::parseExp() {
-  Location lhsLoc = tokens.front().location;
-  std::unique_ptr<ValueNode> lhsValue = parseValue();
-  if (!lhsValue)
-    return nullptr;
-  std::unique_ptr<ExpressionNode> lhsExp =
-      std::make_unique<ExpressionNode>(std::move(lhsValue), lhsLoc);
-  if (tokens.front().type != TokenType::PLUS)
-    return lhsExp;
-  Location opLoc = tokens.front().location;
-  consume(TokenType::PLUS);
-  std::unique_ptr<OperationNode> opNode =
-      std::make_unique<OperationPlusNode>(opLoc);
-  Location rhsLoc = tokens.front().location;
-  std::unique_ptr<ExpressionNode> rhsExp = parseExp();
-  if (!rhsExp)
-    return nullptr;
-  return std::make_unique<ExpressionNode>(std::move(lhsExp), std::move(opNode),
-                                          std::move(rhsExp), lhsExp->loc);
 }

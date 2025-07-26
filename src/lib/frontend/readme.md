@@ -21,33 +21,36 @@
 ### DSL Parsing Logic
 
 ```c
-// Basic Node
-ModuleNode := [BlockNode | MetadataNode | FunDefNode | ConstDefNode ]*
-- BlockNode := BlockToken IdentifierToken OpenCurToken [ MetadataNode | ActionsNode | ChecksNode | TriggersNode] CloseCurToken
-  - ActionsNode := ActionsToken OpenCurToken InstructionNode* CloseCurToken
-  - ChecksNode := ChecksToken OpenCurToken CheckNode* CloseCurToken
-  - TriggersNode := TriggersToken OpenCurToken TriggerNode* CloseCurToken
-    - InstructionNode := IdentifierToken [DotToken IdentifierToken]* OpenParToken ArgsNode CloseParToken SemicolonToken
-- MetadataNode := MetadataToken AssignToken ExpNode SemicolonToken
-- FunDefNode := DefToken IdentifierToken OpenParToken ParamsNode CloseParToken ColonToken FunTypeToken OpenCurToken InstructionNode* CloseCurToken
-- ConstDefNode := ConstToken IdentifierToken AssignToken ExpNode SemicolonToken
-// Type
-FunTypeToken = ActionsToken | ChecksToken | TriggersToken
-// Parameter (The function definition)
-ParamsNode = [IdentifierToken [CommaToken IdentifierToken]*]?
-// Arguments (The function application)
-ArgsNode = PositionalArgsNode?
-PositionalArgsNode = [IdentifierToken AssignToken ExpNode [CommaToken NamedArgsNode]?] | 
-                    [ExpNode [CommaToken PositionalArgsNode]?]
-NamedArgsNode = IdentifierToken AssignToken ExpNode [CommaToken NamedArgsNode]?
-// Operation
-OperationNode = PlusToken
+// Global Scope
+ModuleNode := [ MetadataNode | BlockNode | ConstDefNode | FunDefNode]*
+- MetadataNode := MetadataToken AssignToken ExpNode
+- BlockNode := BlockToken IdentifierToken [BlockBodyNode | InstructionNode]
+- ConstDefNode := ConstToken IdentifierToken AssignToken ExpNode
+- FunDefNode := DefToken IdentifierToken ParamDefsNode ColonToken [TypedInstrSetDefNode | [BlockToken BlockBodyNode]]
+  - ParamDefsNode = OpenParToken [IdentifierToken [CommaToken IdentifierToken]*]? CloseParToken
+// Block Scope
+BlockBodyNode = OpenCurToken [ MetadataNode | TypedInstrSetNode ]* CloseCurToken
+- TypedInstrSetDefNode = ActionsDefNode | ChecksDefNode | TriggersDefNode
+  - ActionsDefNode := ActionsToken InstrSetNode
+  - ChecksDefNode := ChecksToken InstrSetNode
+  - TriggersDefNode := TriggersToken InstrSetNode
+// Instruction Set Scope
+InstrSetNode := OpenCurToken [BranchNode | InstructionNode]* CloseCurToken
+BranchNode := IfToken InstrSetNode [ElseIfToken InstrSetNode]* [ElseToken InstrSetNode]?
+// Instruction Scope
+InstructionNode := IdentifierToken [DotToken IdentifierToken]* ParamAppsNode
+- ParamAppsNode = OpenParToken PositionalParamAppsNode? CloseParToken
+  - PositionalParamAppsNode = [IdentifierToken AssignToken ExpNode [CommaToken NamedParamAppsNode]?] | 
+                  [ExpNode [CommaToken PositionalParamAppsNode]?]
+  - NamedParamAppsNode = IdentifierToken AssignToken ExpNode [CommaToken NamedParamAppsNode]?
 // Expression
 ExpNode = ValueNode [OperationNode ExpNode]?
-// Value
-ValueNode := StringValueNode | IntValueNode | BoolValueNode | VariableValueNode
-StringValueNode := StringToken
-IntValueNode := IntToken
-BoolValueNode := TrueToken | FalseToken
-VariableValueNode := IdentifierToken
+- OperationNode = PlusToken
+- ValueNode := StringValueNode | IntValueNode | BoolValueNode | VariableValueNode
+  - StringValueNode := StringToken
+  - IntValueNode := IntToken
+  - BoolValueNode := TrueToken | FalseToken
+  - VariableValueNode := IdentifierToken
+  - PointValueNode := OpenParToken IntToken CommaToken IntToken CloseParToken
+  - ListValueNode := OpenSqrToken [ExpNode [CommaToken ExpNode]*]? CloseSqrToken
 ```
