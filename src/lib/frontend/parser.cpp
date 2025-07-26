@@ -78,7 +78,7 @@ std::unique_ptr<MetadataNode> Parser::parseMetadata() {
   return metadataNode;
 }
 
-std::unique_ptr<GlobalConstDefNode> Parser::parseConstDef() {
+std::unique_ptr<ConstDefNode> Parser::parseConstDef() {
   if (!consume(TokenType::CONST))
     return nullptr;
   std::string key = tokens.front().value;
@@ -90,8 +90,8 @@ std::unique_ptr<GlobalConstDefNode> Parser::parseConstDef() {
     return nullptr;
   if (!consume(TokenType::SEMICOLON))
     return nullptr;
-  std::unique_ptr<GlobalConstDefNode> constDefNode =
-      std::make_unique<GlobalConstDefNode>(key, exp, loc);
+  std::unique_ptr<ConstDefNode> constDefNode =
+      std::make_unique<ConstDefNode>(key, exp, loc);
   return constDefNode;
 }
 

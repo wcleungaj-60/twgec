@@ -179,7 +179,7 @@ public:
   void print(int indent = 0);
 };
 
-class GlobalConstDefNode {
+class ConstDefNode {
 public:
   // Variable
   Location loc;
@@ -187,8 +187,8 @@ public:
   std::unique_ptr<ExpressionNode> expNode;
 
   // Constructor
-  GlobalConstDefNode(const std::string &key,
-                     std::unique_ptr<ExpressionNode> &expNode, Location loc)
+  ConstDefNode(const std::string &key, std::unique_ptr<ExpressionNode> &expNode,
+               Location loc)
       : key(key), expNode(std::move(expNode)), loc(loc) {}
 
   // Function
@@ -319,7 +319,7 @@ public:
   std::vector<std::unique_ptr<MetadataNode>> metadatas;
   std::vector<std::unique_ptr<BlockNode>> blocks;
   std::map<std::string, std::unique_ptr<FunDefNode>> funDefs;
-  std::vector<std::unique_ptr<GlobalConstDefNode>> constDefs;
+  std::vector<std::unique_ptr<ConstDefNode>> constDefs;
 
   // Constructor
   ModuleNode(Location loc) : loc(loc) {}

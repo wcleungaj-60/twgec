@@ -61,7 +61,7 @@ void MetadataNode::print(int indent) {
   std::cout << "\n";
 }
 
-void GlobalConstDefNode::print(int indent) {
+void ConstDefNode::print(int indent) {
   std::cout << inden(indent) << "const " << key << " = ";
   expNode->print();
   std::cout << "\n";
