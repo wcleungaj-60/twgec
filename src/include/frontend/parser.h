@@ -15,12 +15,12 @@ private:
   std::unique_ptr<MetadataNode> parseMetadata();
   std::unique_ptr<ConstDefNode> parseConstDef();
   std::unique_ptr<FunDefNode> parseFunDef();
-  std::unique_ptr<ActionsNode> parseActions();
+  std::unique_ptr<TypedInstrSetNode> parseparseTypedInstrSet();
+  std::unique_ptr<InstrSetNode> parseInstrSet();
+  std::unique_ptr<InstrSetItemNode> parseInstrSetItem();
   std::unique_ptr<InstructionNode> parseInstruction();
   bool parseInstructionArgs(std::unique_ptr<InstructionNode> &,
                             bool foundNamed = false);
-  std::unique_ptr<ChecksNode> parseChecks();
-  std::unique_ptr<TriggersNode> parseTriggers();
   std::unique_ptr<ValueNode> parseValue();
   std::unique_ptr<ExpressionNode> parseExp();
 

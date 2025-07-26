@@ -49,9 +49,18 @@ void CodeGenerator::codegenBlocks(std::ofstream &of) {
     of << inden(8) << "{" << std::endl;
     of << inden(12) << "\"id\": \"" << block->identifier << "\"," << std::endl;
     metadata::BlockSetup::setup(of, block->metadatas);
-    codegenActions(of, block->actionsNode);
-    codegenChecks(of, block->checksNode);
-    codegenTriggers(of, block->triggersNode);
+    // TODO: During the transformation, it should be converted into `actions`,
+    // `checks`, and `triggers` already. Don't iteration the same element three
+    // times.
+    for (auto &typedInstrSet : block->typedInstrSets)
+      if (typedInstrSet->type == FUN_DEF_TYPE_ACTIONS)
+        codegenTypedInstrSet(of, typedInstrSet);
+    for (auto &typedInstrSet : block->typedInstrSets)
+      if (typedInstrSet->type == FUN_DEF_TYPE_CHECKS)
+        codegenTypedInstrSet(of, typedInstrSet);
+    for (auto &typedInstrSet : block->typedInstrSets)
+      if (typedInstrSet->type == FUN_DEF_TYPE_TRIGGERS)
+        codegenTypedInstrSet(of, typedInstrSet);
     of << inden(8) << "}";
     if (i != moduleNode->blocks.size() - 1)
       of << ",";
@@ -60,55 +69,36 @@ void CodeGenerator::codegenBlocks(std::ofstream &of) {
   of << inden(4) << "]" << std::endl;
 }
 
-void CodeGenerator::codegenActions(std::ofstream &of,
-                                   std::unique_ptr<ActionsNode> &actions) {
-  of << inden(12) << "\"actions\": [";
-  if (!actions.get() || actions->instructions.empty()) {
-    of << "]," << std::endl;
+void CodeGenerator::codegenTypedInstrSet(
+    std::ofstream &of, std::unique_ptr<TypedInstrSetNode> &typedInstrSet) {
+  std::string endingStr =
+      typedInstrSet->type == FUN_DEF_TYPE_TRIGGERS ? "]\n" : "],\n";
+  auto &instructions = typedInstrSet->instrSet->instructions;
+  of << inden(12) << "\"" << typedInstrSet->type << "\": [";
+  if (instructions.empty()) {
+    of << endingStr;
     return;
   }
   of << std::endl;
-  for (auto i = 0; i < actions->instructions.size(); i++) {
-    codegenAction(of, actions->instructions[i]);
-    if (i != actions->instructions.size() - 1)
+  for (auto i = 0; i < instructions.size(); i++) {
+    switch (typedInstrSet->type) {
+    case FUN_DEF_TYPE_ACTIONS:
+      codegenAction(of, instructions[i]->instruction);
+      break;
+    case FUN_DEF_TYPE_CHECKS:
+      codegenCheck(of, instructions[i]->instruction);
+      break;
+    case FUN_DEF_TYPE_TRIGGERS:
+      codegenTrigger(of, instructions[i]->instruction);
+      break;
+    default:
+      break;
+    }
+    if (i != instructions.size() - 1)
       of << ",";
     of << std::endl;
   }
-  of << inden(12) << "]," << std::endl;
-}
-
-void CodeGenerator::codegenChecks(std::ofstream &of,
-                                  std::unique_ptr<ChecksNode> &checks) {
-  of << inden(12) << "\"checks\": [";
-  if (!checks.get() || checks->instructions.empty()) {
-    of << "]," << std::endl;
-    return;
-  }
-  of << std::endl;
-  for (auto i = 0; i < checks->instructions.size(); i++) {
-    codegenCheck(of, checks->instructions[i]);
-    if (i != checks->instructions.size() - 1)
-      of << ",";
-    of << std::endl;
-  }
-  of << inden(12) << "]," << std::endl;
-}
-
-void CodeGenerator::codegenTriggers(std::ofstream &of,
-                                    std::unique_ptr<TriggersNode> &triggers) {
-  of << inden(12) << "\"triggers\": [";
-  if (!triggers.get() || triggers->instructions.empty()) {
-    of << "]" << std::endl;
-    return;
-  }
-  of << std::endl;
-  for (auto i = 0; i < triggers->instructions.size(); i++) {
-    codegenTrigger(of, triggers->instructions[i]);
-    if (i != triggers->instructions.size() - 1)
-      of << ",";
-    of << std::endl;
-  }
-  of << inden(12) << "]" << std::endl;
+  of << inden(12) << endingStr;
 }
 
 void CodeGenerator::codegenAction(std::ofstream &of,

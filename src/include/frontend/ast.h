@@ -242,60 +242,6 @@ public:
   std::unique_ptr<InstructionNode> clone();
 };
 
-class ActionsNode {
-public:
-  // Variable
-  Location loc;
-  std::vector<std::unique_ptr<InstructionNode>> instructions;
-
-  // Constructor
-  ActionsNode(Location loc) : loc(loc) {}
-
-  // Function
-  void print(int indent = 0);
-};
-
-class ChecksNode {
-public:
-  // Variable
-  Location loc;
-  std::vector<std::unique_ptr<InstructionNode>> instructions;
-
-  // Function
-  ChecksNode(Location loc) : loc(loc) {}
-  void print(int indent = 0);
-};
-
-class TriggersNode {
-public:
-  // Variable
-  Location loc;
-  std::vector<std::unique_ptr<InstructionNode>> instructions;
-
-  // Constructor
-  TriggersNode(Location loc) : loc(loc) {}
-
-  // Function
-  void print(int indent = 0);
-};
-
-class BlockNode {
-public:
-  // Variable
-  Location loc;
-  std::string identifier;
-  std::vector<std::unique_ptr<MetadataNode>> metadatas;
-  std::unique_ptr<ChecksNode> checksNode;
-  std::unique_ptr<TriggersNode> triggersNode;
-  std::unique_ptr<ActionsNode> actionsNode;
-
-  // Constructor
-  BlockNode(const std::string &id, Location loc) : identifier(id), loc(loc) {}
-
-  // Function
-  void print(int indent = 0);
-};
-
 enum FunDefType {
   FUN_DEF_TYPE_INVALID,
   FUN_DEF_TYPE_ACTIONS,
@@ -303,15 +249,37 @@ enum FunDefType {
   FUN_DEF_TYPE_TRIGGERS,
 };
 
-inline std::ostream& operator<<(std::ostream& os, FunDefType type) {
-    switch(type){
-      case FUN_DEF_TYPE_ACTIONS: os << "actions"; break;
-      case FUN_DEF_TYPE_CHECKS: os << "checks"; break;
-      case FUN_DEF_TYPE_TRIGGERS: os << "triggers"; break;
-      default: os << "invalid"; break;
-    }
-    return os;
+inline std::ostream &operator<<(std::ostream &os, FunDefType type) {
+  switch (type) {
+  case FUN_DEF_TYPE_ACTIONS:
+    os << "actions";
+    break;
+  case FUN_DEF_TYPE_CHECKS:
+    os << "checks";
+    break;
+  case FUN_DEF_TYPE_TRIGGERS:
+    os << "triggers";
+    break;
+  default:
+    os << "invalid";
+    break;
+  }
+  return os;
 }
+
+class InstrSetItemNode {
+public:
+  // Variable
+  Location loc;
+  std::unique_ptr<InstructionNode> instruction;
+
+  // Constructor
+  InstrSetItemNode(Location loc, std::unique_ptr<InstructionNode> instruction)
+      : loc(loc), instruction(std::move(instruction)) {}
+
+  // Function
+  void print(int indent = 0);
+};
 
 class FunDefNode {
 public:
@@ -330,6 +298,50 @@ public:
   // Function
   void print(int indent = 0);
   std::unique_ptr<FunDefNode> clone();
+};
+
+class InstrSetNode {
+public:
+  // Variable
+  Location loc;
+  std::vector<std::unique_ptr<InstrSetItemNode>> instructions;
+
+  // Constructor
+  InstrSetNode(Location loc) : loc(loc) {}
+
+  // Function
+  void print(int indent = 0);
+};
+
+class TypedInstrSetNode {
+public:
+  // Variable
+  Location loc;
+  FunDefType type;
+  std::unique_ptr<InstrSetNode> instrSet;
+
+  // Constructor
+  TypedInstrSetNode(Location loc, FunDefType type = FUN_DEF_TYPE_INVALID)
+      : loc(loc), type(type), instrSet(std::make_unique<InstrSetNode>(loc)) {}
+
+  // Function
+  void print(int indent = 0);
+};
+
+
+class BlockNode {
+public:
+  // Variable
+  Location loc;
+  std::string identifier;
+  std::vector<std::unique_ptr<MetadataNode>> metadatas;
+  std::vector<std::unique_ptr<TypedInstrSetNode>> typedInstrSets;
+
+  // Constructor
+  BlockNode(const std::string &id, Location loc) : identifier(id), loc(loc) {}
+
+  // Function
+  void print(int indent = 0);
 };
 
 class ModuleNode {

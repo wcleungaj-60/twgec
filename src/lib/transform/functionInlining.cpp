@@ -54,12 +54,12 @@ bool isValidFuncCaller(std::unique_ptr<InstructionNode> &caller,
 
 bool functionInling(
     std::map<std::string, std::unique_ptr<FunDefNode>> &funDefMap,
-    std::vector<std::unique_ptr<InstructionNode>> &instructions,
+    std::vector<std::unique_ptr<InstrSetItemNode>> &InstrSetItems,
     FunDefType expectedType) {
   std::vector<int> funCallerIdxes;
   // Step 1: Get the function caller index
-  for (int idx = 0; idx < instructions.size(); idx++) {
-    auto &caller = instructions[idx];
+  for (int idx = 0; idx < InstrSetItems.size(); idx++) {
+    std::unique_ptr<InstructionNode> &caller = InstrSetItems[idx]->instruction;
     string callerName = caller->identifier;
     if (funDefMap.count(callerName) == 0)
       continue;
@@ -70,20 +70,21 @@ bool functionInling(
   }
   std::reverse(funCallerIdxes.begin(), funCallerIdxes.end());
   // Step 2: Inline the function
-  for (auto idx : funCallerIdxes) {
+  for (int idx : funCallerIdxes) {
     std::map<std::string, unique_ptr<ExpressionNode>> callerMap;
-    auto &callerInstr = instructions[idx];
-    auto pos = instructions.begin() + idx;
+    auto &callerInstr = InstrSetItems[idx]->instruction;
+    auto pos = InstrSetItems.begin() + idx;
     auto funDefNode = funDefMap[callerInstr->identifier]->clone();
     for (auto &arg : callerInstr->named_args)
       callerMap.insert({arg->key, std::move(arg->expNode)});
-    instructions.erase(pos);
+    InstrSetItems.erase(pos);
     for (auto it = funDefNode.get()->instructions.rbegin();
          it != funDefNode.get()->instructions.rend(); ++it) {
-      auto clonedIns = it->get()->clone();
-      for (auto &arg : clonedIns->named_args)
+      auto clonedIns = std::make_unique<InstrSetItemNode>(it->get()->loc,
+                                                          it->get()->clone());
+      for (auto &arg : clonedIns->instruction->named_args)
         arg->expNode->propagateVarToExp(callerMap);
-      instructions.insert(pos, std::move(clonedIns));
+      InstrSetItems.insert(pos, std::move(clonedIns));
     }
   }
   return true;
@@ -93,16 +94,34 @@ bool functionInling(const unique_ptr<ModuleNode> &moduleNode) {
   bool ret = true;
   auto &funDefs = moduleNode->funDefs;
   for (auto &blockNode : moduleNode->blocks) {
-    if (blockNode.get()->actionsNode.get())
-      ret &= functionInling(funDefs, blockNode.get()->actionsNode->instructions,
-                            FUN_DEF_TYPE_ACTIONS);
-    if (blockNode.get()->checksNode.get())
-      ret &= functionInling(funDefs, blockNode.get()->checksNode->instructions,
-                            FUN_DEF_TYPE_CHECKS);
-    if (blockNode.get()->triggersNode.get())
-      ret &=
-          functionInling(funDefs, blockNode.get()->triggersNode->instructions,
-                         FUN_DEF_TYPE_TRIGGERS);
+    std::set<FunDefType> instrSetType;
+    for (auto &typedInstrSet : blockNode->typedInstrSets) {
+      auto type = typedInstrSet->type;
+      if (!functionInling(funDefs, typedInstrSet->instrSet->instructions, type))
+        return false;
+      // TODO: Should be done in the new transformation pass `block-legalizer`.
+      if (instrSetType.count(type)) {
+        std::cerr << "Syntax Error: Redefinition of `" << type
+                  << "` inside a block. Please unify them into one `" << type
+                  << "`. Found at " << typedInstrSet->loc << ".\n";
+        return false;
+      } else {
+        instrSetType.insert(type);
+      }
+    }
+    // TODO: Should be done in the new transformation pass `block-legalizer`.
+    if (!instrSetType.count(FUN_DEF_TYPE_ACTIONS)) {
+      blockNode->typedInstrSets.push_back(std::make_unique<TypedInstrSetNode>(
+          blockNode->loc, FUN_DEF_TYPE_ACTIONS));
+    }
+    if (!instrSetType.count(FUN_DEF_TYPE_CHECKS)) {
+      blockNode->typedInstrSets.push_back(std::make_unique<TypedInstrSetNode>(
+          blockNode->loc, FUN_DEF_TYPE_CHECKS));
+    }
+    if (!instrSetType.count(FUN_DEF_TYPE_TRIGGERS)) {
+      blockNode->typedInstrSets.push_back(std::make_unique<TypedInstrSetNode>(
+          blockNode->loc, FUN_DEF_TYPE_TRIGGERS));
+    }
   }
   funDefs.clear();
   return ret;

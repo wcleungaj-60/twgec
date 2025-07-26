@@ -7,8 +7,9 @@ using std::string;
 using std::unique_ptr;
 
 bool argBinding(std::map<std::string, std::unique_ptr<FunDefNode>> &funDefs,
-                std::vector<std::unique_ptr<InstructionNode>> &instructions) {
-  for (auto &instr : instructions) {
+                std::vector<std::unique_ptr<InstrSetItemNode>> &instructionSetItems) {
+  for (auto &instrSetItem : instructionSetItems) {
+    auto& instr = instrSetItem->instruction;
     if (instr->positional_args.empty())
       continue;
     if (funDefs.count(instr->identifier) == 0)
@@ -35,19 +36,13 @@ bool argBinding(std::map<std::string, std::unique_ptr<FunDefNode>> &funDefs,
 }
 
 bool argBinding(const unique_ptr<ModuleNode> &moduleNode) {
-  bool ret = true;
   auto &funDefs = moduleNode->funDefs;
   for (auto &blockNode : moduleNode->blocks) {
-    if (blockNode.get()->actionsNode.get())
-      ret &=
-          argBinding(funDefs, blockNode.get()->actionsNode.get()->instructions);
-    if (blockNode.get()->checksNode.get())
-      ret &=
-          argBinding(funDefs, blockNode.get()->checksNode.get()->instructions);
-    if (blockNode.get()->triggersNode.get())
-      ret &= argBinding(funDefs,
-                        blockNode.get()->triggersNode.get()->instructions);
+    for(auto &typedInstrSet: blockNode->typedInstrSets) {
+      if(!argBinding(funDefs, typedInstrSet->instrSet->instructions))
+        return false;
+    }
   }
-  return ret;
+  return true;
 }
 } // namespace transform

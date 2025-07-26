@@ -42,9 +42,23 @@ void ExpressionNode::print() {
   }
 };
 
+void InstrSetItemNode::print(int indent) { instruction->print(indent); }
+
+void InstrSetNode::print(int indent) {
+  for (auto &instrSetitem : instructions)
+    instrSetitem->print(indent);
+}
+
+void TypedInstrSetNode::print(int indent) {
+  std::cout << inden(indent) << type << " {\n";
+  instrSet->print(indent + 4);
+  std::cout << inden(indent) << "}\n";
+}
+
 void ModuleNode::print(std::string title, int indent) {
   std::cout << "//--- " << title << " ---//\n";
-  std::cout << inden(indent) << "ModuleNode: " << "\n";
+  std::cout << inden(indent) << "ModuleNode: "
+            << "\n";
   for (auto &metadata : metadatas)
     metadata->print(indent + 4);
   for (auto &constDef : constDefs)
@@ -71,33 +85,8 @@ void BlockNode::print(int indent) {
   std::cout << inden(indent) << "BlockNode: " << identifier << " {\n";
   for (auto &metadata : metadatas)
     metadata->print(indent + 4);
-  if (checksNode)
-    checksNode->print(indent + 4);
-  if (triggersNode)
-    triggersNode->print(indent + 4);
-  if (actionsNode)
-    actionsNode->print(indent + 4);
-  std::cout << inden(indent) << "}\n";
-}
-
-void ChecksNode::print(int indent) {
-  std::cout << inden(indent) << "ChecksNode {\n";
-  for (auto &ins : instructions)
-    ins.get()->print(indent + 4);
-  std::cout << inden(indent) << "}\n";
-}
-
-void TriggersNode::print(int indent) {
-  std::cout << inden(indent) << "TriggersNode {\n";
-  for (auto &ins : instructions)
-    ins.get()->print(indent + 4);
-  std::cout << inden(indent) << "}\n";
-}
-
-void ActionsNode::print(int indent) {
-  std::cout << inden(indent) << "ActionsNode {\n";
-  for (auto &ins : instructions)
-    ins.get()->print(indent + 4);
+  for (auto &typedInstrSet : typedInstrSets)
+    typedInstrSet->print(indent + 4);
   std::cout << inden(indent) << "}\n";
 }
 
