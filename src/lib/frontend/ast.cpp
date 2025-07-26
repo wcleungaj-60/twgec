@@ -44,10 +44,11 @@ void ExpressionNode::print() {
 
 void ModuleNode::print(std::string title, int indent) {
   std::cout << "//--- " << title << " ---//\n";
-  std::cout << inden(indent) << "ModuleNode: "
-            << "\n";
+  std::cout << inden(indent) << "ModuleNode: " << "\n";
   for (auto &metadata : metadatas)
     metadata->print(indent + 4);
+  for (auto &constDef : constDefs)
+    constDef->print(indent + 4);
   for (auto &alias : aliases)
     alias.second->print(indent + 4);
   for (auto &block : blocks)
@@ -55,7 +56,13 @@ void ModuleNode::print(std::string title, int indent) {
 }
 
 void MetadataNode::print(int indent) {
-  std::cout << inden(indent) << "MetadataNode: " << key << "=";
+  std::cout << inden(indent) << "MetadataNode: " << key << " = ";
+  expNode->print();
+  std::cout << "\n";
+}
+
+void GlobalConstDefNode::print(int indent) {
+  std::cout << inden(indent) << "const " << key << " = ";
   expNode->print();
   std::cout << "\n";
 }
@@ -222,7 +229,7 @@ std::unique_ptr<AliasNode> AliasNode::clone() {
 
 //------------ others ------------//
 
-bool ExpressionNode::replaceVarValue(
+bool ExpressionNode::propagateAliasParam(
     std::map<std::string, std::unique_ptr<ValueNode>> &callerMap) {
   bool ret = true;
   if (isValue) {
@@ -232,8 +239,33 @@ bool ExpressionNode::replaceVarValue(
       value = callerMap[varNode->value]->clone();
     }
   } else {
-    ret &= lhs->replaceVarValue(callerMap);
-    ret &= rhs->replaceVarValue(callerMap);
+    ret &= lhs->propagateAliasParam(callerMap);
+    ret &= rhs->propagateAliasParam(callerMap);
+  }
+  return ret;
+}
+
+bool ExpressionNode::propagateConst(
+    std::map<std::string, std::unique_ptr<ExpressionNode>> &constDefMap) {
+  bool ret = true;
+  if (isValue) {
+    if (auto *varNode = dynamic_cast<VariableValueNode *>(value.get())) {
+      if (constDefMap.find(varNode->value) == constDefMap.end())
+        return false;
+      auto &constExp = constDefMap[varNode->value];
+      if (constExp->isValue) {
+        value = constExp->value->clone();
+      } else {
+        value = nullptr;
+        isValue = false;
+        lhs = constExp->lhs->clone();
+        rhs = constExp->rhs->clone();
+        op = constExp->op->clone();
+      }
+    }
+  } else {
+    ret &= lhs->propagateConst(constDefMap);
+    ret &= rhs->propagateConst(constDefMap);
   }
   return ret;
 }

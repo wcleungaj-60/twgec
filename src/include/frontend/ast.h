@@ -158,7 +158,8 @@ public:
   // Function
   void print();
   std::unique_ptr<ExpressionNode> clone();
-  bool replaceVarValue(std::map<std::string, std::unique_ptr<ValueNode>> &);
+  bool propagateAliasParam(std::map<std::string, std::unique_ptr<ValueNode>> &);
+  bool propagateConst(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
 };
 
@@ -172,6 +173,22 @@ public:
   // Constructor
   MetadataNode(const std::string &key, std::unique_ptr<ExpressionNode> &expNode,
                Location loc)
+      : key(key), expNode(std::move(expNode)), loc(loc) {}
+
+  // Function
+  void print(int indent = 0);
+};
+
+class GlobalConstDefNode {
+public:
+  // Variable
+  Location loc;
+  std::string key;
+  std::unique_ptr<ExpressionNode> expNode;
+
+  // Constructor
+  GlobalConstDefNode(const std::string &key,
+                     std::unique_ptr<ExpressionNode> &expNode, Location loc)
       : key(key), expNode(std::move(expNode)), loc(loc) {}
 
   // Function
@@ -302,6 +319,7 @@ public:
   std::vector<std::unique_ptr<MetadataNode>> metadatas;
   std::vector<std::unique_ptr<BlockNode>> blocks;
   std::map<std::string, std::unique_ptr<AliasNode>> aliases;
+  std::vector<std::unique_ptr<GlobalConstDefNode>> constDefs;
 
   // Constructor
   ModuleNode(Location loc) : loc(loc) {}

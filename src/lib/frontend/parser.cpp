@@ -34,6 +34,11 @@ std::unique_ptr<ModuleNode> Parser::parse() {
         moduleNode->metadatas.push_back(std::move(metadataNode));
       else
         return nullptr;
+    } else if (tokens.front().type == TokenType::CONST) {
+      if (auto constDefNode = parseConstDef())
+        moduleNode->constDefs.push_back(std::move(constDefNode));
+      else
+        return nullptr;
     } else if (tokens.front().type == TokenType::ALIAS) {
       if (auto aliasNode = parseAlias()) {
         if (moduleNode->aliases.count(aliasNode->identifier) != 0) {
@@ -71,6 +76,23 @@ std::unique_ptr<MetadataNode> Parser::parseMetadata() {
   std::unique_ptr<MetadataNode> metadataNode =
       std::make_unique<MetadataNode>(strippedKey, exp, loc);
   return metadataNode;
+}
+
+std::unique_ptr<GlobalConstDefNode> Parser::parseConstDef() {
+  if (!consume(TokenType::CONST))
+    return nullptr;
+  std::string key = tokens.front().value;
+  Location loc = tokens.front().location;
+  if (!consume(TokenType::IDENTIFIER) || !consume(TokenType::ASSIGN))
+    return nullptr;
+  std::unique_ptr<ExpressionNode> exp = parseExp();
+  if (!exp)
+    return nullptr;
+  if (!consume(TokenType::SEMICOLON))
+    return nullptr;
+  std::unique_ptr<GlobalConstDefNode> constDefNode =
+      std::make_unique<GlobalConstDefNode>(key, exp, loc);
+  return constDefNode;
 }
 
 std::unique_ptr<AliasNode> Parser::parseAlias() {

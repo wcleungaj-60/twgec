@@ -22,7 +22,7 @@
 
 ```c
 // Basic Node
-ModuleNode := [BlockNode | MetadataNode | AliasNode]*
+ModuleNode := [BlockNode | MetadataNode | AliasNode | GlobalConstDefNode ]*
 - BlockNode := BlockToken IdentifierToken OpenCurToken [ MetadataNode | ActionsNode | ChecksNode | TriggersNode] CloseCurToken
   - ActionsNode := ActionsToken OpenCurToken InstructionNode* CloseCurToken
   - ChecksNode := ChecksToken OpenCurToken CheckNode* CloseCurToken
@@ -30,6 +30,7 @@ ModuleNode := [BlockNode | MetadataNode | AliasNode]*
     - InstructionNode := IdentifierToken [DotToken IdentifierToken]* OpenParToken ArgsNode CloseParToken SemicolonToken
 - MetadataNode := MetadataToken AssignToken ExpNode SemicolonToken
 - AliasNode := AliasToken IdentifierToken OpenParToken ParamsNode CloseParToken OpenCurToken InstructionNode* CloseCurToken
+- GlobalConstDefNode := ConstToken IdentifierToken AssignToken ExpNode SemicolonToken
 // Parameter (The function definition)
 ParamsNode = [IdentifierToken [CommaToken IdentifierToken]*]?
 // Arguments (The function application)

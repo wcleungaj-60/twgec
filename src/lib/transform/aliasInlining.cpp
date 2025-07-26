@@ -81,7 +81,7 @@ bool aliasInling(std::map<std::string, std::unique_ptr<AliasNode>> &aliases,
          it != aliasNode.get()->instructions.rend(); ++it) {
       auto clonedIns = it->get()->clone();
       for (auto &arg : clonedIns->named_args)
-        arg->expNode->replaceVarValue(callerMap);
+        arg->expNode->propagateAliasParam(callerMap);
       instructions.insert(pos, std::move(clonedIns));
     }
   }
