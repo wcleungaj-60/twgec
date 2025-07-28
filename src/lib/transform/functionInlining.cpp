@@ -18,8 +18,8 @@ bool isValidFuncCaller(std::unique_ptr<InstructionNode> &caller,
                        map<string, unique_ptr<FunDefNode>> &funDefMap,
                        FunDefType expectedType) {
   FunDefNode *funDef = funDefMap[caller->identifier].get();
-  if (funDef->type != expectedType) {
-    std::cerr << "Syntax Error: Unmatched function type. " << funDef->type
+  if (funDef->typedInstrSet->type != expectedType) {
+    std::cerr << "Syntax Error: Unmatched function type. " << funDef->typedInstrSet->type
               << "-typed function cannot be called inside the " << expectedType
               << " scope. Found at " << caller->loc << ".\n";
     return false;
@@ -54,12 +54,12 @@ bool isValidFuncCaller(std::unique_ptr<InstructionNode> &caller,
 
 bool functionInling(
     std::map<std::string, std::unique_ptr<FunDefNode>> &funDefMap,
-    std::vector<std::unique_ptr<InstrSetItemNode>> &InstrSetItems,
+    std::vector<std::unique_ptr<CompositeInstrNode>> &compositeInstrs,
     FunDefType expectedType) {
   std::vector<int> funCallerIdxes;
   // Step 1: Get the function caller index
-  for (int idx = 0; idx < InstrSetItems.size(); idx++) {
-    std::unique_ptr<InstructionNode> &caller = InstrSetItems[idx]->instruction;
+  for (int idx = 0; idx < compositeInstrs.size(); idx++) {
+    std::unique_ptr<InstructionNode> &caller = compositeInstrs[idx]->instruction;
     string callerName = caller->identifier;
     if (funDefMap.count(callerName) == 0)
       continue;
@@ -72,19 +72,23 @@ bool functionInling(
   // Step 2: Inline the function
   for (int idx : funCallerIdxes) {
     std::map<std::string, unique_ptr<ExpressionNode>> callerMap;
-    auto &callerInstr = InstrSetItems[idx]->instruction;
-    auto pos = InstrSetItems.begin() + idx;
+    auto &callerInstr = compositeInstrs[idx]->instruction;
+    auto pos = compositeInstrs.begin() + idx;
     auto funDefNode = funDefMap[callerInstr->identifier]->clone();
     for (auto &arg : callerInstr->named_args)
       callerMap.insert({arg->key, std::move(arg->expNode)});
-    InstrSetItems.erase(pos);
-    for (auto it = funDefNode.get()->instructions.rbegin();
-         it != funDefNode.get()->instructions.rend(); ++it) {
-      auto clonedIns = std::make_unique<InstrSetItemNode>(it->get()->loc,
-                                                          it->get()->clone());
+    compositeInstrs.erase(pos);
+    for (auto it = funDefNode.get()
+                       ->typedInstrSet.get()
+                       ->instrSet->instructions.rbegin();
+         it !=
+         funDefNode.get()->typedInstrSet.get()->instrSet->instructions.rend();
+         ++it) {
+      auto clonedIns = std::make_unique<CompositeInstrNode>(it->get()->loc,
+                                                          it->get()->instruction->clone());
       for (auto &arg : clonedIns->instruction->named_args)
         arg->expNode->propagateVarToExp(callerMap);
-      InstrSetItems.insert(pos, std::move(clonedIns));
+      compositeInstrs.insert(pos, std::move(clonedIns));
     }
   }
   return true;

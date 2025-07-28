@@ -124,32 +124,10 @@ std::unique_ptr<FunDefNode> Parser::parseFunDef() {
     return nullptr;
   if (!consume(TokenType::COLON))
     return nullptr;
-  if (tokens.front().type == TokenType::ACTIONS) {
-    consume(TokenType::ACTIONS);
-    funDefNode->type = FUN_DEF_TYPE_ACTIONS;
-  } else if (tokens.front().type == TokenType::CHECKS) {
-    consume(TokenType::CHECKS);
-    funDefNode->type = FUN_DEF_TYPE_CHECKS;
-  } else if (tokens.front().type == TokenType::TRIGGERS) {
-    consume(TokenType::TRIGGERS);
-    funDefNode->type = FUN_DEF_TYPE_TRIGGERS;
-  } else {
-    std::cerr << "SyntaxError: Expecting a triggers/checks/actions as the "
-                 "function type hint at "
-              << tokens.front().location << ". Found \'" << tokens.front().value
-              << "\'\n";
+  auto typedInstrSet = parseTypedInstrSet();
+  if (!typedInstrSet)
     return nullptr;
-  }
-  if (!consume(TokenType::OPENCUR))
-    return nullptr;
-  while (tokens.front().type != TokenType::CLOSECUR) {
-    auto instructionNode = parseInstruction();
-    if (!instructionNode)
-      return nullptr;
-    funDefNode->instructions.push_back(std::move(instructionNode));
-  }
-  if (!consume(TokenType::CLOSECUR))
-    return nullptr;
+  funDefNode->typedInstrSet = std::move(typedInstrSet);
   return funDefNode;
 }
 
@@ -164,7 +142,7 @@ std::unique_ptr<BlockNode> Parser::parseBlock() {
     if (tokens.front().type == TokenType::ACTIONS ||
         tokens.front().type == TokenType::CHECKS ||
         tokens.front().type == TokenType::TRIGGERS) {
-      auto typedInstrSetNode = parseparseTypedInstrSet();
+      auto typedInstrSetNode = parseTypedInstrSet();
       if (!typedInstrSetNode)
         return nullptr;
       blockNode->typedInstrSets.push_back(std::move(typedInstrSetNode));
@@ -186,7 +164,14 @@ std::unique_ptr<BlockNode> Parser::parseBlock() {
   return blockNode;
 }
 
-std::unique_ptr<TypedInstrSetNode> Parser::parseparseTypedInstrSet() {
+/**
+ * Parser Typed Instruction Set:
+ * Under this scope, `InstrSetNode`, `CompositeInstrNode`, `BranchNode`, and
+ * `ForLoopNode` are the private class under this scope. `TypedInstructionSet`
+ * will be used as either 1. FunDef or 2. Block Implmentation.
+ */
+
+std::unique_ptr<TypedInstrSetNode> Parser::parseTypedInstrSet() {
   Location loc = tokens.front().location;
   std::unique_ptr<TypedInstrSetNode> typedInstrSetNode =
       std::make_unique<TypedInstrSetNode>(loc);
@@ -220,24 +205,24 @@ std::unique_ptr<InstrSetNode> Parser::parseInstrSet() {
   std::unique_ptr<InstrSetNode> instrSetNode =
       std::make_unique<InstrSetNode>(loc);
   while (tokens.front().type != TokenType::CLOSECUR) {
-    auto instrSetItemNode = parseInstrSetItem();
-    if (!instrSetItemNode)
+    auto compositeInstrNode = parseCompositeInstr();
+    if (!compositeInstrNode)
       return nullptr;
-    instrSetNode->instructions.push_back(std::move(instrSetItemNode));
+    instrSetNode->instructions.push_back(std::move(compositeInstrNode));
   }
   if (!consume(TokenType::CLOSECUR))
     return nullptr;
   return instrSetNode;
 }
 
-std::unique_ptr<InstrSetItemNode> Parser::parseInstrSetItem() {
+std::unique_ptr<CompositeInstrNode> Parser::parseCompositeInstr() {
   Location loc = tokens.front().location;
   auto instructionNode = parseInstruction();
   if (!instructionNode)
     return nullptr;
-  std::unique_ptr<InstrSetItemNode> instrSetItemNode =
-      std::make_unique<InstrSetItemNode>(loc, std::move(instructionNode));
-  return instrSetItemNode;
+  std::unique_ptr<CompositeInstrNode> compositeInstrNode =
+      std::make_unique<CompositeInstrNode>(loc, std::move(instructionNode));
+  return compositeInstrNode;
 }
 
 /**

@@ -7,9 +7,9 @@ using std::string;
 using std::unique_ptr;
 
 bool argBinding(std::map<std::string, std::unique_ptr<FunDefNode>> &funDefs,
-                std::vector<std::unique_ptr<InstrSetItemNode>> &instructionSetItems) {
-  for (auto &instrSetItem : instructionSetItems) {
-    auto& instr = instrSetItem->instruction;
+                std::vector<std::unique_ptr<CompositeInstrNode>> &compositeInstrs) {
+  for (auto &compositeInstr : compositeInstrs) {
+    auto& instr = compositeInstr->instruction;
     if (instr->positional_args.empty())
       continue;
     if (funDefs.count(instr->identifier) == 0)

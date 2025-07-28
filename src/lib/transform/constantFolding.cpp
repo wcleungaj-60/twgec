@@ -8,9 +8,9 @@ using std::unique_ptr;
 
 bool constantFolding(
     std::map<std::string, std::unique_ptr<ExpressionNode>> &constDefs,
-    std::vector<std::unique_ptr<InstrSetItemNode>> &instrSetItems) {
-  for (auto &instrSetItem : instrSetItems)
-    for (auto &arg : instrSetItem->instruction->named_args){
+    std::vector<std::unique_ptr<CompositeInstrNode>> &compositeInstrs) {
+  for (auto &compositeInstr : compositeInstrs)
+    for (auto &arg : compositeInstr->instruction->named_args){
       arg->expNode->propagateVarToExp(constDefs);
       arg->expNode->foldValue();
   }

@@ -267,50 +267,33 @@ inline std::ostream &operator<<(std::ostream &os, FunDefType type) {
   return os;
 }
 
-class InstrSetItemNode {
+class CompositeInstrNode {
 public:
   // Variable
   Location loc;
   std::unique_ptr<InstructionNode> instruction;
 
   // Constructor
-  InstrSetItemNode(Location loc, std::unique_ptr<InstructionNode> instruction)
+  CompositeInstrNode(Location loc, std::unique_ptr<InstructionNode> instruction)
       : loc(loc), instruction(std::move(instruction)) {}
 
   // Function
   void print(int indent = 0);
-};
-
-class FunDefNode {
-public:
-  // Variable
-  Location loc;
-  FunDefType type;
-  std::string identifier;
-  std::vector<std::string> params;
-  std::vector<std::unique_ptr<InstructionNode>> instructions;
-
-  // Constructor
-  FunDefNode(const std::string &id, Location loc,
-             FunDefType type = FUN_DEF_TYPE_INVALID)
-      : identifier(id), loc(loc), type(type) {}
-
-  // Function
-  void print(int indent = 0);
-  std::unique_ptr<FunDefNode> clone();
+  std::unique_ptr<CompositeInstrNode> clone();
 };
 
 class InstrSetNode {
 public:
   // Variable
   Location loc;
-  std::vector<std::unique_ptr<InstrSetItemNode>> instructions;
+  std::vector<std::unique_ptr<CompositeInstrNode>> instructions;
 
   // Constructor
   InstrSetNode(Location loc) : loc(loc) {}
 
   // Function
   void print(int indent = 0);
+  std::unique_ptr<InstrSetNode> clone();
 };
 
 class TypedInstrSetNode {
@@ -323,11 +306,33 @@ public:
   // Constructor
   TypedInstrSetNode(Location loc, FunDefType type = FUN_DEF_TYPE_INVALID)
       : loc(loc), type(type), instrSet(std::make_unique<InstrSetNode>(loc)) {}
+  TypedInstrSetNode(Location loc, FunDefType type, std::unique_ptr<InstrSetNode> instrSet)
+      : loc(loc), type(type), instrSet(std::move(instrSet)) {}
 
   // Function
   void print(int indent = 0);
+  std::unique_ptr<TypedInstrSetNode> clone();
 };
 
+class FunDefNode {
+public:
+  // Variable
+  Location loc;
+  std::string identifier;
+  std::vector<std::string> params;
+  std::unique_ptr<TypedInstrSetNode> typedInstrSet;
+
+  // Constructor
+  FunDefNode(const std::string &id, Location loc)
+      : identifier(id), loc(loc) {}
+  FunDefNode(const std::string &id, Location loc,
+             std::unique_ptr<TypedInstrSetNode> typedInstrSet)
+      : identifier(id), loc(loc), typedInstrSet(std::move(typedInstrSet)) {}
+
+  // Function
+  void print(int indent = 0);
+  std::unique_ptr<FunDefNode> clone();
+};
 
 class BlockNode {
 public:

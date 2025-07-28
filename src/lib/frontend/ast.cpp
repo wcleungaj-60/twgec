@@ -42,11 +42,11 @@ void ExpressionNode::print() {
   }
 };
 
-void InstrSetItemNode::print(int indent) { instruction->print(indent); }
+void CompositeInstrNode::print(int indent) { instruction->print(indent); }
 
 void InstrSetNode::print(int indent) {
-  for (auto &instrSetitem : instructions)
-    instrSetitem->print(indent);
+  for (auto &compositeInstr : instructions)
+    compositeInstr->print(indent);
 }
 
 void TypedInstrSetNode::print(int indent) {
@@ -98,7 +98,7 @@ void FunDefNode::print(int indent) {
       std::cout << ", ";
   }
   std::cout << ") {\n";
-  for (auto &ins : instructions)
+  for (auto &ins : typedInstrSet->instrSet->instructions)
     ins.get()->print(indent + 4);
   std::cout << inden(indent) << "}\n";
 }
@@ -207,12 +207,27 @@ std::unique_ptr<InstructionNode> InstructionNode::clone() {
   return newNode;
 }
 
-std::unique_ptr<FunDefNode> FunDefNode::clone() {
-  auto newNode = std::make_unique<FunDefNode>(identifier, loc, type);
-  for (auto &param : params)
-    newNode.get()->params.push_back(param);
+std::unique_ptr<CompositeInstrNode> CompositeInstrNode::clone() {
+  auto newNode = std::make_unique<CompositeInstrNode>(loc, instruction->clone());
+  return newNode;
+}
+
+std::unique_ptr<InstrSetNode> InstrSetNode::clone() {
+  auto newNode = std::make_unique<InstrSetNode>(loc);
   for (auto &instr : instructions)
-    newNode.get()->instructions.push_back(instr.get()->clone());
+    newNode->instructions.push_back(instr->clone());
+  return newNode;
+}
+
+std::unique_ptr<TypedInstrSetNode> TypedInstrSetNode::clone() {
+  auto newNode =
+      std::make_unique<TypedInstrSetNode>(loc, type, instrSet->clone());
+  return newNode;
+}
+
+std::unique_ptr<FunDefNode> FunDefNode::clone() {
+  auto newNode =
+      std::make_unique<FunDefNode>(identifier, loc, typedInstrSet->clone());
   return newNode;
 }
 

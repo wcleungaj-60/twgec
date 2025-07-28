@@ -15,9 +15,9 @@ private:
   std::unique_ptr<MetadataNode> parseMetadata();
   std::unique_ptr<ConstDefNode> parseConstDef();
   std::unique_ptr<FunDefNode> parseFunDef();
-  std::unique_ptr<TypedInstrSetNode> parseparseTypedInstrSet();
+  std::unique_ptr<TypedInstrSetNode> parseTypedInstrSet();
   std::unique_ptr<InstrSetNode> parseInstrSet();
-  std::unique_ptr<InstrSetItemNode> parseInstrSetItem();
+  std::unique_ptr<CompositeInstrNode> parseCompositeInstr();
   std::unique_ptr<InstructionNode> parseInstruction();
   bool parseInstructionArgs(std::unique_ptr<InstructionNode> &,
                             bool foundNamed = false);

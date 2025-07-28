@@ -20,6 +20,11 @@
 
 ### DSL Parsing Logic
 
+##### Overview
+
+![AST image](/assets/frontend/ast.png)
+
+##### Regular Expression
 ```c
 // Global Scope
 ModuleNode := [ MetadataNode | BlockNode | ConstDefNode | FunDefNode]*
@@ -28,14 +33,13 @@ ModuleNode := [ MetadataNode | BlockNode | ConstDefNode | FunDefNode]*
 - ConstDefNode := ConstToken IdentifierToken AssignToken ExpNode
 - FunDefNode := DefToken IdentifierToken ParamDefsNode ColonToken [TypedInstrSetNode | [BlockToken BlockBodyNode]]
   - ParamDefsNode = OpenParToken [IdentifierToken [CommaToken IdentifierToken]*]? CloseParToken
-// Block Scope
-BlockBodyNode = OpenCurToken [ MetadataNode | TypedInstrSetNode ]* CloseCurToken
-- TypedInstrSetNode = [ActionsDefNode | ChecksDefNode | TriggersDefNode] InstrSetNode
+  - BlockBodyNode = OpenCurToken [ MetadataNode | TypedInstrSetNode ]* CloseCurToken
 // Instruction Set Scope
-InstrSetNode := OpenCurToken InstrSetItemNode* CloseCurToken
-- InstrSetItemNode := BranchNode | ForLoopNode | InstructionNode
-  - BranchNode := IfToken InstrSetNode [ElseIfToken InstrSetNode]* [ElseToken InstrSetNode]?
-  - ForLoopNode := ForToken IdentifierToken InToken ExpNode EllipsisToken ExpNode InstrSetNode
+TypedInstrSetNode = [ActionsDefNode | ChecksDefNode | TriggersDefNode] InstrSetNode
+- InstrSetNode := OpenCurToken CompositeInstrNode* CloseCurToken
+  - CompositeInstrNode := BranchNode | ForLoopNode | InstructionNode
+    - BranchNode := IfToken InstrSetNode [ElseIfToken InstrSetNode]* [ElseToken InstrSetNode]?
+    - ForLoopNode := ForToken IdentifierToken InToken ExpNode EllipsisToken ExpNode InstrSetNode
 // Instruction Scope
 InstructionNode := IdentifierToken [DotToken IdentifierToken]* ParamAppsNode
 - ParamAppsNode = OpenParToken PositionalParamAppsNode? CloseParToken
