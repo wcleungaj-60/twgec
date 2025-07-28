@@ -306,7 +306,8 @@ public:
   // Constructor
   TypedInstrSetNode(Location loc, FunDefType type = FUN_DEF_TYPE_INVALID)
       : loc(loc), type(type), instrSet(std::make_unique<InstrSetNode>(loc)) {}
-  TypedInstrSetNode(Location loc, FunDefType type, std::unique_ptr<InstrSetNode> instrSet)
+  TypedInstrSetNode(Location loc, FunDefType type,
+                    std::unique_ptr<InstrSetNode> instrSet)
       : loc(loc), type(type), instrSet(std::move(instrSet)) {}
 
   // Function
@@ -323,8 +324,7 @@ public:
   std::unique_ptr<TypedInstrSetNode> typedInstrSet;
 
   // Constructor
-  FunDefNode(const std::string &id, Location loc)
-      : identifier(id), loc(loc) {}
+  FunDefNode(const std::string &id, Location loc) : identifier(id), loc(loc) {}
   FunDefNode(const std::string &id, Location loc,
              std::unique_ptr<TypedInstrSetNode> typedInstrSet)
       : identifier(id), loc(loc), typedInstrSet(std::move(typedInstrSet)) {}
@@ -347,6 +347,23 @@ public:
 
   // Function
   void print(int indent = 0);
+  void setActionsIdx(int idx) { actionsIdx = idx; };
+  void setChecksIdx(int idx) { checksIdx = idx; };
+  void setTriggersIdx(int idx) { triggersIdx = idx; };
+  std::unique_ptr<TypedInstrSetNode> &getActions() {
+    return typedInstrSets[actionsIdx];
+  };
+  std::unique_ptr<TypedInstrSetNode> &getChecks() {
+    return typedInstrSets[checksIdx];
+  };
+  std::unique_ptr<TypedInstrSetNode> &getTriggers() {
+    return typedInstrSets[triggersIdx];
+  };
+
+private:
+  int actionsIdx = -1;
+  int checksIdx = -1;
+  int triggersIdx = -1;
 };
 
 class ModuleNode {

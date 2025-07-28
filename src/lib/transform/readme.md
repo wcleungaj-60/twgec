@@ -13,6 +13,6 @@
 
 ### Pipeline
 1. Function Argument legalization
-2. Function Inlining
-3. Block legalization
+2. Block legalization
+3. Function Inlining
 4. Constant Value Propagation

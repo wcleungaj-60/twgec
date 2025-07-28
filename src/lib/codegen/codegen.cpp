@@ -49,18 +49,9 @@ void CodeGenerator::codegenBlocks(std::ofstream &of) {
     of << inden(8) << "{" << std::endl;
     of << inden(12) << "\"id\": \"" << block->identifier << "\"," << std::endl;
     metadata::BlockSetup::setup(of, block->metadatas);
-    // TODO: During the transformation, it should be converted into `actions`,
-    // `checks`, and `triggers` already. Don't iteration the same element three
-    // times.
-    for (auto &typedInstrSet : block->typedInstrSets)
-      if (typedInstrSet->type == FUN_DEF_TYPE_ACTIONS)
-        codegenTypedInstrSet(of, typedInstrSet);
-    for (auto &typedInstrSet : block->typedInstrSets)
-      if (typedInstrSet->type == FUN_DEF_TYPE_CHECKS)
-        codegenTypedInstrSet(of, typedInstrSet);
-    for (auto &typedInstrSet : block->typedInstrSets)
-      if (typedInstrSet->type == FUN_DEF_TYPE_TRIGGERS)
-        codegenTypedInstrSet(of, typedInstrSet);
+    codegenTypedInstrSet(of, block->getActions());
+    codegenTypedInstrSet(of, block->getChecks());
+    codegenTypedInstrSet(of, block->getTriggers());
     of << inden(8) << "}";
     if (i != moduleNode->blocks.size() - 1)
       of << ",";

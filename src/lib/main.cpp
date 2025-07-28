@@ -12,6 +12,10 @@ bool loweringPipeline(const std::unique_ptr<ModuleNode> &moduleNode,
   if (!transform::argBinding(std::move(moduleNode)))
     return false;
   if (printAST)
+    moduleNode->print("AST Before Block Legalization");
+  if (!transform::blockLegalization(std::move(moduleNode)))
+    return false;
+  if (printAST)
     moduleNode->print("AST Before Function Inlining");
   if (!transform::functionInling(std::move(moduleNode)))
     return false;

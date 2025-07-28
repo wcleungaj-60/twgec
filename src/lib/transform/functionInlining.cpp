@@ -19,7 +19,8 @@ bool isValidFuncCaller(std::unique_ptr<InstructionNode> &caller,
                        FunDefType expectedType) {
   FunDefNode *funDef = funDefMap[caller->identifier].get();
   if (funDef->typedInstrSet->type != expectedType) {
-    std::cerr << "Syntax Error: Unmatched function type. " << funDef->typedInstrSet->type
+    std::cerr << "Syntax Error: Unmatched function type. "
+              << funDef->typedInstrSet->type
               << "-typed function cannot be called inside the " << expectedType
               << " scope. Found at " << caller->loc << ".\n";
     return false;
@@ -59,7 +60,8 @@ bool functionInling(
   std::vector<int> funCallerIdxes;
   // Step 1: Get the function caller index
   for (int idx = 0; idx < compositeInstrs.size(); idx++) {
-    std::unique_ptr<InstructionNode> &caller = compositeInstrs[idx]->instruction;
+    std::unique_ptr<InstructionNode> &caller =
+        compositeInstrs[idx]->instruction;
     string callerName = caller->identifier;
     if (funDefMap.count(callerName) == 0)
       continue;
@@ -84,8 +86,8 @@ bool functionInling(
          it !=
          funDefNode.get()->typedInstrSet.get()->instrSet->instructions.rend();
          ++it) {
-      auto clonedIns = std::make_unique<CompositeInstrNode>(it->get()->loc,
-                                                          it->get()->instruction->clone());
+      auto clonedIns = std::make_unique<CompositeInstrNode>(
+          it->get()->loc, it->get()->instruction->clone());
       for (auto &arg : clonedIns->instruction->named_args)
         arg->expNode->propagateVarToExp(callerMap);
       compositeInstrs.insert(pos, std::move(clonedIns));
@@ -95,39 +97,13 @@ bool functionInling(
 }
 
 bool functionInling(const unique_ptr<ModuleNode> &moduleNode) {
-  bool ret = true;
   auto &funDefs = moduleNode->funDefs;
-  for (auto &blockNode : moduleNode->blocks) {
-    std::set<FunDefType> instrSetType;
-    for (auto &typedInstrSet : blockNode->typedInstrSets) {
-      auto type = typedInstrSet->type;
-      if (!functionInling(funDefs, typedInstrSet->instrSet->instructions, type))
+  for (auto &blockNode : moduleNode->blocks)
+    for (auto &typedInstrSet : blockNode->typedInstrSets)
+      if (!functionInling(funDefs, typedInstrSet->instrSet->instructions,
+                          typedInstrSet->type))
         return false;
-      // TODO: Should be done in the new transformation pass `block-legalizer`.
-      if (instrSetType.count(type)) {
-        std::cerr << "Syntax Error: Redefinition of `" << type
-                  << "` inside a block. Please unify them into one `" << type
-                  << "`. Found at " << typedInstrSet->loc << ".\n";
-        return false;
-      } else {
-        instrSetType.insert(type);
-      }
-    }
-    // TODO: Should be done in the new transformation pass `block-legalizer`.
-    if (!instrSetType.count(FUN_DEF_TYPE_ACTIONS)) {
-      blockNode->typedInstrSets.push_back(std::make_unique<TypedInstrSetNode>(
-          blockNode->loc, FUN_DEF_TYPE_ACTIONS));
-    }
-    if (!instrSetType.count(FUN_DEF_TYPE_CHECKS)) {
-      blockNode->typedInstrSets.push_back(std::make_unique<TypedInstrSetNode>(
-          blockNode->loc, FUN_DEF_TYPE_CHECKS));
-    }
-    if (!instrSetType.count(FUN_DEF_TYPE_TRIGGERS)) {
-      blockNode->typedInstrSets.push_back(std::make_unique<TypedInstrSetNode>(
-          blockNode->loc, FUN_DEF_TYPE_TRIGGERS));
-    }
-  }
   funDefs.clear();
-  return ret;
+  return true;
 }
 } // namespace transform
