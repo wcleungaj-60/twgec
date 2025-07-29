@@ -38,7 +38,7 @@ ModuleNode := [ MetadataNode | BlockNode | ConstDefNode | FunDefNode]*
 TypedInstrSetNode = [ActionsDefNode | ChecksDefNode | TriggersDefNode] InstrSetNode
 - InstrSetNode := OpenCurToken CompositeInstrNode* CloseCurToken
   - CompositeInstrNode := BranchNode | ForLoopNode | InstructionNode
-    - BranchNode := IfToken InstrSetNode [ElseIfToken InstrSetNode]* [ElseToken InstrSetNode]?
+    - BranchNode := IfToken OpenParToken ExpNode CloseParToken InstrSetNode [ElseIfToken InstrSetNode]* [ElseToken InstrSetNode]?
     - ForLoopNode := ForToken IdentifierToken InToken ExpNode EllipsisToken ExpNode InstrSetNode
 // Instruction Scope
 InstructionNode := IdentifierToken [DotToken IdentifierToken]* ParamAppsNode

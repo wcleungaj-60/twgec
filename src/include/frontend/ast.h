@@ -8,6 +8,8 @@
 #include <string>
 #include <vector>
 
+class InstrSetNode;
+
 class ValueNode {
 public:
   // Variable
@@ -119,6 +121,16 @@ class OperationPlusNode : public OperationNode {
 public:
   // Constructor
   OperationPlusNode(Location loc) : OperationNode(loc) {}
+
+  // Function
+  void print();
+  std::unique_ptr<OperationNode> clone();
+};
+
+class OperationEqualNode : public OperationNode {
+public:
+  // Constructor
+  OperationEqualNode(Location loc) : OperationNode(loc) {}
 
   // Function
   void print();
@@ -267,15 +279,37 @@ inline std::ostream &operator<<(std::ostream &os, FunDefType type) {
   return os;
 }
 
+class BranchNode {
+public:
+  // Variable
+  Location loc;
+  std::unique_ptr<ExpressionNode> condition;
+  std::unique_ptr<InstrSetNode> trueBlock;
+
+  // Constructor
+  BranchNode(std::unique_ptr<ExpressionNode> condition,
+             std::unique_ptr<InstrSetNode> trueBlock, Location loc)
+      : condition(std::move(condition)), trueBlock(std::move(trueBlock)),
+        loc(loc) {}
+
+  // Function
+  void print(int indent = 0);
+  std::unique_ptr<BranchNode> clone();
+};
+
 class CompositeInstrNode {
 public:
   // Variable
   Location loc;
   std::unique_ptr<InstructionNode> instruction;
+  std::unique_ptr<BranchNode> ifStatement;
 
   // Constructor
+  CompositeInstrNode(Location loc) : loc(loc) {}
   CompositeInstrNode(Location loc, std::unique_ptr<InstructionNode> instruction)
       : loc(loc), instruction(std::move(instruction)) {}
+  CompositeInstrNode(Location loc, std::unique_ptr<BranchNode> ifStatement)
+      : loc(loc), ifStatement(std::move(ifStatement)) {}
 
   // Function
   void print(int indent = 0);

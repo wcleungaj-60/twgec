@@ -24,6 +24,7 @@ enum class TokenType {
   CHECKS,   // checks
   DEF,      // def
   CONST,    // const
+  IF,       // if
   /* Speical Character */
   OPENCUR,   // {
   CLOSECUR,  // }
@@ -32,6 +33,7 @@ enum class TokenType {
   OPENSQR,   // [
   CLOSESQR,  // ]
   ASSIGN,    // =
+  EQUAL,     // ==
   SEMICOLON, // ;
   COLON,     // :
   DOT,       // .
@@ -57,6 +59,7 @@ inline std::ostream &operator<<(std::ostream &os, const TokenType &type) {
     LEXER_TOKEN_TYPE_PRINT(TokenType::CHECKS, "\'checks\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::DEF, "\'def\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::CONST, "\'const\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::IF, "\'if\'");
     // Speical Character
     LEXER_TOKEN_TYPE_PRINT(TokenType::OPENCUR, "\'{\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::CLOSECUR, "\'}\'");
@@ -65,6 +68,7 @@ inline std::ostream &operator<<(std::ostream &os, const TokenType &type) {
     LEXER_TOKEN_TYPE_PRINT(TokenType::OPENSQR, "\'[\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::CLOSESQR, "\']\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::ASSIGN, "\'=\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::EQUAL, "\'==\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::SEMICOLON, "\';\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::COLON, "\':\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::DOT, "\'.\'");
@@ -102,6 +106,7 @@ struct Token {
       LEXER_TOKEN_PRINT(TokenType::CHECKS, "checks");
       LEXER_TOKEN_PRINT(TokenType::DEF, "def");
       LEXER_TOKEN_PRINT(TokenType::CONST, "const");
+      LEXER_TOKEN_PRINT(TokenType::IF, "if");
       // Speical Character
       LEXER_TOKEN_PRINT(TokenType::OPENCUR, "{");
       LEXER_TOKEN_PRINT(TokenType::CLOSECUR, "}");
@@ -110,6 +115,7 @@ struct Token {
       LEXER_TOKEN_PRINT(TokenType::OPENSQR, "[");
       LEXER_TOKEN_PRINT(TokenType::CLOSESQR, "]");
       LEXER_TOKEN_PRINT(TokenType::ASSIGN, "=");
+      LEXER_TOKEN_PRINT(TokenType::EQUAL, "==");
       LEXER_TOKEN_PRINT(TokenType::SEMICOLON, ";");
       LEXER_TOKEN_PRINT(TokenType::COLON, ":");
       LEXER_TOKEN_PRINT(TokenType::DOT, ".");

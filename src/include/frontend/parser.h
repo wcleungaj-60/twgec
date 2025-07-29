@@ -18,10 +18,12 @@ private:
   std::unique_ptr<TypedInstrSetNode> parseTypedInstrSet();
   std::unique_ptr<InstrSetNode> parseInstrSet();
   std::unique_ptr<CompositeInstrNode> parseCompositeInstr();
+  std::unique_ptr<BranchNode> parseBranch();
   std::unique_ptr<InstructionNode> parseInstruction();
   bool parseInstructionArgs(std::unique_ptr<InstructionNode> &,
                             bool foundNamed = false);
   std::unique_ptr<ValueNode> parseValue();
+  std::unique_ptr<OperationNode> parseOperation();
   std::unique_ptr<ExpressionNode> parseExp();
 
 public:

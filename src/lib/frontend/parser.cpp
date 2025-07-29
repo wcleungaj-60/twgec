@@ -217,12 +217,39 @@ std::unique_ptr<InstrSetNode> Parser::parseInstrSet() {
 
 std::unique_ptr<CompositeInstrNode> Parser::parseCompositeInstr() {
   Location loc = tokens.front().location;
-  auto instructionNode = parseInstruction();
-  if (!instructionNode)
-    return nullptr;
   std::unique_ptr<CompositeInstrNode> compositeInstrNode =
-      std::make_unique<CompositeInstrNode>(loc, std::move(instructionNode));
+      std::make_unique<CompositeInstrNode>(loc);
+  if (tokens.front().type == TokenType::IDENTIFIER) {
+    compositeInstrNode->instruction = std::move(parseInstruction());
+    if (!compositeInstrNode->instruction)
+      return nullptr;
+  } else if (tokens.front().type == TokenType::IF) {
+    compositeInstrNode->ifStatement = std::move(parseBranch());
+    if (!compositeInstrNode->ifStatement)
+      return nullptr;
+  } else {
+    std::cerr << "SyntaxError: Expecting an instruction or if-statement at "
+              << tokens.front().location << ". Found \'" << tokens.front().value
+              << "\'\n";
+    return nullptr;
+  }
   return compositeInstrNode;
+}
+
+std::unique_ptr<BranchNode> Parser::parseBranch() {
+  Location loc = tokens.front().location;
+  if (!consume(TokenType::IF) || !consume(TokenType::OPENPAR))
+    return nullptr;
+  auto condition = parseExp();
+  if (!condition)
+    return nullptr;
+  if (!consume(TokenType::CLOSEPAR))
+    return nullptr;
+  auto trueBlock = parseInstrSet();
+  if (!trueBlock)
+    return nullptr;
+  return std::make_unique<BranchNode>(std::move(condition),
+                                      std::move(trueBlock), loc);
 }
 
 /**
@@ -304,18 +331,27 @@ std::unique_ptr<ExpressionNode> Parser::parseExp() {
     return nullptr;
   std::unique_ptr<ExpressionNode> lhsExp =
       std::make_unique<ExpressionNode>(std::move(lhsValue), lhsLoc);
-  if (tokens.front().type != TokenType::PLUS)
+  auto operation = parseOperation();
+  if (!operation)
     return lhsExp;
-  Location opLoc = tokens.front().location;
-  consume(TokenType::PLUS);
-  std::unique_ptr<OperationNode> opNode =
-      std::make_unique<OperationPlusNode>(opLoc);
   Location rhsLoc = tokens.front().location;
   std::unique_ptr<ExpressionNode> rhsExp = parseExp();
   if (!rhsExp)
     return nullptr;
-  return std::make_unique<ExpressionNode>(std::move(lhsExp), std::move(opNode),
-                                          std::move(rhsExp), lhsExp->loc);
+  return std::make_unique<ExpressionNode>(
+      std::move(lhsExp), std::move(operation), std::move(rhsExp), lhsExp->loc);
+}
+
+std::unique_ptr<OperationNode> Parser::parseOperation() {
+  Location loc = tokens.front().location;
+  if (tokens.front().type == TokenType::PLUS) {
+    consume(TokenType::PLUS);
+    return std::make_unique<OperationPlusNode>(loc);
+  } else if (tokens.front().type == TokenType::EQUAL) {
+    consume(TokenType::EQUAL);
+    return std::make_unique<OperationEqualNode>(loc);
+  }
+  return nullptr;
 }
 
 std::unique_ptr<ValueNode> Parser::parseValue() {

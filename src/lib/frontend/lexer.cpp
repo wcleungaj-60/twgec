@@ -10,6 +10,7 @@ std::string triggers = "triggers";
 std::string checks = "checks";
 std::string def = "def";
 std::string _const = "const";
+std::string _if = "if";
 } // namespace keyword
 
 int Lexer::line = 1;
@@ -70,9 +71,15 @@ Token Lexer::nextToken() {
     case '"':
       return stringToken();
     case '=':
+      if(input[pos + 1] == '='){
+      Lexer::column+=2;
+      pos+=2;
+      return Token(TokenType::EQUAL, Lexer::line, Lexer::column - 2, "==");
+      }else {
       Lexer::column++;
       pos++;
       return Token(TokenType::ASSIGN, Lexer::line, Lexer::column - 1, "=");
+      }
     case '{':
       Lexer::column++;
       pos++;
@@ -143,6 +150,8 @@ Token Lexer::nextToken() {
                                      TokenType::DEF);
       LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_const,
                                      TokenType::CONST);
+      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_if,
+                                     TokenType::IF);
       return identifierToken();
     }
   }

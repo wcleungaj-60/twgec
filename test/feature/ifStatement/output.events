@@ -76,7 +76,7 @@
                     "type": "Console",
                     "data": {
                         "logType": "log",
-                        "text": "123",
+                        "text": "print true 1",
                         "value": ""
                     }
                 },
@@ -84,7 +84,7 @@
                     "type": "Console",
                     "data": {
                         "logType": "log",
-                        "text": "123456",
+                        "text": "print true 2",
                         "value": ""
                     }
                 },
@@ -92,7 +92,7 @@
                     "type": "Console",
                     "data": {
                         "logType": "log",
-                        "text": "123123456",
+                        "text": "print true 3",
                         "value": ""
                     }
                 },
@@ -100,41 +100,56 @@
                     "type": "Console",
                     "data": {
                         "logType": "log",
-                        "text": "123456789",
+                        "text": "print outside function 1",
                         "value": ""
                     }
                 },
                 {
-                    "type": "ActorTalk",
+                    "type": "Console",
                     "data": {
-                        "cleanTalk": true,
-                        "speech": "",
-                        "duration": "3000",
-                        "wait": true,
-                        "waitMore": "100",
-                        "actorCode": ""
+                        "logType": "log",
+                        "text": "print true inside function 1",
+                        "value": ""
                     }
                 },
                 {
-                    "type": "ActorTalk",
+                    "type": "Console",
                     "data": {
-                        "cleanTalk": true,
-                        "speech": "",
-                        "duration": "3000",
-                        "wait": true,
-                        "waitMore": "100",
-                        "actorCode": ""
+                        "logType": "log",
+                        "text": "print true inside function 2",
+                        "value": ""
                     }
                 },
                 {
-                    "type": "ActorTalk",
+                    "type": "Console",
                     "data": {
-                        "cleanTalk": true,
-                        "speech": "",
-                        "duration": "3000",
-                        "wait": false,
-                        "waitMore": "100",
-                        "actorCode": ""
+                        "logType": "log",
+                        "text": "print outside function 2",
+                        "value": ""
+                    }
+                },
+                {
+                    "type": "Console",
+                    "data": {
+                        "logType": "log",
+                        "text": "print true 1",
+                        "value": ""
+                    }
+                },
+                {
+                    "type": "Console",
+                    "data": {
+                        "logType": "log",
+                        "text": "print true 2",
+                        "value": ""
+                    }
+                },
+                {
+                    "type": "Console",
+                    "data": {
+                        "logType": "log",
+                        "text": "print true 3",
+                        "value": ""
                     }
                 }
             ],

@@ -26,6 +26,8 @@ void VariableValueNode::print() { std::cout << value; };
 
 void OperationPlusNode::print() { std::cout << "+"; };
 
+void OperationEqualNode::print() { std::cout << "=="; };
+
 void OperationNoOpNode::print() { std::cout << ""; };
 
 void ExpressionNode::print() {
@@ -42,7 +44,20 @@ void ExpressionNode::print() {
   }
 };
 
-void CompositeInstrNode::print(int indent) { instruction->print(indent); }
+void BranchNode::print(int indent) {
+  std::cout << inden(indent) << "if(";
+  condition->print();
+  std::cout << ") {\n";
+  trueBlock->print(indent + 4);
+  std::cout << inden(indent) << "}\n";
+}
+
+void CompositeInstrNode::print(int indent) {
+  if (instruction)
+    instruction->print(indent);
+  if (ifStatement)
+    ifStatement->print(indent);
+}
 
 void InstrSetNode::print(int indent) {
   for (auto &compositeInstr : instructions)
@@ -167,6 +182,8 @@ std::unique_ptr<ValueNode> VariableValueNode::clone() {
 std::unique_ptr<OperationNode> OperationNode::clone() {
   if (auto *plusNode = dynamic_cast<OperationPlusNode *>(this))
     return plusNode->clone();
+  if (auto *equalNode = dynamic_cast<OperationEqualNode *>(this))
+    return equalNode->clone();
   std::cerr << "Compiler Implementation Error: Unsupported cloning . Found at "
             << loc << "\n";
   return nullptr;
@@ -174,6 +191,10 @@ std::unique_ptr<OperationNode> OperationNode::clone() {
 
 std::unique_ptr<OperationNode> OperationPlusNode::clone() {
   return std::make_unique<OperationPlusNode>(loc);
+}
+
+std::unique_ptr<OperationNode> OperationEqualNode::clone() {
+  return std::make_unique<OperationEqualNode>(loc);
 }
 
 std::unique_ptr<OperationNode> OperationNoOpNode::clone() {
@@ -207,9 +228,16 @@ std::unique_ptr<InstructionNode> InstructionNode::clone() {
   return newNode;
 }
 
+std::unique_ptr<BranchNode> BranchNode::clone() {
+  return std::make_unique<BranchNode>(condition->clone(), trueBlock->clone(), loc);
+}
+
 std::unique_ptr<CompositeInstrNode> CompositeInstrNode::clone() {
-  auto newNode = std::make_unique<CompositeInstrNode>(loc, instruction->clone());
-  return newNode;
+  if(instruction)
+    return std::make_unique<CompositeInstrNode>(loc, instruction->clone());
+  else if(ifStatement)
+    return std::make_unique<CompositeInstrNode>(loc, ifStatement->clone());
+  return nullptr;
 }
 
 std::unique_ptr<InstrSetNode> InstrSetNode::clone() {
@@ -265,15 +293,24 @@ bool ExpressionNode::foldValue() {
     return false;
   if (!rhs->foldValue() || !rhs->isValue)
     return false;
-  if (auto plusOp = dynamic_cast<OperationPlusNode *>(op.get()))
-    if (auto lhsStr = dynamic_cast<StringValueNode *>(lhs->value.get()))
-      if (auto rhsStr = dynamic_cast<StringValueNode *>(rhs->value.get())) {
-        value = std::make_unique<StringValueNode>(lhsStr->value + rhsStr->value,
-                                                  lhsStr->loc);
-        isValue = true;
-        lhs = nullptr;
-        rhs = nullptr;
-        return true;
-      }
-  return false;
+  auto plusOp = dynamic_cast<OperationPlusNode *>(op.get());
+  auto equalOp = dynamic_cast<OperationEqualNode *>(op.get());
+  auto lhsStr = dynamic_cast<StringValueNode *>(lhs->value.get());
+  auto rhsStr = dynamic_cast<StringValueNode *>(rhs->value.get());
+  bool isFolded = false;
+  if (plusOp && lhsStr && rhsStr) {
+    value = std::make_unique<StringValueNode>(lhsStr->value + rhsStr->value,
+                                              lhsStr->loc);
+    isFolded = true;
+  } else if (equalOp && lhsStr && rhsStr) {
+    value = std::make_unique<BoolValueNode>(lhsStr->value == rhsStr->value,
+                                              lhsStr->loc);
+    isFolded = true;
+  }
+  if (isFolded) {
+    isValue = true;
+    lhs = nullptr;
+    rhs = nullptr;
+  }
+  return isFolded;
 }

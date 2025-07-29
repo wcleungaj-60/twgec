@@ -16,3 +16,4 @@
 2. Block legalization
 3. Function Inlining
 4. Constant Value Propagation
+5. If Statement Propagation

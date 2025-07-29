@@ -24,6 +24,10 @@ bool loweringPipeline(const std::unique_ptr<ModuleNode> &moduleNode,
   if (!transform::constantFolding(std::move(moduleNode)))
     return false;
   if (printAST)
+    moduleNode->print("AST Before If Statement Propagation");
+  if (!transform::ifStatementPropagation(std::move(moduleNode)))
+    return false;
+  if (printAST)
     moduleNode->print("AST Before Code Generation");
   return true;
 }

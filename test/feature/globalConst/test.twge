@@ -11,5 +11,8 @@ block init {
         print(text = string2);
         print(text = string1 + string2);
         print(text = string2 + "789");
+        actorTalk(wait = true);
+        actorTalk(wait = string1 == string1);
+        actorTalk(wait = string1 == "456");
     }
 }

@@ -55,13 +55,20 @@ bool isValidFuncCaller(std::unique_ptr<InstructionNode> &caller,
 
 bool functionInling(
     std::map<std::string, std::unique_ptr<FunDefNode>> &funDefMap,
-    std::vector<std::unique_ptr<CompositeInstrNode>> &compositeInstrs,
-    FunDefType expectedType) {
+    std::unique_ptr<InstrSetNode> &instrSet, FunDefType expectedType) {
   std::vector<int> funCallerIdxes;
+  auto &compositeInstrs = instrSet->instructions;
   // Step 1: Get the function caller index
   for (int idx = 0; idx < compositeInstrs.size(); idx++) {
     std::unique_ptr<InstructionNode> &caller =
         compositeInstrs[idx]->instruction;
+    if (!caller) {
+      if (!functionInling(funDefMap,
+                          compositeInstrs[idx]->ifStatement->trueBlock,
+                          expectedType))
+        return false;
+      continue;
+    }
     string callerName = caller->identifier;
     if (funDefMap.count(callerName) == 0)
       continue;
@@ -86,10 +93,10 @@ bool functionInling(
          it !=
          funDefNode.get()->typedInstrSet.get()->instrSet->instructions.rend();
          ++it) {
-      auto clonedIns = std::make_unique<CompositeInstrNode>(
-          it->get()->loc, it->get()->instruction->clone());
-      for (auto &arg : clonedIns->instruction->named_args)
-        arg->expNode->propagateVarToExp(callerMap);
+      std::unique_ptr<CompositeInstrNode> clonedIns = it->get()->clone();
+      if(clonedIns->instruction)
+        for (auto &arg : clonedIns->instruction->named_args)
+          arg->expNode->propagateVarToExp(callerMap);
       compositeInstrs.insert(pos, std::move(clonedIns));
     }
   }
@@ -100,7 +107,7 @@ bool functionInling(const unique_ptr<ModuleNode> &moduleNode) {
   auto &funDefs = moduleNode->funDefs;
   for (auto &blockNode : moduleNode->blocks)
     for (auto &typedInstrSet : blockNode->typedInstrSets)
-      if (!functionInling(funDefs, typedInstrSet->instrSet->instructions,
+      if (!functionInling(funDefs, typedInstrSet->instrSet,
                           typedInstrSet->type))
         return false;
   funDefs.clear();
