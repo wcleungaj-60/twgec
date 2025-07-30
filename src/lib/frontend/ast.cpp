@@ -24,21 +24,13 @@ void BoolValueNode::print() { std::cout << (value ? "true" : "false"); };
 
 void VariableValueNode::print() { std::cout << value; };
 
-void OperationPlusNode::print() { std::cout << "+"; };
-
-void OperationEqualNode::print() { std::cout << "=="; };
-
-void OperationNoOpNode::print() { std::cout << ""; };
-
 void ExpressionNode::print() {
   if (isValue) {
     value->print();
   } else {
     std::cout << "(";
     lhs->print();
-    std::cout << " ";
-    op->print();
-    std::cout << " ";
+    std::cout << " " << op << " ";
     rhs->print();
     std::cout << ")";
   }
@@ -179,34 +171,12 @@ std::unique_ptr<ValueNode> VariableValueNode::clone() {
   return std::make_unique<VariableValueNode>(value, loc);
 };
 
-std::unique_ptr<OperationNode> OperationNode::clone() {
-  if (auto *plusNode = dynamic_cast<OperationPlusNode *>(this))
-    return plusNode->clone();
-  if (auto *equalNode = dynamic_cast<OperationEqualNode *>(this))
-    return equalNode->clone();
-  std::cerr << "Compiler Implementation Error: Unsupported cloning . Found at "
-            << loc << "\n";
-  return nullptr;
-}
-
-std::unique_ptr<OperationNode> OperationPlusNode::clone() {
-  return std::make_unique<OperationPlusNode>(loc);
-}
-
-std::unique_ptr<OperationNode> OperationEqualNode::clone() {
-  return std::make_unique<OperationEqualNode>(loc);
-}
-
-std::unique_ptr<OperationNode> OperationNoOpNode::clone() {
-  return std::make_unique<OperationNoOpNode>(loc);
-}
-
 std::unique_ptr<ExpressionNode> ExpressionNode::clone() {
   if (isValue)
     return std::make_unique<ExpressionNode>(value->clone(), loc);
   else
-    return std::make_unique<ExpressionNode>(lhs->clone(), op->clone(),
-                                            rhs->clone(), loc);
+    return std::make_unique<ExpressionNode>(lhs->clone(), op, rhs->clone(),
+                                            loc);
 };
 
 std::unique_ptr<NamedArgNode> NamedArgNode::clone() {
@@ -290,9 +260,9 @@ bool BranchNode::propagateExp(
 bool InstructionNode::propagateExp(
     std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
   bool ret = true;
-  for(auto& namedArg: named_args)
+  for (auto &namedArg : named_args)
     ret &= namedArg->propagateExp(varExpMap);
-  for(auto& positionalArg: positional_args)
+  for (auto &positionalArg : positional_args)
     ret &= positionalArg->propagateExp(varExpMap);
   return ret;
 }
@@ -322,7 +292,7 @@ bool ExpressionNode::propagateExp(
         isValue = false;
         lhs = constExp->lhs->clone();
         rhs = constExp->rhs->clone();
-        op = constExp->op->clone();
+        op = constExp->op;
       }
     }
   } else {
@@ -358,20 +328,16 @@ bool BranchNode::foldValue() {
 
 bool InstructionNode::foldValue() {
   bool ret = true;
-  for(auto& namedArg: named_args)
+  for (auto &namedArg : named_args)
     ret &= namedArg->foldValue();
-  for(auto& positionalArg: positional_args)
+  for (auto &positionalArg : positional_args)
     ret &= positionalArg->foldValue();
   return ret;
 }
 
-bool NamedArgNode::foldValue() {
-  return expNode->foldValue();
-}
+bool NamedArgNode::foldValue() { return expNode->foldValue(); }
 
-bool PositionalArgNode::foldValue() {
-  return expNode->foldValue();
-}
+bool PositionalArgNode::foldValue() { return expNode->foldValue(); }
 
 bool ExpressionNode::foldValue() {
   if (isValue)
@@ -380,16 +346,16 @@ bool ExpressionNode::foldValue() {
     return false;
   if (!rhs->foldValue() || !rhs->isValue)
     return false;
-  auto plusOp = dynamic_cast<OperationPlusNode *>(op.get());
-  auto equalOp = dynamic_cast<OperationEqualNode *>(op.get());
+  auto isPlus = op == EXP_OP_TYPE_PLUS;
+  auto isEqual = op == EXP_OP_TYPE_EQUAL;
   auto lhsStr = dynamic_cast<StringValueNode *>(lhs->value.get());
   auto rhsStr = dynamic_cast<StringValueNode *>(rhs->value.get());
   bool isFolded = false;
-  if (plusOp && lhsStr && rhsStr) {
+  if (isPlus && lhsStr && rhsStr) {
     value = std::make_unique<StringValueNode>(lhsStr->value + rhsStr->value,
                                               lhsStr->loc);
     isFolded = true;
-  } else if (equalOp && lhsStr && rhsStr) {
+  } else if (isEqual && lhsStr && rhsStr) {
     value = std::make_unique<BoolValueNode>(lhsStr->value == rhsStr->value,
                                             lhsStr->loc);
     isFolded = true;

@@ -325,31 +325,61 @@ bool Parser::parseInstructionArgs(std::unique_ptr<InstructionNode> &actionNode,
  */
 
 std::unique_ptr<ExpressionNode> Parser::parseExp() {
-  Location lhsLoc = tokens.front().location;
-  std::unique_ptr<ValueNode> lhsValue = parseValue();
-  if (!lhsValue)
-    return nullptr;
-  std::unique_ptr<ExpressionNode> lhsExp =
-      std::make_unique<ExpressionNode>(std::move(lhsValue), lhsLoc);
-  auto operation = parseOperation();
-  if (!operation)
-    return lhsExp;
-  Location rhsLoc = tokens.front().location;
-  std::unique_ptr<ExpressionNode> rhsExp = parseExp();
-  if (!rhsExp)
-    return nullptr;
-  return std::make_unique<ExpressionNode>(
-      std::move(lhsExp), std::move(operation), std::move(rhsExp), lhsExp->loc);
+  return parseExpLogicalOr();
 }
 
-std::unique_ptr<OperationNode> Parser::parseOperation() {
-  Location loc = tokens.front().location;
-  if (tokens.front().type == TokenType::PLUS) {
-    consume(TokenType::PLUS);
-    return std::make_unique<OperationPlusNode>(loc);
-  } else if (tokens.front().type == TokenType::EQUAL) {
-    consume(TokenType::EQUAL);
-    return std::make_unique<OperationEqualNode>(loc);
+std::unique_ptr<ExpressionNode> Parser::parseExpLogicalOr() {
+  return parseExpLogicalAnd();
+}
+
+std::unique_ptr<ExpressionNode> Parser::parseExpLogicalAnd() {
+  return parseExpEquality();
+}
+
+std::unique_ptr<ExpressionNode> Parser::parseExpEquality() {
+  auto lhsExp = parseExpRelational();
+  if (!lhsExp)
+    return nullptr;
+  if (!consume(TokenType::EQUAL, /* errorThrowing */ false))
+    return lhsExp;
+  auto rhsExp = parseExpEquality();
+  if (!rhsExp)
+    return nullptr;
+  return std::make_unique<ExpressionNode>(std::move(lhsExp), EXP_OP_TYPE_EQUAL,
+                                          std::move(rhsExp), lhsExp->loc);
+}
+
+std::unique_ptr<ExpressionNode> Parser::parseExpRelational() {
+  return parseExpAdditive();
+}
+
+std::unique_ptr<ExpressionNode> Parser::parseExpAdditive() {
+  auto lhsExp = parseExpMultiplicative();
+  if (!lhsExp)
+    return nullptr;
+  if (!consume(TokenType::PLUS, /* errorThrowing */ false))
+    return lhsExp;
+  auto rhsExp = parseExpAdditive();
+  if (!rhsExp)
+    return nullptr;
+  return std::make_unique<ExpressionNode>(std::move(lhsExp), EXP_OP_TYPE_PLUS,
+                                          std::move(rhsExp), lhsExp->loc);
+}
+
+std::unique_ptr<ExpressionNode> Parser::parseExpMultiplicative() {
+  return parseExpPrimivite();
+}
+
+std::unique_ptr<ExpressionNode> Parser::parseExpPrimivite() {
+  if (tokens.front().type == TokenType::OPENPAR) {
+    if (!consume(TokenType::OPENPAR))
+      return nullptr;
+    auto expNode = parseExpLogicalOr();
+    if (!consume(TokenType::OPENPAR))
+      return expNode;
+  } else if (auto valueNode = parseValue()) {
+    return std::make_unique<ExpressionNode>(std::move(valueNode),
+                                            (valueNode->loc));
   }
   return nullptr;
 }

@@ -25,10 +25,6 @@ class NamedArgNode;
 class PositionalArgNode;
 // Expression level
 class ExpressionNode;
-class OperationNode;
-class OperationEqualNode;
-class OperationNoOpNode;
-class OperationPlusNode;
 class ValueNode;
 class BoolValueNode;
 class IntValueNode;
@@ -58,6 +54,27 @@ inline std::ostream &operator<<(std::ostream &os, FunDefType type) {
     break;
   default:
     os << "invalid";
+    break;
+  }
+  return os;
+}
+
+enum ExpOpType {
+  EXP_OP_TYPE_VOID,
+  EXP_OP_TYPE_PLUS,
+  EXP_OP_TYPE_EQUAL,
+};
+
+inline std::ostream &operator<<(std::ostream &os, ExpOpType type) {
+  switch (type) {
+  case EXP_OP_TYPE_PLUS:
+    os << "+";
+    break;
+  case EXP_OP_TYPE_EQUAL:
+    os << "==";
+    break;
+  default:
+    os << "";
     break;
   }
   return os;
@@ -389,67 +406,23 @@ public:
   std::unique_ptr<ValueNode> clone();
 };
 
-class OperationNode {
-public:
-  // Variable
-  Location loc;
-
-  // Constructor
-  OperationNode(Location loc) : loc(loc) {}
-
-  // Function
-  virtual void print() {}
-  virtual std::unique_ptr<OperationNode> clone();
-};
-
-class OperationEqualNode : public OperationNode {
-public:
-  // Constructor
-  OperationEqualNode(Location loc) : OperationNode(loc) {}
-
-  // Function
-  void print();
-  std::unique_ptr<OperationNode> clone();
-};
-
-class OperationNoOpNode : public OperationNode {
-public:
-  // Constructor
-  OperationNoOpNode(Location loc) : OperationNode(loc) {}
-
-  // Function
-  void print();
-  std::unique_ptr<OperationNode> clone();
-};
-
-class OperationPlusNode : public OperationNode {
-public:
-  // Constructor
-  OperationPlusNode(Location loc) : OperationNode(loc) {}
-
-  // Function
-  void print();
-  std::unique_ptr<OperationNode> clone();
-};
-
 class ExpressionNode {
 public:
   // Variable
   bool isValue;
   std::unique_ptr<ValueNode> value;
   std::unique_ptr<ExpressionNode> lhs;
-  std::unique_ptr<OperationNode> op;
+  ExpOpType op;
   std::unique_ptr<ExpressionNode> rhs;
   Location loc;
 
   // Constructor
   ExpressionNode(std::unique_ptr<ValueNode> value, Location loc)
-      : value(std::move(value)), op(std::make_unique<OperationNoOpNode>(loc)),
-        loc(loc), isValue(true) {}
-  ExpressionNode(std::unique_ptr<ExpressionNode> lhs,
-                 std::unique_ptr<OperationNode> op,
+      : value(std::move(value)), op(EXP_OP_TYPE_VOID), loc(loc), isValue(true) {
+  }
+  ExpressionNode(std::unique_ptr<ExpressionNode> lhs, ExpOpType op,
                  std::unique_ptr<ExpressionNode> rhs, Location loc)
-      : lhs(std::move(lhs)), op(std::move(op)), rhs(std::move(rhs)), loc(loc),
+      : lhs(std::move(lhs)), op(op), rhs(std::move(rhs)), loc(loc),
         isValue(false) {}
 
   // Function

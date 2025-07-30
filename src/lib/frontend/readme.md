@@ -47,13 +47,19 @@ InstructionNode := IdentifierToken [DotToken IdentifierToken]* ParamAppsNode
                   [ExpNode [CommaToken PositionalParamAppsNode]?]
   - NamedParamAppsNode = IdentifierToken AssignToken ExpNode [CommaToken NamedParamAppsNode]?
 // Expression
-ExpNode = ValueNode [OperationNode ExpNode]?
-- OperationNode = PlusToken
-- ValueNode := StringValueNode | IntValueNode | BoolValueNode | VariableValueNode
-  - StringValueNode := StringToken
-  - IntValueNode := IntToken
-  - BoolValueNode := TrueToken | FalseToken
-  - VariableValueNode := IdentifierToken
-  - PointValueNode := OpenParToken IntToken CommaToken IntToken CloseParToken
-  - ListValueNode := OpenSqrToken [ExpNode [CommaToken ExpNode]*]? CloseSqrToken
+ExpNode = LogicalOrExpNode
+- LogicalOrExpNode = LogicalAndExpNode [ OrToken LogicalAndExpNode ]*
+- LogicalAndExpNode = EqualityExpNode [ AndToken EqualityExpNode ]*
+- EqualityExpNode = RelationalExpNode [ [ EqualToken | NotEqualToken] RelationalExpNode ]*
+- RelationalExpNode = AdditiveExpNode [ [LessThanToken | GreaterThanToken | LessThanEqualToken | GreaterThanEqualToken] AdditiveExpNode ]*
+- AdditiveExpNode = MultiplicativeExpNode [ [AddToken | SubToken] MultiplicativeExpNode ]*
+- MultiplicativeExpNode = PrimaryExpNode [ [MulToken | DivToken | ModToken] PrimaryExpNode ]*
+- PrimaryExpNode = ValueNode | [OpenParToken ExpNode CloseParToken]
+ValueNode := StringValueNode | IntValueNode | BoolValueNode | VariableValueNode
+- StringValueNode := StringToken
+- IntValueNode := IntToken
+- BoolValueNode := TrueToken | FalseToken
+- VariableValueNode := IdentifierToken
+- PointValueNode := OpenParToken IntToken CommaToken IntToken CloseParToken
+- ListValueNode := OpenSqrToken [ExpNode [CommaToken ExpNode]*]? CloseSqrToken
 ```

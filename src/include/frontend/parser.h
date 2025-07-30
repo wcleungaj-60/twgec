@@ -22,9 +22,15 @@ private:
   std::unique_ptr<InstructionNode> parseInstruction();
   bool parseInstructionArgs(std::unique_ptr<InstructionNode> &,
                             bool foundNamed = false);
-  std::unique_ptr<ValueNode> parseValue();
-  std::unique_ptr<OperationNode> parseOperation();
   std::unique_ptr<ExpressionNode> parseExp();
+  std::unique_ptr<ExpressionNode> parseExpLogicalOr();
+  std::unique_ptr<ExpressionNode> parseExpLogicalAnd();
+  std::unique_ptr<ExpressionNode> parseExpEquality();
+  std::unique_ptr<ExpressionNode> parseExpRelational();
+  std::unique_ptr<ExpressionNode> parseExpAdditive();
+  std::unique_ptr<ExpressionNode> parseExpMultiplicative();
+  std::unique_ptr<ExpressionNode> parseExpPrimivite();
+  std::unique_ptr<ValueNode> parseValue();
 
 public:
   Parser(const std::vector<Token> &inputTokens);
