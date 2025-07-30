@@ -28,6 +28,10 @@ def addJobMapSign(x, y, rotation, text, buttonCodeSuffix) : actions {
 def chooseJob(jobName) : actions {
     setObjectVar(object = "instance", key = "job", type = "string", value = jobName);
     actorTalk(actorId = "instance", text = "已選擇職業：{instance.job}");
+    if(jobName == "新兵訓練師"){
+        // setInt("royalHp", "{royalHp} + 10"); // function calling a function is not supported
+        setGlobal(key = "royalHp", type = "integer", value = "{royalHp} + 10");
+    }
 }
 
 block init {
@@ -91,7 +95,6 @@ block chooseJobR2 {
     }
     actions {
         chooseJob("新兵訓練師");
-        setInt("royalHp", "{royalHp} + 10");
     }
 }
 

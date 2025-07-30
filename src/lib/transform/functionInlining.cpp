@@ -60,41 +60,34 @@ bool functionInling(
   auto &compositeInstrs = instrSet->instructions;
   // Step 1: Get the function caller index
   for (int idx = 0; idx < compositeInstrs.size(); idx++) {
-    std::unique_ptr<InstructionNode> &caller =
-        compositeInstrs[idx]->instruction;
-    if (!caller) {
-      if (!functionInling(funDefMap,
-                          compositeInstrs[idx]->ifStatement->trueBlock,
-                          expectedType))
+    if (auto &primitiveInstr = compositeInstrs[idx]->instruction) {
+      if (funDefMap.count(primitiveInstr->identifier) == 0)
+        continue;
+      if (!isValidFuncCaller(primitiveInstr, funDefMap, expectedType))
         return false;
-      continue;
+      funCallerIdxes.push_back(idx);
+    } else if (auto &ifStatement = compositeInstrs[idx]->ifStatement) {
+      if (!functionInling(funDefMap, ifStatement->trueBlock, expectedType))
+        return false;
     }
-    string callerName = caller->identifier;
-    if (funDefMap.count(callerName) == 0)
-      continue;
-    FunDefNode *funDef = funDefMap[callerName].get();
-    if (!isValidFuncCaller(caller, funDefMap, expectedType))
-      return false;
-    funCallerIdxes.push_back(idx);
   }
   std::reverse(funCallerIdxes.begin(), funCallerIdxes.end());
   // Step 2: Inline the function
   for (int idx : funCallerIdxes) {
-    std::map<std::string, unique_ptr<ExpressionNode>> callerMap;
+    std::map<std::string, unique_ptr<ExpressionNode>> callerParamMap;
     auto &callerInstr = compositeInstrs[idx]->instruction;
     auto pos = compositeInstrs.begin() + idx;
     auto funDefNode = funDefMap[callerInstr->identifier]->clone();
     for (auto &arg : callerInstr->named_args)
-      callerMap.insert({arg->key, std::move(arg->expNode)});
+      callerParamMap.insert({arg->key, std::move(arg->expNode)});
     compositeInstrs.erase(pos);
-    auto clonedRootInstrSet =
+    auto clonedFunRootInstrSet =
         funDefNode.get()->typedInstrSet.get()->instrSet->clone();
-    clonedRootInstrSet->propagateExp(callerMap);
-    for (auto it = clonedRootInstrSet->instructions.rbegin();
-         it != clonedRootInstrSet->instructions.rend(); ++it) {
-      std::unique_ptr<CompositeInstrNode> clonedIns = it->get()->clone();
-      compositeInstrs.insert(pos, std::move(clonedIns));
-    }
+    clonedFunRootInstrSet->propagateExp(callerParamMap);
+    compositeInstrs.insert(
+        pos,
+        std::make_move_iterator(clonedFunRootInstrSet->instructions.begin()),
+        std::make_move_iterator(clonedFunRootInstrSet->instructions.end()));
   }
   return true;
 }
