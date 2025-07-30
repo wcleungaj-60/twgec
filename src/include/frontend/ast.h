@@ -8,252 +8,36 @@
 #include <string>
 #include <vector>
 
+// Global level
+class ModuleNode;
+class MetadataNode;
+class FunDefNode;
+class ConstDefNode;
+class BlockNode;
+// Instruction Set level
+class TypedInstrSetNode;
 class InstrSetNode;
+class CompositeInstrNode;
+class BranchNode;
+// Instruction level
+class InstructionNode;
+class NamedArgNode;
+class PositionalArgNode;
+// Expression level
+class ExpressionNode;
+class OperationNode;
+class OperationEqualNode;
+class OperationNoOpNode;
+class OperationPlusNode;
+class ValueNode;
+class BoolValueNode;
+class IntValueNode;
+class ListValueNode;
+class PointValueNode;
+class StringValueNode;
+class VariableValueNode;
 
-class ValueNode {
-public:
-  // Variable
-  Location loc;
-
-  // Constructor
-  ValueNode(Location loc) : loc(loc) {}
-
-  // Function
-  virtual void print() {}
-  virtual std::unique_ptr<ValueNode> clone();
-};
-
-class ListValueNode : public ValueNode {
-public:
-  // Variable
-  std::vector<std::unique_ptr<ValueNode>> items = {};
-
-  // Constructor
-  ListValueNode(Location loc) : ValueNode(loc) {}
-
-  // Function
-  void print();
-  std::unique_ptr<ValueNode> clone();
-};
-
-class PointValueNode : public ValueNode {
-public:
-  // Variable
-  int x;
-  int y;
-
-  // Constructor
-  PointValueNode(int x, int y, Location loc) : ValueNode(loc), x(x), y(y) {}
-
-  // Function
-  void print();
-  std::unique_ptr<ValueNode> clone();
-};
-
-class StringValueNode : public ValueNode {
-public:
-  // Variable
-  std::string value;
-
-  // Constructor
-  StringValueNode(std::string value, Location loc)
-      : ValueNode(loc), value(value) {}
-
-  // Function
-  void print();
-  std::unique_ptr<ValueNode> clone();
-};
-
-class IntValueNode : public ValueNode {
-public:
-  // Variable
-  int value;
-
-  // Constructor
-  IntValueNode(int value, Location loc) : ValueNode(loc), value(value) {}
-
-  // Function
-  void print();
-  std::unique_ptr<ValueNode> clone();
-};
-
-class BoolValueNode : public ValueNode {
-public:
-  // Variable
-  bool value;
-
-  // Constructor
-  BoolValueNode(bool value, Location loc) : ValueNode(loc), value(value) {}
-
-  // Function
-  void print();
-  std::unique_ptr<ValueNode> clone();
-};
-
-class VariableValueNode : public ValueNode {
-public:
-  // Variable
-  std::string value;
-
-  // Constructor
-  VariableValueNode(std::string value, Location loc)
-      : ValueNode(loc), value(value) {}
-
-  // Function
-  void print();
-  std::unique_ptr<ValueNode> clone();
-};
-
-class OperationNode {
-public:
-  // Variable
-  Location loc;
-
-  // Constructor
-  OperationNode(Location loc) : loc(loc) {}
-
-  // Function
-  virtual void print() {}
-  virtual std::unique_ptr<OperationNode> clone();
-};
-
-class OperationPlusNode : public OperationNode {
-public:
-  // Constructor
-  OperationPlusNode(Location loc) : OperationNode(loc) {}
-
-  // Function
-  void print();
-  std::unique_ptr<OperationNode> clone();
-};
-
-class OperationEqualNode : public OperationNode {
-public:
-  // Constructor
-  OperationEqualNode(Location loc) : OperationNode(loc) {}
-
-  // Function
-  void print();
-  std::unique_ptr<OperationNode> clone();
-};
-
-class OperationNoOpNode : public OperationNode {
-public:
-  // Constructor
-  OperationNoOpNode(Location loc) : OperationNode(loc) {}
-
-  // Function
-  void print();
-  std::unique_ptr<OperationNode> clone();
-};
-
-class ExpressionNode {
-public:
-  // Variable
-  bool isValue;
-  std::unique_ptr<ValueNode> value;
-  std::unique_ptr<ExpressionNode> lhs;
-  std::unique_ptr<OperationNode> op;
-  std::unique_ptr<ExpressionNode> rhs;
-  Location loc;
-
-  // Constructor
-  ExpressionNode(std::unique_ptr<ValueNode> value, Location loc)
-      : value(std::move(value)), op(std::make_unique<OperationNoOpNode>(loc)),
-        loc(loc), isValue(true) {}
-  ExpressionNode(std::unique_ptr<ExpressionNode> lhs,
-                 std::unique_ptr<OperationNode> op,
-                 std::unique_ptr<ExpressionNode> rhs, Location loc)
-      : lhs(std::move(lhs)), op(std::move(op)), rhs(std::move(rhs)), loc(loc),
-        isValue(false) {}
-
-  // Function
-  void print();
-  std::unique_ptr<ExpressionNode> clone();
-  bool
-  propagateVarToExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
-  bool foldValue();
-};
-
-class MetadataNode {
-public:
-  // Variable
-  Location loc;
-  std::string key;
-  std::unique_ptr<ExpressionNode> expNode;
-
-  // Constructor
-  MetadataNode(const std::string &key, std::unique_ptr<ExpressionNode> &expNode,
-               Location loc)
-      : key(key), expNode(std::move(expNode)), loc(loc) {}
-
-  // Function
-  void print(int indent = 0);
-};
-
-class ConstDefNode {
-public:
-  // Variable
-  Location loc;
-  std::string key;
-  std::unique_ptr<ExpressionNode> expNode;
-
-  // Constructor
-  ConstDefNode(const std::string &key, std::unique_ptr<ExpressionNode> &expNode,
-               Location loc)
-      : key(key), expNode(std::move(expNode)), loc(loc) {}
-
-  // Function
-  void print(int indent = 0);
-};
-
-class PositionalArgNode {
-public:
-  // Variable
-  Location loc;
-  std::unique_ptr<ExpressionNode> expNode;
-
-  // Constructor
-  PositionalArgNode(std::unique_ptr<ExpressionNode> &expNode, Location loc)
-      : expNode(std::move(expNode)), loc(loc) {}
-
-  // Function
-  std::unique_ptr<PositionalArgNode> clone();
-};
-
-class NamedArgNode {
-public:
-  // Variable
-  Location loc;
-  std::string key;
-  std::unique_ptr<ExpressionNode> expNode;
-
-  // Constructor
-  NamedArgNode(const std::string &key, std::unique_ptr<ExpressionNode> &expNode,
-               Location loc)
-      : key(key), expNode(std::move(expNode)), loc(loc) {}
-
-  // Function
-  std::unique_ptr<NamedArgNode> clone();
-};
-
-class InstructionNode {
-public:
-  // Variable
-  Location loc;
-  std::string identifier;
-  std::vector<std::unique_ptr<PositionalArgNode>> positional_args;
-  std::vector<std::unique_ptr<NamedArgNode>> named_args;
-
-  // Constructor
-  InstructionNode(std::string identifier, Location loc)
-      : identifier(identifier), loc(loc) {}
-
-  // Function
-  void print(int indent = 0);
-  std::unique_ptr<InstructionNode> clone();
-};
-
+//------------ Enumeration definition ------------//
 enum FunDefType {
   FUN_DEF_TYPE_INVALID,
   FUN_DEF_TYPE_ACTIONS,
@@ -279,74 +63,37 @@ inline std::ostream &operator<<(std::ostream &os, FunDefType type) {
   return os;
 }
 
-class BranchNode {
+//------------ Global level definition ------------//
+class ModuleNode {
 public:
   // Variable
   Location loc;
-  std::unique_ptr<ExpressionNode> condition;
-  std::unique_ptr<InstrSetNode> trueBlock;
+  std::vector<std::unique_ptr<MetadataNode>> metadatas;
+  std::vector<std::unique_ptr<BlockNode>> blocks;
+  std::map<std::string, std::unique_ptr<FunDefNode>> funDefs;
+  std::vector<std::unique_ptr<ConstDefNode>> constDefs;
 
   // Constructor
-  BranchNode(std::unique_ptr<ExpressionNode> condition,
-             std::unique_ptr<InstrSetNode> trueBlock, Location loc)
-      : condition(std::move(condition)), trueBlock(std::move(trueBlock)),
-        loc(loc) {}
+  ModuleNode(Location loc) : loc(loc) {}
 
   // Function
-  void print(int indent = 0);
-  std::unique_ptr<BranchNode> clone();
+  void print(std::string title, int indent = 0);
 };
 
-class CompositeInstrNode {
+class MetadataNode {
 public:
   // Variable
   Location loc;
-  std::unique_ptr<InstructionNode> instruction;
-  std::unique_ptr<BranchNode> ifStatement;
+  std::string key;
+  std::unique_ptr<ExpressionNode> expNode;
 
   // Constructor
-  CompositeInstrNode(Location loc) : loc(loc) {}
-  CompositeInstrNode(Location loc, std::unique_ptr<InstructionNode> instruction)
-      : loc(loc), instruction(std::move(instruction)) {}
-  CompositeInstrNode(Location loc, std::unique_ptr<BranchNode> ifStatement)
-      : loc(loc), ifStatement(std::move(ifStatement)) {}
+  MetadataNode(const std::string &key, std::unique_ptr<ExpressionNode> &expNode,
+               Location loc)
+      : key(key), expNode(std::move(expNode)), loc(loc) {}
 
   // Function
   void print(int indent = 0);
-  std::unique_ptr<CompositeInstrNode> clone();
-};
-
-class InstrSetNode {
-public:
-  // Variable
-  Location loc;
-  std::vector<std::unique_ptr<CompositeInstrNode>> instructions;
-
-  // Constructor
-  InstrSetNode(Location loc) : loc(loc) {}
-
-  // Function
-  void print(int indent = 0);
-  std::unique_ptr<InstrSetNode> clone();
-};
-
-class TypedInstrSetNode {
-public:
-  // Variable
-  Location loc;
-  FunDefType type;
-  std::unique_ptr<InstrSetNode> instrSet;
-
-  // Constructor
-  TypedInstrSetNode(Location loc, FunDefType type = FUN_DEF_TYPE_INVALID)
-      : loc(loc), type(type), instrSet(std::make_unique<InstrSetNode>(loc)) {}
-  TypedInstrSetNode(Location loc, FunDefType type,
-                    std::unique_ptr<InstrSetNode> instrSet)
-      : loc(loc), type(type), instrSet(std::move(instrSet)) {}
-
-  // Function
-  void print(int indent = 0);
-  std::unique_ptr<TypedInstrSetNode> clone();
 };
 
 class FunDefNode {
@@ -400,20 +147,316 @@ private:
   int triggersIdx = -1;
 };
 
-class ModuleNode {
+class ConstDefNode {
 public:
   // Variable
   Location loc;
-  std::vector<std::unique_ptr<MetadataNode>> metadatas;
-  std::vector<std::unique_ptr<BlockNode>> blocks;
-  std::map<std::string, std::unique_ptr<FunDefNode>> funDefs;
-  std::vector<std::unique_ptr<ConstDefNode>> constDefs;
+  std::string key;
+  std::unique_ptr<ExpressionNode> expNode;
 
   // Constructor
-  ModuleNode(Location loc) : loc(loc) {}
+  ConstDefNode(const std::string &key, std::unique_ptr<ExpressionNode> &expNode,
+               Location loc)
+      : key(key), expNode(std::move(expNode)), loc(loc) {}
 
   // Function
-  void print(std::string title, int indent = 0);
+  void print(int indent = 0);
+};
+
+//------------ Instruction Set level definition ------------//
+class TypedInstrSetNode {
+public:
+  // Variable
+  Location loc;
+  FunDefType type;
+  std::unique_ptr<InstrSetNode> instrSet;
+
+  // Constructor
+  TypedInstrSetNode(Location loc, FunDefType type = FUN_DEF_TYPE_INVALID)
+      : loc(loc), type(type), instrSet(std::make_unique<InstrSetNode>(loc)) {}
+  TypedInstrSetNode(Location loc, FunDefType type,
+                    std::unique_ptr<InstrSetNode> instrSet)
+      : loc(loc), type(type), instrSet(std::move(instrSet)) {}
+
+  // Function
+  void print(int indent = 0);
+  std::unique_ptr<TypedInstrSetNode> clone();
+};
+
+class InstrSetNode {
+public:
+  // Variable
+  Location loc;
+  std::vector<std::unique_ptr<CompositeInstrNode>> instructions;
+
+  // Constructor
+  InstrSetNode(Location loc) : loc(loc) {}
+
+  // Function
+  void print(int indent = 0);
+  std::unique_ptr<InstrSetNode> clone();
+  bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
+  bool foldValue();
+};
+
+class CompositeInstrNode {
+public:
+  // Variable
+  Location loc;
+  std::unique_ptr<InstructionNode> instruction;
+  std::unique_ptr<BranchNode> ifStatement;
+
+  // Constructor
+  CompositeInstrNode(Location loc) : loc(loc) {}
+  CompositeInstrNode(Location loc, std::unique_ptr<InstructionNode> instruction)
+      : loc(loc), instruction(std::move(instruction)) {}
+  CompositeInstrNode(Location loc, std::unique_ptr<BranchNode> ifStatement)
+      : loc(loc), ifStatement(std::move(ifStatement)) {}
+
+  // Function
+  void print(int indent = 0);
+  std::unique_ptr<CompositeInstrNode> clone();
+  bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
+  bool foldValue();
+};
+
+class BranchNode {
+public:
+  // Variable
+  Location loc;
+  std::unique_ptr<ExpressionNode> condition;
+  std::unique_ptr<InstrSetNode> trueBlock;
+
+  // Constructor
+  BranchNode(std::unique_ptr<ExpressionNode> condition,
+             std::unique_ptr<InstrSetNode> trueBlock, Location loc)
+      : condition(std::move(condition)), trueBlock(std::move(trueBlock)),
+        loc(loc) {}
+
+  // Function
+  void print(int indent = 0);
+  std::unique_ptr<BranchNode> clone();
+  bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
+  bool foldValue();
+};
+
+//------------ Instruction level definition ------------//
+class InstructionNode {
+public:
+  // Variable
+  Location loc;
+  std::string identifier;
+  std::vector<std::unique_ptr<PositionalArgNode>> positional_args;
+  std::vector<std::unique_ptr<NamedArgNode>> named_args;
+
+  // Constructor
+  InstructionNode(std::string identifier, Location loc)
+      : identifier(identifier), loc(loc) {}
+
+  // Function
+  void print(int indent = 0);
+  std::unique_ptr<InstructionNode> clone();
+  bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
+  bool foldValue();
+};
+
+class NamedArgNode {
+public:
+  // Variable
+  Location loc;
+  std::string key;
+  std::unique_ptr<ExpressionNode> expNode;
+
+  // Constructor
+  NamedArgNode(const std::string &key, std::unique_ptr<ExpressionNode> &expNode,
+               Location loc)
+      : key(key), expNode(std::move(expNode)), loc(loc) {}
+
+  // Function
+  std::unique_ptr<NamedArgNode> clone();
+  bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
+  bool foldValue();
+};
+
+class PositionalArgNode {
+public:
+  // Variable
+  Location loc;
+  std::unique_ptr<ExpressionNode> expNode;
+
+  // Constructor
+  PositionalArgNode(std::unique_ptr<ExpressionNode> &expNode, Location loc)
+      : expNode(std::move(expNode)), loc(loc) {}
+
+  // Function
+  std::unique_ptr<PositionalArgNode> clone();
+  bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
+  bool foldValue();
+};
+
+//------------ Expression level definition ------------//
+class ValueNode {
+public:
+  // Variable
+  Location loc;
+
+  // Constructor
+  ValueNode(Location loc) : loc(loc) {}
+
+  // Function
+  virtual void print() {}
+  virtual std::unique_ptr<ValueNode> clone();
+};
+
+class BoolValueNode : public ValueNode {
+public:
+  // Variable
+  bool value;
+
+  // Constructor
+  BoolValueNode(bool value, Location loc) : ValueNode(loc), value(value) {}
+
+  // Function
+  void print();
+  std::unique_ptr<ValueNode> clone();
+};
+
+class IntValueNode : public ValueNode {
+public:
+  // Variable
+  int value;
+
+  // Constructor
+  IntValueNode(int value, Location loc) : ValueNode(loc), value(value) {}
+
+  // Function
+  void print();
+  std::unique_ptr<ValueNode> clone();
+};
+
+class ListValueNode : public ValueNode {
+public:
+  // Variable
+  std::vector<std::unique_ptr<ValueNode>> items = {};
+
+  // Constructor
+  ListValueNode(Location loc) : ValueNode(loc) {}
+
+  // Function
+  void print();
+  std::unique_ptr<ValueNode> clone();
+};
+
+class PointValueNode : public ValueNode {
+public:
+  // Variable
+  int x;
+  int y;
+
+  // Constructor
+  PointValueNode(int x, int y, Location loc) : ValueNode(loc), x(x), y(y) {}
+
+  // Function
+  void print();
+  std::unique_ptr<ValueNode> clone();
+};
+
+class StringValueNode : public ValueNode {
+public:
+  // Variable
+  std::string value;
+
+  // Constructor
+  StringValueNode(std::string value, Location loc)
+      : ValueNode(loc), value(value) {}
+
+  // Function
+  void print();
+  std::unique_ptr<ValueNode> clone();
+};
+
+class VariableValueNode : public ValueNode {
+public:
+  // Variable
+  std::string value;
+
+  // Constructor
+  VariableValueNode(std::string value, Location loc)
+      : ValueNode(loc), value(value) {}
+
+  // Function
+  void print();
+  std::unique_ptr<ValueNode> clone();
+};
+
+class OperationNode {
+public:
+  // Variable
+  Location loc;
+
+  // Constructor
+  OperationNode(Location loc) : loc(loc) {}
+
+  // Function
+  virtual void print() {}
+  virtual std::unique_ptr<OperationNode> clone();
+};
+
+class OperationEqualNode : public OperationNode {
+public:
+  // Constructor
+  OperationEqualNode(Location loc) : OperationNode(loc) {}
+
+  // Function
+  void print();
+  std::unique_ptr<OperationNode> clone();
+};
+
+class OperationNoOpNode : public OperationNode {
+public:
+  // Constructor
+  OperationNoOpNode(Location loc) : OperationNode(loc) {}
+
+  // Function
+  void print();
+  std::unique_ptr<OperationNode> clone();
+};
+
+class OperationPlusNode : public OperationNode {
+public:
+  // Constructor
+  OperationPlusNode(Location loc) : OperationNode(loc) {}
+
+  // Function
+  void print();
+  std::unique_ptr<OperationNode> clone();
+};
+
+class ExpressionNode {
+public:
+  // Variable
+  bool isValue;
+  std::unique_ptr<ValueNode> value;
+  std::unique_ptr<ExpressionNode> lhs;
+  std::unique_ptr<OperationNode> op;
+  std::unique_ptr<ExpressionNode> rhs;
+  Location loc;
+
+  // Constructor
+  ExpressionNode(std::unique_ptr<ValueNode> value, Location loc)
+      : value(std::move(value)), op(std::make_unique<OperationNoOpNode>(loc)),
+        loc(loc), isValue(true) {}
+  ExpressionNode(std::unique_ptr<ExpressionNode> lhs,
+                 std::unique_ptr<OperationNode> op,
+                 std::unique_ptr<ExpressionNode> rhs, Location loc)
+      : lhs(std::move(lhs)), op(std::move(op)), rhs(std::move(rhs)), loc(loc),
+        isValue(false) {}
+
+  // Function
+  void print();
+  std::unique_ptr<ExpressionNode> clone();
+  bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
+  bool foldValue();
 };
 
 #endif

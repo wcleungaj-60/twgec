@@ -87,16 +87,12 @@ bool functionInling(
     for (auto &arg : callerInstr->named_args)
       callerMap.insert({arg->key, std::move(arg->expNode)});
     compositeInstrs.erase(pos);
-    for (auto it = funDefNode.get()
-                       ->typedInstrSet.get()
-                       ->instrSet->instructions.rbegin();
-         it !=
-         funDefNode.get()->typedInstrSet.get()->instrSet->instructions.rend();
-         ++it) {
+    auto clonedRootInstrSet =
+        funDefNode.get()->typedInstrSet.get()->instrSet->clone();
+    clonedRootInstrSet->propagateExp(callerMap);
+    for (auto it = clonedRootInstrSet->instructions.rbegin();
+         it != clonedRootInstrSet->instructions.rend(); ++it) {
       std::unique_ptr<CompositeInstrNode> clonedIns = it->get()->clone();
-      if(clonedIns->instruction)
-        for (auto &arg : clonedIns->instruction->named_args)
-          arg->expNode->propagateVarToExp(callerMap);
       compositeInstrs.insert(pos, std::move(clonedIns));
     }
   }

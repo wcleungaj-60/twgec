@@ -229,13 +229,14 @@ std::unique_ptr<InstructionNode> InstructionNode::clone() {
 }
 
 std::unique_ptr<BranchNode> BranchNode::clone() {
-  return std::make_unique<BranchNode>(condition->clone(), trueBlock->clone(), loc);
+  return std::make_unique<BranchNode>(condition->clone(), trueBlock->clone(),
+                                      loc);
 }
 
 std::unique_ptr<CompositeInstrNode> CompositeInstrNode::clone() {
-  if(instruction)
+  if (instruction)
     return std::make_unique<CompositeInstrNode>(loc, instruction->clone());
-  else if(ifStatement)
+  else if (ifStatement)
     return std::make_unique<CompositeInstrNode>(loc, ifStatement->clone());
   return nullptr;
 }
@@ -259,9 +260,54 @@ std::unique_ptr<FunDefNode> FunDefNode::clone() {
   return newNode;
 }
 
-//------------ others ------------//
+//------------ propagateExp ------------//
 
-bool ExpressionNode::propagateVarToExp(
+bool InstrSetNode::propagateExp(
+    std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
+  bool ret = true;
+  for (auto &compositeInstr : instructions)
+    ret &= compositeInstr->propagateExp(varExpMap);
+  return ret;
+}
+
+bool CompositeInstrNode::propagateExp(
+    std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
+  if (instruction)
+    return instruction->propagateExp(varExpMap);
+  if (ifStatement)
+    return ifStatement->propagateExp(varExpMap);
+  return true;
+}
+
+bool BranchNode::propagateExp(
+    std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
+  bool ret = true;
+  ret &= trueBlock->propagateExp(varExpMap);
+  ret &= condition->propagateExp(varExpMap);
+  return ret;
+}
+
+bool InstructionNode::propagateExp(
+    std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
+  bool ret = true;
+  for(auto& namedArg: named_args)
+    ret &= namedArg->propagateExp(varExpMap);
+  for(auto& positionalArg: positional_args)
+    ret &= positionalArg->propagateExp(varExpMap);
+  return ret;
+}
+
+bool NamedArgNode::propagateExp(
+    std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
+  return expNode->propagateExp(varExpMap);
+}
+
+bool PositionalArgNode::propagateExp(
+    std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
+  return expNode->propagateExp(varExpMap);
+}
+
+bool ExpressionNode::propagateExp(
     std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
   bool ret = true;
   if (isValue) {
@@ -280,10 +326,51 @@ bool ExpressionNode::propagateVarToExp(
       }
     }
   } else {
-    ret &= lhs->propagateVarToExp(varExpMap);
-    ret &= rhs->propagateVarToExp(varExpMap);
+    ret &= lhs->propagateExp(varExpMap);
+    ret &= rhs->propagateExp(varExpMap);
   }
   return ret;
+}
+
+//------------ foldValue ------------//
+
+bool InstrSetNode::foldValue() {
+  bool ret = true;
+  for (auto &compositeInstr : instructions)
+    ret &= compositeInstr->foldValue();
+  return ret;
+}
+
+bool CompositeInstrNode::foldValue() {
+  if (instruction)
+    return instruction->foldValue();
+  if (ifStatement)
+    return ifStatement->foldValue();
+  return true;
+}
+
+bool BranchNode::foldValue() {
+  bool ret = true;
+  ret &= trueBlock->foldValue();
+  ret &= condition->foldValue();
+  return ret;
+}
+
+bool InstructionNode::foldValue() {
+  bool ret = true;
+  for(auto& namedArg: named_args)
+    ret &= namedArg->foldValue();
+  for(auto& positionalArg: positional_args)
+    ret &= positionalArg->foldValue();
+  return ret;
+}
+
+bool NamedArgNode::foldValue() {
+  return expNode->foldValue();
+}
+
+bool PositionalArgNode::foldValue() {
+  return expNode->foldValue();
 }
 
 bool ExpressionNode::foldValue() {
@@ -304,7 +391,7 @@ bool ExpressionNode::foldValue() {
     isFolded = true;
   } else if (equalOp && lhsStr && rhsStr) {
     value = std::make_unique<BoolValueNode>(lhsStr->value == rhsStr->value,
-                                              lhsStr->loc);
+                                            lhsStr->loc);
     isFolded = true;
   }
   if (isFolded) {
