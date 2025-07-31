@@ -198,7 +198,7 @@
         <mxCell id="GNe4mvPUVCvpiyLvqnW--55" value="ValueNode" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
           <mxGeometry x="-390" y="430" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="GNe4mvPUVCvpiyLvqnW--58" value="PlusNode" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+        <mxCell id="GNe4mvPUVCvpiyLvqnW--58" value="AddNode" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
           <mxGeometry x="-550" y="320" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="GNe4mvPUVCvpiyLvqnW--60" value="IntNode" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">

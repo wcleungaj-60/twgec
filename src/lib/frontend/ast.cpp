@@ -4,42 +4,8 @@
 
 //------------ print ------------//
 
-void ListValueNode::print() {
-  std::cout << "[";
-  for (auto i = 0; i < items.size(); i++) {
-    items[i]->print();
-    if (i != items.size() - 1)
-      std::cout << ",";
-  }
-  std::cout << "]";
-};
-
-void PointValueNode::print() { std::cout << "(" << x << "," << y << ")"; };
-
-void StringValueNode::print() { std::cout << "\"" << value << "\""; };
-
-void IntValueNode::print() { std::cout << value; };
-
-void BoolValueNode::print() { std::cout << (value ? "true" : "false"); };
-
-void VariableValueNode::print() { std::cout << value; };
-
-void ExpressionNode::print() {
-  if (isValue) {
-    value->print();
-  } else {
-    std::cout << "(";
-    lhs->print();
-    std::cout << " " << op << " ";
-    rhs->print();
-    std::cout << ")";
-  }
-};
-
 void BranchNode::print(int indent) {
-  std::cout << inden(indent) << "if(";
-  condition->print();
-  std::cout << ") {\n";
+  std::cout << inden(indent) << "if(" << *condition << ") {\n";
   trueBlock->print(indent + 4);
   std::cout << inden(indent) << "}\n";
 }
@@ -77,15 +43,12 @@ void ModuleNode::print(std::string title, int indent) {
 }
 
 void MetadataNode::print(int indent) {
-  std::cout << inden(indent) << "MetadataNode: " << key << " = ";
-  expNode->print();
-  std::cout << "\n";
+  std::cout << inden(indent) << "MetadataNode: " << key << " = " << *expNode
+            << "\n";
 }
 
 void ConstDefNode::print(int indent) {
-  std::cout << inden(indent) << "const " << key << " = ";
-  expNode->print();
-  std::cout << "\n";
+  std::cout << inden(indent) << "const " << key << " = " << *expNode << "\n";
 }
 
 void BlockNode::print(int indent) {
@@ -113,13 +76,13 @@ void FunDefNode::print(int indent) {
 void InstructionNode::print(int indent) {
   std::cout << inden(indent) << identifier << "(";
   for (int i = 0; i < positional_args.size(); i++) {
-    positional_args[i]->expNode->print();
+    std::cout << *positional_args[i]->expNode;
     if (i != positional_args.size() - 1 || !named_args.empty())
       std::cout << ", ";
   }
   for (int i = 0; i < named_args.size(); i++) {
     std::cout << named_args[i].get()->key << " = ";
-    named_args[i]->expNode->print();
+    std::cout << *named_args[i]->expNode;
     if (i != named_args.size() - 1)
       std::cout << ", ";
   }
@@ -346,19 +309,104 @@ bool ExpressionNode::foldValue() {
     return false;
   if (!rhs->foldValue() || !rhs->isValue)
     return false;
-  auto isPlus = op == EXP_OP_TYPE_PLUS;
+  auto isAnd = op == EXP_OP_TYPE_AND;
+  auto isOr = op == EXP_OP_TYPE_OR;
   auto isEqual = op == EXP_OP_TYPE_EQUAL;
+  auto isNotEqual = op == EXP_OP_TYPE_NOT_EQUAL;
+  auto isLessThan = op == EXP_OP_TYPE_LESS_THAN;
+  auto isLessThanEqual = op == EXP_OP_TYPE_LESS_THAN_EQUAL;
+  auto isGreaterThan = op == EXP_OP_TYPE_GREATER_THAN;
+  auto isGreaterThanEqual = op == EXP_OP_TYPE_GREATER_THAN_EQUAL;
+  auto isAdd = op == EXP_OP_TYPE_ADD;
+  auto isSub = op == EXP_OP_TYPE_SUB;
+  auto isMul = op == EXP_OP_TYPE_MUL;
+  auto isDiv = op == EXP_OP_TYPE_DIV;
+  auto isMod = op == EXP_OP_TYPE_MOD;
   auto lhsStr = dynamic_cast<StringValueNode *>(lhs->value.get());
   auto rhsStr = dynamic_cast<StringValueNode *>(rhs->value.get());
+  auto lhsInt = dynamic_cast<IntValueNode *>(lhs->value.get());
+  auto rhsInt = dynamic_cast<IntValueNode *>(rhs->value.get());
+  auto lhsBool = dynamic_cast<BoolValueNode *>(lhs->value.get());
+  auto rhsBool = dynamic_cast<BoolValueNode *>(rhs->value.get());
   bool isFolded = false;
-  if (isPlus && lhsStr && rhsStr) {
-    value = std::make_unique<StringValueNode>(lhsStr->value + rhsStr->value,
+  if (lhsStr && rhsStr) {
+    if (isAdd) {
+      value = std::make_unique<StringValueNode>(lhsStr->value + rhsStr->value,
+                                                lhsStr->loc);
+      isFolded = true;
+    } else if (isEqual) {
+      value = std::make_unique<BoolValueNode>(lhsStr->value == rhsStr->value,
                                               lhsStr->loc);
-    isFolded = true;
-  } else if (isEqual && lhsStr && rhsStr) {
-    value = std::make_unique<BoolValueNode>(lhsStr->value == rhsStr->value,
-                                            lhsStr->loc);
-    isFolded = true;
+      isFolded = true;
+    } else if (isNotEqual) {
+      value = std::make_unique<BoolValueNode>(lhsStr->value != rhsStr->value,
+                                              lhsStr->loc);
+      isFolded = true;
+    }
+  } else if (lhsInt && rhsInt) {
+    if (isAdd) {
+      value = std::make_unique<IntValueNode>(lhsInt->value + rhsInt->value,
+                                             lhsInt->loc);
+      isFolded = true;
+    } else if (isSub) {
+      value = std::make_unique<IntValueNode>(lhsInt->value - rhsInt->value,
+                                             lhsInt->loc);
+      isFolded = true;
+    } else if (isMul) {
+      value = std::make_unique<IntValueNode>(lhsInt->value * rhsInt->value,
+                                             lhsInt->loc);
+      isFolded = true;
+    } else if (isDiv) {
+      value = std::make_unique<IntValueNode>(lhsInt->value / rhsInt->value,
+                                             lhsInt->loc);
+      isFolded = true;
+    } else if (isMod) {
+      value = std::make_unique<IntValueNode>(lhsInt->value % rhsInt->value,
+                                             lhsInt->loc);
+      isFolded = true;
+    } else if (isEqual) {
+      value = std::make_unique<BoolValueNode>(lhsInt->value == rhsInt->value,
+                                              lhsInt->loc);
+      isFolded = true;
+    } else if (isNotEqual) {
+      value = std::make_unique<BoolValueNode>(lhsInt->value != rhsInt->value,
+                                              lhsInt->loc);
+      isFolded = true;
+    } else if (isLessThan) {
+      value = std::make_unique<BoolValueNode>(lhsInt->value < rhsInt->value,
+                                              lhsInt->loc);
+      isFolded = true;
+    } else if (isLessThanEqual) {
+      value = std::make_unique<BoolValueNode>(lhsInt->value <= rhsInt->value,
+                                              lhsInt->loc);
+      isFolded = true;
+    } else if (isGreaterThan) {
+      value = std::make_unique<BoolValueNode>(lhsInt->value > rhsInt->value,
+                                              lhsInt->loc);
+      isFolded = true;
+    } else if (isGreaterThanEqual) {
+      value = std::make_unique<BoolValueNode>(lhsInt->value >= rhsInt->value,
+                                              lhsInt->loc);
+      isFolded = true;
+    }
+  } else if (lhsBool && rhsBool) {
+    if (isEqual) {
+      value = std::make_unique<BoolValueNode>(lhsBool->value == rhsBool->value,
+                                              lhsBool->loc);
+      isFolded = true;
+    } else if (isNotEqual) {
+      value = std::make_unique<BoolValueNode>(lhsBool->value != rhsBool->value,
+                                              lhsBool->loc);
+      isFolded = true;
+    } else if (isAnd) {
+      value = std::make_unique<BoolValueNode>(lhsBool->value && rhsBool->value,
+                                              lhsBool->loc);
+      isFolded = true;
+    } else if (isOr) {
+      value = std::make_unique<BoolValueNode>(lhsBool->value || rhsBool->value,
+                                              lhsBool->loc);
+      isFolded = true;
+    }
   }
   if (isFolded) {
     isValue = true;
@@ -366,4 +414,60 @@ bool ExpressionNode::foldValue() {
     rhs = nullptr;
   }
   return isFolded;
+}
+
+//------------ hasUnresolvedValue ------------//
+
+bool InstrSetNode::hasUnresolvedValue() {
+  bool ret = false;
+  for (auto &compositeInstr : instructions)
+    ret |= compositeInstr->hasUnresolvedValue();
+  return ret;
+}
+
+bool CompositeInstrNode::hasUnresolvedValue() {
+  if (instruction)
+    return instruction->hasUnresolvedValue();
+  if (ifStatement)
+    return ifStatement->hasUnresolvedValue();
+  return true;
+}
+
+bool BranchNode::hasUnresolvedValue() {
+  bool ret = false;
+  ret |= trueBlock->hasUnresolvedValue();
+  ret |= condition->hasUnresolvedValue();
+  return ret;
+}
+
+bool InstructionNode::hasUnresolvedValue() {
+  bool ret = false;
+  for (auto &namedArg : named_args)
+    ret |= namedArg->hasUnresolvedValue();
+  for (auto &positionalArg : positional_args)
+    ret |= positionalArg->hasUnresolvedValue();
+  return ret;
+}
+
+bool NamedArgNode::hasUnresolvedValue() {
+  return expNode->hasUnresolvedValue();
+}
+
+bool PositionalArgNode::hasUnresolvedValue() {
+  return expNode->hasUnresolvedValue();
+}
+
+bool ExpressionNode::hasUnresolvedValue() {
+  if (isValue) {
+    if (auto varNode = dynamic_cast<VariableValueNode *>(value.get())) {
+      std::cerr << "Compilation Error: Found unresolvable variable `"
+                << varNode->value << "` at " << varNode->loc << "\n";
+      return true;
+    }
+    return false;
+  } else {
+    std::cerr << "Compilation Error: Found unresolvable expression `" << *this
+              << "` at " << loc << "\n";
+    return true;
+  }
 }

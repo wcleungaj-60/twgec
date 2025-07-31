@@ -26,19 +26,30 @@ enum class TokenType {
   CONST,    // const
   IF,       // if
   /* Speical Character */
-  OPENCUR,   // {
-  CLOSECUR,  // }
-  OPENPAR,   // (
-  CLOSEPAR,  // )
-  OPENSQR,   // [
-  CLOSESQR,  // ]
-  ASSIGN,    // =
-  EQUAL,     // ==
-  SEMICOLON, // ;
-  COLON,     // :
-  DOT,       // .
-  COMMA,     // ,
-  PLUS,      // +
+  OPENCUR,            // {
+  CLOSECUR,           // }
+  OPENPAR,            // (
+  CLOSEPAR,           // )
+  OPENSQR,            // [
+  CLOSESQR,           // ]
+  ASSIGN,             // =
+  SEMICOLON,          // ;
+  COLON,              // :
+  DOT,                // .
+  COMMA,              // ,
+  AND,                // &&
+  OR,                 // ||
+  EQUAL,              // ==
+  NOT_EQUAL,          // !=
+  LESS_THAN,          // <
+  LESS_THAN_EQUAL,    // <=
+  GREATER_THAN,       // >
+  GREATER_THAN_EQUAL, // >=
+  ADD,                // +
+  SUB,                // -
+  MUL,                // *
+  DIV,                // /
+  MOD,                // %
   /* Others */
   INT,
   STRING,
@@ -68,12 +79,23 @@ inline std::ostream &operator<<(std::ostream &os, const TokenType &type) {
     LEXER_TOKEN_TYPE_PRINT(TokenType::OPENSQR, "\'[\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::CLOSESQR, "\']\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::ASSIGN, "\'=\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::EQUAL, "\'==\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::SEMICOLON, "\';\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::COLON, "\':\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::DOT, "\'.\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::COMMA, "\',\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::PLUS, "\'+\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::AND, "\'&&\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::OR, "\'||\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::EQUAL, "\'==\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::NOT_EQUAL, "\'!=\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::LESS_THAN, "\'<\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::LESS_THAN_EQUAL, "\'<=\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::GREATER_THAN, "\'>\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::GREATER_THAN_EQUAL, "\'>=\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::ADD, "\'+\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::SUB, "\'-\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::MUL, "\'*\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::DIV, "\'/\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::MOD, "\'%\'");
     // Otherwise
     LEXER_TOKEN_TYPE_PRINT(TokenType::INT, "int");
     LEXER_TOKEN_TYPE_PRINT(TokenType::STRING, "string");
@@ -115,12 +137,23 @@ struct Token {
       LEXER_TOKEN_PRINT(TokenType::OPENSQR, "[");
       LEXER_TOKEN_PRINT(TokenType::CLOSESQR, "]");
       LEXER_TOKEN_PRINT(TokenType::ASSIGN, "=");
-      LEXER_TOKEN_PRINT(TokenType::EQUAL, "==");
       LEXER_TOKEN_PRINT(TokenType::SEMICOLON, ";");
       LEXER_TOKEN_PRINT(TokenType::COLON, ":");
       LEXER_TOKEN_PRINT(TokenType::DOT, ".");
       LEXER_TOKEN_PRINT(TokenType::COMMA, ",");
-      LEXER_TOKEN_PRINT(TokenType::PLUS, "+");
+      LEXER_TOKEN_TYPE_PRINT(TokenType::AND, "&&");
+      LEXER_TOKEN_TYPE_PRINT(TokenType::OR, "||");
+      LEXER_TOKEN_TYPE_PRINT(TokenType::EQUAL, "==");
+      LEXER_TOKEN_TYPE_PRINT(TokenType::NOT_EQUAL, "!=");
+      LEXER_TOKEN_TYPE_PRINT(TokenType::LESS_THAN, "<");
+      LEXER_TOKEN_TYPE_PRINT(TokenType::LESS_THAN_EQUAL, "<=");
+      LEXER_TOKEN_TYPE_PRINT(TokenType::GREATER_THAN, ">");
+      LEXER_TOKEN_TYPE_PRINT(TokenType::GREATER_THAN_EQUAL, ">=");
+      LEXER_TOKEN_TYPE_PRINT(TokenType::ADD, "+");
+      LEXER_TOKEN_TYPE_PRINT(TokenType::SUB, "-");
+      LEXER_TOKEN_TYPE_PRINT(TokenType::MUL, "*");
+      LEXER_TOKEN_TYPE_PRINT(TokenType::DIV, "/");
+      LEXER_TOKEN_TYPE_PRINT(TokenType::MOD, "%");
       // Otherwise
       LEXER_TOKEN_PRINT(TokenType::INT, "int@" + token.value);
       LEXER_TOKEN_PRINT(TokenType::STRING, "string@" + token.value);

@@ -71,14 +71,65 @@ Token Lexer::nextToken() {
     case '"':
       return stringToken();
     case '=':
-      if(input[pos + 1] == '='){
-      Lexer::column+=2;
-      pos+=2;
-      return Token(TokenType::EQUAL, Lexer::line, Lexer::column - 2, "==");
-      }else {
-      Lexer::column++;
-      pos++;
-      return Token(TokenType::ASSIGN, Lexer::line, Lexer::column - 1, "=");
+      if (input[pos + 1] == '=') {
+        Lexer::column += 2;
+        pos += 2;
+        return Token(TokenType::EQUAL, Lexer::line, Lexer::column - 2, "==");
+      } else {
+        Lexer::column++;
+        pos++;
+        return Token(TokenType::ASSIGN, Lexer::line, Lexer::column - 1, "=");
+      }
+    case '>':
+      if (input[pos + 1] == '=') {
+        Lexer::column += 2;
+        pos += 2;
+        return Token(TokenType::GREATER_THAN_EQUAL, Lexer::line,
+                     Lexer::column - 2, ">=");
+      } else {
+        Lexer::column++;
+        pos++;
+        return Token(TokenType::GREATER_THAN, Lexer::line, Lexer::column - 1,
+                     ">");
+      }
+    case '<':
+      if (input[pos + 1] == '=') {
+        Lexer::column += 2;
+        pos += 2;
+        return Token(TokenType::LESS_THAN_EQUAL, Lexer::line, Lexer::column - 2,
+                     "<=");
+      } else {
+        Lexer::column++;
+        pos++;
+        return Token(TokenType::LESS_THAN, Lexer::line, Lexer::column - 1, "<");
+      }
+    case '!':
+      if (input[pos + 1] == '=') {
+        Lexer::column += 2;
+        pos += 2;
+        return Token(TokenType::NOT_EQUAL, Lexer::line, Lexer::column - 2,
+                     "!=");
+      } else {
+        return Token(TokenType::UNKNOWN, Lexer::line, Lexer::column++,
+                     std::string(1, input[pos++]));
+      }
+    case '&':
+      if (input[pos + 1] == '&') {
+        Lexer::column += 2;
+        pos += 2;
+        return Token(TokenType::AND, Lexer::line, Lexer::column - 2, "&&");
+      } else {
+        return Token(TokenType::UNKNOWN, Lexer::line, Lexer::column++,
+                     std::string(1, input[pos++]));
+      }
+    case '|':
+      if (input[pos + 1] == '|') {
+        Lexer::column += 2;
+        pos += 2;
+        return Token(TokenType::OR, Lexer::line, Lexer::column - 2, "||");
+      } else {
+        return Token(TokenType::UNKNOWN, Lexer::line, Lexer::column++,
+                     std::string(1, input[pos++]));
       }
     case '{':
       Lexer::column++;
@@ -123,11 +174,29 @@ Token Lexer::nextToken() {
     case '+':
       Lexer::column++;
       pos++;
-      return Token(TokenType::PLUS, Lexer::line, Lexer::column - 1, "+");
+      return Token(TokenType::ADD, Lexer::line, Lexer::column - 1, "+");
+    case '-':
+      Lexer::column++;
+      pos++;
+      return Token(TokenType::SUB, Lexer::line, Lexer::column - 1, "-");
+    case '*':
+      Lexer::column++;
+      pos++;
+      return Token(TokenType::MUL, Lexer::line, Lexer::column - 1, "*");
+    case '/':
+      if (input[pos + 1] == '/') {
+        return commentToken();
+      } else {
+        Lexer::column++;
+        pos++;
+        return Token(TokenType::DIV, Lexer::line, Lexer::column - 1, "/");
+      }
+    case '%':
+      Lexer::column++;
+      pos++;
+      return Token(TokenType::MOD, Lexer::line, Lexer::column - 1, "%");
     case '_':
       return metadataToken();
-    case '/':
-      return commentToken();
     default:
       if (std::isdigit(current))
         return integerToken();
@@ -146,12 +215,10 @@ Token Lexer::nextToken() {
                                      TokenType::CHECKS);
       LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::triggers,
                                      TokenType::TRIGGERS);
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::def,
-                                     TokenType::DEF);
+      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::def, TokenType::DEF);
       LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_const,
                                      TokenType::CONST);
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_if,
-                                     TokenType::IF);
+      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_if, TokenType::IF);
       return identifierToken();
     }
   }

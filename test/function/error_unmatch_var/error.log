@@ -1,2 +1,2 @@
-Codegen Error: Cannot find the definition of variable `camp2` at 2:34. Please define it as a constant value or function's param.
-Codegen Error: Cannot find the definition of variable `camp2` at 3:34. Please define it as a constant value or function's param.
+Compilation Error: Found unresolvable variable `camp2` at 2:34
+Compilation Error: Found unresolvable variable `camp2` at 3:34

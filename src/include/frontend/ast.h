@@ -41,44 +41,22 @@ enum FunDefType {
   FUN_DEF_TYPE_TRIGGERS,
 };
 
-inline std::ostream &operator<<(std::ostream &os, FunDefType type) {
-  switch (type) {
-  case FUN_DEF_TYPE_ACTIONS:
-    os << "actions";
-    break;
-  case FUN_DEF_TYPE_CHECKS:
-    os << "checks";
-    break;
-  case FUN_DEF_TYPE_TRIGGERS:
-    os << "triggers";
-    break;
-  default:
-    os << "invalid";
-    break;
-  }
-  return os;
-}
-
 enum ExpOpType {
   EXP_OP_TYPE_VOID,
-  EXP_OP_TYPE_PLUS,
+  EXP_OP_TYPE_AND,
+  EXP_OP_TYPE_OR,
   EXP_OP_TYPE_EQUAL,
+  EXP_OP_TYPE_NOT_EQUAL,
+  EXP_OP_TYPE_LESS_THAN,
+  EXP_OP_TYPE_LESS_THAN_EQUAL,
+  EXP_OP_TYPE_GREATER_THAN,
+  EXP_OP_TYPE_GREATER_THAN_EQUAL,
+  EXP_OP_TYPE_ADD,
+  EXP_OP_TYPE_SUB,
+  EXP_OP_TYPE_MUL,
+  EXP_OP_TYPE_DIV,
+  EXP_OP_TYPE_MOD,
 };
-
-inline std::ostream &operator<<(std::ostream &os, ExpOpType type) {
-  switch (type) {
-  case EXP_OP_TYPE_PLUS:
-    os << "+";
-    break;
-  case EXP_OP_TYPE_EQUAL:
-    os << "==";
-    break;
-  default:
-    os << "";
-    break;
-  }
-  return os;
-}
 
 //------------ Global level definition ------------//
 class ModuleNode {
@@ -214,6 +192,7 @@ public:
   std::unique_ptr<InstrSetNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
+  bool hasUnresolvedValue();
 };
 
 class CompositeInstrNode {
@@ -235,6 +214,7 @@ public:
   std::unique_ptr<CompositeInstrNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
+  bool hasUnresolvedValue();
 };
 
 class BranchNode {
@@ -255,6 +235,7 @@ public:
   std::unique_ptr<BranchNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
+  bool hasUnresolvedValue();
 };
 
 //------------ Instruction level definition ------------//
@@ -275,6 +256,7 @@ public:
   std::unique_ptr<InstructionNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
+  bool hasUnresolvedValue();
 };
 
 class NamedArgNode {
@@ -293,6 +275,7 @@ public:
   std::unique_ptr<NamedArgNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
+  bool hasUnresolvedValue();
 };
 
 class PositionalArgNode {
@@ -309,6 +292,7 @@ public:
   std::unique_ptr<PositionalArgNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
+  bool hasUnresolvedValue();
 };
 
 //------------ Expression level definition ------------//
@@ -321,7 +305,6 @@ public:
   ValueNode(Location loc) : loc(loc) {}
 
   // Function
-  virtual void print() {}
   virtual std::unique_ptr<ValueNode> clone();
 };
 
@@ -334,7 +317,6 @@ public:
   BoolValueNode(bool value, Location loc) : ValueNode(loc), value(value) {}
 
   // Function
-  void print();
   std::unique_ptr<ValueNode> clone();
 };
 
@@ -347,7 +329,6 @@ public:
   IntValueNode(int value, Location loc) : ValueNode(loc), value(value) {}
 
   // Function
-  void print();
   std::unique_ptr<ValueNode> clone();
 };
 
@@ -360,7 +341,6 @@ public:
   ListValueNode(Location loc) : ValueNode(loc) {}
 
   // Function
-  void print();
   std::unique_ptr<ValueNode> clone();
 };
 
@@ -374,7 +354,6 @@ public:
   PointValueNode(int x, int y, Location loc) : ValueNode(loc), x(x), y(y) {}
 
   // Function
-  void print();
   std::unique_ptr<ValueNode> clone();
 };
 
@@ -388,7 +367,6 @@ public:
       : ValueNode(loc), value(value) {}
 
   // Function
-  void print();
   std::unique_ptr<ValueNode> clone();
 };
 
@@ -402,7 +380,6 @@ public:
       : ValueNode(loc), value(value) {}
 
   // Function
-  void print();
   std::unique_ptr<ValueNode> clone();
 };
 
@@ -426,10 +403,112 @@ public:
         isValue(false) {}
 
   // Function
-  void print();
   std::unique_ptr<ExpressionNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
+  bool hasUnresolvedValue();
 };
+
+//------------ operator<< ------------//
+inline std::ostream &operator<<(std::ostream &os, FunDefType type) {
+  switch (type) {
+  case FUN_DEF_TYPE_ACTIONS:
+    os << "actions";
+    break;
+  case FUN_DEF_TYPE_CHECKS:
+    os << "checks";
+    break;
+  case FUN_DEF_TYPE_TRIGGERS:
+    os << "triggers";
+    break;
+  default:
+    os << "invalid";
+    break;
+  }
+  return os;
+}
+
+inline std::ostream &operator<<(std::ostream &os, ExpOpType type) {
+  switch (type) {
+  case EXP_OP_TYPE_AND:
+    os << "&&";
+    break;
+  case EXP_OP_TYPE_OR:
+    os << "||";
+    break;
+  case EXP_OP_TYPE_EQUAL:
+    os << "==";
+    break;
+  case EXP_OP_TYPE_NOT_EQUAL:
+    os << "!=";
+    break;
+  case EXP_OP_TYPE_LESS_THAN:
+    os << "<";
+    break;
+  case EXP_OP_TYPE_LESS_THAN_EQUAL:
+    os << "<=";
+    break;
+  case EXP_OP_TYPE_GREATER_THAN:
+    os << ">";
+    break;
+  case EXP_OP_TYPE_GREATER_THAN_EQUAL:
+    os << ">=";
+    break;
+  case EXP_OP_TYPE_ADD:
+    os << "+";
+    break;
+  case EXP_OP_TYPE_SUB:
+    os << "-";
+    break;
+  case EXP_OP_TYPE_MUL:
+    os << "*";
+    break;
+  case EXP_OP_TYPE_DIV:
+    os << "/";
+    break;
+  case EXP_OP_TYPE_MOD:
+    os << "%";
+    break;
+  default:
+    os << "";
+    break;
+  }
+  return os;
+}
+
+inline std::ostream &operator<<(std::ostream &os,
+                                std::unique_ptr<ValueNode> valueNode) {
+  if (auto stringNode = dynamic_cast<StringValueNode *>(valueNode.get())) {
+    os << "\"" << stringNode->value << "\"";
+  } else if (auto intNode = dynamic_cast<IntValueNode *>(valueNode.get())) {
+    os << intNode->value;
+  } else if (auto boolNode = dynamic_cast<BoolValueNode *>(valueNode.get())) {
+    os << (boolNode->value ? "true" : "false");
+  } else if (auto varNode = dynamic_cast<VariableValueNode *>(valueNode.get())) {
+    os << varNode->value;
+  } else if (auto ptNode = dynamic_cast<PointValueNode *>(valueNode.get())) {
+    os << "(" << ptNode->x << "," << ptNode->y << ")";
+  } else if (auto listNode = dynamic_cast<ListValueNode *>(valueNode.get())) {
+    os << "[";
+    for (auto i = 0; i < listNode->items.size(); i++) {
+      os << listNode->items[i]->clone();
+      if (i != listNode->items.size() - 1)
+        os << ",";
+    }
+    os << "]";
+  }
+  return os;
+}
+
+inline std::ostream &operator<<(std::ostream &os,
+                                const ExpressionNode &expNode) {
+  if (expNode.isValue) {
+    os << expNode.value->clone();
+  } else {
+    os << "(" << *expNode.lhs.get() << " " << expNode.op << " "
+       << *expNode.rhs.get() << ")";
+  }
+  return os;
+}
 
 #endif

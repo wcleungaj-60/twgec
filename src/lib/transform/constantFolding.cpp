@@ -8,13 +8,16 @@ using std::unique_ptr;
 
 bool constantFolding(const unique_ptr<ModuleNode> &moduleNode) {
   std::map<std::string, std::unique_ptr<ExpressionNode>> constDefMap;
+  bool ret = true;
   for (auto &constDef : moduleNode->constDefs)
     constDefMap.insert({constDef->key, constDef->expNode->clone()});
   for (auto &blockNode : moduleNode->blocks)
     for (auto &typedInstrSet : blockNode->typedInstrSets) {
       typedInstrSet->instrSet->propagateExp(constDefMap);
       typedInstrSet->instrSet->foldValue();
+      if(typedInstrSet->instrSet->hasUnresolvedValue())
+        ret = false;
     }
-  return true;
+  return ret;
 }
 } // namespace transform

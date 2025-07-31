@@ -1,0 +1,28 @@
+__schema__ = "https://code.gamelet.com/gassets/schema/events/v1";
+__title__ = "我的任務";
+__map__ = "CG.TWEventsGameTemplate/gamemap.twmap";
+
+def testInt(v) : actions {
+    actorTalk(duration = v);
+}
+
+def testBool(v) : actions {
+    actorTalk(cleanTalk = v);
+}
+
+block init {
+    actions {
+        testInt(2 + 3 + 5 + 7);
+        testInt(2 + 3 + 5 * 7);
+        testInt(2 + 3 * 5 + 7);
+        testInt(2 + 3 * 5 * 7);
+        testInt(2 * 3 + 5 + 7);
+        testInt(2 * 3 + 5 * 7);
+        testInt(2 * 3 * 5 + 7);
+        testInt(2 * 3 * 5 * 7);
+        testBool(2 > 3 && 5 < 7);
+        testBool(2 <= 3 || 5 >= 7);
+        testBool("23" != "57");
+        testBool("23" == "57");
+    }
+}

@@ -1,0 +1,3 @@
+Compilation Error: Found unresolvable expression `(1 + "string")` at 6:26
+Compilation Error: Found unresolvable expression `(3 * true)` at 6:26
+Compilation Error: Found unresolvable variable `tmp` at 13:21

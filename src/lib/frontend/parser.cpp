@@ -1,4 +1,5 @@
 #include "frontend/parser.h"
+#include "ast.h"
 #include <queue>
 #include <vector>
 
@@ -329,45 +330,107 @@ std::unique_ptr<ExpressionNode> Parser::parseExp() {
 }
 
 std::unique_ptr<ExpressionNode> Parser::parseExpLogicalOr() {
-  return parseExpLogicalAnd();
+  auto lhsExp = parseExpLogicalAnd();
+  if (!lhsExp)
+    return nullptr;
+  if (!consume(TokenType::AND, /* errorThrowing */ false))
+    return lhsExp;
+  auto rhsExp = parseExpLogicalOr();
+  if (!rhsExp)
+    return nullptr;
+  return std::make_unique<ExpressionNode>(std::move(lhsExp), EXP_OP_TYPE_AND,
+                                          std::move(rhsExp), lhsExp->loc);
 }
 
 std::unique_ptr<ExpressionNode> Parser::parseExpLogicalAnd() {
-  return parseExpEquality();
+  auto lhsExp = parseExpEquality();
+  if (!lhsExp)
+    return nullptr;
+  if (!consume(TokenType::OR, /* errorThrowing */ false))
+    return lhsExp;
+  auto rhsExp = parseExpLogicalAnd();
+  if (!rhsExp)
+    return nullptr;
+  return std::make_unique<ExpressionNode>(std::move(lhsExp), EXP_OP_TYPE_OR,
+                                          std::move(rhsExp), lhsExp->loc);
 }
 
 std::unique_ptr<ExpressionNode> Parser::parseExpEquality() {
   auto lhsExp = parseExpRelational();
   if (!lhsExp)
     return nullptr;
-  if (!consume(TokenType::EQUAL, /* errorThrowing */ false))
+  ExpOpType op = EXP_OP_TYPE_VOID;
+  if (consume(TokenType::EQUAL, /* errorThrowing */ false))
+    op = EXP_OP_TYPE_EQUAL;
+  else if (consume(TokenType::NOT_EQUAL, /* errorThrowing */ false))
+    op = EXP_OP_TYPE_NOT_EQUAL;
+  else
     return lhsExp;
   auto rhsExp = parseExpEquality();
   if (!rhsExp)
     return nullptr;
-  return std::make_unique<ExpressionNode>(std::move(lhsExp), EXP_OP_TYPE_EQUAL,
+  return std::make_unique<ExpressionNode>(std::move(lhsExp), op,
                                           std::move(rhsExp), lhsExp->loc);
 }
 
 std::unique_ptr<ExpressionNode> Parser::parseExpRelational() {
-  return parseExpAdditive();
+  auto lhsExp = parseExpAdditive();
+  if (!lhsExp)
+    return nullptr;
+  ExpOpType op = EXP_OP_TYPE_VOID;
+  if (consume(TokenType::LESS_THAN, /* errorThrowing */ false))
+    op = EXP_OP_TYPE_LESS_THAN;
+  else if (consume(TokenType::LESS_THAN_EQUAL, /* errorThrowing */ false))
+    op = EXP_OP_TYPE_LESS_THAN_EQUAL;
+  else if (consume(TokenType::GREATER_THAN, /* errorThrowing */ false))
+    op = EXP_OP_TYPE_GREATER_THAN;
+  else if (consume(TokenType::GREATER_THAN_EQUAL, /* errorThrowing */ false))
+    op = EXP_OP_TYPE_GREATER_THAN_EQUAL;
+  else
+    return lhsExp;
+  auto rhsExp = parseExpRelational();
+  if (!rhsExp)
+    return nullptr;
+  return std::make_unique<ExpressionNode>(std::move(lhsExp), op,
+                                          std::move(rhsExp), lhsExp->loc);
 }
 
 std::unique_ptr<ExpressionNode> Parser::parseExpAdditive() {
   auto lhsExp = parseExpMultiplicative();
   if (!lhsExp)
     return nullptr;
-  if (!consume(TokenType::PLUS, /* errorThrowing */ false))
+  ExpOpType op = EXP_OP_TYPE_VOID;
+  if (consume(TokenType::ADD, /* errorThrowing */ false))
+    op = EXP_OP_TYPE_ADD;
+  else if (consume(TokenType::SUB, /* errorThrowing */ false))
+    op = EXP_OP_TYPE_SUB;
+  else
     return lhsExp;
   auto rhsExp = parseExpAdditive();
   if (!rhsExp)
     return nullptr;
-  return std::make_unique<ExpressionNode>(std::move(lhsExp), EXP_OP_TYPE_PLUS,
+  return std::make_unique<ExpressionNode>(std::move(lhsExp), op,
                                           std::move(rhsExp), lhsExp->loc);
 }
 
 std::unique_ptr<ExpressionNode> Parser::parseExpMultiplicative() {
-  return parseExpPrimivite();
+  auto lhsExp = parseExpPrimivite();
+  if (!lhsExp)
+    return nullptr;
+  ExpOpType op = EXP_OP_TYPE_VOID;
+  if (consume(TokenType::MUL, /* errorThrowing */ false))
+    op = EXP_OP_TYPE_MUL;
+  else if (consume(TokenType::DIV, /* errorThrowing */ false))
+    op = EXP_OP_TYPE_DIV;
+  else if (consume(TokenType::MOD, /* errorThrowing */ false))
+    op = EXP_OP_TYPE_MOD;
+  else
+    return lhsExp;
+  auto rhsExp = parseExpMultiplicative();
+  if (!rhsExp)
+    return nullptr;
+  return std::make_unique<ExpressionNode>(std::move(lhsExp), op,
+                                          std::move(rhsExp), lhsExp->loc);
 }
 
 std::unique_ptr<ExpressionNode> Parser::parseExpPrimivite() {
