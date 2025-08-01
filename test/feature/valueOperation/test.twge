@@ -20,6 +20,9 @@ block init {
         testInt(2 * 3 + 5 * 7);
         testInt(2 * 3 * 5 + 7);
         testInt(2 * 3 * 5 * 7);
+        testInt(2 + 3 * (5 + 7));
+        testInt((2 + 3) * 5 + 7);
+        testInt((2 + 3) * (5 + 7));
         testBool(2 > 3 && 5 < 7);
         testBool(2 <= 3 || 5 >= 7);
         testBool("23" != "57");

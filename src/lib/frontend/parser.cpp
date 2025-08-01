@@ -438,8 +438,9 @@ std::unique_ptr<ExpressionNode> Parser::parseExpPrimivite() {
     if (!consume(TokenType::OPENPAR))
       return nullptr;
     auto expNode = parseExpLogicalOr();
-    if (!consume(TokenType::OPENPAR))
-      return expNode;
+    if (!consume(TokenType::CLOSEPAR))
+      return nullptr;
+    return expNode;
   } else if (auto valueNode = parseValue()) {
     return std::make_unique<ExpressionNode>(std::move(valueNode),
                                             (valueNode->loc));
@@ -461,7 +462,8 @@ std::unique_ptr<ValueNode> Parser::parseValue() {
     return std::make_unique<BoolValueNode>(true, loc);
   if (consume(TokenType::FALSE, false))
     return std::make_unique<BoolValueNode>(false, loc);
-  if (consume(TokenType::OPENPAR, false)) {
+  if (consume(TokenType::POINT, false)) {
+    consume(TokenType::OPENPAR);
     std::string xLoc = tokens.front().value;
     consume(TokenType::INT);
     consume(TokenType::COMMA);
@@ -487,7 +489,7 @@ std::unique_ptr<ValueNode> Parser::parseValue() {
     consume(TokenType::CLOSESQR);
     return listNode;
   }
-  std::cerr << "SyntaxError: Expecting a value (string/int/bool) at "
+  std::cerr << "SyntaxError: Expecting a value (string/int/bool/point) at "
             << tokens.front().location << ". Found \'" << tokens.front().value
             << "\'\n";
   return nullptr;

@@ -25,6 +25,7 @@ enum class TokenType {
   DEF,      // def
   CONST,    // const
   IF,       // if
+  POINT,    // Point
   /* Speical Character */
   OPENCUR,            // {
   CLOSECUR,           // }
@@ -71,6 +72,7 @@ inline std::ostream &operator<<(std::ostream &os, const TokenType &type) {
     LEXER_TOKEN_TYPE_PRINT(TokenType::DEF, "\'def\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::CONST, "\'const\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::IF, "\'if\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::POINT, "\'Point\'");
     // Speical Character
     LEXER_TOKEN_TYPE_PRINT(TokenType::OPENCUR, "\'{\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::CLOSECUR, "\'}\'");
@@ -129,6 +131,7 @@ struct Token {
       LEXER_TOKEN_PRINT(TokenType::DEF, "def");
       LEXER_TOKEN_PRINT(TokenType::CONST, "const");
       LEXER_TOKEN_PRINT(TokenType::IF, "if");
+      LEXER_TOKEN_TYPE_PRINT(TokenType::POINT, "Point");
       // Speical Character
       LEXER_TOKEN_PRINT(TokenType::OPENCUR, "{");
       LEXER_TOKEN_PRINT(TokenType::CLOSECUR, "}");

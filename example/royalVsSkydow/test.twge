@@ -1,6 +1,6 @@
-__skydowLocs__ = [(7,1)];
-__royalLocs__ = [(22,18)];
-__thirdLocs__ = [(28,1),(1,28)];
+__skydowLocs__ = [Point(7,1)];
+__royalLocs__ = [Point(22,18)];
+__thirdLocs__ = [Point(28,1),Point(1,28)];
 __title__ = "皇家天影之爭";
 __useDefaultItems__ = true;
 __map__ = "CG.TWEventsGameTemplate/gamemap.twmap";
@@ -54,8 +54,8 @@ block spawn {
     __repeat__ = 9999;
     __repeatInterval__ = 10000;
     actions {
-        addActor(name = "天影士兵({skydowHp})", camp = "天影", hp = "{skydowHp}", x = 1, y = 1, role = "天影士兵", patrol = [(14,1),(15,18)]);
-        addActor(name = "皇家士兵({royalHp})", camp = "皇家", hp = "{royalHp}", x = 28, y = 18, role = "皇家士兵", patrol = [(15,18),(14,1)]);
+        addActor(name = "天影士兵({skydowHp})", camp = "天影", hp = "{skydowHp}", x = 1, y = 1, role = "天影士兵", patrol = [Point(14,1),Point(15,18)]);
+        addActor(name = "皇家士兵({royalHp})", camp = "皇家", hp = "{royalHp}", x = 28, y = 18, role = "皇家士兵", patrol = [Point(15,18),Point(14,1)]);
         setInt("skydowHp", "{skydowHp} + 1");
         setInt("royalHp", "{royalHp} + 1");
     }

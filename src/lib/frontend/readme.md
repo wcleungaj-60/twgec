@@ -60,6 +60,6 @@ ValueNode := StringValueNode | IntValueNode | BoolValueNode | VariableValueNode
 - IntValueNode := IntToken
 - BoolValueNode := TrueToken | FalseToken
 - VariableValueNode := IdentifierToken
-- PointValueNode := OpenParToken IntToken CommaToken IntToken CloseParToken
+- PointValueNode := PointToken OpenParToken IntToken CommaToken IntToken CloseParToken
 - ListValueNode := OpenSqrToken [ExpNode [CommaToken ExpNode]*]? CloseSqrToken
 ```

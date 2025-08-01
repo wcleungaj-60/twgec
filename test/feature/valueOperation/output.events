@@ -163,6 +163,39 @@
                 {
                     "type": "ActorTalk",
                     "data": {
+                        "cleanTalk": true,
+                        "speech": "",
+                        "duration": "38",
+                        "wait": true,
+                        "waitMore": "100",
+                        "actorCode": ""
+                    }
+                },
+                {
+                    "type": "ActorTalk",
+                    "data": {
+                        "cleanTalk": true,
+                        "speech": "",
+                        "duration": "32",
+                        "wait": true,
+                        "waitMore": "100",
+                        "actorCode": ""
+                    }
+                },
+                {
+                    "type": "ActorTalk",
+                    "data": {
+                        "cleanTalk": true,
+                        "speech": "",
+                        "duration": "60",
+                        "wait": true,
+                        "waitMore": "100",
+                        "actorCode": ""
+                    }
+                },
+                {
+                    "type": "ActorTalk",
+                    "data": {
                         "cleanTalk": false,
                         "speech": "",
                         "duration": "3000",
