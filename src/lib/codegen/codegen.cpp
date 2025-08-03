@@ -48,10 +48,10 @@ void CodeGenerator::codegenBlocks(std::ofstream &of) {
     auto &block = moduleNode->blocks[i];
     of << inden(8) << "{" << std::endl;
     of << inden(12) << "\"id\": \"" << block->identifier << "\"," << std::endl;
-    metadata::BlockSetup::setup(of, block->metadatas);
-    codegenTypedInstrSet(of, block->getActions());
-    codegenTypedInstrSet(of, block->getChecks());
-    codegenTypedInstrSet(of, block->getTriggers());
+    metadata::BlockSetup::setup(of, block->blockBody->metadatas);
+    codegenTypedInstrSet(of, block->blockBody->getActions());
+    codegenTypedInstrSet(of, block->blockBody->getChecks());
+    codegenTypedInstrSet(of, block->blockBody->getTriggers());
     of << inden(8) << "}";
     if (i != moduleNode->blocks.size() - 1)
       of << ",";

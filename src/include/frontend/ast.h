@@ -14,6 +14,7 @@ class MetadataNode;
 class FunDefNode;
 class ConstDefNode;
 class BlockNode;
+class BlockBodyNode;
 // Instruction Set level
 class TypedInstrSetNode;
 class InstrSetNode;
@@ -121,11 +122,27 @@ public:
   // Variable
   Location loc;
   std::string identifier;
+  std::unique_ptr<BlockBodyNode> blockBody;
+
+  // Constructor
+  BlockNode(const std::string &id, Location loc) : identifier(id), loc(loc) {}
+
+  // Function
+  void print(int indent = 0);
+  bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
+  bool foldValue();
+  bool hasUnresolvedValue();
+};
+
+class BlockBodyNode {
+public:
+  // Variable
+  Location loc;
   std::vector<std::unique_ptr<MetadataNode>> metadatas;
   std::vector<std::unique_ptr<TypedInstrSetNode>> typedInstrSets;
 
   // Constructor
-  BlockNode(const std::string &id, Location loc) : identifier(id), loc(loc) {}
+  BlockBodyNode(Location loc) : loc(loc) {}
 
   // Function
   void print(int indent = 0);

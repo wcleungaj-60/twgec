@@ -52,7 +52,12 @@ void ConstDefNode::print(int indent) {
 }
 
 void BlockNode::print(int indent) {
-  std::cout << inden(indent) << "BlockNode: " << identifier << " {\n";
+  std::cout << inden(indent) << "BlockNode: " << identifier;
+  blockBody->print(indent);
+}
+
+void BlockBodyNode::print(int indent) {
+  std::cout << " {\n";
   for (auto &metadata : metadatas)
     metadata->print(indent + 4);
   for (auto &typedInstrSet : typedInstrSets)
@@ -211,6 +216,11 @@ bool MetadataNode::propagateExp(
 
 bool BlockNode::propagateExp(
     std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
+  return blockBody->propagateExp(varExpMap);
+}
+
+bool BlockBodyNode::propagateExp(
+    std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
   bool ret = true;
   for (auto &metadata : metadatas)
     ret &= metadata->propagateExp(varExpMap);
@@ -312,6 +322,10 @@ bool MetadataNode::foldValue() {
 }
 
 bool BlockNode::foldValue() {
+  return blockBody->foldValue();
+}
+
+bool BlockBodyNode::foldValue() {
   bool ret = true;
   for (auto &metadata : metadatas)
     ret &= metadata->foldValue();
@@ -500,6 +514,10 @@ bool MetadataNode::hasUnresolvedValue() {
 }
 
 bool BlockNode::hasUnresolvedValue() {
+  return blockBody->hasUnresolvedValue();
+}
+
+bool BlockBodyNode::hasUnresolvedValue() {
   bool ret = false;
   for (auto &metadata : metadatas)
     ret |= metadata->hasUnresolvedValue();

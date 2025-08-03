@@ -136,9 +136,21 @@ std::unique_ptr<BlockNode> Parser::parseBlock() {
   consume(TokenType::BLOCK);
   std::string name = tokens.front().value;
   Location loc = tokens.front().location;
-  if (!consume(TokenType::IDENTIFIER) || !consume(TokenType::OPENCUR))
+  if (!consume(TokenType::IDENTIFIER))
+    return nullptr;
+  auto blockBody = parseBlockBody();
+  if(!blockBody)
     return nullptr;
   std::unique_ptr<BlockNode> blockNode = std::make_unique<BlockNode>(name, loc);
+  blockNode->blockBody = std::move(blockBody);
+  return blockNode;
+}
+
+std::unique_ptr<BlockBodyNode> Parser::parseBlockBody() {
+  Location loc = tokens.front().location;
+  if (!consume(TokenType::OPENCUR))
+    return nullptr;
+  std::unique_ptr<BlockBodyNode> blockBodyNode = std::make_unique<BlockBodyNode>(loc);
   while (tokens.front().type != TokenType::CLOSECUR) {
     if (tokens.front().type == TokenType::ACTIONS ||
         tokens.front().type == TokenType::CHECKS ||
@@ -146,10 +158,10 @@ std::unique_ptr<BlockNode> Parser::parseBlock() {
       auto typedInstrSetNode = parseTypedInstrSet();
       if (!typedInstrSetNode)
         return nullptr;
-      blockNode->typedInstrSets.push_back(std::move(typedInstrSetNode));
+      blockBodyNode->typedInstrSets.push_back(std::move(typedInstrSetNode));
     } else if (tokens.front().type == TokenType::METADATA) {
       if (auto metadataNode = parseMetadata())
-        blockNode->metadatas.push_back(std::move(metadataNode));
+        blockBodyNode->metadatas.push_back(std::move(metadataNode));
       else
         return nullptr;
     } else {
@@ -162,7 +174,7 @@ std::unique_ptr<BlockNode> Parser::parseBlock() {
   }
   if (!consume(TokenType::CLOSECUR))
     return nullptr;
-  return blockNode;
+  return blockBodyNode;
 }
 
 /**

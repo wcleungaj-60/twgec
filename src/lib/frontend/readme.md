@@ -29,7 +29,7 @@
 // Global Scope
 ModuleNode := [ MetadataNode | BlockNode | ConstDefNode | FunDefNode]*
 - MetadataNode := MetadataToken AssignToken ExpNode
-- BlockNode := BlockToken IdentifierToken [BlockBodyNode | InstructionNode]
+- BlockNode := BlockToken IdentifierToken [BlockBodyNode | [AssignToken InstructionNode]]
 - ConstDefNode := ConstToken IdentifierToken AssignToken ExpNode
 - FunDefNode := DefToken IdentifierToken ParamDefsNode ColonToken [TypedInstrSetNode | [BlockToken BlockBodyNode]]
   - ParamDefsNode = OpenParToken [IdentifierToken [CommaToken IdentifierToken]*]? CloseParToken

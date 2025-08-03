@@ -5,8 +5,9 @@ namespace transform {
 
 bool blockLegalization(const std::unique_ptr<ModuleNode> &moduleNode) {
   for (auto &blockNode : moduleNode->blocks) {
+    auto& blockBody = blockNode->blockBody;
     std::set<FunDefType> instrSetType;
-    for (auto &typedInstrSet : blockNode->typedInstrSets) {
+    for (auto &typedInstrSet : blockBody->typedInstrSets) {
       auto type = typedInstrSet->type;
       if (instrSetType.count(type)) {
         std::cerr << "Syntax Error: Redefinition of `" << type
@@ -18,28 +19,28 @@ bool blockLegalization(const std::unique_ptr<ModuleNode> &moduleNode) {
       }
     }
     if (!instrSetType.count(FUN_DEF_TYPE_ACTIONS)) {
-      blockNode->typedInstrSets.push_back(std::make_unique<TypedInstrSetNode>(
+      blockBody->typedInstrSets.push_back(std::make_unique<TypedInstrSetNode>(
           blockNode->loc, FUN_DEF_TYPE_ACTIONS));
     }
     if (!instrSetType.count(FUN_DEF_TYPE_CHECKS)) {
-      blockNode->typedInstrSets.push_back(std::make_unique<TypedInstrSetNode>(
+      blockBody->typedInstrSets.push_back(std::make_unique<TypedInstrSetNode>(
           blockNode->loc, FUN_DEF_TYPE_CHECKS));
     }
     if (!instrSetType.count(FUN_DEF_TYPE_TRIGGERS)) {
-      blockNode->typedInstrSets.push_back(std::make_unique<TypedInstrSetNode>(
+      blockBody->typedInstrSets.push_back(std::make_unique<TypedInstrSetNode>(
           blockNode->loc, FUN_DEF_TYPE_TRIGGERS));
     }
-    for (int i = 0; i < blockNode->typedInstrSets.size(); i++) {
-      auto type = blockNode->typedInstrSets[i]->type;
+    for (int i = 0; i < blockBody->typedInstrSets.size(); i++) {
+      auto type = blockBody->typedInstrSets[i]->type;
       switch (type) {
       case FUN_DEF_TYPE_ACTIONS:
-        blockNode->setActionsIdx(i);
+        blockBody->setActionsIdx(i);
         break;
       case FUN_DEF_TYPE_CHECKS:
-        blockNode->setChecksIdx(i);
+        blockBody->setChecksIdx(i);
         break;
       case FUN_DEF_TYPE_TRIGGERS:
-        blockNode->setTriggersIdx(i);
+        blockBody->setTriggersIdx(i);
         break;
       default:
         break;

@@ -49,7 +49,7 @@ bool ifStatementPropagation(std::unique_ptr<InstrSetNode> &instrSet) {
 
 bool ifStatementPropagation(const unique_ptr<ModuleNode> &moduleNode) {
   for (auto &blockNode : moduleNode->blocks)
-    for (auto &typedInstrSet : blockNode->typedInstrSets)
+    for (auto &typedInstrSet : blockNode->blockBody->typedInstrSets)
       if (!ifStatementPropagation(typedInstrSet->instrSet))
         return false;
   return true;

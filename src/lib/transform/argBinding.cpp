@@ -49,7 +49,7 @@ bool argBinding(std::map<std::string, std::unique_ptr<FunDefNode>> &funDefs,
 bool argBinding(const unique_ptr<ModuleNode> &moduleNode) {
   auto &funDefs = moduleNode->funDefs;
   for (auto &blockNode : moduleNode->blocks) {
-    for (auto &typedInstrSet : blockNode->typedInstrSets) {
+    for (auto &typedInstrSet : blockNode->blockBody->typedInstrSets) {
       if (!argBinding(funDefs, typedInstrSet->instrSet))
         return false;
     }

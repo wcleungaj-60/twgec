@@ -12,6 +12,7 @@ private:
   std::queue<Token> tokens;
   bool consume(TokenType type, bool errorThrowing);
   std::unique_ptr<BlockNode> parseBlock();
+  std::unique_ptr<BlockBodyNode> parseBlockBody();
   std::unique_ptr<MetadataNode> parseMetadata();
   std::unique_ptr<ConstDefNode> parseConstDef();
   std::unique_ptr<FunDefNode> parseFunDef();

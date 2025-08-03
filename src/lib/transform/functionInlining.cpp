@@ -95,7 +95,7 @@ bool functionInling(
 bool functionInling(const unique_ptr<ModuleNode> &moduleNode) {
   auto &funDefs = moduleNode->funDefs;
   for (auto &blockNode : moduleNode->blocks)
-    for (auto &typedInstrSet : blockNode->typedInstrSets)
+    for (auto &typedInstrSet : blockNode->blockBody->typedInstrSets)
       if (!functionInling(funDefs, typedInstrSet->instrSet,
                           typedInstrSet->type))
         return false;
