@@ -115,7 +115,7 @@ std::unique_ptr<ValueNode> ListValueNode::clone() {
 };
 
 std::unique_ptr<ValueNode> PointValueNode::clone() {
-  return std::make_unique<PointValueNode>(x, y, loc);
+  return std::make_unique<PointValueNode>(x->clone(), y->clone(), loc);
 };
 
 std::unique_ptr<ValueNode> StringValueNode::clone() {
@@ -194,6 +194,35 @@ std::unique_ptr<FunDefNode> FunDefNode::clone() {
 }
 
 //------------ propagateExp ------------//
+bool ModuleNode::propagateExp(
+    std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
+  bool ret = true;
+  for (auto &metadata : metadatas)
+    ret &= metadata->propagateExp(varExpMap);
+  for (auto &block : blocks)
+    ret &= block->propagateExp(varExpMap);
+  return ret;
+}
+
+bool MetadataNode::propagateExp(
+    std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
+  return expNode->propagateExp(varExpMap);
+}
+
+bool BlockNode::propagateExp(
+    std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
+  bool ret = true;
+  for (auto &metadata : metadatas)
+    ret &= metadata->propagateExp(varExpMap);
+  for (auto &typedInstr : typedInstrSets)
+    ret &= typedInstr->propagateExp(varExpMap);
+  return ret;
+}
+
+bool TypedInstrSetNode::propagateExp(
+    std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
+  return instrSet->propagateExp(varExpMap);
+}
 
 bool InstrSetNode::propagateExp(
     std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
@@ -257,6 +286,9 @@ bool ExpressionNode::propagateExp(
         rhs = constExp->rhs->clone();
         op = constExp->op;
       }
+    } else if (auto *listNode = dynamic_cast<ListValueNode *>(value.get())) {
+      for (auto &item : listNode->items)
+        item->propagateExp(varExpMap);
     }
   } else {
     ret &= lhs->propagateExp(varExpMap);
@@ -266,6 +298,31 @@ bool ExpressionNode::propagateExp(
 }
 
 //------------ foldValue ------------//
+bool ModuleNode::foldValue() {
+  bool ret = true;
+  for (auto &metadata : metadatas)
+    ret &= metadata->foldValue();
+  for (auto &block : blocks)
+    ret &= block->foldValue();
+  return ret;
+}
+
+bool MetadataNode::foldValue() {
+  return expNode->foldValue();
+}
+
+bool BlockNode::foldValue() {
+  bool ret = true;
+  for (auto &metadata : metadatas)
+    ret &= metadata->foldValue();
+  for (auto &typedInstr : typedInstrSets)
+    ret &= typedInstr->foldValue();
+  return ret;
+}
+
+bool TypedInstrSetNode::foldValue() {
+  return instrSet->foldValue();
+}
 
 bool InstrSetNode::foldValue() {
   bool ret = true;
@@ -303,8 +360,20 @@ bool NamedArgNode::foldValue() { return expNode->foldValue(); }
 bool PositionalArgNode::foldValue() { return expNode->foldValue(); }
 
 bool ExpressionNode::foldValue() {
-  if (isValue)
-    return true;
+  if (isValue) {
+    bool ret = true;
+    auto valuePoint = dynamic_cast<PointValueNode *>(value.get());
+    auto valueList = dynamic_cast<ListValueNode *>(value.get());
+    if (valuePoint) {
+      ret &= valuePoint->x->foldValue();
+      ret &= valuePoint->y->foldValue();
+    } else if (valueList) {
+      for (auto &item : valueList->items) {
+        ret &= item->foldValue();
+      }
+    }
+    return ret;
+  }
   if (!lhs->foldValue() || !lhs->isValue)
     return false;
   if (!rhs->foldValue() || !rhs->isValue)
@@ -417,6 +486,31 @@ bool ExpressionNode::foldValue() {
 }
 
 //------------ hasUnresolvedValue ------------//
+bool ModuleNode::hasUnresolvedValue() {
+  bool ret = false;
+  for (auto &metadata : metadatas)
+    ret |= metadata->hasUnresolvedValue();
+  for (auto &block : blocks)
+    ret |= block->hasUnresolvedValue();
+  return ret;
+}
+
+bool MetadataNode::hasUnresolvedValue() {
+  return expNode->hasUnresolvedValue();
+}
+
+bool BlockNode::hasUnresolvedValue() {
+  bool ret = false;
+  for (auto &metadata : metadatas)
+    ret |= metadata->hasUnresolvedValue();
+  for (auto &typedInstr : typedInstrSets)
+    ret |= typedInstr->hasUnresolvedValue();
+  return ret;
+}
+
+bool TypedInstrSetNode::hasUnresolvedValue() {
+  return instrSet->hasUnresolvedValue();
+}
 
 bool InstrSetNode::hasUnresolvedValue() {
   bool ret = false;

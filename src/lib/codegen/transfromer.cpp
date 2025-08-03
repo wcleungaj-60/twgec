@@ -21,9 +21,10 @@ std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
   bool astString = defaultMap.at(key).astType == AST_STRING;
   bool astPointList = defaultMap.at(key).astType == AST_LIST_POINT;
   if (auto varNode = dynamic_cast<VariableValueNode *>(input.get())) {
-    std::cerr << "Codegen Error: Cannot find the definition of variable `"
-              << varNode->value << "` at " << input->loc
-              << ". Please define it as a constant value or function\'s param.\n";
+    std::cerr
+        << "Codegen Error: Cannot find the definition of variable `"
+        << varNode->value << "` at " << input->loc
+        << ". Please define it as a constant value or function\'s param.\n";
     return "";
   }
   if (astInt) {
@@ -69,14 +70,22 @@ std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
     if (codegenListPatrol) {
       std::string ret = "[\n";
       for (auto idx = 0; idx < listNode->items.size(); idx++) {
-        if (auto *pointNode =
-                dynamic_cast<PointValueNode *>(listNode->items[idx].get())) {
+        if (auto *pointNode = dynamic_cast<PointValueNode *>(
+                listNode->items[idx]->value.get())) {
+          auto xInt = dynamic_cast<IntValueNode *>(pointNode->x->value.get());
+          auto yInt = dynamic_cast<IntValueNode *>(pointNode->y->value.get());
+          if (!pointNode->x->isValue || !pointNode->y->isValue || !xInt ||
+              !yInt) {
+            std::cerr << "Codegen Error: incorrect type conversion at "
+                      << pointNode->loc << "\n";
+            return "";
+          }
           ret += std::string(28, ' ') + "{\n";
           ret += std::string(32, ' ') + "\"loc\": {\n";
           ret += std::string(36, ' ') + "\"x\": \"" +
-                 std::to_string(pointNode->x) + "\",\n";
+                 std::to_string(xInt->value) + "\",\n";
           ret += std::string(36, ' ') + "\"y\": \"" +
-                 std::to_string(pointNode->y) + "\",\n";
+                 std::to_string(yInt->value) + "\",\n";
           ret += std::string(36, ' ') + "\"range\": \"0\"\n";
           ret += std::string(32, ' ') + "},\n";
           ret += std::string(32, ' ') + "\"rotation\": \"0\",\n";
@@ -85,6 +94,10 @@ std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
           if (idx != listNode->items.size() - 1)
             ret += ",";
           ret += "\n";
+        } else {
+          std::cerr << "Codegen Error: incorrect type conversion at "
+                    << listNode->items[idx]->value->loc << "\n";
+          return "";
         }
       }
       ret += std::string(24, ' ') + "]";
@@ -93,17 +106,29 @@ std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
     if (codegenListPoint) {
       std::string ret = "[\n";
       for (auto idx = 0; idx < listNode->items.size(); idx++) {
-        if (auto *pointNode =
-                dynamic_cast<PointValueNode *>(listNode->items[idx].get())) {
+        if (auto *pointNode = dynamic_cast<PointValueNode *>(
+                listNode->items[idx]->value.get())) {
+          auto xInt = dynamic_cast<IntValueNode *>(pointNode->x->value.get());
+          auto yInt = dynamic_cast<IntValueNode *>(pointNode->y->value.get());
+          if (!pointNode->x->isValue || !pointNode->y->isValue || !xInt ||
+              !yInt) {
+            std::cerr << "Codegen Error: incorrect type conversion at "
+                      << pointNode->loc << "\n";
+            return "";
+          }
           ret += std::string(20, ' ') + "{\n";
           ret += std::string(24, ' ') + "\"x\": \"" +
-                 std::to_string(pointNode->x) + "\",\n";
+                 std::to_string(xInt->value) + "\",\n";
           ret += std::string(24, ' ') + "\"y\": \"" +
-                 std::to_string(pointNode->y) + "\"\n";
+                 std::to_string(yInt->value) + "\"\n";
           ret += std::string(20, ' ') + "}";
           if (idx != listNode->items.size() - 1)
             ret += ",";
           ret += "\n";
+        } else {
+          std::cerr << "Codegen Error: incorrect type conversion at "
+                    << listNode->items[idx]->value->loc << "\n";
+          return "";
         }
       }
       ret += std::string(16, ' ') + "]";

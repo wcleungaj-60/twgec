@@ -464,13 +464,15 @@ std::unique_ptr<ValueNode> Parser::parseValue() {
     return std::make_unique<BoolValueNode>(false, loc);
   if (consume(TokenType::POINT, false)) {
     consume(TokenType::OPENPAR);
-    std::string xLoc = tokens.front().value;
-    consume(TokenType::INT);
+    auto xExp = parseExp();
+    if (!xExp)
+      return nullptr;
     consume(TokenType::COMMA);
-    std::string yLoc = tokens.front().value;
-    consume(TokenType::INT);
+    auto yExp = parseExp();
+    if (!yExp)
+      return nullptr;
     consume(TokenType::CLOSEPAR);
-    return std::make_unique<PointValueNode>(std::stoi(xLoc), std::stoi(yLoc),
+    return std::make_unique<PointValueNode>(std::move(xExp), std::move(yExp),
                                             loc);
   }
   if (consume(TokenType::OPENSQR, false)) {
@@ -480,7 +482,7 @@ std::unique_ptr<ValueNode> Parser::parseValue() {
     while (tokens.front().type != TokenType::CLOSESQR) {
       if (!firstItem)
         consume(TokenType::COMMA);
-      std::unique_ptr<ValueNode> item = parseValue();
+      std::unique_ptr<ExpressionNode> item = parseExp();
       if (!item)
         return nullptr;
       listNode->items.push_back(std::move(item));

@@ -1,0 +1,13 @@
+__schema__ = "https://code.gamelet.com/gassets/schema/events/v1";
+__title__ = "我的任務";
+__map__ = "CG.TWEventsGameTemplate/gamemap.twmap";
+
+def testPoint(v): actions {
+    addActor(patrol = [v,Point(0,0),v]);
+}
+
+block init {
+    actions {
+        testPoint([Point(1,1),Point(2,2)]);
+    }
+}

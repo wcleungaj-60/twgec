@@ -73,6 +73,9 @@ public:
 
   // Function
   void print(std::string title, int indent = 0);
+  bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
+  bool foldValue();
+  bool hasUnresolvedValue();
 };
 
 class MetadataNode {
@@ -89,6 +92,9 @@ public:
 
   // Function
   void print(int indent = 0);
+  bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
+  bool foldValue();
+  bool hasUnresolvedValue();
 };
 
 class FunDefNode {
@@ -123,6 +129,9 @@ public:
 
   // Function
   void print(int indent = 0);
+  bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
+  bool foldValue();
+  bool hasUnresolvedValue();
   void setActionsIdx(int idx) { actionsIdx = idx; };
   void setChecksIdx(int idx) { checksIdx = idx; };
   void setTriggersIdx(int idx) { triggersIdx = idx; };
@@ -176,6 +185,9 @@ public:
   // Function
   void print(int indent = 0);
   std::unique_ptr<TypedInstrSetNode> clone();
+  bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
+  bool foldValue();
+  bool hasUnresolvedValue();
 };
 
 class InstrSetNode {
@@ -335,7 +347,7 @@ public:
 class ListValueNode : public ValueNode {
 public:
   // Variable
-  std::vector<std::unique_ptr<ValueNode>> items = {};
+  std::vector<std::unique_ptr<ExpressionNode>> items = {};
 
   // Constructor
   ListValueNode(Location loc) : ValueNode(loc) {}
@@ -347,11 +359,13 @@ public:
 class PointValueNode : public ValueNode {
 public:
   // Variable
-  int x;
-  int y;
+  std::unique_ptr<ExpressionNode> x;
+  std::unique_ptr<ExpressionNode> y;
 
   // Constructor
-  PointValueNode(int x, int y, Location loc) : ValueNode(loc), x(x), y(y) {}
+  PointValueNode(std::unique_ptr<ExpressionNode> x,
+                 std::unique_ptr<ExpressionNode> y, Location loc)
+      : x(std::move(x)), y(std::move(y)), ValueNode(loc) {}
 
   // Function
   std::unique_ptr<ValueNode> clone();
@@ -410,6 +424,13 @@ public:
 };
 
 //------------ operator<< ------------//
+inline std::ostream &operator<<(std::ostream &os, FunDefType type);
+inline std::ostream &operator<<(std::ostream &os, ExpOpType type);
+inline std::ostream &operator<<(std::ostream &os,
+                                std::unique_ptr<ValueNode> valueNode);
+inline std::ostream &operator<<(std::ostream &os,
+                                const ExpressionNode &expNode);
+
 inline std::ostream &operator<<(std::ostream &os, FunDefType type) {
   switch (type) {
   case FUN_DEF_TYPE_ACTIONS:
@@ -484,14 +505,15 @@ inline std::ostream &operator<<(std::ostream &os,
     os << intNode->value;
   } else if (auto boolNode = dynamic_cast<BoolValueNode *>(valueNode.get())) {
     os << (boolNode->value ? "true" : "false");
-  } else if (auto varNode = dynamic_cast<VariableValueNode *>(valueNode.get())) {
+  } else if (auto varNode =
+                 dynamic_cast<VariableValueNode *>(valueNode.get())) {
     os << varNode->value;
   } else if (auto ptNode = dynamic_cast<PointValueNode *>(valueNode.get())) {
-    os << "(" << ptNode->x << "," << ptNode->y << ")";
+    os << "(" << *(ptNode->x.get()) << "," << *(ptNode->y.get()) << ")";
   } else if (auto listNode = dynamic_cast<ListValueNode *>(valueNode.get())) {
     os << "[";
     for (auto i = 0; i < listNode->items.size(); i++) {
-      os << listNode->items[i]->clone();
+      os << *(listNode->items[i]->clone().get());
       if (i != listNode->items.size() - 1)
         os << ",";
     }

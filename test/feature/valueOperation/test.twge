@@ -1,6 +1,9 @@
+const pt = Point(8,8);
+
 __schema__ = "https://code.gamelet.com/gassets/schema/events/v1";
 __title__ = "我的任務";
 __map__ = "CG.TWEventsGameTemplate/gamemap.twmap";
+__skydowLocs__ = [pt];
 
 def testInt(v) : actions {
     actorTalk(duration = v);
@@ -8,6 +11,14 @@ def testInt(v) : actions {
 
 def testBool(v) : actions {
     actorTalk(cleanTalk = v);
+}
+
+def testListPoint(v): actions {
+    addActor(patrol = v);
+}
+
+def testPoint(v): actions {
+    addActor(patrol = [v,Point(0,0),v]);
 }
 
 block init {
@@ -27,5 +38,8 @@ block init {
         testBool(2 <= 3 || 5 >= 7);
         testBool("23" != "57");
         testBool("23" == "57");
+        testListPoint([Point(1,1),Point(2,2)]);
+        testPoint(Point(2,2));
+        testListPoint([Point(1+1,1)]);
     }
 }
