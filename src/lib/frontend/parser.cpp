@@ -75,7 +75,7 @@ std::unique_ptr<MetadataNode> Parser::parseMetadata() {
   if (!consume(TokenType::SEMICOLON))
     return nullptr;
   std::unique_ptr<MetadataNode> metadataNode =
-      std::make_unique<MetadataNode>(strippedKey, exp, loc);
+      std::make_unique<MetadataNode>(strippedKey, std::move(exp), loc);
   return metadataNode;
 }
 
@@ -125,10 +125,18 @@ std::unique_ptr<FunDefNode> Parser::parseFunDef() {
     return nullptr;
   if (!consume(TokenType::COLON))
     return nullptr;
-  auto typedInstrSet = parseTypedInstrSet();
-  if (!typedInstrSet)
-    return nullptr;
-  funDefNode->typedInstrSet = std::move(typedInstrSet);
+  if (tokens.front().type == TokenType::BLOCK) {
+    consume(TokenType::BLOCK);
+    auto blockBody = parseBlockBody();
+    if (!blockBody)
+      return nullptr;
+    funDefNode->blockBody = std::move(blockBody);
+  } else {
+    auto typedInstrSet = parseTypedInstrSet();
+    if (!typedInstrSet)
+      return nullptr;
+    funDefNode->typedInstrSet = std::move(typedInstrSet);
+  }
   return funDefNode;
 }
 
@@ -139,7 +147,7 @@ std::unique_ptr<BlockNode> Parser::parseBlock() {
   if (!consume(TokenType::IDENTIFIER))
     return nullptr;
   auto blockBody = parseBlockBody();
-  if(!blockBody)
+  if (!blockBody)
     return nullptr;
   std::unique_ptr<BlockNode> blockNode = std::make_unique<BlockNode>(name, loc);
   blockNode->blockBody = std::move(blockBody);
@@ -150,7 +158,8 @@ std::unique_ptr<BlockBodyNode> Parser::parseBlockBody() {
   Location loc = tokens.front().location;
   if (!consume(TokenType::OPENCUR))
     return nullptr;
-  std::unique_ptr<BlockBodyNode> blockBodyNode = std::make_unique<BlockBodyNode>(loc);
+  std::unique_ptr<BlockBodyNode> blockBodyNode =
+      std::make_unique<BlockBodyNode>(loc);
   while (tokens.front().type != TokenType::CLOSECUR) {
     if (tokens.front().type == TokenType::ACTIONS ||
         tokens.front().type == TokenType::CHECKS ||

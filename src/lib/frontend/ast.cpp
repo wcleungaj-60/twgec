@@ -3,66 +3,23 @@
 #include <iostream>
 
 //------------ print ------------//
-
-void BranchNode::print(int indent) {
-  std::cout << inden(indent) << "if(" << *condition << ") {\n";
-  trueBlock->print(indent + 4);
-  std::cout << inden(indent) << "}\n";
-}
-
-void CompositeInstrNode::print(int indent) {
-  if (instruction)
-    instruction->print(indent);
-  if (ifStatement)
-    ifStatement->print(indent);
-}
-
-void InstrSetNode::print(int indent) {
-  for (auto &compositeInstr : instructions)
-    compositeInstr->print(indent);
-}
-
-void TypedInstrSetNode::print(int indent) {
-  std::cout << inden(indent) << type << " {\n";
-  instrSet->print(indent + 4);
-  std::cout << inden(indent) << "}\n";
-}
-
 void ModuleNode::print(std::string title, int indent) {
+  std::cout << "//----" << std::string(title.size(), '-') << "----//\n";
   std::cout << "//--- " << title << " ---//\n";
-  std::cout << inden(indent) << "ModuleNode: "
-            << "\n";
+  std::cout << "//----" << std::string(title.size(), '-') << "----//\n";
   for (auto &metadata : metadatas)
-    metadata->print(indent + 4);
+    metadata->print(indent);
   for (auto &constDef : constDefs)
-    constDef->print(indent + 4);
+    constDef->print(indent);
   for (auto &funDef : funDefs)
-    funDef.second->print(indent + 4);
+    funDef.second->print(indent);
   for (auto &block : blocks)
-    block->print(indent + 4);
+    block->print(indent);
 }
 
 void MetadataNode::print(int indent) {
   std::cout << inden(indent) << "MetadataNode: " << key << " = " << *expNode
             << "\n";
-}
-
-void ConstDefNode::print(int indent) {
-  std::cout << inden(indent) << "const " << key << " = " << *expNode << "\n";
-}
-
-void BlockNode::print(int indent) {
-  std::cout << inden(indent) << "BlockNode: " << identifier;
-  blockBody->print(indent);
-}
-
-void BlockBodyNode::print(int indent) {
-  std::cout << " {\n";
-  for (auto &metadata : metadatas)
-    metadata->print(indent + 4);
-  for (auto &typedInstrSet : typedInstrSets)
-    typedInstrSet->print(indent + 4);
-  std::cout << inden(indent) << "}\n";
 }
 
 void FunDefNode::print(int indent) {
@@ -72,9 +29,56 @@ void FunDefNode::print(int indent) {
     if (i != params.size() - 1)
       std::cout << ", ";
   }
-  std::cout << ") {\n";
-  for (auto &ins : typedInstrSet->instrSet->instructions)
-    ins.get()->print(indent + 4);
+  std::cout << ") : ";
+  if (typedInstrSet)
+    typedInstrSet->print(indent);
+  if (blockBody) {
+    std::cout << "block";
+    blockBody->print(indent);
+  }
+}
+
+void ConstDefNode::print(int indent) {
+  std::cout << inden(indent) << "const " << key << " = " << *expNode << "\n";
+}
+
+void BlockNode::print(int indent) {
+  std::cout << inden(indent) << "block " << identifier;
+  blockBody->print(indent);
+}
+
+void BlockBodyNode::print(int indent) {
+  std::cout << " {\n";
+  for (auto &metadata : metadatas)
+    metadata->print(indent + 4);
+  for (auto &typedInstrSet : typedInstrSets) {
+    std::cout << inden(indent + 4);
+    typedInstrSet->print(indent + 4);
+  }
+  std::cout << inden(indent) << "}\n";
+}
+
+void TypedInstrSetNode::print(int indent) {
+  std::cout <<  type << " {\n";
+  instrSet->print(indent + 4);
+  std::cout << inden(indent) << "}\n";
+}
+
+void InstrSetNode::print(int indent) {
+  for (auto &compositeInstr : instructions)
+    compositeInstr->print(indent);
+}
+
+void CompositeInstrNode::print(int indent) {
+  if (instruction)
+    instruction->print(indent);
+  if (ifStatement)
+    ifStatement->print(indent);
+}
+
+void BranchNode::print(int indent) {
+  std::cout << inden(indent) << "if(" << *condition << ") {\n";
+  trueBlock->print(indent + 4);
   std::cout << inden(indent) << "}\n";
 }
 
@@ -91,10 +95,84 @@ void InstructionNode::print(int indent) {
     if (i != named_args.size() - 1)
       std::cout << ", ";
   }
-  std::cout << ")\n";
+  std::cout << ");\n";
 }
 
 //------------ clone ------------//
+std::unique_ptr<MetadataNode> MetadataNode::clone() {
+  return std::make_unique<MetadataNode>(key, expNode->clone(), loc);
+}
+
+std::unique_ptr<FunDefNode> FunDefNode::clone() {
+  if (typedInstrSet) {
+    return std::make_unique<FunDefNode>(identifier, loc,
+                                        typedInstrSet->clone());
+  } else {
+    return std::make_unique<FunDefNode>(identifier, loc, std::move(blockBody));
+  }
+}
+
+std::unique_ptr<BlockBodyNode> BlockBodyNode::clone() {
+  auto newNode = std::make_unique<BlockBodyNode>(loc);
+  for (auto &typedInstr : typedInstrSets)
+    newNode->typedInstrSets.push_back(typedInstr->clone());
+  for (auto &metadata : metadatas)
+    newNode->metadatas.push_back(metadata->clone());
+  return newNode;
+}
+
+std::unique_ptr<TypedInstrSetNode> TypedInstrSetNode::clone() {
+  auto newNode =
+      std::make_unique<TypedInstrSetNode>(loc, type, instrSet->clone());
+  return newNode;
+}
+
+std::unique_ptr<InstrSetNode> InstrSetNode::clone() {
+  auto newNode = std::make_unique<InstrSetNode>(loc);
+  for (auto &instr : instructions)
+    newNode->instructions.push_back(instr->clone());
+  return newNode;
+}
+
+std::unique_ptr<CompositeInstrNode> CompositeInstrNode::clone() {
+  if (instruction)
+    return std::make_unique<CompositeInstrNode>(loc, instruction->clone());
+  else if (ifStatement)
+    return std::make_unique<CompositeInstrNode>(loc, ifStatement->clone());
+  return nullptr;
+}
+
+std::unique_ptr<BranchNode> BranchNode::clone() {
+  return std::make_unique<BranchNode>(condition->clone(), trueBlock->clone(),
+                                      loc);
+}
+
+std::unique_ptr<InstructionNode> InstructionNode::clone() {
+  auto newNode = std::make_unique<InstructionNode>(identifier, loc);
+  for (auto &namedArg : named_args)
+    newNode.get()->named_args.push_back(namedArg.get()->clone());
+  for (auto &positionalArg : positional_args)
+    newNode.get()->positional_args.push_back(positionalArg.get()->clone());
+  return newNode;
+}
+
+std::unique_ptr<NamedArgNode> NamedArgNode::clone() {
+  auto newExp = std::move(expNode.get()->clone());
+  return std::make_unique<NamedArgNode>(key, newExp, loc);
+}
+
+std::unique_ptr<PositionalArgNode> PositionalArgNode::clone() {
+  auto newExp = std::move(expNode.get()->clone());
+  return std::make_unique<PositionalArgNode>(newExp, loc);
+}
+
+std::unique_ptr<ExpressionNode> ExpressionNode::clone() {
+  if (isValue)
+    return std::make_unique<ExpressionNode>(value->clone(), loc);
+  else
+    return std::make_unique<ExpressionNode>(lhs->clone(), op, rhs->clone(),
+                                            loc);
+}
 
 std::unique_ptr<ValueNode> ValueNode::clone() {
   if (auto *stringNode = dynamic_cast<StringValueNode *>(this))
@@ -117,85 +195,26 @@ std::unique_ptr<ValueNode> ListValueNode::clone() {
   for (auto &item : items)
     newNode.get()->items.push_back(item->clone());
   return newNode;
-};
+}
 
 std::unique_ptr<ValueNode> PointValueNode::clone() {
   return std::make_unique<PointValueNode>(x->clone(), y->clone(), loc);
-};
+}
 
 std::unique_ptr<ValueNode> StringValueNode::clone() {
   return std::make_unique<StringValueNode>(value, loc);
-};
+}
 
 std::unique_ptr<ValueNode> IntValueNode::clone() {
   return std::make_unique<IntValueNode>(value, loc);
-};
+}
 
 std::unique_ptr<ValueNode> BoolValueNode::clone() {
   return std::make_unique<BoolValueNode>(value, loc);
-};
+}
 
 std::unique_ptr<ValueNode> VariableValueNode::clone() {
   return std::make_unique<VariableValueNode>(value, loc);
-};
-
-std::unique_ptr<ExpressionNode> ExpressionNode::clone() {
-  if (isValue)
-    return std::make_unique<ExpressionNode>(value->clone(), loc);
-  else
-    return std::make_unique<ExpressionNode>(lhs->clone(), op, rhs->clone(),
-                                            loc);
-};
-
-std::unique_ptr<NamedArgNode> NamedArgNode::clone() {
-  auto newExp = std::move(expNode.get()->clone());
-  return std::make_unique<NamedArgNode>(key, newExp, loc);
-}
-
-std::unique_ptr<PositionalArgNode> PositionalArgNode::clone() {
-  auto newExp = std::move(expNode.get()->clone());
-  return std::make_unique<PositionalArgNode>(newExp, loc);
-}
-
-std::unique_ptr<InstructionNode> InstructionNode::clone() {
-  auto newNode = std::make_unique<InstructionNode>(identifier, loc);
-  for (auto &namedArg : named_args)
-    newNode.get()->named_args.push_back(namedArg.get()->clone());
-  for (auto &positionalArg : positional_args)
-    newNode.get()->positional_args.push_back(positionalArg.get()->clone());
-  return newNode;
-}
-
-std::unique_ptr<BranchNode> BranchNode::clone() {
-  return std::make_unique<BranchNode>(condition->clone(), trueBlock->clone(),
-                                      loc);
-}
-
-std::unique_ptr<CompositeInstrNode> CompositeInstrNode::clone() {
-  if (instruction)
-    return std::make_unique<CompositeInstrNode>(loc, instruction->clone());
-  else if (ifStatement)
-    return std::make_unique<CompositeInstrNode>(loc, ifStatement->clone());
-  return nullptr;
-}
-
-std::unique_ptr<InstrSetNode> InstrSetNode::clone() {
-  auto newNode = std::make_unique<InstrSetNode>(loc);
-  for (auto &instr : instructions)
-    newNode->instructions.push_back(instr->clone());
-  return newNode;
-}
-
-std::unique_ptr<TypedInstrSetNode> TypedInstrSetNode::clone() {
-  auto newNode =
-      std::make_unique<TypedInstrSetNode>(loc, type, instrSet->clone());
-  return newNode;
-}
-
-std::unique_ptr<FunDefNode> FunDefNode::clone() {
-  auto newNode =
-      std::make_unique<FunDefNode>(identifier, loc, typedInstrSet->clone());
-  return newNode;
 }
 
 //------------ propagateExp ------------//
@@ -317,13 +336,9 @@ bool ModuleNode::foldValue() {
   return ret;
 }
 
-bool MetadataNode::foldValue() {
-  return expNode->foldValue();
-}
+bool MetadataNode::foldValue() { return expNode->foldValue(); }
 
-bool BlockNode::foldValue() {
-  return blockBody->foldValue();
-}
+bool BlockNode::foldValue() { return blockBody->foldValue(); }
 
 bool BlockBodyNode::foldValue() {
   bool ret = true;
@@ -334,9 +349,7 @@ bool BlockBodyNode::foldValue() {
   return ret;
 }
 
-bool TypedInstrSetNode::foldValue() {
-  return instrSet->foldValue();
-}
+bool TypedInstrSetNode::foldValue() { return instrSet->foldValue(); }
 
 bool InstrSetNode::foldValue() {
   bool ret = true;
@@ -513,9 +526,7 @@ bool MetadataNode::hasUnresolvedValue() {
   return expNode->hasUnresolvedValue();
 }
 
-bool BlockNode::hasUnresolvedValue() {
-  return blockBody->hasUnresolvedValue();
-}
+bool BlockNode::hasUnresolvedValue() { return blockBody->hasUnresolvedValue(); }
 
 bool BlockBodyNode::hasUnresolvedValue() {
   bool ret = false;

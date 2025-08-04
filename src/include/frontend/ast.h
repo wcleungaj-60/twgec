@@ -87,12 +87,13 @@ public:
   std::unique_ptr<ExpressionNode> expNode;
 
   // Constructor
-  MetadataNode(const std::string &key, std::unique_ptr<ExpressionNode> &expNode,
+  MetadataNode(std::string key, std::unique_ptr<ExpressionNode> expNode,
                Location loc)
       : key(key), expNode(std::move(expNode)), loc(loc) {}
 
   // Function
   void print(int indent = 0);
+  std::unique_ptr<MetadataNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
   bool hasUnresolvedValue();
@@ -105,12 +106,16 @@ public:
   std::string identifier;
   std::vector<std::string> params;
   std::unique_ptr<TypedInstrSetNode> typedInstrSet;
+  std::unique_ptr<BlockBodyNode> blockBody;
 
   // Constructor
   FunDefNode(const std::string &id, Location loc) : identifier(id), loc(loc) {}
   FunDefNode(const std::string &id, Location loc,
              std::unique_ptr<TypedInstrSetNode> typedInstrSet)
       : identifier(id), loc(loc), typedInstrSet(std::move(typedInstrSet)) {}
+  FunDefNode(const std::string &id, Location loc,
+             std::unique_ptr<BlockBodyNode> blockBody)
+      : identifier(id), loc(loc), blockBody(std::move(blockBody)) {}
 
   // Function
   void print(int indent = 0);
@@ -146,6 +151,7 @@ public:
 
   // Function
   void print(int indent = 0);
+  std::unique_ptr<BlockBodyNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
   bool hasUnresolvedValue();
