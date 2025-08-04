@@ -153,7 +153,7 @@ std::unique_ptr<BlockNode> Parser::parseBlock() {
   if (tokens.front().type == TokenType::ASSIGN) {
     consume(TokenType::ASSIGN);
     auto blockConstructor = parseInstruction();
-    if(!blockConstructor)
+    if (!blockConstructor)
       return nullptr;
     blockNode->blockConstructor = std::move(blockConstructor);
   } else {
@@ -522,6 +522,11 @@ std::unique_ptr<ValueNode> Parser::parseValue() {
     }
     consume(TokenType::CLOSESQR);
     return listNode;
+  }
+  if (consume(TokenType::SUB, false)) {
+    std::string value = tokens.front().value;
+    if (consume(TokenType::INT))
+      return std::make_unique<IntValueNode>(-std::stoi(value), loc);
   }
   std::cerr << "SyntaxError: Expecting a value (string/int/bool/point) at "
             << tokens.front().location << ". Found \'" << tokens.front().value

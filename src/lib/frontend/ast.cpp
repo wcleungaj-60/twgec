@@ -18,8 +18,8 @@ void ModuleNode::print(std::string title, int indent) {
 }
 
 void MetadataNode::print(int indent) {
-  std::cout << inden(indent) << "MetadataNode: " << key << " = " << *expNode
-            << "\n";
+  std::cout << inden(indent) << "__" << key << "__ = " << *expNode
+            << ";\n";
 }
 
 void FunDefNode::print(int indent) {

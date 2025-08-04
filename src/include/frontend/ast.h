@@ -533,7 +533,7 @@ inline std::ostream &operator<<(std::ostream &os,
                  dynamic_cast<VariableValueNode *>(valueNode.get())) {
     os << varNode->value;
   } else if (auto ptNode = dynamic_cast<PointValueNode *>(valueNode.get())) {
-    os << "(" << *(ptNode->x.get()) << "," << *(ptNode->y.get()) << ")";
+    os << "Point(" << *(ptNode->x.get()) << "," << *(ptNode->y.get()) << ")";
   } else if (auto listNode = dynamic_cast<ListValueNode *>(valueNode.get())) {
     os << "[";
     for (auto i = 0; i < listNode->items.size(); i++) {

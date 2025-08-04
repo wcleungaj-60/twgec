@@ -9,16 +9,17 @@ using std::unique_ptr;
 
 bool ifStatementPropagation(std::unique_ptr<InstrSetNode> &instrSet) {
   std::vector<int> ifStatementIdxes;
+  auto &compositeInstrs = instrSet->instructions;
   // Step 1: Get the if-statement index
-  for (int idx = 0; idx < instrSet->instructions.size(); idx++) {
-    if (!instrSet->instructions[idx]->ifStatement)
+  for (int idx = 0; idx < compositeInstrs.size(); idx++) {
+    if (!compositeInstrs[idx]->ifStatement)
       continue;
-    auto &condition = instrSet->instructions[idx]->ifStatement->condition;
+    auto &condition = compositeInstrs[idx]->ifStatement->condition;
     if (!condition->isValue ||
         !dynamic_cast<BoolValueNode *>(condition->value.get())) {
       std::cerr << "Syntax Error: Boolean value is expected in the if statment "
                    "condition. Found at "
-                << instrSet->instructions[idx]->loc << ".\n";
+                << compositeInstrs[idx]->loc << ".\n";
       return false;
     }
     ifStatementIdxes.push_back(idx);
@@ -28,21 +29,17 @@ bool ifStatementPropagation(std::unique_ptr<InstrSetNode> &instrSet) {
   std::reverse(ifStatementIdxes.begin(), ifStatementIdxes.end());
   // Step 2: Flatten the if-statement
   for (int idx : ifStatementIdxes) {
-    auto &ifStatement = instrSet->instructions[idx]->ifStatement;
-    auto pos = instrSet->instructions.begin() + idx;
+    auto &ifStatement = compositeInstrs[idx]->ifStatement;
+    auto pos = compositeInstrs.begin() + idx;
     auto ifTrue =
         dynamic_cast<BoolValueNode *>(ifStatement->condition->value.get())
             ->value;
     auto clonedTrueBlock = ifStatement->trueBlock->clone();
-    instrSet->instructions.erase(pos);
-    if (ifTrue) {
-      for (auto it = clonedTrueBlock->instructions.rbegin();
-           it != clonedTrueBlock->instructions.rend(); it++) {
-        auto clonedInstr = std::make_unique<CompositeInstrNode>(
-            it->get()->loc, it->get()->instruction->clone());
-        instrSet->instructions.insert(pos, std::move(clonedInstr));
-      }
-    }
+    compositeInstrs.erase(pos);
+    if (ifTrue)
+      compositeInstrs.insert(
+          pos, std::make_move_iterator(clonedTrueBlock->instructions.begin()),
+          std::make_move_iterator(clonedTrueBlock->instructions.end()));
   }
   return true;
 }

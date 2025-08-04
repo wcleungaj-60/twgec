@@ -25,17 +25,8 @@ def addJobMapSign(x, y, rotation, text, buttonCodeSuffix) : actions {
     addMapSign(x = x, y = y, rotation = rotation, text = text, buttonCode = "chooseJob" + buttonCodeSuffix, buttonLabel = "選擇");
 }
 
-def chooseJob(jobName) : actions {
-    setObjectVar(object = "instance", key = "job", type = "string", value = jobName);
-    actorTalk(actorId = "instance", text = "已選擇職業：{instance.job}");
-    if(jobName == "新兵訓練師"){
-        // setInt("royalHp", "{royalHp} + 10"); // function calling a function is not supported
-        setGlobal(key = "royalHp", type = "integer", value = "{royalHp} + 10");
-    }
-}
-
 def chooseJobDef(buttonId, jobName) : block {
-    __repeat__ = 9999;
+    __repeat__ = -1;
     triggers {
         clickButton(varName = "instance", buttonId = buttonId);
     }
@@ -43,7 +34,62 @@ def chooseJobDef(buttonId, jobName) : block {
         checkString(value = "{instance.job}", matchKind = "equal", str = "undefined");
     }
     actions {
-        chooseJob(jobName = jobName);
+        setObjectVar(object = "instance", key = "job", type = "string", value = jobName);
+        actorTalk(actorId = "instance", text = "已選擇職業：{instance.job}");
+        if(jobName == "新兵訓練師") {
+            setInt("royalHp", "{royalHp} + 10");
+        }
+    }
+}
+
+def releasePowerDef(ability, jobName) : block {
+    __repeat__ = -1;
+    triggers {
+        releasePower(varName = "instance", ability = ability);
+    }
+    checks {
+        checkString(value = "{instance.job}", matchKind = "equal", str = jobName);
+    }
+    actions {
+        if(jobName == "守望者") {
+            deltaHp(actorCode = "instance", value = 30);
+        }
+        if(jobName == "忍者") {
+            setNum("tempX", "{instance.x}/32");
+            setNum("tempY", "{instance.y}/32");
+            addActor(name = "分身", localVarname = "actor", camp = "天影", hp = 100, x = "{tempX}", y = "{tempY}", weapon1 = "爪子", weapon2 = "步槍", role = "天影武士1");
+            wait(duration = 10000);
+            actorDisappear(actorId = "actor");
+        }
+    }
+}
+
+def releasePowerByWeaponDef(weapon, jobName) : block {
+    __repeat__ = -1;
+    triggers {
+        releasePower(varName = "instance", weapon = weapon);
+    }
+    checks {
+        checkString(value = "{instance.job}", matchKind = "equal", str = jobName);
+    }
+    actions {
+        if(jobName == "龍騎士") {
+            longBo(actorCode = "instance");
+        }
+    }
+}
+
+def winDef(winner) : block {
+    triggers {
+        if(winner == "skydow") {
+            actorDead(actorId = "camp_royal");
+        }
+        if(winner == "royal") {
+            actorDead(actorId = "camp_skydow");
+        }
+    }
+    actions {
+        missionComplete(camp = winner);
     }
 }
 
@@ -64,7 +110,7 @@ block init {
 
 block spawn {
     __delay__ = 5000;
-    __repeat__ = 9999;
+    __repeat__ = -1;
     __repeatInterval__ = 10000;
     actions {
         addActor(name = "天影士兵({skydowHp})", camp = "天影", hp = "{skydowHp}", x = 1, y = 1, role = "天影士兵", patrol = [Point(14,1),Point(15,18)]);
@@ -75,7 +121,7 @@ block spawn {
 }
 
 block sniperAttack {
-    __repeat__ = 9999;
+    __repeat__ = -1;
     triggers {
         actorFire(varName = "instance", actorId = "sniper");
     }
@@ -90,63 +136,9 @@ block chooseJobR2 = chooseJobDef(buttonId = "chooseJobR2", jobName = "新兵訓�
 block chooseJobS1 = chooseJobDef(buttonId = "chooseJobS1", jobName = "龍騎士");
 block chooseJobS2 = chooseJobDef(buttonId = "chooseJobS2", jobName = "忍者");
 
-block releasePowerR1 {
-    __repeat__ = 9999;
-    triggers {
-        releasePower(varName = "instance", ability = "防護罩");
-    }
-    checks {
-        checkString(value = "{instance.job}", matchKind = "equal", str = "守望者");
-    }
-    actions {
-        deltaHp(actorCode = "instance", value = 30);
-    }
-}
+block releasePowerR1 = releasePowerDef(ability = "防護罩", jobName = "守望者");
+block releasePowerS1 = releasePowerByWeaponDef(weapon = "大刀", jobName = "龍騎士");
+block releasePowerS2 = releasePowerDef(ability = "分身術", jobName = "忍者");
 
-block releasePowerS1 {
-    __repeat__ = 9999;
-    triggers {
-        releasePower(varName = "instance", weapon = "大刀");
-    }
-    checks {
-        checkString(value = "{instance.job}", matchKind = "equal", str = "龍騎士");
-    }
-    actions {
-        longBo(actorCode = "instance");
-    }
-}
-
-block releasePowerS2 {
-    __repeat__ = 9999;
-    triggers {
-        releasePower(varName = "instance", ability = "分身術");
-    }
-    checks {
-        checkString(value = "{instance.job}", matchKind = "equal", str = "忍者");
-    }
-    actions {
-        setNum("tempX", "{instance.x}/32");
-        setNum("tempY", "{instance.y}/32");
-        addActor(name = "分身", localVarname = "actor", camp = "天影", hp = 100, x = "{tempX}", y = "{tempY}", weapon1 = "爪子", weapon2 = "步槍", role = "天影武士1");
-        wait(duration = 10000);
-        actorDisappear(actorId = "actor");
-    }
-}
-
-block royalWin {
-    triggers {
-        actorDead(actorId = "camp_skydow");
-    }
-    actions {
-        missionComplete(camp = "royal");
-    }
-}
-
-block skydowWin {
-    triggers {
-        actorDead(actorId = "camp_royal");
-    }
-    actions {
-        missionComplete(camp = "skydow");
-    }
-}
+block royalWin = winDef("royal");
+block skydowWin = winDef("skydow");
