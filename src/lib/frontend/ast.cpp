@@ -44,7 +44,12 @@ void ConstDefNode::print(int indent) {
 
 void BlockNode::print(int indent) {
   std::cout << inden(indent) << "block " << identifier;
-  blockBody->print(indent);
+  if(blockBody)
+    blockBody->print(indent);
+  else{
+    std::cout << " = ";
+    blockConstructor->print(indent);
+  }
 }
 
 void BlockBodyNode::print(int indent) {
@@ -59,7 +64,7 @@ void BlockBodyNode::print(int indent) {
 }
 
 void TypedInstrSetNode::print(int indent) {
-  std::cout <<  type << " {\n";
+  std::cout << type << " {\n";
   instrSet->print(indent + 4);
   std::cout << inden(indent) << "}\n";
 }

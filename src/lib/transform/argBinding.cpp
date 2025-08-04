@@ -8,8 +8,6 @@ using std::unique_ptr;
 
 bool argBinding(std::map<std::string, std::unique_ptr<FunDefNode>> &funDefs,
                 std::unique_ptr<InstructionNode> &instr) {
-  if (instr->positional_args.empty())
-    return true;
   if (funDefs.count(instr->identifier) == 0)
     return true;
   // Currently only the function can map positional arg into named arg
@@ -29,6 +27,15 @@ bool argBinding(std::map<std::string, std::unique_ptr<FunDefNode>> &funDefs,
                            std::make_move_iterator(bindedArgs.begin()),
                            std::make_move_iterator(bindedArgs.end()));
   instr->positional_args.clear();
+  if (instr->named_args.size() != funParam.size()) {
+    std::cerr << "Syntax Error: Unmatched number of arguments of function `"
+              << instr->identifier << "`. Expected: " << funParam.size()
+              << " arguments defined at "
+              << funDefs.find(instr->identifier)->second->loc << ". Found "
+              << instr->named_args.size() << " arguments passed at "
+              << instr->loc << ".\n";
+    return false;
+  }
   return true;
 }
 
@@ -49,9 +56,13 @@ bool argBinding(std::map<std::string, std::unique_ptr<FunDefNode>> &funDefs,
 bool argBinding(const unique_ptr<ModuleNode> &moduleNode) {
   auto &funDefs = moduleNode->funDefs;
   for (auto &blockNode : moduleNode->blocks) {
-    for (auto &typedInstrSet : blockNode->blockBody->typedInstrSets) {
-      if (!argBinding(funDefs, typedInstrSet->instrSet))
-        return false;
+    if (blockNode->blockBody)
+      for (auto &typedInstrSet : blockNode->blockBody->typedInstrSets) {
+        if (!argBinding(funDefs, typedInstrSet->instrSet))
+          return false;
+      }
+    else {
+      argBinding(funDefs, blockNode->blockConstructor);
     }
   }
   return true;

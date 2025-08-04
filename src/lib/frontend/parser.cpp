@@ -1,5 +1,6 @@
 #include "frontend/parser.h"
 #include "ast.h"
+#include "token.h"
 #include <queue>
 #include <vector>
 
@@ -53,6 +54,8 @@ std::unique_ptr<ModuleNode> Parser::parse() {
       } else {
         return nullptr;
       }
+    } else if (tokens.front().type == TokenType::SEMICOLON) {
+      consume(TokenType::SEMICOLON);
     } else {
       std::cerr << "SyntaxError: Expecting block or metadata declaration at "
                 << tokens.front().location << ". Found \'"
@@ -146,11 +149,19 @@ std::unique_ptr<BlockNode> Parser::parseBlock() {
   Location loc = tokens.front().location;
   if (!consume(TokenType::IDENTIFIER))
     return nullptr;
-  auto blockBody = parseBlockBody();
-  if (!blockBody)
-    return nullptr;
   std::unique_ptr<BlockNode> blockNode = std::make_unique<BlockNode>(name, loc);
-  blockNode->blockBody = std::move(blockBody);
+  if (tokens.front().type == TokenType::ASSIGN) {
+    consume(TokenType::ASSIGN);
+    auto blockConstructor = parseInstruction();
+    if(!blockConstructor)
+      return nullptr;
+    blockNode->blockConstructor = std::move(blockConstructor);
+  } else {
+    auto blockBody = parseBlockBody();
+    if (!blockBody)
+      return nullptr;
+    blockNode->blockBody = std::move(blockBody);
+  }
   return blockNode;
 }
 

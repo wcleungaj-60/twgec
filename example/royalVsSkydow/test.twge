@@ -34,6 +34,19 @@ def chooseJob(jobName) : actions {
     }
 }
 
+def chooseJobDef(buttonId, jobName) : block {
+    __repeat__ = 9999;
+    triggers {
+        clickButton(varName = "instance", buttonId = buttonId);
+    }
+    checks {
+        checkString(value = "{instance.job}", matchKind = "equal", str = "undefined");
+    }
+    actions {
+        chooseJob(jobName = jobName);
+    }
+}
+
 block init {
     actions {
         setInt("royalHp", 100);
@@ -72,57 +85,10 @@ block sniperAttack {
     }
 }
 
-block chooseJobR1 {
-    __repeat__ = 9999;
-    triggers {
-        clickButton(varName = "instance", buttonId = "chooseJobR1");
-    }
-    checks {
-        checkString(value = "{instance.job}", matchKind = "equal", str = "undefined");
-    }
-    actions {
-        chooseJob("守望者");
-    }
-}
-
-block chooseJobR2 {
-    __repeat__ = 9999;
-    triggers {
-        clickButton(varName = "instance", buttonId = "chooseJobR2");
-    }
-    checks {
-        checkString(value = "{instance.job}", matchKind = "equal", str = "undefined");
-    }
-    actions {
-        chooseJob("新兵訓練師");
-    }
-}
-
-block chooseJobS1 {
-    __repeat__ = 9999;
-    triggers {
-        clickButton(varName = "instance", buttonId = "chooseJobS1");
-    }
-    checks {
-        checkString(value = "{instance.job}", matchKind = "equal", str = "undefined");
-    }
-    actions {
-        chooseJob("龍騎士");
-    }
-}
-
-block chooseJobS2 {
-    __repeat__ = 9999;
-    triggers {
-        clickButton(varName = "instance", buttonId = "chooseJobS2");
-    }
-    checks {
-        checkString(value = "{instance.job}", matchKind = "equal", str = "undefined");
-    }
-    actions {
-        chooseJob("忍者");
-    }
-}
+block chooseJobR1 = chooseJobDef(buttonId = "chooseJobR1", jobName = "守望者");
+block chooseJobR2 = chooseJobDef(buttonId = "chooseJobR2", jobName = "新兵訓練師");
+block chooseJobS1 = chooseJobDef(buttonId = "chooseJobS1", jobName = "龍騎士");
+block chooseJobS2 = chooseJobDef(buttonId = "chooseJobS2", jobName = "忍者");
 
 block releasePowerR1 {
     __repeat__ = 9999;

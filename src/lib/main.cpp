@@ -8,7 +8,16 @@
 bool loweringPipeline(const std::unique_ptr<ModuleNode> &moduleNode,
                       bool printAST = false) {
   if (printAST)
-    moduleNode->print("AST Before Arg Binding");
+    moduleNode->print("AST Before First Arg Binding");
+  // It cannot bind the instruction arg inside the block
+  if (!transform::argBinding(std::move(moduleNode)))
+    return false;
+  if (printAST)
+    moduleNode->print("AST Before Block Inling");
+  if (!transform::blockInling(std::move(moduleNode)))
+    return false;
+  if (printAST)
+    moduleNode->print("AST Before Second Arg Binding");
   if (!transform::argBinding(std::move(moduleNode)))
     return false;
   if (printAST)

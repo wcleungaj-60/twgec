@@ -25,17 +25,8 @@ bool isValidFuncCaller(std::unique_ptr<InstructionNode> &caller,
               << " scope. Found at " << caller->loc << ".\n";
     return false;
   }
-  auto funParamNum = funDef->params.size();
-  auto callerArgNum = caller->named_args.size();
   set<string> paramSet;
   set<string> argSet;
-  if (funParamNum != callerArgNum) {
-    std::cerr << "Syntax Error: Unmatched function parameters number. "
-              << funParamNum << " parameters are expected at " << funDef->loc
-              << ". " << callerArgNum << " paramters are found at "
-              << caller->loc << ".\n";
-    return false;
-  }
   std::map<string, unique_ptr<ExpressionNode>> namedArgsMap;
   for (string param : funDef->params)
     paramSet.insert(param);

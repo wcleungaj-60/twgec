@@ -128,6 +128,7 @@ public:
   Location loc;
   std::string identifier;
   std::unique_ptr<BlockBodyNode> blockBody;
+  std::unique_ptr<InstructionNode> blockConstructor;
 
   // Constructor
   BlockNode(const std::string &id, Location loc) : identifier(id), loc(loc) {}
