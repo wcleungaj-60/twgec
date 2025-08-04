@@ -1,0 +1,1362 @@
+{
+    "$schema": "https://code.gamelet.com/gassets/schema/events/v1",
+    "config": {
+        "stage": {
+            "width": 600,
+            "height": 500,
+            "backgroundColor": "#999999",
+            "resolutionPolicy": "showAll",
+            "alignHorizontal": "center",
+            "alignVertical": "middle"
+        },
+        "preload": {
+            "sources": [],
+            "resourcesExclude": []
+        },
+        "configs": {
+            "TwilightWarsConfig": {
+                "title": "皇家天影之爭",
+                "serverConfig": {
+                    "minPlayers": 1,
+                    "supportSignin": true,
+                    "mustLogin": true,
+                    "allowGuest": true,
+                    "supportMsgServer": true,
+                    "gamezoneCode": "mission",
+                    "roomType": "close",
+                    "roomSize": 4
+                },
+                "runGame": true,
+                "gameStartFadein": "fadein",
+                "lives": 3,
+                "debugCamp": "ask",
+                "releaseCamp": "ask",
+                "setInitFocus": false,
+                "initFocus": {
+                    "x": "0",
+                    "y": "0"
+                },
+                "campOptions": {
+                    "campOpSkydow": true,
+                    "campOpRoyal": true,
+                    "campOpThird": true
+                },
+                "map": "CG.TWEventsGameTemplate/gamemap.twmap",
+                "maxAbilityLevel": 2,
+                "nextGameEnabled": true,
+                "disableNextGameOnMissionComplete": false,
+                "playDefaultMusic": true,
+                "cameraAfterOver": "restrict",
+                "useDefaultItems": true,
+                "useDefaultCampLocs": false,
+                "skydowLocs": [
+                    {
+                        "x": "7",
+                        "y": "1"
+                    }
+                ],
+                "royalLocs": [
+                    {
+                        "x": "22",
+                        "y": "18"
+                    }
+                ],
+                "thirdLocs": [
+                    {
+                        "x": "28",
+                        "y": "1"
+                    },
+                    {
+                        "x": "1",
+                        "y": "28"
+                    }
+                ],
+                "useCustomWeapons": false,
+                "customWeapons": [],
+                "useCustomItems": false,
+                "customItems": [],
+                "enabled": true,
+                "@use": 0
+            }
+        }
+    },
+    "events": [
+        {
+            "id": "init",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": 0,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "royalHp",
+                        "valueType": "integer",
+                        "value": "100"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "skydowHp",
+                        "valueType": "integer",
+                        "value": "100"
+                    }
+                },
+                {
+                    "type": "AddActor",
+                    "data": {
+                        "actorCode": "sniper*",
+                        "name": "狙擊手(200)",
+                        "role": {
+                            "dr": 2
+                        },
+                        "actorType": "defaultType",
+                        "weapon0": {
+                            "w0Type": "shield"
+                        },
+                        "weapon1": {
+                            "w1Type": "snipegun"
+                        },
+                        "camp": "skydow",
+                        "group": "0",
+                        "location": {
+                            "x": "11",
+                            "y": "7",
+                            "range": "0"
+                        },
+                        "shiftX": 0,
+                        "shiftY": 0,
+                        "spawnLoc": true,
+                        "rotation": "0",
+                        "idleRotate": true,
+                        "maxhp": "200",
+                        "manaPower": "0",
+                        "lives": "1",
+                        "preferAbilityLevel": "smart",
+                        "maxAbilityLevel": 1,
+                        "weight": "4",
+                        "strength": "1",
+                        "vision": "300",
+                        "range": "0",
+                        "score": "10",
+                        "bloodType": "default",
+                        "unbrokenArmor": true,
+                        "tornadoRes": "none",
+                        "distractWhenHit": true,
+                        "thinkInterval": 60,
+                        "farAutoLevel": "0",
+                        "patrols": true,
+                        "patrolPath": [],
+                        "bornDelayDuration": "0",
+                        "bornDuration": "1000",
+                        "bornLockDuration": "1000",
+                        "bornEffect": "none",
+                        "bornAnim": "fadein",
+                        "localVarname": "actor",
+                        "globalVarname": ""
+                    }
+                },
+                {
+                    "type": "AddActor",
+                    "data": {
+                        "actorCode": "sniper*",
+                        "name": "狙擊手(200)",
+                        "role": {
+                            "dr": 7
+                        },
+                        "actorType": "defaultType",
+                        "weapon0": {
+                            "w0Type": "shield"
+                        },
+                        "weapon1": {
+                            "w1Type": "snipegun"
+                        },
+                        "camp": "royal",
+                        "group": "0",
+                        "location": {
+                            "x": "18",
+                            "y": "12",
+                            "range": "0"
+                        },
+                        "shiftX": 0,
+                        "shiftY": 0,
+                        "spawnLoc": true,
+                        "rotation": "0",
+                        "idleRotate": true,
+                        "maxhp": "200",
+                        "manaPower": "0",
+                        "lives": "1",
+                        "preferAbilityLevel": "smart",
+                        "maxAbilityLevel": 1,
+                        "weight": "4",
+                        "strength": "1",
+                        "vision": "300",
+                        "range": "0",
+                        "score": "10",
+                        "bloodType": "default",
+                        "unbrokenArmor": true,
+                        "tornadoRes": "none",
+                        "distractWhenHit": true,
+                        "thinkInterval": 60,
+                        "farAutoLevel": "0",
+                        "patrols": true,
+                        "patrolPath": [],
+                        "bornDelayDuration": "0",
+                        "bornDuration": "1000",
+                        "bornLockDuration": "1000",
+                        "bornEffect": "none",
+                        "bornAnim": "fadein",
+                        "localVarname": "actor",
+                        "globalVarname": ""
+                    }
+                },
+                {
+                    "type": "AddActor",
+                    "data": {
+                        "actorCode": "camp_skydow",
+                        "name": "軍營(500)",
+                        "role": {
+                            "dr": 8,
+                            "rsrc": "TWilightGameEventCompiler.character_camp"
+                        },
+                        "actorType": "defaultType",
+                        "weapon0": {
+                            "w0Type": "fist"
+                        },
+                        "weapon1": {
+                            "w1Type": "fist"
+                        },
+                        "camp": "skydow",
+                        "group": "0",
+                        "location": {
+                            "x": "9",
+                            "y": "6",
+                            "range": "0"
+                        },
+                        "shiftX": 0,
+                        "shiftY": 0,
+                        "spawnLoc": true,
+                        "rotation": "0",
+                        "idleRotate": true,
+                        "maxhp": "500",
+                        "manaPower": "0",
+                        "lives": "1",
+                        "preferAbilityLevel": "smart",
+                        "maxAbilityLevel": 1,
+                        "weight": "4",
+                        "strength": "1",
+                        "vision": "300",
+                        "range": "0",
+                        "score": "10",
+                        "bloodType": "default",
+                        "unbrokenArmor": true,
+                        "tornadoRes": "none",
+                        "distractWhenHit": true,
+                        "thinkInterval": 60,
+                        "farAutoLevel": "0",
+                        "patrols": true,
+                        "patrolPath": [],
+                        "bornDelayDuration": "0",
+                        "bornDuration": "1000",
+                        "bornLockDuration": "1000",
+                        "bornEffect": "none",
+                        "bornAnim": "fadein",
+                        "localVarname": "actor",
+                        "globalVarname": ""
+                    }
+                },
+                {
+                    "type": "AddActor",
+                    "data": {
+                        "actorCode": "camp_royal",
+                        "name": "軍營(500)",
+                        "role": {
+                            "dr": 8,
+                            "rsrc": "TWilightGameEventCompiler.character_camp"
+                        },
+                        "actorType": "defaultType",
+                        "weapon0": {
+                            "w0Type": "fist"
+                        },
+                        "weapon1": {
+                            "w1Type": "fist"
+                        },
+                        "camp": "royal",
+                        "group": "0",
+                        "location": {
+                            "x": "20",
+                            "y": "13",
+                            "range": "0"
+                        },
+                        "shiftX": 0,
+                        "shiftY": 0,
+                        "spawnLoc": true,
+                        "rotation": "0",
+                        "idleRotate": true,
+                        "maxhp": "500",
+                        "manaPower": "0",
+                        "lives": "1",
+                        "preferAbilityLevel": "smart",
+                        "maxAbilityLevel": 1,
+                        "weight": "4",
+                        "strength": "1",
+                        "vision": "300",
+                        "range": "0",
+                        "score": "10",
+                        "bloodType": "default",
+                        "unbrokenArmor": true,
+                        "tornadoRes": "none",
+                        "distractWhenHit": true,
+                        "thinkInterval": 60,
+                        "farAutoLevel": "0",
+                        "patrols": true,
+                        "patrolPath": [],
+                        "bornDelayDuration": "0",
+                        "bornDuration": "1000",
+                        "bornLockDuration": "1000",
+                        "bornEffect": "none",
+                        "bornAnim": "fadein",
+                        "localVarname": "actor",
+                        "globalVarname": ""
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "27",
+                                "y": "17",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "0",
+                        "speech": "【守望者】\n使用防護罩時，恢復30點體力",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "chooseJobR1",
+                                    "close": true,
+                                    "label": "選擇",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "27",
+                                "y": "16",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "0",
+                        "speech": "【新兵訓練師】\n我方士兵血量上限加10",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "chooseJobR2",
+                                    "close": true,
+                                    "label": "選擇",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "2",
+                                "y": "2",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "180",
+                        "speech": "【龍騎士】\n使用黑龍波時，會額外召喚出一條黑龍波",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "chooseJobS1",
+                                    "close": true,
+                                    "label": "選擇",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "2",
+                                "y": "3",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "180",
+                        "speech": "【忍者】\n使用影分身時，會召喚一個持續10秒的100血分身",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "chooseJobS2",
+                                    "close": true,
+                                    "label": "選擇",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": []
+        },
+        {
+            "id": "spawn",
+            "disabled": false,
+            "folder": "",
+            "startTime": 5000,
+            "checkInterval": 10,
+            "repeats": 9999,
+            "repeatInterval": 10000,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "AddActor",
+                    "data": {
+                        "actorCode": "ai*",
+                        "name": "天影士兵({skydowHp})",
+                        "role": {
+                            "dr": 17
+                        },
+                        "actorType": "defaultType",
+                        "weapon0": {
+                            "w0Type": "default"
+                        },
+                        "weapon1": {
+                            "w1Type": "default"
+                        },
+                        "camp": "skydow",
+                        "group": "0",
+                        "location": {
+                            "x": "1",
+                            "y": "1",
+                            "range": "0"
+                        },
+                        "shiftX": 0,
+                        "shiftY": 0,
+                        "spawnLoc": true,
+                        "rotation": "0",
+                        "idleRotate": true,
+                        "maxhp": "{skydowHp}",
+                        "manaPower": "0",
+                        "lives": "1",
+                        "preferAbilityLevel": "smart",
+                        "maxAbilityLevel": 1,
+                        "weight": "4",
+                        "strength": "1",
+                        "vision": "300",
+                        "range": "10000",
+                        "score": "10",
+                        "bloodType": "default",
+                        "unbrokenArmor": true,
+                        "tornadoRes": "none",
+                        "distractWhenHit": true,
+                        "thinkInterval": 60,
+                        "farAutoLevel": "0",
+                        "patrols": true,
+                        "patrolPath": [
+                            {
+                                "loc": {
+                                    "x": "14",
+                                    "y": "1",
+                                    "range": "0"
+                                },
+                                "rotation": "0",
+                                "duration": "3000"
+                            },
+                            {
+                                "loc": {
+                                    "x": "15",
+                                    "y": "18",
+                                    "range": "0"
+                                },
+                                "rotation": "0",
+                                "duration": "3000"
+                            }
+                        ],
+                        "bornDelayDuration": "0",
+                        "bornDuration": "1000",
+                        "bornLockDuration": "1000",
+                        "bornEffect": "none",
+                        "bornAnim": "fadein",
+                        "localVarname": "actor",
+                        "globalVarname": ""
+                    }
+                },
+                {
+                    "type": "AddActor",
+                    "data": {
+                        "actorCode": "ai*",
+                        "name": "皇家士兵({royalHp})",
+                        "role": {
+                            "dr": 18
+                        },
+                        "actorType": "defaultType",
+                        "weapon0": {
+                            "w0Type": "default"
+                        },
+                        "weapon1": {
+                            "w1Type": "default"
+                        },
+                        "camp": "royal",
+                        "group": "0",
+                        "location": {
+                            "x": "28",
+                            "y": "18",
+                            "range": "0"
+                        },
+                        "shiftX": 0,
+                        "shiftY": 0,
+                        "spawnLoc": true,
+                        "rotation": "0",
+                        "idleRotate": true,
+                        "maxhp": "{royalHp}",
+                        "manaPower": "0",
+                        "lives": "1",
+                        "preferAbilityLevel": "smart",
+                        "maxAbilityLevel": 1,
+                        "weight": "4",
+                        "strength": "1",
+                        "vision": "300",
+                        "range": "10000",
+                        "score": "10",
+                        "bloodType": "default",
+                        "unbrokenArmor": true,
+                        "tornadoRes": "none",
+                        "distractWhenHit": true,
+                        "thinkInterval": 60,
+                        "farAutoLevel": "0",
+                        "patrols": true,
+                        "patrolPath": [
+                            {
+                                "loc": {
+                                    "x": "15",
+                                    "y": "18",
+                                    "range": "0"
+                                },
+                                "rotation": "0",
+                                "duration": "3000"
+                            },
+                            {
+                                "loc": {
+                                    "x": "14",
+                                    "y": "1",
+                                    "range": "0"
+                                },
+                                "rotation": "0",
+                                "duration": "3000"
+                            }
+                        ],
+                        "bornDelayDuration": "0",
+                        "bornDuration": "1000",
+                        "bornLockDuration": "1000",
+                        "bornEffect": "none",
+                        "bornAnim": "fadein",
+                        "localVarname": "actor",
+                        "globalVarname": ""
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "skydowHp",
+                        "valueType": "integer",
+                        "value": "{skydowHp} + 1"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "royalHp",
+                        "valueType": "integer",
+                        "value": "{royalHp} + 1"
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": []
+        },
+        {
+            "id": "sniperAttack",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": 9999,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "angle",
+                        "valueType": "number",
+                        "value": "{instance.bodyRotation}*180/3.14"
+                    }
+                },
+                {
+                    "type": "EnblastEffect",
+                    "data": {
+                        "fromPos": {
+                            "posType": "actor",
+                            "actorCode": "{instance}",
+                            "alive": true
+                        },
+                        "toType": "angle",
+                        "toAngle": "{angle}",
+                        "damage": "30",
+                        "scale": "1",
+                        "speed": "0.7"
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "ActorFire",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": "sniper"
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "fireTriggerType": "all",
+                        "damageTypes": []
+                    }
+                }
+            ]
+        },
+        {
+            "id": "chooseJobR1",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": 9999,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "job",
+                        "valueType": "string",
+                        "value": "守望者"
+                    }
+                },
+                {
+                    "type": "ActorTalk",
+                    "data": {
+                        "cleanTalk": true,
+                        "speech": "已選擇職業：{instance.job}",
+                        "duration": "3000",
+                        "wait": true,
+                        "waitMore": "100",
+                        "actorCode": "instance"
+                    }
+                }
+            ],
+            "checks": [
+                {
+                    "type": "String",
+                    "data": {
+                        "value": "{instance.job}",
+                        "method": "equal",
+                        "str": "undefined",
+                        "eventLocal": "",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
+            "triggers": [
+                {
+                    "type": "TalkButton",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "checkButtoncode": true,
+                        "buttonCode": "chooseJobR1",
+                        "varnameDevice": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "chooseJobR2",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": 9999,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "job",
+                        "valueType": "string",
+                        "value": "新兵訓練師"
+                    }
+                },
+                {
+                    "type": "ActorTalk",
+                    "data": {
+                        "cleanTalk": true,
+                        "speech": "已選擇職業：{instance.job}",
+                        "duration": "3000",
+                        "wait": true,
+                        "waitMore": "100",
+                        "actorCode": "instance"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "royalHp",
+                        "valueType": "integer",
+                        "value": "{royalHp} + 10"
+                    }
+                }
+            ],
+            "checks": [
+                {
+                    "type": "String",
+                    "data": {
+                        "value": "{instance.job}",
+                        "method": "equal",
+                        "str": "undefined",
+                        "eventLocal": "",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
+            "triggers": [
+                {
+                    "type": "TalkButton",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "checkButtoncode": true,
+                        "buttonCode": "chooseJobR2",
+                        "varnameDevice": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "chooseJobS1",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": 9999,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "job",
+                        "valueType": "string",
+                        "value": "龍騎士"
+                    }
+                },
+                {
+                    "type": "ActorTalk",
+                    "data": {
+                        "cleanTalk": true,
+                        "speech": "已選擇職業：{instance.job}",
+                        "duration": "3000",
+                        "wait": true,
+                        "waitMore": "100",
+                        "actorCode": "instance"
+                    }
+                }
+            ],
+            "checks": [
+                {
+                    "type": "String",
+                    "data": {
+                        "value": "{instance.job}",
+                        "method": "equal",
+                        "str": "undefined",
+                        "eventLocal": "",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
+            "triggers": [
+                {
+                    "type": "TalkButton",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "checkButtoncode": true,
+                        "buttonCode": "chooseJobS1",
+                        "varnameDevice": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "chooseJobS2",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": 9999,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "job",
+                        "valueType": "string",
+                        "value": "忍者"
+                    }
+                },
+                {
+                    "type": "ActorTalk",
+                    "data": {
+                        "cleanTalk": true,
+                        "speech": "已選擇職業：{instance.job}",
+                        "duration": "3000",
+                        "wait": true,
+                        "waitMore": "100",
+                        "actorCode": "instance"
+                    }
+                }
+            ],
+            "checks": [
+                {
+                    "type": "String",
+                    "data": {
+                        "value": "{instance.job}",
+                        "method": "equal",
+                        "str": "undefined",
+                        "eventLocal": "",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
+            "triggers": [
+                {
+                    "type": "TalkButton",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "checkButtoncode": true,
+                        "buttonCode": "chooseJobS2",
+                        "varnameDevice": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "releasePowerR1",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": 9999,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "DeltaHp",
+                    "data": {
+                        "actorCode": "instance",
+                        "deltaType": "heal",
+                        "hp": "30",
+                        "casterCode": ""
+                    }
+                }
+            ],
+            "checks": [
+                {
+                    "type": "String",
+                    "data": {
+                        "value": "{instance.job}",
+                        "method": "equal",
+                        "str": "守望者",
+                        "eventLocal": "",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
+            "triggers": [
+                {
+                    "type": "ReleasePower",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "checkAbilityLevel": 0,
+                        "checkAbility": true,
+                        "ability": {
+                            "value": "shield"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "id": "releasePowerS1",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": 9999,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "Longbo",
+                    "data": {
+                        "posType": "actor",
+                        "actorCode": "instance",
+                        "alive": true,
+                        "longBoType": "he",
+                        "moveType": "path",
+                        "setRotation": "default",
+                        "pathLen": "40",
+                        "maxTurns": "5",
+                        "headScale": "1",
+                        "tailScale": "1",
+                        "speed": "1"
+                    }
+                }
+            ],
+            "checks": [
+                {
+                    "type": "String",
+                    "data": {
+                        "value": "{instance.job}",
+                        "method": "equal",
+                        "str": "龍騎士",
+                        "eventLocal": "",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
+            "triggers": [
+                {
+                    "type": "ReleasePower",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "checkAbilityLevel": 0,
+                        "checkWeaponType": true,
+                        "weaponType": "sword"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "releasePowerS2",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": 9999,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "tempX",
+                        "valueType": "number",
+                        "value": "{instance.x}/32"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "tempY",
+                        "valueType": "number",
+                        "value": "{instance.y}/32"
+                    }
+                },
+                {
+                    "type": "AddActor",
+                    "data": {
+                        "actorCode": "ai*",
+                        "name": "分身",
+                        "role": {
+                            "dr": 2
+                        },
+                        "actorType": "defaultType",
+                        "weapon0": {
+                            "w0Type": "hook"
+                        },
+                        "weapon1": {
+                            "w1Type": "rifle"
+                        },
+                        "camp": "skydow",
+                        "group": "0",
+                        "location": {
+                            "x": "{tempX}",
+                            "y": "{tempY}",
+                            "range": "0"
+                        },
+                        "shiftX": 0,
+                        "shiftY": 0,
+                        "spawnLoc": true,
+                        "rotation": "0",
+                        "idleRotate": true,
+                        "maxhp": "100",
+                        "manaPower": "0",
+                        "lives": "1",
+                        "preferAbilityLevel": "smart",
+                        "maxAbilityLevel": 1,
+                        "weight": "4",
+                        "strength": "1",
+                        "vision": "300",
+                        "range": "10000",
+                        "score": "10",
+                        "bloodType": "default",
+                        "unbrokenArmor": true,
+                        "tornadoRes": "none",
+                        "distractWhenHit": true,
+                        "thinkInterval": 60,
+                        "farAutoLevel": "0",
+                        "patrols": true,
+                        "patrolPath": [],
+                        "bornDelayDuration": "0",
+                        "bornDuration": "1000",
+                        "bornLockDuration": "1000",
+                        "bornEffect": "none",
+                        "bornAnim": "fadein",
+                        "localVarname": "actor",
+                        "globalVarname": ""
+                    }
+                },
+                {
+                    "type": "Wait",
+                    "data": {
+                        "duration": "10000"
+                    }
+                },
+                {
+                    "type": "ActorDisappear",
+                    "data": {
+                        "actorCode": "actor",
+                        "duration": "600",
+                        "delay": "0"
+                    }
+                }
+            ],
+            "checks": [
+                {
+                    "type": "String",
+                    "data": {
+                        "value": "{instance.job}",
+                        "method": "equal",
+                        "str": "忍者",
+                        "eventLocal": "",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
+            "triggers": [
+                {
+                    "type": "ReleasePower",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "checkAbilityLevel": 0,
+                        "checkAbility": true,
+                        "ability": {
+                            "value": "ninjatsu"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "id": "royalWin",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": 0,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "MissionComplete",
+                    "data": {
+                        "targetGroup": "royal"
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "ActorDead",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": "camp_skydow"
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "timing": "over",
+                        "deathsVarname": "deaths",
+                        "hitterMatches": [],
+                        "hitterVarname": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "skydowWin",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": 0,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "MissionComplete",
+                    "data": {
+                        "targetGroup": "skydow"
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "ActorDead",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": "camp_royal"
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "timing": "over",
+                        "deathsVarname": "deaths",
+                        "hitterMatches": [],
+                        "hitterVarname": ""
+                    }
+                }
+            ]
+        }
+    ]
+}
