@@ -42,18 +42,11 @@ std::unique_ptr<ModuleNode> Parser::parse() {
       else
         return nullptr;
     } else if (tokens.front().type == TokenType::DEF) {
-      if (auto funDefNode = parseFunDef()) {
-        if (moduleNode->funDefs.count(funDefNode->identifier) != 0) {
-          std::cerr << "SyntaxError: Redefinition of function \'"
-                    << funDefNode->identifier << "\' at " << funDefNode->loc
-                    << ".\n";
-          return nullptr;
-        }
-        moduleNode->funDefs.insert(
-            {funDefNode->identifier, std::move(funDefNode)});
-      } else {
+
+      auto funDefNode = parseFunDef();
+      if (!funDefNode)
         return nullptr;
-      }
+      moduleNode->funDefs.push_back(std::move(funDefNode));
     } else if (tokens.front().type == TokenType::SEMICOLON) {
       consume(TokenType::SEMICOLON);
     } else {
@@ -95,7 +88,7 @@ std::unique_ptr<ConstDefNode> Parser::parseConstDef() {
   if (!consume(TokenType::SEMICOLON))
     return nullptr;
   std::unique_ptr<ConstDefNode> constDefNode =
-      std::make_unique<ConstDefNode>(key, exp, loc);
+      std::make_unique<ConstDefNode>(key, std::move(exp), loc);
   return constDefNode;
 }
 

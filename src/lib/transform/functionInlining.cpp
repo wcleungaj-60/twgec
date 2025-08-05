@@ -84,13 +84,15 @@ bool functionInling(
 }
 
 bool functionInling(const unique_ptr<ModuleNode> &moduleNode) {
-  auto &funDefs = moduleNode->funDefs;
+  std::map<std::string, std::unique_ptr<FunDefNode>> funDefsMap;
+  for (auto &funDef : moduleNode->funDefs)
+    funDefsMap.insert({funDef->identifier, funDef->clone()});
   for (auto &blockNode : moduleNode->blocks)
     for (auto &typedInstrSet : blockNode->blockBody->typedInstrSets)
-      if (!functionInling(funDefs, typedInstrSet->instrSet,
+      if (!functionInling(funDefsMap, typedInstrSet->instrSet,
                           typedInstrSet->type))
         return false;
-  funDefs.clear();
+  moduleNode->funDefs.clear();
   return true;
 }
 } // namespace transform

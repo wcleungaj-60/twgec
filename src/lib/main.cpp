@@ -8,6 +8,10 @@
 bool loweringPipeline(const std::unique_ptr<ModuleNode> &moduleNode,
                       bool printAST = false) {
   if (printAST)
+    moduleNode->print("AST Before Symbol Checking");
+  if (!transform::symbolChecking(std::move(moduleNode)))
+    return false;
+  if (printAST)
     moduleNode->print("AST Before First Arg Binding");
   // It cannot bind the instruction arg inside the block
   if (!transform::argBinding(std::move(moduleNode)))

@@ -54,15 +54,17 @@ bool argBinding(std::map<std::string, std::unique_ptr<FunDefNode>> &funDefs,
 }
 
 bool argBinding(const unique_ptr<ModuleNode> &moduleNode) {
-  auto &funDefs = moduleNode->funDefs;
+  std::map<std::string, std::unique_ptr<FunDefNode>> funDefsMap;
+  for (auto &funDef : moduleNode->funDefs)
+    funDefsMap.insert({funDef->identifier, funDef->clone()});
   for (auto &blockNode : moduleNode->blocks) {
     if (blockNode->blockBody)
       for (auto &typedInstrSet : blockNode->blockBody->typedInstrSets) {
-        if (!argBinding(funDefs, typedInstrSet->instrSet))
+        if (!argBinding(funDefsMap, typedInstrSet->instrSet))
           return false;
       }
     else {
-      argBinding(funDefs, blockNode->blockConstructor);
+      argBinding(funDefsMap, blockNode->blockConstructor);
     }
   }
   return true;

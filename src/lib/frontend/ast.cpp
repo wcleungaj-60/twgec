@@ -12,14 +12,13 @@ void ModuleNode::print(std::string title, int indent) {
   for (auto &constDef : constDefs)
     constDef->print(indent);
   for (auto &funDef : funDefs)
-    funDef.second->print(indent);
+    funDef->print(indent);
   for (auto &block : blocks)
     block->print(indent);
 }
 
 void MetadataNode::print(int indent) {
-  std::cout << inden(indent) << "__" << key << "__ = " << *expNode
-            << ";\n";
+  std::cout << inden(indent) << "__" << key << "__ = " << *expNode << ";\n";
 }
 
 void FunDefNode::print(int indent) {
@@ -44,9 +43,9 @@ void ConstDefNode::print(int indent) {
 
 void BlockNode::print(int indent) {
   std::cout << inden(indent) << "block " << identifier;
-  if(blockBody)
+  if (blockBody)
     blockBody->print(indent);
-  else{
+  else {
     std::cout << " = ";
     blockConstructor->print(indent);
   }
@@ -109,12 +108,30 @@ std::unique_ptr<MetadataNode> MetadataNode::clone() {
 }
 
 std::unique_ptr<FunDefNode> FunDefNode::clone() {
+  std::unique_ptr<FunDefNode> funDefNode;
   if (typedInstrSet) {
-    return std::make_unique<FunDefNode>(identifier, loc,
-                                        typedInstrSet->clone());
+    funDefNode =
+        std::make_unique<FunDefNode>(identifier, loc, typedInstrSet->clone());
   } else {
-    return std::make_unique<FunDefNode>(identifier, loc, std::move(blockBody));
+    funDefNode =
+        std::make_unique<FunDefNode>(identifier, loc, blockBody->clone());
   }
+  for (auto &param : params)
+    funDefNode->params.push_back(param);
+  return funDefNode;
+}
+
+std::unique_ptr<ConstDefNode> ConstDefNode::clone() {
+  return std::make_unique<ConstDefNode>(key, expNode->clone(), loc);
+}
+
+std::unique_ptr<BlockNode> BlockNode::clone() {
+  auto blockNode = std::make_unique<BlockNode>(identifier, loc);
+  if (blockConstructor)
+    blockNode->blockConstructor = blockConstructor->clone();
+  if (blockBody)
+    blockNode->blockBody = blockBody->clone();
+  return blockNode;
 }
 
 std::unique_ptr<BlockBodyNode> BlockBodyNode::clone() {

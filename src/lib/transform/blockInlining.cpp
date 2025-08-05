@@ -11,8 +11,8 @@ using std::unique_ptr;
 bool blockInling(const unique_ptr<ModuleNode> &moduleNode) {
   std::map<std::string, std::unique_ptr<BlockBodyNode>> blockDefMap;
   for (auto &funDef : moduleNode->funDefs) {
-    if (funDef.second->blockBody)
-      blockDefMap.insert({funDef.first, funDef.second->blockBody->clone()});
+    if (funDef->blockBody)
+      blockDefMap.insert({funDef->identifier, funDef->blockBody->clone()});
   }
   for (auto &blockNode : moduleNode->blocks)
     if (blockNode->blockConstructor) {

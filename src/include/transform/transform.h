@@ -1,6 +1,7 @@
 #include "ast.h"
 namespace transform {
 
+bool symbolChecking(const std::unique_ptr<ModuleNode> &moduleNode);
 bool argBinding(const std::unique_ptr<ModuleNode> &moduleNode);
 bool blockInling(const std::unique_ptr<ModuleNode> &moduleNode);
 bool blockLegalization(const std::unique_ptr<ModuleNode> &moduleNode);

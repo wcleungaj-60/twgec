@@ -66,7 +66,7 @@ public:
   Location loc;
   std::vector<std::unique_ptr<MetadataNode>> metadatas;
   std::vector<std::unique_ptr<BlockNode>> blocks;
-  std::map<std::string, std::unique_ptr<FunDefNode>> funDefs;
+  std::vector<std::unique_ptr<FunDefNode>> funDefs;
   std::vector<std::unique_ptr<ConstDefNode>> constDefs;
 
   // Constructor
@@ -135,6 +135,7 @@ public:
 
   // Function
   void print(int indent = 0);
+  std::unique_ptr<BlockNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
   bool hasUnresolvedValue();
@@ -183,12 +184,13 @@ public:
   std::unique_ptr<ExpressionNode> expNode;
 
   // Constructor
-  ConstDefNode(const std::string &key, std::unique_ptr<ExpressionNode> &expNode,
+  ConstDefNode(std::string key, std::unique_ptr<ExpressionNode> expNode,
                Location loc)
       : key(key), expNode(std::move(expNode)), loc(loc) {}
 
   // Function
   void print(int indent = 0);
+  std::unique_ptr<ConstDefNode> clone();
 };
 
 //------------ Instruction Set level definition ------------//
