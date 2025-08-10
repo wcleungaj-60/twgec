@@ -1,0 +1,10 @@
+Compilation Error: function `actionA` is defined before used at 2:5.
+Compilation Error: function `actionB` is defined before used at 3:5.
+Compilation Error: function `actionC` is defined before used at 4:5.
+Compilation Error: function `actionD` is defined before used at 5:5.
+Compilation Error: function `actionB` is defined before used at 10:5.
+Compilation Error: function `actionC` is defined before used at 11:5.
+Compilation Error: function `actionD` is defined before used at 12:5.
+Compilation Error: function `actionC` is defined before used at 18:5.
+Compilation Error: function `actionD` is defined before used at 19:5.
+Compilation Error: function `actionD` is defined before used at 26:5.

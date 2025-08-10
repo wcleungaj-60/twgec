@@ -1,0 +1,27 @@
+def actionA() : actions {
+    actionA();
+    actionB();
+    actionC();
+    actionD();
+}
+
+def actionB() : actions {
+    actionA();
+    actionB();
+    actionC();
+    actionD();
+}
+
+def actionC() : actions {
+    actionA();
+    actionB();
+    actionC();
+    actionD();
+}
+
+def actionD() : actions {
+    actionA();
+    actionB();
+    actionC();
+    actionD();
+}
