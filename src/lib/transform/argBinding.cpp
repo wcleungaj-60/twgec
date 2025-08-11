@@ -55,18 +55,24 @@ bool argBinding(std::map<std::string, std::unique_ptr<FunDefNode>> &funDefs,
 
 bool argBinding(const unique_ptr<ModuleNode> &moduleNode) {
   std::map<std::string, std::unique_ptr<FunDefNode>> funDefsMap;
+  bool ret = true;
+  // initalize func param
   for (auto &funDef : moduleNode->funDefs)
     funDefsMap.insert({funDef->identifier, funDef->clone()});
-  for (auto &blockNode : moduleNode->blocks) {
+  // FunDef arg binding
+  for (auto &funDef : moduleNode->funDefs)
+    if (funDef->blockBody)
+      for (auto &typedInstrSet : funDef->blockBody->typedInstrSets)
+        ret &= argBinding(funDefsMap, typedInstrSet->instrSet);
+    else if (funDef->typedInstrSet)
+      ret &= argBinding(funDefsMap, funDef->typedInstrSet->instrSet);
+  // blockNode arg binding
+  for (auto &blockNode : moduleNode->blocks)
     if (blockNode->blockBody)
-      for (auto &typedInstrSet : blockNode->blockBody->typedInstrSets) {
-        if (!argBinding(funDefsMap, typedInstrSet->instrSet))
-          return false;
-      }
-    else {
-      argBinding(funDefsMap, blockNode->blockConstructor);
-    }
-  }
-  return true;
+      for (auto &typedInstrSet : blockNode->blockBody->typedInstrSets)
+        ret &= argBinding(funDefsMap, typedInstrSet->instrSet);
+    else if (blockNode->blockConstructor)
+      ret &= argBinding(funDefsMap, blockNode->blockConstructor);
+  return ret;
 }
 } // namespace transform
