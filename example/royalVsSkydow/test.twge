@@ -42,10 +42,15 @@ def chooseJobDef(buttonId, jobName) : block {
     }
 }
 
-def releasePowerDef(ability, jobName) : block {
+def releasePowerDef(jobName, ability, weapon) : block {
     __repeat__ = -1;
     triggers {
-        releasePower(varName = "instance", ability = ability);
+        if(weapon == "" && ability != "") {
+            releasePower(varName = "instance", ability = ability);
+        }
+        if(weapon != "" && ability == "") {
+            releasePower(varName = "instance", weapon = weapon);
+        }
     }
     checks {
         checkString(value = "{instance.job}", matchKind = "equal", str = jobName);
@@ -61,18 +66,6 @@ def releasePowerDef(ability, jobName) : block {
             wait(duration = 10000);
             actorDisappear(actorId = "actor");
         }
-    }
-}
-
-def releasePowerByWeaponDef(weapon, jobName) : block {
-    __repeat__ = -1;
-    triggers {
-        releasePower(varName = "instance", weapon = weapon);
-    }
-    checks {
-        checkString(value = "{instance.job}", matchKind = "equal", str = jobName);
-    }
-    actions {
         if(jobName == "龍騎士") {
             longBo(actorCode = "instance");
         }
@@ -136,9 +129,9 @@ block chooseJobR2 = chooseJobDef(buttonId = "chooseJobR2", jobName = "新兵訓�
 block chooseJobS1 = chooseJobDef(buttonId = "chooseJobS1", jobName = "龍騎士");
 block chooseJobS2 = chooseJobDef(buttonId = "chooseJobS2", jobName = "忍者");
 
-block releasePowerR1 = releasePowerDef(ability = "防護罩", jobName = "守望者");
-block releasePowerS1 = releasePowerByWeaponDef(weapon = "大刀", jobName = "龍騎士");
-block releasePowerS2 = releasePowerDef(ability = "分身術", jobName = "忍者");
+block releasePowerR1 = releasePowerDef(jobName = "守望者", weapon = "", ability = "防護罩");
+block releasePowerS1 = releasePowerDef(jobName = "龍騎士", weapon = "大刀", ability = "");
+block releasePowerS2 = releasePowerDef(jobName = "忍者", weapon = "", ability = "分身術");
 
 block royalWin = winDef("royal");
 block skydowWin = winDef("skydow");
