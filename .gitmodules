@@ -1,0 +1,3 @@
+[submodule "tool/twge-syntax-highlighter"]
+	path = tool/twge-syntax-highlighter
+	url = https://github.com/wcleungaj-60/twge-syntax-highlighter.git
