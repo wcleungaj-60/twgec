@@ -1,0 +1,59 @@
+__skydowLocs__ = [Point(23,26)];
+__title__ = "RPG試驗";
+__useDefaultItems__ = true;
+__map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
+__roomSize__ = 1;
+
+//TODO: Show all metadata in `--help`
+//TODO: Show the param of the action/trigger/check in `--help`
+
+def setInt(key, value) : actions {
+    setGlobal(key = key, type = "integer", value = value);
+}
+
+block monsterDead {
+    __repeat__ = -1;
+    triggers {
+        actorDead(actorId = "monster");
+    }
+    actions {
+        setInt("Exp", "{Exp}+1");
+    }
+}
+
+block monsterSpawn {
+    __repeat__ = -1;
+    checks {
+        //TODO: Support Check number of character
+    }
+    actions {
+        addActor(name = "鹿(60)", id = "monster*", camp = "第三", hp = 60, x = 1, y = 1);
+        // TODO: Support random walk
+        // TODO: Support a list of spawn points
+    }
+}
+
+block levelUp {
+    __repeat__ = -1;
+    checks {
+        //TODO: Support Check Int
+    }
+    actions {
+        setInt("Exp", "{Exp}-{ExpNeed}");
+        setInt("Level", "{Level}+1");
+        setInt("ExpNeed", "{Level}*5+5");
+    }
+}
+
+block init {
+    actions {
+        setInt("STR", 0); // 力量
+        setInt("CON", 0); // 體質
+        setInt("AGI", 0); // 敏捷
+        setInt("INT", 0); // 智慧
+        setInt("PSY", 0); // 精神
+        setInt("Level", 1);
+        setInt("Exp", 0);
+        setInt("ExpNeed", 10);
+    }
+}
