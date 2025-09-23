@@ -93,6 +93,8 @@
                             }
                         ],
                         "varname": "instance",
+                        "preventDefault": "false",
+                        "manaUsage": "0",
                         "checkAbilityLevel": 0
                     }
                 },
@@ -115,6 +117,8 @@
                             }
                         ],
                         "varname": "instance",
+                        "preventDefault": "false",
+                        "manaUsage": "0",
                         "checkAbilityLevel": 0,
                         "checkAbility": true,
                         "ability": {

@@ -59,7 +59,7 @@ Supported Actions:
     actorTalk       角色說話
         cleanTalk: bool, text: string, duration: int|string, wait: bool, actorId: string
     addActor        +角色
-        id: string, name: string, camp: string, teamId: int|string, weapon1: string, weapon2: string, localVarname: string, x: int|string, y: int|string, hp: int|string, range: int|string, role: string, externRole: string, patrol: list[Point]
+        id: string, name: string, camp: string, teamId: int|string, weapon1: string, weapon2: string, localVarname: string, x: int|string, y: int|string, hp: int|string, range: int|string, role: string, externRole: string, patrol: list[Point], strength: int|string
     addMapSign      +告示牌
         text: string, buttonCode: string, buttonLabel: string, x: int|string, y: int|string, range: int|string, rotation: int|string
     addStuff        +武器道具
@@ -95,5 +95,5 @@ Supported Triggers:
     clickButton     告示牌按鈕
         matchKind: string, actorId: string, varName: string, buttonId: string
     releasePower    發動技能
-        matchKind: string, actorId: string, varName: string, ability: string, weapon: string
+        matchKind: string, actorId: string, varName: string, ability: string, weapon: string, preventDefault: bool, manaUsage: int|string
 )";

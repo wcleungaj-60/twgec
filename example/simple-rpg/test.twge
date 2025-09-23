@@ -1,31 +1,74 @@
+// Metadata Setting
 __skydowLocs__ = [Point(23,26)];
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 1;
 
+// Constant Definition
+const INSTANCE_ANGLE = "{instance.bodyRotation}*180/3.14";
+
+// Utils Function Definition
 def setInt(key, value) : actions {
     setGlobal(key = key, type = "integer", value = value);
 }
 
+def setNum(key, value) : actions {
+    setGlobal(key = key, type = "number", value = value);
+}
+
+def increment(key) : actions {
+    setInt(key = key, value = "{"+key+"}+1");
+}
+
+def decrement(key) : actions {
+    setInt(key = key, value = "{"+key+"}-1");
+}
+
+// Block Function Definition
+def clickIncrease(type, typeZh) : block {
+    __repeat__ = -1;
+    triggers {
+        clickButton(varName = "instance", buttonId = "increase" + type);
+    }
+    checks {
+        checkNumber(lhs = "{Point}", op = ">", rhs = 0);
+    }
+    actions {
+        decrement("Point");
+        increment(key = type); // TODO: Update the parse if that is a variable value
+        actorTalk(actorId = "instance", text = "尚餘能力點:{Point}\n目前"+typeZh+"為: {"+type+"}");
+    }
+}
+
+block clickIncreaseSTR = clickIncrease("STR", "力量");
+block clickIncreaseCON = clickIncrease("CON", "體質");
+block clickIncreaseAGI = clickIncrease("AGI", "敏捷");
+block clickIncreaseINT = clickIncrease("INT", "智慧");
+block clickIncreasePSY = clickIncrease("PSY", "精神");
+
+// Block Implementation
 block monsterDead {
     __repeat__ = -1;
     triggers {
         actorDead(actorId = "monster");
     }
     actions {
-        setInt("Exp", "{Exp}+1");
+        increment("Exp");
+        // TODO: Popup text
     }
 }
 
 block monsterSpawn {
     __repeat__ = -1;
+    __repeatInterval__ = 15000;
     checks {
         //TODO: Support Check number of character
     }
     actions {
-        // TODO: Support a list of spawn points
-        addActor(name = "鹿(60)", id = "monster*", camp = "第三", hp = 60, x = 1, y = 1, localVarname = "actor");
+        addActor(name = "鹿(60)", id = "monster*", camp = "第三", 
+                hp = 60, x = "random(5,25)", y = "random(5,25)", localVarname = "actor", 
+                weapon1 = "fist", weapon2 = "fist", strength = "10", role = "鹿");
         actorFollow(actorId = "actor", type = "跟隨自己");
     }
 }
@@ -37,20 +80,46 @@ block levelUp {
     }
     actions {
         setInt("Exp", "{Exp}-{ExpNeeded}");
-        setInt("Level", "{Level}+1");
+        increment("Level");
+        increment("Point");
         setInt("ExpNeeded", "{Level}*5+5");
+    }
+}
+
+block showStatus {
+    __repeat__ = -1;
+    triggers {
+        // TODO: Support click keystroke
+    }
+}
+
+block releasePower {
+    __repeat__ = -1;
+    triggers {
+        releasePower(varName = "instance", preventDefault = true);
+    }
+    actions {
+        enblastEffect(fromActor = "{instance}", toAngle = INSTANCE_ANGLE, scale = "0.5", damage = "{INT} + 1");
+        enblastEffect(fromActor = "{instance}", toAngle = INSTANCE_ANGLE + "+20", scale = "0.5", damage = "{INT} + 1");
+        enblastEffect(fromActor = "{instance}", toAngle = INSTANCE_ANGLE + "-20", scale = "0.5", damage = "{INT} + 1");
     }
 }
 
 block init {
     actions {
-        setInt("STR", 0); // 力量
-        setInt("CON", 0); // 體質
-        setInt("AGI", 0); // 敏捷
-        setInt("INT", 0); // 智慧
-        setInt("PSY", 0); // 精神
+        setInt("STR", 0); // 力量，提升一點小刀傷害
+        setInt("CON", 0); // 體質，提升十點血量上限
+        setInt("AGI", 0); // 敏捷，重量*0.9
+        setInt("INT", 0); // 智慧，提升一點集氣技能的光彈傷害
+        setInt("PSY", 0); // 精神，每十秒恢復一點體力
         setInt("Level", 1);
+        setInt("Point", 1);
         setInt("Exp", 0);
         setInt("ExpNeeded", 10);
+        addMapSign(x = 19, y = 28, rotation = 270, text = "【力量】\n消耗一點能力點，增加小刀一點傷害 (未實現)", buttonCode = "increaseSTR", buttonLabel = "確認");
+        addMapSign(x = 21, y = 28, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限 (未實現)", buttonCode = "increaseCON", buttonLabel = "確認");
+        addMapSign(x = 23, y = 28, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少10% (未實現)", buttonCode = "increaseAGI", buttonLabel = "確認");
+        addMapSign(x = 25, y = 28, rotation = 270, text = "【智慧】\n消耗一點能力點，增加集氣光彈一點傷害", buttonCode = "increaseINT", buttonLabel = "確認");
+        addMapSign(x = 27, y = 28, rotation = 270, text = "【精神】\n消耗一點能力點，每十秒恢復一點體力 (未實現)", buttonCode = "increasePSY", buttonLabel = "確認");
     }
 }

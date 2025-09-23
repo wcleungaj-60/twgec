@@ -77,7 +77,7 @@ static KeywordEnum keywordEnum("camp", {
 
 namespace weapon {
 const std::string keywordDefault = "default";
-const std::string keywordKungFu = "kungfu";
+const std::string keywordKongFu = "kongfu";
 const std::string keywordFist = "fist";
 const std::string keywordFistZh = "拳頭";
 const std::string keywordKnife = "knife";
@@ -124,9 +124,9 @@ static KeywordEnum
     keywordEnum("weapon",
                 {
                     {keywordDefault, keywordDefault},
-                    {keywordKungFu, keywordKungFu},
-                    {keywordFist, keywordFist},
-                    {keywordFistZh, keywordFist},
+                    {keywordKongFu, keywordKongFu},
+                    {keywordFist, keywordKongFu},
+                    {keywordFistZh, keywordKongFu},
                     {keywordKnife, keywordKnife},
                     {keywordKnifeZh, keywordKnife},
                     {keywordHook, keywordHook},

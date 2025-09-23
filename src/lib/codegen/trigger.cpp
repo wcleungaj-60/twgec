@@ -42,6 +42,8 @@ DefaultMap trigger::TriggerReleasePower::defaultMap = DefaultMap(
         {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
         {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
         {"ability", {AST_STRING, CODEGEN_STRING, ""}},
+        {"preventDefault", {AST_BOOL, CODEGEN_STRING, "false"}},
+        {"manaUsage", {AST_INT, CODEGEN_STRING, "0"}},
         {"weapon", {AST_STRING, CODEGEN_STRING, ""}},
     },
     "releasePower");
@@ -170,6 +172,8 @@ void trigger::TriggerReleasePower::method(
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", actorMatchesNode.to_string(24)},
       {"varname", defaultMap.get("varName")},
+      {"preventDefault", defaultMap.get("preventDefault")},
+      {"manaUsage", defaultMap.get("manaUsage")},
       {"checkAbilityLevel", "0"},
   });
   if (ability != "\"\"")

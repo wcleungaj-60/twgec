@@ -11,6 +11,7 @@ addActor(
     list[point]      patrol = [], 
     int|string       range = "10000", 
     string           role = 0, 
+    int|string       strength = "1", 
     int|string       teamId = "0", 
     string           weapon1 = "default", 
     string           weapon2 = "default", 
