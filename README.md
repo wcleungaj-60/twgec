@@ -1,73 +1,75 @@
 # twgec
-The transpiler for twilight game.events
+`twgec` stands for the `twilight game.events compiler`. It compiles the `.twge` DSL into the `game.events` that can be used in the [Twilight War Game Creation](https://code.gamelet.com/).
 
-# Folder Architecture
+# Setup the twgec
 
-## example
+## Setup Syntax Highlighter
 
-Write a `twge` example under this directory. Every time you build the `twgec` or run the test script, all the `twge` files under this directory will be tested with a smoke test. The code generation result will not be checked. It only ensures that none of the examples have compilation errors.
-
-## src
-
-The `include` directory contains the header files.
-<br>
-The `lib` directory contains the cpp files.
-<hr>
-
-The `frontend` directory contains the lexer and parser. It converts the `twge` file into an AST.
-<br>
-The `transform` directory contains the IR transformation pass, such as function inlining. It converts the AST into a legal form for code generation.
-<br>
-The `codegen` directory will generate the `events.json` from a legal AST.
-
-## test
-Unit tests and the test script will be written under this directory.
-
-In the leaf directory, there must be
-- exactly one `test.twge` file for the `twgec` compilation.
-- either an `output.events` or an `error.log` file for the compilation result verification.
-
-# Language Feature
-
-## Trait
+To setup the highlighter, please make sure you have already installed the `vsce` package. If not, you can run
 ```
-// Trait definition
-@default_weapon = addActor(weapon1_default = true, weapon2_default = true);
-
-// Trait Example
-block myBlock {
-  actions {
-    addActor(name = "actor1", weapon1 = "knife") @default_weapon;
-    addActor(name = "actor2", weapon1 = "knife") @default_weapon;
-  }
-}
+npm install -g vsce
 ```
-
-## Function
+After, you have to go to the highlighter repo and build the vscode extension as below:
 ```
-// Function Definition
-def addSnipperActor(camp, x, y) {
-    addActor(camp = camp, x = x, y = y, name = "狙擊手", hp = "150", range = "0");
-}
-
-// Function Example
-block my_block {
-    actions {
-        addSnipperActor(camp = "royal", x = 5, y = 10);
-        addSnipperActor(camp = "royal", x = 10, y = 5);
-    }
-}
+cd tool/twge-syntax-highlighter
+vsce package
 ```
+The vscode extension (`twge-syntax-highlighter-<version>.vsix`) will be built. You just need to right click that extension and choose `Install Extension VSIX`.
 
-## File including
-```
-#include "../occupation/ninja.twge"
-#include "../occupation/mage.twge"
-#include "../occupation/warrior.twge"
-```
+With the syntax highlighter. The `.twge` will have the syntax highlighting as below:
 
-|Langauge Feature|Abstraction Level|Description|
-| --- | --- | --- |
-|Trait|One instruction multiple param| - Overloading is supported when trait is used by different instruction <br> - Overwritting is not supported (Earlier trait is kept)|
-|Function|One block multiple instructions| - Primitive parameter can be passed <br> - Trait cannot be passed|
-|File including|One file multiple block| - Block redefinition will be checked|
+![The highlighted .twge syntax](/assets/readme/syntax-highlighting.png)
+
+## Build twgec
+
+To build the twgec (twge compiler), you have to execute the `build.sh` as below:
+```
+./bash.sh
+```
+After, the build directory will be created. To run the `twgec` with a simple testcase. You might run
+```
+build/twgec test/codegen/actions/success/console/test.twge
+```
+to see can the `game.events` be generated (`ls game.events`)
+
+# Start to code
+
+## Help
+
+By running the following command:
+```
+build/twgec --help
+```
+the guideline of how to use the `twgec` will be shown.
+
+## Simple Example
+
+![A simple example of twge](/assets/readme/simple-twge.png)
+
+As the code snippet above, `block` is the basic unit of the game event.
+
+Under a `block`, you can add the `triggers`, `checks`, and `actions` here these have the exactly same meaning as the what [Twilight War Game Creation](https://code.gamelet.com/) have.
+
+Under a `block`, some metadata such as `__repeat__` and `__delay__` etc. can be set.
+
+With this simple example, the `game.events` can be generated.
+
+## Advanced Feature
+
+### Function Definition
+
+#### Block function
+
+By referring to the `Simple Example` Section, the implemenation of the block `chooseJobS1` and `chooseJobS2` are highly repeated. In order to increase the usibility, function definition should be used.
+
+![The twge example with block function definition](/assets/readme/fun-def-block.png)
+
+As the code snippet above, `def <functionDefinitionName>(<param>...): block {}` can be used here.  `def` means that is a function definition. `: block` means that is the function definition of the class `block`. The `block`\'s implementation can be completed inside the bracket (`{}`).
+
+In order to call the function, the syntax should be `block <blockName> = <functionDefintionName>(<arg>...);` as the code snippet above.
+
+#### Actions function
+
+![The twge example with action function definition](/assets/readme/fun-def-action.png)
+
+Sometimes, the `actions`, `triggers`, and `checks` might have the duplicated logic. In order to reuse the implementation, function can be used as above (see `setInt`). It is similiar to the block function definition. But remember, the type of the definition should be `: actions`, `: triggers`, or `: checks` instead of `: block`.
