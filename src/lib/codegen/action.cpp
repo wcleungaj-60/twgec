@@ -18,6 +18,14 @@ DefaultMap action::ActionActorDisappear::defaultMap = DefaultMap(
     },
     "actorDisappear");
 
+DefaultMap action::ActionActorFollow::defaultMap = DefaultMap(
+    {
+        {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
+        {"type", {AST_STRING, CODEGEN_STRING, "actor"}},
+        {"targetId", {AST_STRING, CODEGEN_STRING, ""}},
+    },
+    "actorFollow");
+
 DefaultMap action::ActionActorTalk::defaultMap = DefaultMap(
     {
         {"cleanTalk", {AST_BOOL, CODEGEN_BOOL, "true"}},
@@ -145,6 +153,21 @@ void action::ActionActorDisappear::method(
   });
   JsonObjectNode rootNode = JsonObjectNode({
       {"type", "\"ActorDisappear\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
+
+void action::ActionActorFollow::method(
+    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
+  defaultMap.addInputMap(action->named_args);
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"actorCode", defaultMap.get("actorId")},
+      {"followType", defaultMap.get("type", followType::keywordEnum)},
+      {"targetCode", defaultMap.get("targetId")},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"ActorFollow\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);

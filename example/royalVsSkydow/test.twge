@@ -63,6 +63,7 @@ def releasePowerDef(jobName, ability, weapon) : block {
             setNum("tempX", "{instance.x}/32");
             setNum("tempY", "{instance.y}/32");
             addActor(name = "分身", localVarname = "actor", camp = "天影", hp = 100, x = "{tempX}", y = "{tempY}", weapon1 = "爪子", weapon2 = "步槍", role = "天影武士1");
+            actorFollow(actorId = "actor", type = "actor", targetId = "{instance}");
             wait(duration = 10000);
             actorDisappear(actorId = "actor");
         }

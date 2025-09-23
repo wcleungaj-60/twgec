@@ -24,9 +24,9 @@ block monsterSpawn {
         //TODO: Support Check number of character
     }
     actions {
-        addActor(name = "鹿(60)", id = "monster*", camp = "第三", hp = 60, x = 1, y = 1);
-        // TODO: Support random walk
         // TODO: Support a list of spawn points
+        addActor(name = "鹿(60)", id = "monster*", camp = "第三", hp = 60, x = 1, y = 1, localVarname = "actor");
+        actorFollow(actorId = "actor", type = "跟隨自己");
     }
 }
 

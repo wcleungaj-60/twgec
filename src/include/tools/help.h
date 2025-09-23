@@ -54,6 +54,8 @@ Supported Block Metadata:
 Supported Actions:
     actorDisappear  -角色消失
         actorId: string, duration: int|string, delay: int|string
+    actorFollow     跟隨人物
+        actorId: string, type: string, targetId: string
     actorTalk       角色說話
         cleanTalk: bool, text: string, duration: int|string, wait: bool, actorId: string
     addActor        +角色

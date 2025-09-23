@@ -539,6 +539,37 @@ static KeywordEnum keywordEnum("operator", {
                                            });
 } // namespace _operator
 
+namespace followType {
+const std::string keywordStop = "stop";
+const std::string keywordStopZh = "停止跟隨";
+const std::string keywordSelf = "self";
+const std::string keywordSelfZh = "跟隨自己";
+const std::string keywordActor = "actor";
+const std::string keywordActorZh = "跟隨人物";
+const std::string keywordClosestPlayer = "closestPlayer";
+const std::string keywordClosestPlayerZh = "跟隨離最近的玩家角色";
+const std::string keywordClosestFriendPlayer = "closestFriendPlayer";
+const std::string keywordClosestFriendPlayerZh = "跟隨離最近的友好玩家";
+const std::string keywordClosestEnemyPlayer = "closestEnemyPlayer";
+const std::string keywordClosestEnemyPlayerZh = "跟隨離最近的敵方玩家";
+static KeywordEnum
+    keywordEnum("followType",
+                {
+                    {keywordStop, keywordStop},
+                    {keywordStopZh, keywordStop},
+                    {keywordSelf, keywordSelf},
+                    {keywordSelfZh, keywordSelf},
+                    {keywordActor, keywordActor},
+                    {keywordActorZh, keywordActor},
+                    {keywordClosestPlayer, keywordClosestPlayer},
+                    {keywordClosestPlayerZh, keywordClosestPlayer},
+                    {keywordClosestFriendPlayer, keywordClosestFriendPlayer},
+                    {keywordClosestFriendPlayerZh, keywordClosestFriendPlayer},
+                    {keywordClosestEnemyPlayer, keywordClosestEnemyPlayer},
+                    {keywordClosestEnemyPlayerZh, keywordClosestEnemyPlayer},
+                });
+} // namespace followType
+
 } // namespace keyword
 
 #endif
