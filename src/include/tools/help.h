@@ -10,14 +10,14 @@ Options:
     --print-token   Print the Token of the language.
 
 Supported Global Metadata:
-    __stageWidth__ : int
-    __stageHeight__ : int
-    __roomSize__ : int
-    __lives__ : int
-    __maxAbilityLevel__ : int
-    __bornDuration__ : int
-    __bornLockDuration__ : int
-    __minPlayers__ : int
+    __stageWidth__ : int|string
+    __stageHeight__ : int|string
+    __roomSize__ : int|string
+    __lives__ : int|string
+    __maxAbilityLevel__ : int|string
+    __bornDuration__ : int|string
+    __bornLockDuration__ : int|string
+    __minPlayers__ : int|string
     __supportSignin__ : bool
     __mustLogin__ : bool
     __allowGuest__ : bool
@@ -47,25 +47,25 @@ Supported Global Metadata:
     __thirdLocs__ : list[Point]
 
 Supported Block Metadata:
-    __delay__ : int
-    __repeat__ : int
-    __repeatInterval__ : int
+    __delay__ : int|string
+    __repeat__ : int|string
+    __repeatInterval__ : int|string
 
 Supported Actions:
     actorDisappear  -角色消失
-        actorId: string, duration: int, delay: int
+        actorId: string, duration: int|string, delay: int|string
     actorTalk       角色說話
-        cleanTalk: bool, text: string, duration: int, wait: bool, actorId: string
+        cleanTalk: bool, text: string, duration: int|string, wait: bool, actorId: string
     addActor        +角色
-        id: string, name: string, camp: string, teamId: int, weapon1: string, weapon2: string, localVarname: string, x: int, y: int, hp: int, range: int, role: string, externRole: string, patrol: list[Point]
+        id: string, name: string, camp: string, teamId: int|string, weapon1: string, weapon2: string, localVarname: string, x: int|string, y: int|string, hp: int|string, range: int|string, role: string, externRole: string, patrol: list[Point]
     addMapSign      +告示牌
-        text: string, buttonCode: string, buttonLabel: string, x: int, y: int, range: int, rotation: int
+        text: string, buttonCode: string, buttonLabel: string, x: int|string, y: int|string, range: int|string, rotation: int|string
     addStuff        +武器道具
-        code: string, item: string, refill: bool, refillInterval: int, x: int, y: int, range: int, rotation: int
+        code: string, item: string, refill: bool, refillInterval: int|string, x: int|string, y: int|string, range: int|string, rotation: int|string
     deltaHp         角色加減血
-        actorCode: string, type: string, value: int, casterCode: string
+        actorCode: string, type: string, value: int|string, casterCode: string
     enblastEffect   光彈特效
-        fromType: string, fromActor: string, toType: string, toAngle: int, damage: int, scale: int, speed: int
+        fromType: string, fromActor: string, toType: string, toAngle: int|string, damage: int|string, scale: int|string, speed: int|string
     missionComplete 任務完成
         camp: string
     longBo          +龍波
@@ -73,13 +73,15 @@ Supported Actions:
     print           控制台輸出
         type: string, text: string
     setGlobal       儲存全域變數
-        key: string, type: string, value: int
+        key: string, type: string, value: int|string
     setObjectVar    儲存物件變數
-        object: string, key: string, type: string, value: int
+        object: string, key: string, type: string, value: int|string
     wait            等待
-        duration: int
+        duration: int|string
 
 Supported Checks:
+    checkNumber     比較數字
+        lhs: int|string, rhs: int|string, op: string
     checkString     比對字串
         value: string, matchKind: string, str: string 
 

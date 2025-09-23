@@ -114,6 +114,7 @@ void CodeGenerator::codegenAction(std::ofstream &of,
 void CodeGenerator::codegenCheck(std::ofstream &of,
                                  std::unique_ptr<InstructionNode> &check) {
   CODEGEN_CHECK("checkString", String);
+  CODEGEN_CHECK("checkNumber", Number);
   std::cerr << "Codegen error: Cannot found the corresponding check name \""
             << check->identifier << "\" at " << check.get()->loc << "\n";
 }

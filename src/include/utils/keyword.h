@@ -522,6 +522,23 @@ static KeywordEnum
                 });
 } // namespace ability
 
+namespace _operator {
+const std::string keywordGT = ">";
+const std::string keywordGTE = ">=";
+const std::string keywordLT = "<";
+const std::string keywordLTE = "<=";
+const std::string keywordEQ = "==";
+const std::string keywordNE = "!=";
+static KeywordEnum keywordEnum("operator", {
+                                               {keywordGT, keywordGT},
+                                               {keywordGTE, keywordGTE},
+                                               {keywordLT, keywordLT},
+                                               {keywordLTE, keywordLTE},
+                                               {keywordEQ, keywordEQ},
+                                               {keywordNE, keywordNE},
+                                           });
+} // namespace _operator
+
 } // namespace keyword
 
 #endif

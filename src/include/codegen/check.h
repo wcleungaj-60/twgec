@@ -15,6 +15,7 @@ namespace check {
   };
 
 REGISTER_CODE_GEN_CHECK(String);
+REGISTER_CODE_GEN_CHECK(Number);
 
 } // namespace check
 } // namespace codegen

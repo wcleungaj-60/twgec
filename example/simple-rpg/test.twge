@@ -4,9 +4,6 @@ __useDefaultItems__ = true;
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 1;
 
-//TODO: Show all metadata in `--help`
-//TODO: Show the param of the action/trigger/check in `--help`
-
 def setInt(key, value) : actions {
     setGlobal(key = key, type = "integer", value = value);
 }
@@ -36,12 +33,12 @@ block monsterSpawn {
 block levelUp {
     __repeat__ = -1;
     checks {
-        //TODO: Support Check Int
+        checkNumber(lhs = "{Exp}", op = ">=", rhs = "{ExpNeeded}");
     }
     actions {
-        setInt("Exp", "{Exp}-{ExpNeed}");
+        setInt("Exp", "{Exp}-{ExpNeeded}");
         setInt("Level", "{Level}+1");
-        setInt("ExpNeed", "{Level}*5+5");
+        setInt("ExpNeeded", "{Level}*5+5");
     }
 }
 
@@ -54,6 +51,6 @@ block init {
         setInt("PSY", 0); // 精神
         setInt("Level", 1);
         setInt("Exp", 0);
-        setInt("ExpNeed", 10);
+        setInt("ExpNeeded", 10);
     }
 }
