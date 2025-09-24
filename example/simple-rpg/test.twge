@@ -1,12 +1,15 @@
 // Metadata Setting
 __skydowLocs__ = [Point(23,26)];
+__royalLocs__ = [Point(23,26)];
+__thirdLocs__ = [Point(23,26)];
+__lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 1;
 
 // Constant Definition
-const INSTANCE_ANGLE = "{instance.bodyRotation}*180/3.14";
+const INSTANCE_ANGLE = "{{instance.id}.bodyRotation}*180/3.14";
 const STATUS_TEXT = "【Lv{Level}】\nExp:{Exp}/{ExpNeeded}\n尚餘能力點：{Point}\n力量：{STR}\n體質：{CON}\n敏捷：{AGI}\n智慧：{INT}\n精神：{PSY}";
 
 // Utils Function Definition
@@ -16,6 +19,10 @@ def setInt(key, value) : actions {
 
 def setNum(key, value) : actions {
     setGlobal(key = key, type = "number", value = value);
+}
+
+def setString(key, value) : actions {
+    setGlobal(key = key, type = "string", value = value);
 }
 
 def increment(key) : actions {
@@ -87,7 +94,7 @@ block levelUp {
     }
 }
 
-block showStatus {
+block pressZ {
     __repeat__ = -1;
     triggers {
         keyboardPressed(varName = "instance", key = "Z");
@@ -97,15 +104,18 @@ block showStatus {
     }
 }
 
-block releasePower {
+block pressX {
     __repeat__ = -1;
+    __repeatInterval__ = 3000;
     triggers {
-        releasePower(varName = "instance", preventDefault = true);
+        keyboardPressed(varName = "instance", key = "X");
     }
     actions {
-        enblastEffect(fromActor = "{instance}", toAngle = INSTANCE_ANGLE, scale = "0.5", damage = "{INT} + 1");
-        enblastEffect(fromActor = "{instance}", toAngle = INSTANCE_ANGLE + "+20", scale = "0.5", damage = "{INT} + 1");
-        enblastEffect(fromActor = "{instance}", toAngle = INSTANCE_ANGLE + "-20", scale = "0.5", damage = "{INT} + 1");
+        enblastEffect(fromActor = "{instance.id}", toAngle = INSTANCE_ANGLE, scale = "0.5", damage = "{INT} + 1");
+        enblastEffect(fromActor = "{instance.id}", toAngle = INSTANCE_ANGLE + "+20", scale = "0.5", damage = "{INT} + 1");
+        enblastEffect(fromActor = "{instance.id}", toAngle = INSTANCE_ANGLE + "-20", scale = "0.5", damage = "{INT} + 1");
+        wait(duration = 3000);
+        actorTalk(actorId = "{instance.id}", text = "光彈冷卻完畢");
     }
 }
 
@@ -123,7 +133,7 @@ block init {
         addMapSign(x = 19, y = 28, rotation = 270, text = "【力量】\n消耗一點能力點，增加小刀一點傷害 (未實現)", buttonCode = "increaseSTR", buttonLabel = "確認");
         addMapSign(x = 21, y = 28, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限 (未實現)", buttonCode = "increaseCON", buttonLabel = "確認");
         addMapSign(x = 23, y = 28, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少10% (未實現)", buttonCode = "increaseAGI", buttonLabel = "確認");
-        addMapSign(x = 25, y = 28, rotation = 270, text = "【智慧】\n消耗一點能力點，增加集氣光彈一點傷害", buttonCode = "increaseINT", buttonLabel = "確認");
+        addMapSign(x = 25, y = 28, rotation = 270, text = "【智慧】\n消耗一點能力點，增加按X技能的光彈一點傷害", buttonCode = "increaseINT", buttonLabel = "確認");
         addMapSign(x = 27, y = 28, rotation = 270, text = "【精神】\n消耗一點能力點，每十秒恢復一點體力 (未實現)", buttonCode = "increasePSY", buttonLabel = "確認");
     }
 }

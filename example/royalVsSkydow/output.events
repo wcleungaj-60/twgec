@@ -226,10 +226,10 @@
                         },
                         "actorType": "defaultType",
                         "weapon0": {
-                            "w0Type": "fist"
+                            "w0Type": "kongfu"
                         },
                         "weapon1": {
-                            "w1Type": "fist"
+                            "w1Type": "kongfu"
                         },
                         "camp": "skydow",
                         "group": "0",
@@ -281,10 +281,10 @@
                         },
                         "actorType": "defaultType",
                         "weapon0": {
-                            "w0Type": "fist"
+                            "w0Type": "kongfu"
                         },
                         "weapon1": {
-                            "w1Type": "fist"
+                            "w1Type": "kongfu"
                         },
                         "camp": "royal",
                         "group": "0",
@@ -1049,6 +1049,8 @@
                             }
                         ],
                         "varname": "instance",
+                        "preventDefault": "false",
+                        "manaUsage": "0",
                         "checkAbilityLevel": 0,
                         "checkAbility": true,
                         "ability": {
@@ -1120,6 +1122,8 @@
                             }
                         ],
                         "varname": "instance",
+                        "preventDefault": "false",
+                        "manaUsage": "0",
                         "checkAbilityLevel": 0,
                         "checkWeaponType": true,
                         "weaponType": "sword"
@@ -1208,6 +1212,14 @@
                     }
                 },
                 {
+                    "type": "ActorFollow",
+                    "data": {
+                        "actorCode": "actor",
+                        "followType": "actor",
+                        "targetCode": "{instance}"
+                    }
+                },
+                {
                     "type": "Wait",
                     "data": {
                         "duration": "10000"
@@ -1257,6 +1269,8 @@
                             }
                         ],
                         "varname": "instance",
+                        "preventDefault": "false",
+                        "manaUsage": "0",
                         "checkAbilityLevel": 0,
                         "checkAbility": true,
                         "ability": {
