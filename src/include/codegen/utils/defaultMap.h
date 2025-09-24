@@ -8,6 +8,7 @@
 #include <iostream>
 #include <map>
 #include <set>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -25,6 +26,36 @@ enum ASTType {
   AST_LIST_STRING,
   AST_LIST_POINT,
 };
+
+inline std::ostream &operator<<(std::ostream &os, const ASTType &astType) {
+  switch (astType) {
+  case AST_BOOL:
+    os << "bool";
+    break;
+  case AST_INT:
+    os << "int|string";
+    break;
+  case AST_LIST_POINT:
+    os << "list[Point]";
+    break;
+  case AST_POINT:
+    os << "Point";
+    break;
+  case AST_ACTOR_MATCH:
+    os << "ActorMatch";
+    break;
+  case AST_STRING:
+    os << "string";
+    break;
+  case AST_LIST_STRING:
+    os << "list[string]";
+    break;
+  case AST_INVALID:
+    os << "?";
+    break;
+  }
+  return os;
+}
 
 enum CodegenType {
   CODEGEN_INVALID,
@@ -61,32 +92,9 @@ private:
     std::string ret = functionName + "(\n";
     for (auto it = defaultMap.begin(); it != defaultMap.end(); ++it) {
       ret += inden(4);
-      switch (it->second.astType) {
-      case AST_BOOL:
-        ret += "bool" + inden(12);
-        break;
-      case AST_INT:
-        ret += "int|string" + inden(6);
-        break;
-      case AST_LIST_POINT:
-        ret += "list[Point]" + inden(5);
-        break;
-      case AST_POINT:
-        ret += "Point" + inden(11);
-        break;
-      case AST_ACTOR_MATCH:
-        ret += "ActorMatch" + inden(6);
-        break;
-      case AST_STRING:
-        ret += "string" + inden(10);
-        break;
-      case AST_LIST_STRING:
-        ret += "list[string]" + inden(4);
-        break;
-      case AST_INVALID:
-        ret += "?" + inden(15);
-        break;
-      }
+      std::ostringstream oss;
+      oss << it->second.astType;
+      ret += oss.str() + inden(16 - oss.str().size());
       std::string key = it->first;
       if (isMetadata)
         key = "__" + key + "__";

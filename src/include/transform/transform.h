@@ -1,14 +1,15 @@
 #include "ast.h"
+#include "option/option.h"
 namespace transform {
 
 #define TRANSFORM_WITH_PRINT(passFunc, passName)                               \
-  if (printBefore) {                                                           \
+  if (opt.printASTBefore) {                                                    \
     moduleNode->print(std::string("AST Before ") + passName);                  \
   }                                                                            \
   if (!passFunc(std::move(moduleNode))) {                                      \
     return false;                                                              \
   }                                                                            \
-  if (printAfter) {                                                            \
+  if (opt.printASTAfter) {                                                     \
     moduleNode->print(std::string("AST After ") + passName);                   \
   }
 
@@ -28,7 +29,7 @@ bool constantFolding(const std::unique_ptr<ModuleNode> &moduleNode);
 bool ifStatementPropagation(const std::unique_ptr<ModuleNode> &moduleNode);
 
 inline bool loweringPipeline(const std::unique_ptr<ModuleNode> &moduleNode,
-                             bool printBefore, bool printAfter) {
+                             Option opt) {
   TRANSFORM_WITH_PRINT(symbolChecking, "Symbol Checking");
   TRANSFORM_WITH_PRINT(argBinding, "Arg Binding");
   TRANSFORM_WITH_PRINT(blockInling, "Block Inling");
@@ -36,7 +37,7 @@ inline bool loweringPipeline(const std::unique_ptr<ModuleNode> &moduleNode,
   TRANSFORM_WITH_PRINT(functionInling, "Function Inlining");
   TRANSFORM_WITH_PRINT(constantFolding, "Constant Folding");
   TRANSFORM_WITH_PRINT(ifStatementPropagation, "Statement Propagation");
-  if (printBefore)
+  if (opt.printASTBefore)
     moduleNode->print("AST Before Code Generation");
   return true;
 }
