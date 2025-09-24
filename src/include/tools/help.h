@@ -97,11 +97,11 @@ Supported Triggers:
     actorDead       角色死亡
         actor: ActorMatch, varName: string, hitterVarName: string 
     actorFire       角色發動攻擊
-        matchKind: string, actorId: string, varName: string
+        actor: ActorMatch, varName: string
     clickButton     告示牌按鈕
-        matchKind: string, actorId: string, varName: string, buttonId: string
+        actor: ActorMatch, varName: string, buttonId: string
     keyboardPressed 鍵盤按鍵
         actorId: string, varName: string, timing: string, key: string
     releasePower    發動技能
-        matchKind: string, actorId: string, varName: string, ability: string, weapon: string, preventDefault: bool, manaUsage: int|string
+        actor: ActorMatch, varName: string, ability: string, weapon: string, preventDefault: bool, manaUsage: int|string
 )";

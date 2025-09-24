@@ -107,8 +107,9 @@ public:
   DefaultMap(std::map<std::string, DefaultMapValue> defaultMap,
              std::string functionName = "")
       : functionName(functionName), defaultMap(defaultMap) {}
+  void clearInputMap() { inputMap = {}; }
   void addInputMap(std::vector<std::unique_ptr<MetadataNode>> &metadatas) {
-    inputMap = {};
+    clearInputMap();
     std::set<std::string> keySet;
     for (auto &metadata : metadatas) {
       std::string key = metadata->key;
@@ -121,7 +122,7 @@ public:
     verifyInputMap();
   }
   void addInputMap(std::vector<std::unique_ptr<NamedArgNode>> &namedArgs) {
-    inputMap = {};
+    clearInputMap();
     std::set<std::string> keySet;
     for (auto &namedArg : namedArgs) {
       std::string key = namedArg->key;

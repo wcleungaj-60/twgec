@@ -117,7 +117,7 @@ block spawn {
 block sniperAttack {
     __repeat__ = -1;
     triggers {
-        actorFire(varName = "instance", actorId = "sniper");
+        actorFire(actor = ActorMatch(id = "sniper"), varName = "instance");
     }
     actions {
         setNum("angle", "{instance.bodyRotation}*180/3.14");
