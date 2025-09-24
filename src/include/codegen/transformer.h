@@ -18,6 +18,8 @@ enum ASTType {
   AST_INT,
   AST_STRING,
   AST_BOOL,
+  AST_POINT,
+  AST_ACTOR_MATCH,
   AST_LIST_STRING,
   AST_LIST_POINT,
 };
@@ -27,6 +29,7 @@ enum CodegenType {
   CODEGEN_INT,
   CODEGEN_STRING, // two `\"` will be added
   CODEGEN_BOOL,
+  CODEGEN_ACTOR_MATCH,
   CODEGEN_LIST_STRING,
   CODEGEN_LIST_POINT,  // {x,y}
   CODEGEN_LIST_PATROL, // {loc{x,y,range},rotation,duration}
@@ -58,27 +61,35 @@ private:
       ret += inden(4);
       switch (it->second.astType) {
       case AST_BOOL:
-        ret += "bool"+ inden(12);
+        ret += "bool" + inden(12);
         break;
       case AST_INT:
-        ret += "int|string"+ inden(6);
+        ret += "int|string" + inden(6);
         break;
       case AST_LIST_POINT:
-        ret += "list[point]" + inden(5);
+        ret += "list[Point]" + inden(5);
+        break;
+      case AST_POINT:
+        ret += "Point" + inden(11);
+        break;
+      case AST_ACTOR_MATCH:
+        ret += "ActorMatch" + inden(6);
         break;
       case AST_STRING:
-        ret += "string"+ inden(10);
+        ret += "string" + inden(10);
         break;
       case AST_LIST_STRING:
-        ret += "list[string]"+ inden(4);
+        ret += "list[string]" + inden(4);
         break;
       case AST_INVALID:
-        ret += "?"+ inden(15);
+        ret += "?" + inden(15);
         break;
       }
       ret += " " + it->first + " = ";
       if (it->second.codegenType == CODEGEN_STRING)
         ret += "\"" + it->second.defaultValue + "\"";
+      else if (it->second.codegenType == CODEGEN_ACTOR_MATCH)
+        ret += "ActorMatch(id = \"\", matchKind = \"contain\")";
       else
         ret += it->second.defaultValue;
       if (std::next(it) != defaultMap.end())

@@ -9,6 +9,12 @@ Options:
     --print-ast     Print the AST before each transformation.
     --print-token   Print the Token of the language.
 
+Builtin Struct:
+    Point
+        x: int, y: int
+    ActorMatch
+        id: string, matchKind: string
+
 Supported Global Metadata:
     __stageWidth__ : int|string
     __stageHeight__ : int|string
@@ -89,7 +95,7 @@ Supported Checks:
 
 Supported Triggers:
     actorDead       角色死亡
-        matchKind: string, actorId: string, varName: string, hitterVarName: string 
+        actor: ActorMatch, varName: string, hitterVarName: string 
     actorFire       角色發動攻擊
         matchKind: string, actorId: string, varName: string
     clickButton     告示牌按鈕

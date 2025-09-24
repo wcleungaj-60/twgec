@@ -59,7 +59,7 @@ block clickIncreasePSY = clickIncrease("PSY", "精神");
 block monsterDead {
     __repeat__ = -1;
     triggers {
-        actorDead(actorId = "monster");
+        actorDead(actor = ActorMatch(id = "monster"));
     }
     actions {
         increment("Exp");

@@ -76,10 +76,10 @@ def releasePowerDef(jobName, ability, weapon) : block {
 def winDef(winner) : block {
     triggers {
         if(winner == "skydow") {
-            actorDead(actorId = "camp_royal");
+            actorDead(actor = ActorMatch(id = "camp_royal"));
         }
         if(winner == "royal") {
-            actorDead(actorId = "camp_skydow");
+            actorDead(actor = ActorMatch(id = "camp_skydow"));
         }
     }
     actions {

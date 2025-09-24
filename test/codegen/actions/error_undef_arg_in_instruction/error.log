@@ -8,7 +8,7 @@ addActor(
     string           id = "ai*", 
     string           localVarname = "actor", 
     string           name = "", 
-    list[point]      patrol = [], 
+    list[Point]      patrol = [], 
     int|string       range = "10000", 
     string           role = 0, 
     int|string       strength = "1", 
