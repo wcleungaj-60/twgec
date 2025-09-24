@@ -1,0 +1,6 @@
+block spawn {
+    __test__ = 5000;
+    actions {
+        print(text = "test");
+    }
+}

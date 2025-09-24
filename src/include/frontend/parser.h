@@ -10,6 +10,7 @@
 class Parser {
 private:
   std::queue<Token> tokens;
+  Token getTokenWithIndex(int index);
   bool consume(TokenType type, bool errorThrowing);
   std::unique_ptr<BlockNode> parseBlock();
   std::unique_ptr<BlockBodyNode> parseBlockBody();

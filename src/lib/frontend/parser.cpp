@@ -16,6 +16,22 @@ bool Parser::consume(TokenType type, bool errorThrowing = true) {
   return false;
 }
 
+Token Parser::getTokenWithIndex(int index) {
+  std::queue<Token> newTokens;
+  while (index > 0) {
+    index--;
+    newTokens.push(tokens.front());
+    tokens.pop();
+  }
+  Token ret = tokens.front();
+  while (!tokens.empty()) {
+    newTokens.push(tokens.front());
+    tokens.pop();
+  }
+  tokens = newTokens;
+  return ret;
+}
+
 Parser::Parser(const std::vector<Token> &inputTokens) {
   for (const auto &token : inputTokens) {
     tokens.push(token);
@@ -314,23 +330,11 @@ bool Parser::parseInstructionArgs(std::unique_ptr<InstructionNode> &actionNode,
                                   bool foundNamed) {
   std::string identifierToken = tokens.front().value;
   Location loc = tokens.front().location;
-  if (!consume(TokenType::IDENTIFIER, /*errorThrowing*/ false)) {
-    if (foundNamed) {
-      std::cerr << "SyntaxError: Expecting an identifier at "
-                << tokens.front().location << ". Found \'"
-                << tokens.front().value << "\'\n";
-      return false;
-    }
-    std::unique_ptr<ExpressionNode> expNode = parseExp();
-    if (!expNode)
-      return false;
-    std::unique_ptr<PositionalArgNode> posArgNode =
-        std::make_unique<PositionalArgNode>(expNode, loc);
-    actionNode->positional_args.push_back(std::move(posArgNode));
-    if (consume(TokenType::COMMA, /*errorThrowing*/ false))
-      return parseInstructionArgs(actionNode);
-  } else {
-    if (!consume(TokenType::ASSIGN))
+  bool isParsingNamedArg =
+      foundNamed || (tokens.front().type == TokenType::IDENTIFIER &&
+                     getTokenWithIndex(1).type == TokenType::ASSIGN);
+  if (isParsingNamedArg) {
+    if (!consume(TokenType::IDENTIFIER) || !consume(TokenType::ASSIGN))
       return false;
     std::unique_ptr<ExpressionNode> expNode = parseExp();
     if (!expNode)
@@ -340,6 +344,15 @@ bool Parser::parseInstructionArgs(std::unique_ptr<InstructionNode> &actionNode,
     actionNode->named_args.push_back(std::move(namedArgNode));
     if (consume(TokenType::COMMA, /*errorThrowing*/ false))
       return parseInstructionArgs(actionNode, /*foundNamed*/ true);
+  } else {
+    std::unique_ptr<ExpressionNode> expNode = parseExp();
+    if (!expNode)
+      return false;
+    std::unique_ptr<PositionalArgNode> posArgNode =
+        std::make_unique<PositionalArgNode>(expNode, loc);
+    actionNode->positional_args.push_back(std::move(posArgNode));
+    if (consume(TokenType::COMMA, /*errorThrowing*/ false))
+      return parseInstructionArgs(actionNode);
   }
   return tokens.front().type == TokenType::CLOSEPAR;
 }

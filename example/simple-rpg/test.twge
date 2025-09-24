@@ -44,7 +44,7 @@ def clickIncrease(type, typeZh) : block {
     }
     actions {
         decrement("Point");
-        increment(key = type); // TODO: Update the parse if that is a variable value
+        increment(type);
         actorTalk(actorId = "instance", text = "成功提升一點"+typeZh+"，尚餘{Point}點能力點");
     }
 }

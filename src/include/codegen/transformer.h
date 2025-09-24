@@ -4,10 +4,12 @@
 #include "ast.h"
 #include "keyword.h"
 #include "utils.h"
+#include <algorithm>
 #include <iostream>
 #include <map>
 #include <set>
 #include <string>
+#include <vector>
 
 namespace codegen {
 namespace {
@@ -48,10 +50,10 @@ private:
       if (defaultMap.find(input.first) == defaultMap.end()) {
         std::cerr << "Codegen Warnings: Undefined key \"" << input.first
                   << "\" at " << input.second->loc << "\n";
-        if (!functionName.empty())
-          std::cerr << "Please following this function signature:\n"
-                    << print() << "\n";
-        // TODO: handle metadata
+        std::string name =
+            isMetadata ? "available metadata list" : "function signature";
+        std::cerr << "Please following this " << name << ":\n"
+                  << print() << "\n";
       }
   };
 
@@ -85,7 +87,10 @@ private:
         ret += "?" + inden(15);
         break;
       }
-      ret += " " + it->first + " = ";
+      std::string key = it->first;
+      if (isMetadata)
+        key = "__" + key + "__";
+      ret += " " + key + " = ";
       if (it->second.codegenType == CODEGEN_STRING)
         ret += "\"" + it->second.defaultValue + "\"";
       else if (it->second.codegenType == CODEGEN_ACTOR_MATCH)
@@ -103,10 +108,12 @@ private:
 public:
   const std::map<std::string, DefaultMapValue> defaultMap;
   const std::string functionName;
+  bool isMetadata;
   std::map<std::string, const std::shared_ptr<ValueNode>> inputMap;
   DefaultMap(std::map<std::string, DefaultMapValue> defaultMap,
-             std::string functionName = "")
-      : functionName(functionName), defaultMap(defaultMap) {}
+             std::string functionName = "", bool isMetadata = false)
+      : functionName(functionName), defaultMap(defaultMap),
+        isMetadata(isMetadata) {}
   void clearInputMap() { inputMap = {}; }
   void addInputMap(std::vector<std::unique_ptr<MetadataNode>> &metadatas) {
     clearInputMap();
@@ -121,11 +128,14 @@ public:
     }
     verifyInputMap();
   }
-  void addInputMap(std::vector<std::unique_ptr<NamedArgNode>> &namedArgs) {
+  void addInputMap(std::vector<std::unique_ptr<NamedArgNode>> &namedArgs,
+                   std::vector<std::string> exclusion = {}) {
     clearInputMap();
     std::set<std::string> keySet;
     for (auto &namedArg : namedArgs) {
       std::string key = namedArg->key;
+      if (std::find(exclusion.begin(), exclusion.end(), key) != exclusion.end())
+        continue;
       if (keySet.count(key))
         std::cerr << "Codegen Warnings: Redefined key \"" << key << "\" at "
                   << namedArg->loc << "\n";

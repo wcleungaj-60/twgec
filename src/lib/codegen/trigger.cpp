@@ -87,9 +87,8 @@ JsonObjectNode getActorMatchNode(std::unique_ptr<InstructionNode> &instr,
 
 void trigger::TriggerActorDead::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
-  auto clonedTrigger = trigger->clone(); // TODO: avoid the clone
-  defaultMap.addInputMap(trigger->named_args);
-  JsonObjectNode actorMatchNode = getActorMatchNode(clonedTrigger, "actor");
+  defaultMap.addInputMap(trigger->named_args, {"actor"});
+  JsonObjectNode actorMatchNode = getActorMatchNode(trigger, "actor");
   JsonArrayNode actorMatchesNode =
       JsonArrayNode(std::make_shared<JsonObjectNode>(actorMatchNode));
   JsonObjectNode dataNode = JsonObjectNode({
@@ -109,9 +108,8 @@ void trigger::TriggerActorDead::method(
 
 void trigger::TriggerActorFire::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
-  auto clonedTrigger = trigger->clone(); // TODO: avoid the clone
-  defaultMap.addInputMap(trigger->named_args);
-  JsonObjectNode actorMatchNode = getActorMatchNode(clonedTrigger, "actor");
+  defaultMap.addInputMap(trigger->named_args, {"actor"});
+  JsonObjectNode actorMatchNode = getActorMatchNode(trigger, "actor");
   JsonArrayNode actorMatchesNode =
       JsonArrayNode(std::make_shared<JsonObjectNode>(actorMatchNode));
   JsonObjectNode dataNode = JsonObjectNode({
@@ -129,9 +127,8 @@ void trigger::TriggerActorFire::method(
 
 void trigger::TriggerClickButton::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
-  auto clonedTrigger = trigger->clone(); // TODO: avoid the clone
-  defaultMap.addInputMap(trigger->named_args);
-  JsonObjectNode actorMatchNode = getActorMatchNode(clonedTrigger, "actor");
+  defaultMap.addInputMap(trigger->named_args, {"actor"});
+  JsonObjectNode actorMatchNode = getActorMatchNode(trigger, "actor");
   JsonArrayNode actorMatchesNode =
       JsonArrayNode(std::make_shared<JsonObjectNode>(actorMatchNode));
   JsonObjectNode dataNode = JsonObjectNode({
@@ -170,9 +167,8 @@ void trigger::TriggerKeyboardPressed::method(
 
 void trigger::TriggerReleasePower::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
-  auto clonedTrigger = trigger->clone(); // TODO: avoid the clone
-  defaultMap.addInputMap(trigger->named_args);
-  JsonObjectNode actorMatchNode = getActorMatchNode(clonedTrigger, "actor");
+  defaultMap.addInputMap(trigger->named_args, {"actor"});
+  JsonObjectNode actorMatchNode = getActorMatchNode(trigger, "actor");
   std::string ability = defaultMap.get("ability", ability::keywordEnum);
   std::string weaponType = defaultMap.get("weapon", weapon::keywordEnum);
   JsonArrayNode actorMatchesNode =
