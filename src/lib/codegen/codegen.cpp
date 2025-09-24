@@ -125,6 +125,7 @@ void CodeGenerator::codegenTrigger(std::ofstream &of,
   CODEGEN_TRIGGER("actorDead", ActorDead);
   CODEGEN_TRIGGER("actorFire", ActorFire);
   CODEGEN_TRIGGER("clickButton", ClickButton);
+  CODEGEN_TRIGGER("keyboardPressed", KeyboardPressed);
   CODEGEN_TRIGGER("releasePower", ReleasePower);
   std::cerr << "Codegen error: Cannot found the corresponding trigger name \""
             << trigger->identifier << "\" at " << trigger.get()->loc << "\n";

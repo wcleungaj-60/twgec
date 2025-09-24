@@ -570,6 +570,62 @@ static KeywordEnum
                 });
 } // namespace followType
 
+namespace keyPressTiming {
+const std::string keywordPressed = "pressed";
+const std::string keywordPressedZh = "點擊";
+const std::string keywordDown = "down";
+const std::string keywordDownZh = "按下";
+const std::string keywordRelease = "release";
+const std::string keywordReleaseZh = "放開";
+static KeywordEnum keywordEnum("keyPressTiming",
+                               {
+                                   {keywordPressed, keywordPressed},
+                                   {keywordPressedZh, keywordPressed},
+                                   {keywordDown, keywordDown},
+                                   {keywordDownZh, keywordDown},
+                                   {keywordRelease, keywordRelease},
+                                   {keywordReleaseZh, keywordRelease},
+                               });
+} // namespace keyPressTiming
+
+namespace keyPressKey {
+const std::string keywordA = "A";
+const std::string keywordB = "B";
+const std::string keywordC = "C";
+const std::string keywordD = "D";
+const std::string keywordE = "E";
+const std::string keywordF = "F";
+const std::string keywordG = "G";
+const std::string keywordH = "H";
+const std::string keywordI = "I";
+const std::string keywordJ = "J";
+const std::string keywordK = "K";
+const std::string keywordL = "L";
+const std::string keywordM = "M";
+const std::string keywordN = "N";
+const std::string keywordO = "O";
+const std::string keywordP = "P";
+const std::string keywordQ = "Q";
+const std::string keywordR = "R";
+const std::string keywordS = "S";
+const std::string keywordT = "T";
+const std::string keywordU = "U";
+const std::string keywordV = "V";
+const std::string keywordW = "W";
+const std::string keywordX = "X";
+const std::string keywordY = "Y";
+const std::string keywordZ = "Z";
+static KeywordEnum keywordEnum(
+    "keyPressKey",
+    {{keywordA, "65"}, {keywordB, "66"}, {keywordC, "67"}, {keywordD, "68"},
+     {keywordE, "69"}, {keywordF, "70"}, {keywordG, "71"}, {keywordH, "72"},
+     {keywordI, "73"}, {keywordJ, "74"}, {keywordK, "75"}, {keywordL, "76"},
+     {keywordM, "77"}, {keywordN, "78"}, {keywordO, "79"}, {keywordP, "80"},
+     {keywordQ, "81"}, {keywordR, "82"}, {keywordS, "83"}, {keywordT, "84"},
+     {keywordU, "85"}, {keywordV, "86"}, {keywordW, "87"}, {keywordX, "88"},
+     {keywordY, "89"}, {keywordZ, "90"}});
+} // namespace keyPressKey
+
 } // namespace keyword
 
 #endif

@@ -44,8 +44,20 @@ std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
       defaultMap.at(key).codegenType == CODEGEN_LIST_PATROL;
   bool codegenListPoint = defaultMap.at(key).codegenType == CODEGEN_LIST_POINT;
 
-  auto format = [codegenString](std::string text) -> std::string {
-    return codegenString ? "\"" + text + "\"" : text;
+  auto format = [&](std::string text) -> std::string {
+    if (codegenInt || codegenBool) {
+      return text;
+    } else if (codegenString) {
+      return "\"" + text + "\"";
+    } else if (codegenListPatrol || codegenListPoint) {
+      if (text != "[]")
+        std::cerr << "Compiler Implementation Error: codegenListPatrol and "
+                     "codegenListPoint cannot be handled.\n";
+      return text;
+    } else {
+      std::cerr << "Compiler Implementation Error: Unreachable codegen type.\n";
+      return text;
+    }
   };
 
   // Return search result

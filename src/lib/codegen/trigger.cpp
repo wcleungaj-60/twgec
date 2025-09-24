@@ -36,6 +36,15 @@ DefaultMap trigger::TriggerClickButton::defaultMap = DefaultMap(
     },
     "clickButton");
 
+DefaultMap trigger::TriggerKeyboardPressed::defaultMap = DefaultMap(
+    {
+        {"actorId", {AST_STRING, CODEGEN_STRING, "*"}},
+        {"varName", {AST_STRING, CODEGEN_STRING, ""}},
+        {"timing", {AST_STRING, CODEGEN_STRING, ""}},
+        {"key", {AST_STRING, CODEGEN_INT, "65"}},
+    },
+    "keyboardPressed");
+
 DefaultMap trigger::TriggerReleasePower::defaultMap = DefaultMap(
     {
         {"matchKind", {AST_STRING, CODEGEN_STRING, "contain"}},
@@ -139,6 +148,26 @@ void trigger::TriggerClickButton::method(
   });
   JsonObjectNode rootNode = JsonObjectNode({
       {"type", "\"TalkButton\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
+
+void trigger::TriggerKeyboardPressed::method(
+    std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
+  defaultMap.addInputMap(trigger->named_args);
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"playerId", defaultMap.get("actorId")},
+      // `{instance.id}` is needed for parsing the playerLocal 
+      {"playerLocal", defaultMap.get("varName")},
+      {"timing", defaultMap.get("timing", keyPressTiming::keywordEnum)},
+      {"key", defaultMap.get("key", keyPressKey::keywordEnum)},
+      {"keyLocal", "\"\""},
+      {"ctrl", "\"\""},
+      {"shift", "\"\""},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"KeyboardPressed\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);

@@ -7,6 +7,7 @@ __roomSize__ = 1;
 
 // Constant Definition
 const INSTANCE_ANGLE = "{instance.bodyRotation}*180/3.14";
+const STATUS_TEXT = "【Lv{Level}】\nExp:{Exp}/{ExpNeeded}\n尚餘能力點：{Point}\n力量：{STR}\n體質：{CON}\n敏捷：{AGI}\n智慧：{INT}\n精神：{PSY}";
 
 // Utils Function Definition
 def setInt(key, value) : actions {
@@ -37,7 +38,7 @@ def clickIncrease(type, typeZh) : block {
     actions {
         decrement("Point");
         increment(key = type); // TODO: Update the parse if that is a variable value
-        actorTalk(actorId = "instance", text = "尚餘能力點:{Point}\n目前"+typeZh+"為: {"+type+"}");
+        actorTalk(actorId = "instance", text = "成功提升一點"+typeZh+"，尚餘{Point}點能力點");
     }
 }
 
@@ -89,7 +90,10 @@ block levelUp {
 block showStatus {
     __repeat__ = -1;
     triggers {
-        // TODO: Support click keystroke
+        keyboardPressed(varName = "instance", key = "Z");
+    }
+    actions {
+        actorTalk(actorId = "{instance.id}", text = STATUS_TEXT);
     }
 }
 
