@@ -77,21 +77,7 @@
                 {
                     "type": "ReleasePower",
                     "data": {
-                        "actorMatches": [
-                            {
-                                "actorCodes": [
-                                    {
-                                        "method": "contain",
-                                        "actorCode": ""
-                                    }
-                                ],
-                                "brain": "all",
-                                "camp": {
-                                    "campAll": true
-                                },
-                                "excludeActorCodes": []
-                            }
-                        ],
+                        "actorMatches": [],
                         "varname": "instance",
                         "preventDefault": "false",
                         "manaUsage": "0",
@@ -101,21 +87,7 @@
                 {
                     "type": "ReleasePower",
                     "data": {
-                        "actorMatches": [
-                            {
-                                "actorCodes": [
-                                    {
-                                        "method": "contain",
-                                        "actorCode": ""
-                                    }
-                                ],
-                                "brain": "all",
-                                "camp": {
-                                    "campAll": true
-                                },
-                                "excludeActorCodes": []
-                            }
-                        ],
+                        "actorMatches": [],
                         "varname": "instance",
                         "preventDefault": "false",
                         "manaUsage": "0",

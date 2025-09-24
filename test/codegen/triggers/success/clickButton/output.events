@@ -77,21 +77,7 @@
                 {
                     "type": "TalkButton",
                     "data": {
-                        "actorMatches": [
-                            {
-                                "actorCodes": [
-                                    {
-                                        "method": "contain",
-                                        "actorCode": ""
-                                    }
-                                ],
-                                "brain": "all",
-                                "camp": {
-                                    "campAll": true
-                                },
-                                "excludeActorCodes": []
-                            }
-                        ],
+                        "actorMatches": [],
                         "varname": "instance",
                         "checkButtoncode": true,
                         "buttonCode": "buttonId",

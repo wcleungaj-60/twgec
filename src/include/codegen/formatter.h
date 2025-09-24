@@ -30,12 +30,15 @@ public:
 class JsonArrayNode : public JsonNode {
 public:
   vector<shared_ptr<JsonNode>> nodeList;
+  JsonArrayNode(){};
   JsonArrayNode(shared_ptr<JsonNode> node) { addNode(node); };
   JsonArrayNode addNode(shared_ptr<JsonNode> node) {
     nodeList.push_back(node);
     return *this;
   };
   string to_string(int indentation) override {
+    if (nodeList.empty())
+      return "[]";
     string ret = "[\n";
     for (auto idx = 0; idx < nodeList.size(); idx++) {
       ret += inden(indentation + 4) + nodeList[idx]->to_string(indentation + 4);

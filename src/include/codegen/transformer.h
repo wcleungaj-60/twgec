@@ -94,7 +94,7 @@ private:
       if (it->second.codegenType == CODEGEN_STRING)
         ret += "\"" + it->second.defaultValue + "\"";
       else if (it->second.codegenType == CODEGEN_ACTOR_MATCH)
-        ret += "ActorMatch(id = \"\", matchKind = \"contain\")";
+        ret += "NULL";
       else
         ret += it->second.defaultValue;
       if (std::next(it) != defaultMap.end())

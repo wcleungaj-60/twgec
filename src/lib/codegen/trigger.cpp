@@ -61,36 +61,37 @@ DefaultMap actorMatchDefaultMap = DefaultMap(
     },
     "actorMatch");
 
-JsonObjectNode getActorMatchNode(std::unique_ptr<InstructionNode> &instr,
-                                 std::string key) {
+JsonArrayNode getActorMatchesNode(std::unique_ptr<InstructionNode> &instr,
+                                  std::string key) {
   actorMatchDefaultMap.clearInputMap();
   for (auto &namedArg : instr->named_args)
     if (namedArg->key == key) {
-      auto actorMatchNode =
+      auto actorMatchValueNode =
           dynamic_cast<ActorMatchValueNode *>(namedArg->expNode->value.get());
-      actorMatchDefaultMap.addInputMap(actorMatchNode->named_args);
+      actorMatchDefaultMap.addInputMap(actorMatchValueNode->named_args);
+      JsonObjectNode actorCodeNode = JsonObjectNode({
+          {"method",
+           actorMatchDefaultMap.get("matchKind", matchKind::keywordEnum)},
+          {"actorCode", actorMatchDefaultMap.get("id")},
+      });
+      JsonArrayNode actorCodesNode =
+          JsonArrayNode(std::make_shared<JsonObjectNode>(actorCodeNode));
+      JsonObjectNode campNode = JsonObjectNode("campAll", "true");
+      JsonObjectNode actorMatchNode = JsonObjectNode({
+          {"actorCodes", actorCodesNode.to_string(32)},
+          {"brain", "\"all\""},
+          {"camp", campNode.to_string(32)},
+          {"excludeActorCodes", "[]"},
+      });
+      return JsonArrayNode(std::make_shared<JsonObjectNode>(actorMatchNode));
     }
-  JsonObjectNode actorCodeNode = JsonObjectNode({
-      {"method", actorMatchDefaultMap.get("matchKind", matchKind::keywordEnum)},
-      {"actorCode", actorMatchDefaultMap.get("id")},
-  });
-  JsonArrayNode actorCodesNode =
-      JsonArrayNode(std::make_shared<JsonObjectNode>(actorCodeNode));
-  JsonObjectNode campNode = JsonObjectNode("campAll", "true");
-  return JsonObjectNode({
-      {"actorCodes", actorCodesNode.to_string(32)},
-      {"brain", "\"all\""},
-      {"camp", campNode.to_string(32)},
-      {"excludeActorCodes", "[]"},
-  });
+  return JsonArrayNode();
 }
 
 void trigger::TriggerActorDead::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
   defaultMap.addInputMap(trigger->named_args, {"actor"});
-  JsonObjectNode actorMatchNode = getActorMatchNode(trigger, "actor");
-  JsonArrayNode actorMatchesNode =
-      JsonArrayNode(std::make_shared<JsonObjectNode>(actorMatchNode));
+  JsonArrayNode actorMatchesNode = getActorMatchesNode(trigger, "actor");
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", actorMatchesNode.to_string(24)},
       {"varname", defaultMap.get("varName")},
@@ -109,9 +110,7 @@ void trigger::TriggerActorDead::method(
 void trigger::TriggerActorFire::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
   defaultMap.addInputMap(trigger->named_args, {"actor"});
-  JsonObjectNode actorMatchNode = getActorMatchNode(trigger, "actor");
-  JsonArrayNode actorMatchesNode =
-      JsonArrayNode(std::make_shared<JsonObjectNode>(actorMatchNode));
+  JsonArrayNode actorMatchesNode = getActorMatchesNode(trigger, "actor");
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", actorMatchesNode.to_string(24)},
       {"varname", defaultMap.get("varName")},
@@ -128,9 +127,7 @@ void trigger::TriggerActorFire::method(
 void trigger::TriggerClickButton::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
   defaultMap.addInputMap(trigger->named_args, {"actor"});
-  JsonObjectNode actorMatchNode = getActorMatchNode(trigger, "actor");
-  JsonArrayNode actorMatchesNode =
-      JsonArrayNode(std::make_shared<JsonObjectNode>(actorMatchNode));
+  JsonArrayNode actorMatchesNode = getActorMatchesNode(trigger, "actor");
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", actorMatchesNode.to_string(24)},
       {"varname", defaultMap.get("varName")},
@@ -168,11 +165,9 @@ void trigger::TriggerKeyboardPressed::method(
 void trigger::TriggerReleasePower::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
   defaultMap.addInputMap(trigger->named_args, {"actor"});
-  JsonObjectNode actorMatchNode = getActorMatchNode(trigger, "actor");
+  JsonArrayNode actorMatchesNode = getActorMatchesNode(trigger, "actor");
   std::string ability = defaultMap.get("ability", ability::keywordEnum);
   std::string weaponType = defaultMap.get("weapon", weapon::keywordEnum);
-  JsonArrayNode actorMatchesNode =
-      JsonArrayNode(std::make_shared<JsonObjectNode>(actorMatchNode));
 
   JsonObjectNode abilityNode = JsonObjectNode({
       {"value", ability},
