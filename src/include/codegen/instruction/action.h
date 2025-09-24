@@ -1,7 +1,7 @@
 #ifndef CODEGEN_ACTION_H
 #define CODEGEN_ACTION_H
 
-#include "transformer.h"
+#include "utils/defaultMap.h"
 
 namespace codegen {
 namespace action {

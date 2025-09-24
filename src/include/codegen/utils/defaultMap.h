@@ -1,5 +1,5 @@
-#ifndef CODEGEN_TRANSFORMER_H
-#define CODEGEN_TRANSFORMER_H
+#ifndef CODEGEN_defaultMap_H
+#define CODEGEN_defaultMap_H
 
 #include "ast.h"
 #include "keyword.h"

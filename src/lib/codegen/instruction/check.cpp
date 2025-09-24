@@ -1,7 +1,6 @@
-#include "check.h"
-#include "codegen/check.h"
-#include "formatter.h"
+#include "codegen/instruction/check.h"
 #include "keyword.h"
+#include "utils/formatter.h"
 #include "utils/utils.h"
 #include <fstream>
 #include <map>

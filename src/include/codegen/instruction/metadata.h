@@ -1,7 +1,7 @@
 #ifndef CODEGEN_METADATA_H
 #define CODEGEN_METADATA_H
 
-#include "transformer.h"
+#include "utils/defaultMap.h"
 
 namespace codegen {
 namespace metadata {

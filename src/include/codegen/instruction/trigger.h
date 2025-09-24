@@ -1,7 +1,7 @@
 #ifndef CODEGEN_TRIGGER_H
 #define CODEGEN_TRIGGER_H
 
-#include "transformer.h"
+#include "utils/defaultMap.h"
 
 namespace codegen {
 namespace trigger {

@@ -1,7 +1,7 @@
-#include "codegen/trigger.h"
-#include "formatter.h"
+#include "codegen/instruction/trigger.h"
 #include "keyword.h"
-#include "utils/utils.h"
+#include "utils/builtin.h"
+#include "utils/formatter.h"
 #include <fstream>
 #include <map>
 #include <memory>
@@ -52,41 +52,6 @@ DefaultMap trigger::TriggerReleasePower::defaultMap = DefaultMap(
         {"weapon", {AST_STRING, CODEGEN_STRING, ""}},
     },
     "releasePower");
-
-// TODO: Make it general
-DefaultMap actorMatchDefaultMap = DefaultMap(
-    {
-        {"matchKind", {AST_STRING, CODEGEN_STRING, "contain"}},
-        {"id", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "actorMatch");
-
-JsonArrayNode getActorMatchesNode(std::unique_ptr<InstructionNode> &instr,
-                                  std::string key) {
-  actorMatchDefaultMap.clearInputMap();
-  for (auto &namedArg : instr->named_args)
-    if (namedArg->key == key) {
-      auto actorMatchValueNode =
-          dynamic_cast<ActorMatchValueNode *>(namedArg->expNode->value.get());
-      actorMatchDefaultMap.addInputMap(actorMatchValueNode->named_args);
-      JsonObjectNode actorCodeNode = JsonObjectNode({
-          {"method",
-           actorMatchDefaultMap.get("matchKind", matchKind::keywordEnum)},
-          {"actorCode", actorMatchDefaultMap.get("id")},
-      });
-      JsonArrayNode actorCodesNode =
-          JsonArrayNode(std::make_shared<JsonObjectNode>(actorCodeNode));
-      JsonObjectNode campNode = JsonObjectNode("campAll", "true");
-      JsonObjectNode actorMatchNode = JsonObjectNode({
-          {"actorCodes", actorCodesNode.to_string(32)},
-          {"brain", "\"all\""},
-          {"camp", campNode.to_string(32)},
-          {"excludeActorCodes", "[]"},
-      });
-      return JsonArrayNode(std::make_shared<JsonObjectNode>(actorMatchNode));
-    }
-  return JsonArrayNode();
-}
 
 void trigger::TriggerActorDead::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {

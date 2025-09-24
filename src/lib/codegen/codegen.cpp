@@ -1,24 +1,12 @@
 #include "codegen.h"
-#include "action.h"
 #include "ast.h"
-#include "check.h"
-#include "metadata.h"
-#include "trigger.h"
+#include "instruction/action.h"
+#include "instruction/check.h"
+#include "instruction/metadata.h"
+#include "instruction/trigger.h"
 #include "utils/utils.h"
 #include <fstream>
 #include <iostream>
-
-#define CODEGEN_ACTION(inputName, outputClass)                                 \
-  if (action->identifier == inputName)                                         \
-  return action::Action##outputClass::method(of, action)
-
-#define CODEGEN_CHECK(inputName, outputClass)                                  \
-  if (check->identifier == inputName)                                          \
-  return check::Check##outputClass::method(of, check)
-
-#define CODEGEN_TRIGGER(inputName, outputClass)                                \
-  if (trigger->identifier == inputName)                                        \
-  return trigger::Trigger##outputClass::method(of, trigger)
 
 using namespace codegen;
 
