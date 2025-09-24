@@ -5,41 +5,6 @@
 #include "transform/transform.h"
 #include <fstream>
 
-bool loweringPipeline(const std::unique_ptr<ModuleNode> &moduleNode,
-                      bool printAST = false) {
-  if (printAST)
-    moduleNode->print("AST Before Symbol Checking");
-  if (!transform::symbolChecking(std::move(moduleNode)))
-    return false;
-  if (printAST)
-    moduleNode->print("AST Before Arg Binding");
-  if (!transform::argBinding(std::move(moduleNode)))
-    return false;
-  if (printAST)
-    moduleNode->print("AST Before Block Inling");
-  if (!transform::blockInling(std::move(moduleNode)))
-    return false;
-  if (printAST)
-    moduleNode->print("AST Before Block Legalization");
-  if (!transform::blockLegalization(std::move(moduleNode)))
-    return false;
-  if (printAST)
-    moduleNode->print("AST Before Function Inlining");
-  if (!transform::functionInling(std::move(moduleNode)))
-    return false;
-  if (printAST)
-    moduleNode->print("AST Before Constant Folding");
-  if (!transform::constantFolding(std::move(moduleNode)))
-    return false;
-  if (printAST)
-    moduleNode->print("AST Before If Statement Propagation");
-  if (!transform::ifStatementPropagation(std::move(moduleNode)))
-    return false;
-  if (printAST)
-    moduleNode->print("AST Before Code Generation");
-  return true;
-}
-
 int main(int argc, char *argv[]) {
   if (argc < 2) {
     std::cerr << "Please run `twgec --help` for help.\n";
@@ -47,15 +12,21 @@ int main(int argc, char *argv[]) {
   }
 
   bool optPrintToken = false;
-  bool optPrintAST = false;
+  bool optPrintASTBefore = false;
+  bool optPrintASTAfter = false;
   bool optHelp = false;
   std::string argFilePath = "";
 
   for (int i = 1; i < argc; i++) {
     if (std::string(argv[i]) == "--print-token") {
       optPrintToken = true;
-    } else if (std::string(argv[i]) == "--print-ast") {
-      optPrintAST = true;
+    } else if (std::string(argv[i]) == "--print-ast-all") {
+      optPrintASTBefore = true;
+      optPrintASTAfter = true;
+    } else if (std::string(argv[i]) == "--print-ast-before") {
+      optPrintASTBefore = true;
+    } else if (std::string(argv[i]) == "--print-ast-after") {
+      optPrintASTAfter = true;
     } else if (std::string(argv[i]) == "--help") {
       optHelp = true;
     } else if (argFilePath == "") {
@@ -96,7 +67,8 @@ int main(int argc, char *argv[]) {
     return 1;
   }
   // Lowering
-  if (!loweringPipeline(moduleNode, optPrintAST))
+  if (!transform::loweringPipeline(moduleNode, optPrintASTBefore,
+                                   optPrintASTAfter))
     return 1;
   // Codegen
   codegen::CodeGenerator generator(moduleNode);

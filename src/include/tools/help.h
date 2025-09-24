@@ -5,9 +5,11 @@ static const std::string helpMessage  = R"(twgec (Twilight game.events compiler)
 
 Usage: twgec [options] file
 Options:
-    --help          Display this information.
-    --print-ast     Print the AST before each transformation.
-    --print-token   Print the Token of the language.
+    --help              Display this information.
+    --print-ast-before  Print the AST before each transformation.
+    --print-ast-all     Print the AST before and after each transformation.
+    --print-ast-after   Print the AST after each transformation.
+    --print-token       Print the Token of the language.
 
 Builtin Struct:
     Point
