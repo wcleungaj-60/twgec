@@ -27,6 +27,7 @@ class PositionalArgNode;
 // Expression level
 class ExpressionNode;
 class ValueNode;
+class ActorMatchValueNode;
 class BoolValueNode;
 class IntValueNode;
 class ListValueNode;
@@ -346,6 +347,18 @@ public:
   virtual std::unique_ptr<ValueNode> clone();
 };
 
+class ActorMatchValueNode : public ValueNode {
+public:
+  // Variable
+  std::vector<std::unique_ptr<NamedArgNode>> named_args;
+
+  // Constructor
+  ActorMatchValueNode(Location loc) : ValueNode(loc) {}
+
+  // Function
+  std::unique_ptr<ValueNode> clone();
+};
+
 class BoolValueNode : public ValueNode {
 public:
   // Variable
@@ -536,6 +549,16 @@ inline std::ostream &operator<<(std::ostream &os,
     os << varNode->value;
   } else if (auto ptNode = dynamic_cast<PointValueNode *>(valueNode.get())) {
     os << "Point(" << *(ptNode->x.get()) << "," << *(ptNode->y.get()) << ")";
+  } else if (auto actorMatchNode =
+                 dynamic_cast<ActorMatchValueNode *>(valueNode.get())) {
+    os << "ActorMatch(";
+    for (auto i = 0; i < actorMatchNode->named_args.size(); i++) {
+      os << actorMatchNode->named_args[i]->key << " = "
+         << *actorMatchNode->named_args[i]->expNode.get();
+      if (i != actorMatchNode->named_args.size() - 1)
+        os << ", ";
+    }
+    os << ")";
   } else if (auto listNode = dynamic_cast<ListValueNode *>(valueNode.get())) {
     os << "[";
     for (auto i = 0; i < listNode->items.size(); i++) {

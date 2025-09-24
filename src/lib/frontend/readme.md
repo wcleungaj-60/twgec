@@ -55,11 +55,12 @@ ExpNode = LogicalOrExpNode
 - AdditiveExpNode = MultiplicativeExpNode [ [AddToken | SubToken] MultiplicativeExpNode ]*
 - MultiplicativeExpNode = PrimaryExpNode [ [MulToken | DivToken | ModToken] PrimaryExpNode ]*
 - PrimaryExpNode = ValueNode | [OpenParToken ExpNode CloseParToken]
-ValueNode := StringValueNode | IntValueNode | BoolValueNode | VariableValueNode
+ValueNode := StringValueNode | IntValueNode | BoolValueNode | VariableValueNode | PointValueNode | ActorMatchValueNode
 - StringValueNode := StringToken
 - IntValueNode := IntToken
 - BoolValueNode := TrueToken | FalseToken
 - VariableValueNode := IdentifierToken
 - PointValueNode := PointToken OpenParToken IntToken CommaToken IntToken CloseParToken
+- ActorMatchValueNode := ActorMatchToken ParamAppsNode
 - ListValueNode := OpenSqrToken [ExpNode [CommaToken ExpNode]*]? CloseSqrToken
 ```

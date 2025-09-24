@@ -207,6 +207,10 @@ std::unique_ptr<ValueNode> ValueNode::clone() {
     return listNode->clone();
   if (auto *varNode = dynamic_cast<VariableValueNode *>(this))
     return varNode->clone();
+  if (auto *ptNode = dynamic_cast<PointValueNode *>(this))
+    return ptNode->clone();
+  if (auto *amNode = dynamic_cast<ActorMatchValueNode *>(this))
+    return amNode->clone();
   std::cerr << "Compiler Implementation Error: Unsupported cloning . Found at "
             << loc << "\n";
   return nullptr;
@@ -221,6 +225,13 @@ std::unique_ptr<ValueNode> ListValueNode::clone() {
 
 std::unique_ptr<ValueNode> PointValueNode::clone() {
   return std::make_unique<PointValueNode>(x->clone(), y->clone(), loc);
+}
+
+std::unique_ptr<ValueNode> ActorMatchValueNode::clone() {
+  auto newNode = std::make_unique<ActorMatchValueNode>(loc);
+  for (auto &namedArg : this->named_args)
+    newNode->named_args.push_back(namedArg->clone());
+  return newNode;
 }
 
 std::unique_ptr<ValueNode> StringValueNode::clone() {
@@ -340,6 +351,10 @@ bool ExpressionNode::propagateExp(
     } else if (auto *listNode = dynamic_cast<ListValueNode *>(value.get())) {
       for (auto &item : listNode->items)
         item->propagateExp(varExpMap);
+    } else if (auto *actorMatchNode =
+                   dynamic_cast<ActorMatchValueNode *>(value.get())) {
+      for (auto &namedArg : actorMatchNode->named_args)
+        namedArg->propagateExp(varExpMap);
     }
   } else {
     ret &= lhs->propagateExp(varExpMap);
@@ -412,6 +427,7 @@ bool ExpressionNode::foldValue() {
   if (isValue) {
     bool ret = true;
     auto valuePoint = dynamic_cast<PointValueNode *>(value.get());
+    auto valueActorMatch = dynamic_cast<ActorMatchValueNode *>(value.get());
     auto valueList = dynamic_cast<ListValueNode *>(value.get());
     if (valuePoint) {
       ret &= valuePoint->x->foldValue();
@@ -420,6 +436,9 @@ bool ExpressionNode::foldValue() {
       for (auto &item : valueList->items) {
         ret &= item->foldValue();
       }
+    } else if (valueActorMatch) {
+      for (auto &namedArg : valueActorMatch->named_args)
+        ret &= namedArg.get()->foldValue();
     }
     return ret;
   }

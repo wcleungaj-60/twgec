@@ -25,7 +25,9 @@ enum class TokenType {
   DEF,      // def
   CONST,    // const
   IF,       // if
-  POINT,    // Point
+  /* Builtin Struct */
+  POINT,       // Point
+  ACTOR_MATCH, // ActorMatch
   /* Speical Character */
   OPENCUR,            // {
   CLOSECUR,           // }
@@ -63,6 +65,7 @@ enum class TokenType {
 
 inline std::ostream &operator<<(std::ostream &os, const TokenType &type) {
   switch (type) {
+    // Keyword
     LEXER_TOKEN_TYPE_PRINT(TokenType::TRUE, "\'true\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::FALSE, "\'false\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::BLOCK, "\'block\'");
@@ -72,7 +75,9 @@ inline std::ostream &operator<<(std::ostream &os, const TokenType &type) {
     LEXER_TOKEN_TYPE_PRINT(TokenType::DEF, "\'def\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::CONST, "\'const\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::IF, "\'if\'");
+    // Builtin Struct
     LEXER_TOKEN_TYPE_PRINT(TokenType::POINT, "\'Point\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::ACTOR_MATCH, "\'ActorMatch\'");
     // Speical Character
     LEXER_TOKEN_TYPE_PRINT(TokenType::OPENCUR, "\'{\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::CLOSECUR, "\'}\'");
@@ -131,7 +136,9 @@ struct Token {
       LEXER_TOKEN_PRINT(TokenType::DEF, "def");
       LEXER_TOKEN_PRINT(TokenType::CONST, "const");
       LEXER_TOKEN_PRINT(TokenType::IF, "if");
+      // Builtin Struct
       LEXER_TOKEN_TYPE_PRINT(TokenType::POINT, "Point");
+      LEXER_TOKEN_TYPE_PRINT(TokenType::ACTOR_MATCH, "ActorMatch");
       // Speical Character
       LEXER_TOKEN_PRINT(TokenType::OPENCUR, "{");
       LEXER_TOKEN_PRINT(TokenType::CLOSECUR, "}");
