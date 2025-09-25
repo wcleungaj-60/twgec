@@ -93,7 +93,7 @@
                             }
                         ],
                         "varname": "instance",
-                        "timing": "over",
+                        "timing": "preDead",
                         "deathsVarname": "deaths",
                         "hitterMatches": [],
                         "hitterVarname": "attack"

@@ -60,7 +60,7 @@ void trigger::TriggerActorDead::method(
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", actorMatchesNode.to_string(24)},
       {"varname", defaultMap.get("varName")},
-      {"timing", "\"over\""},
+      {"timing", "\"preDead\""},
       {"deathsVarname", "\"deaths\""},
       {"hitterMatches", "[]"},
       {"hitterVarname", defaultMap.get("hitterVarName")},
