@@ -14,6 +14,7 @@ namespace action {
                        std::unique_ptr<InstructionNode> &action);              \
   };
 
+REGISTER_CODE_GEN_ACTION(ActorAttributes);
 REGISTER_CODE_GEN_ACTION(ActorDisappear);
 REGISTER_CODE_GEN_ACTION(ActorFollow);
 REGISTER_CODE_GEN_ACTION(ActorTalk);

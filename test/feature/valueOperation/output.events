@@ -83,7 +83,7 @@
                         "cleanTalk": true,
                         "speech": "",
                         "duration": "17",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": ""
                     }
@@ -94,7 +94,7 @@
                         "cleanTalk": true,
                         "speech": "",
                         "duration": "40",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": ""
                     }
@@ -105,7 +105,7 @@
                         "cleanTalk": true,
                         "speech": "",
                         "duration": "24",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": ""
                     }
@@ -116,7 +116,7 @@
                         "cleanTalk": true,
                         "speech": "",
                         "duration": "107",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": ""
                     }
@@ -127,7 +127,7 @@
                         "cleanTalk": true,
                         "speech": "",
                         "duration": "18",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": ""
                     }
@@ -138,7 +138,7 @@
                         "cleanTalk": true,
                         "speech": "",
                         "duration": "41",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": ""
                     }
@@ -149,7 +149,7 @@
                         "cleanTalk": true,
                         "speech": "",
                         "duration": "37",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": ""
                     }
@@ -160,7 +160,7 @@
                         "cleanTalk": true,
                         "speech": "",
                         "duration": "210",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": ""
                     }
@@ -171,7 +171,7 @@
                         "cleanTalk": true,
                         "speech": "",
                         "duration": "38",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": ""
                     }
@@ -182,7 +182,7 @@
                         "cleanTalk": true,
                         "speech": "",
                         "duration": "32",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": ""
                     }
@@ -193,7 +193,7 @@
                         "cleanTalk": true,
                         "speech": "",
                         "duration": "60",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": ""
                     }
@@ -204,7 +204,7 @@
                         "cleanTalk": false,
                         "speech": "",
                         "duration": "3000",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": ""
                     }
@@ -215,7 +215,7 @@
                         "cleanTalk": true,
                         "speech": "",
                         "duration": "3000",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": ""
                     }
@@ -226,7 +226,7 @@
                         "cleanTalk": true,
                         "speech": "",
                         "duration": "3000",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": ""
                     }
@@ -237,7 +237,7 @@
                         "cleanTalk": false,
                         "speech": "",
                         "duration": "3000",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": ""
                     }

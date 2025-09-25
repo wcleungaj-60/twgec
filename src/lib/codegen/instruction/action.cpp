@@ -10,6 +10,14 @@ using namespace codegen;
 using namespace formatter;
 using namespace keyword;
 
+DefaultMap action::ActionActorAttributes::defaultMap = DefaultMap(
+    {
+        {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
+        {"attr", {AST_STRING, CODEGEN_STRING, ""}},
+        {"value", {AST_INT, CODEGEN_STRING, "0"}},
+    },
+    "actorAttributes");
+
 DefaultMap action::ActionActorDisappear::defaultMap = DefaultMap(
     {
         {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
@@ -31,7 +39,7 @@ DefaultMap action::ActionActorTalk::defaultMap = DefaultMap(
         {"cleanTalk", {AST_BOOL, CODEGEN_BOOL, "true"}},
         {"text", {AST_STRING, CODEGEN_STRING, ""}},
         {"duration", {AST_INT, CODEGEN_STRING, "3000"}},
-        {"wait", {AST_BOOL, CODEGEN_BOOL, "true"}},
+        {"wait", {AST_BOOL, CODEGEN_BOOL, "false"}},
         {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
     },
     "actorTalk");
@@ -143,6 +151,33 @@ DefaultMap action::ActionWait::defaultMap = DefaultMap(
         {"duration", {AST_INT, CODEGEN_STRING, "0"}},
     },
     "wait");
+
+void action::ActionActorAttributes::method(
+    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
+  defaultMap.addInputMap(action->named_args);
+  JsonObjectNode opNode = JsonObjectNode({
+      {"attr", defaultMap.get("attr", actorAttrKind::keywordEnum)},
+      {"operation", "\"set\""},
+      {"value", defaultMap.get("value")},
+  });
+  JsonArrayNode opsNode =
+      JsonArrayNode(std::make_shared<JsonObjectNode>(opNode));
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"actorCode", defaultMap.get("actorId")},
+      {"ops", opsNode.to_string(24)},
+      {"takeFriendAIFire", "\"u\""},
+      {"takeFriendPlayerFire", "\"u\""},
+      {"exitWormhole", "\"u\""},
+      {"setStatic", "\"u\""},
+      {"setTornadoRes", "\"u\""},
+      {"bloodType", "\"u\""},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"ActorAttributes\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
 
 void action::ActionActorDisappear::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &action) {

@@ -626,6 +626,70 @@ static KeywordEnum keywordEnum(
      {keywordY, "89"}, {keywordZ, "90"}});
 } // namespace keyPressKey
 
+namespace actorAttrKind {
+const std::string keywordMaxHp = "maxHp";
+const std::string keywordMaxHpZh = "最大血量"; // 1 ~ 99999
+const std::string keywordMinHp = "minHp";
+const std::string keywordMinHpZh = "最低血量"; // 0 ~ 99999
+const std::string keywordHp = "hp";
+const std::string keywordHpZh = "血量"; // 0 ~ 999999
+const std::string keywordMp = "mp";
+const std::string keywordMpZh = "氣"; // 0 ~ 100
+const std::string keywordGroup = "group";
+const std::string keywordGroupZh = "團隊號碼"; // -9999 ~ 9999
+const std::string keywordWeight = "weight";
+const std::string keywordWeightZh = "體重"; // -9999 ~ 9999
+const std::string keywordStrength = "strength";
+const std::string keywordStrengthZh = "拳頭傷害力"; // -9999 ~ 9999
+const std::string keywordLumi = "lumi";
+const std::string keywordLumiZh = "發光範圍"; // -1 ~ 9
+const std::string keywordPoisonDmgInt = "poisonDmgInt";
+const std::string keywordPoisonDmgIntZh = "中毒受傷間隔"; // 100 ~ 999999
+const std::string keywordReputation = "reputation";
+const std::string keywordReputationZh = "陣營聲望"; // 0 ~ 10000
+const std::string keywordBodyScale = "bodyScale";
+const std::string keywordBodyScaleZh = "體型縮放"; // 0.1 ~ 3
+const std::string keywordHitChargeScale = "hitChargeScale";
+const std::string keywordHitChargeScaleZh = "受傷時的回氣率"; // 0 ~ 10
+const std::string keywordWarpStunPower = "warpStunPower";
+const std::string keywordWarpStunPowerZh = "閃現術的閃光強度"; // 0 ~ 1
+const std::string keywordCloseWeaponSpeed = "closeWeaponSpeed";
+const std::string keywordCloseWeaponSpeedZh =
+    "近身武器的揮動速度"; // 0.01 ~ 100
+static KeywordEnum
+    keywordEnum("actorAttribute",
+                {
+                    {keywordMaxHp, keywordMaxHp},
+                    {keywordMaxHpZh, keywordMaxHp},
+                    {keywordMinHp, keywordMinHp},
+                    {keywordMinHpZh, keywordMinHp},
+                    {keywordHp, keywordHp},
+                    {keywordHpZh, keywordHp},
+                    {keywordMp, keywordMp},
+                    {keywordMpZh, keywordMp},
+                    {keywordGroup, keywordGroup},
+                    {keywordGroupZh, keywordGroup},
+                    {keywordWeight, keywordWeight},
+                    {keywordWeightZh, keywordWeight},
+                    {keywordStrength, keywordStrength},
+                    {keywordStrengthZh, keywordStrength},
+                    {keywordLumi, keywordLumi},
+                    {keywordLumiZh, keywordLumi},
+                    {keywordPoisonDmgInt, keywordPoisonDmgInt},
+                    {keywordPoisonDmgIntZh, keywordPoisonDmgInt},
+                    {keywordReputation, keywordReputation},
+                    {keywordReputationZh, keywordReputation},
+                    {keywordBodyScale, keywordBodyScale},
+                    {keywordBodyScaleZh, keywordBodyScale},
+                    {keywordHitChargeScale, keywordHitChargeScale},
+                    {keywordHitChargeScaleZh, keywordHitChargeScale},
+                    {keywordWarpStunPower, keywordWarpStunPower},
+                    {keywordWarpStunPowerZh, keywordWarpStunPower},
+                    {keywordCloseWeaponSpeed, keywordCloseWeaponSpeed},
+                    {keywordCloseWeaponSpeedZh, keywordCloseWeaponSpeed},
+                });
+} // namespace actorAttrKind
+
 } // namespace keyword
 
 #endif

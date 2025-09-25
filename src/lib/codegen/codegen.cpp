@@ -82,6 +82,7 @@ void CodeGenerator::codegenTypedInstrSet(
 
 void CodeGenerator::codegenAction(std::ofstream &of,
                                   std::unique_ptr<InstructionNode> &action) {
+  CODEGEN_ACTION("actorAttributes", ActorAttributes);
   CODEGEN_ACTION("actorDisappear", ActorDisappear);
   CODEGEN_ACTION("actorFollow", ActorFollow);
   CODEGEN_ACTION("actorTalk", ActorTalk);

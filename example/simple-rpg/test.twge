@@ -46,6 +46,20 @@ def clickIncrease(type, typeZh) : block {
         decrement("Point");
         increment(type);
         actorTalk(actorId = "instance", text = "成功提升一點"+typeZh+"，尚餘{Point}點能力點");
+        if(type == "CON") {
+            actorAttributes(actorId = "instance", attr = "maxHp", value = "100+10*{CON}");
+            deltaHp(actorCode = "instance", value = "100+10*{CON}");
+        }
+        if(type == "AGI") {
+            // when AGI = 0, closeWeaponSpeed = 1
+            // when AGI = 1, closeWeaponSpeed = 1.1429
+            // when AGI = 5, closeWeaponSpeed = 1.6000
+            // when AGI = 25, closeWeaponSpeed = 2.6667
+            // when AGI = 125, closeWeaponSpeed = 3.5862
+            // when AGI = inf, closeWeaponSpeed = 4
+            actorAttributes(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{AGI})");
+            actorAttributes(actorId = "instance", attr = "weight", value = "3*pow(0.97,{AGI})");
+        }
     }
 }
 
@@ -90,6 +104,7 @@ block levelUp {
         setInt("Exp", "{Exp}-{ExpNeeded}");
         increment("Level");
         increment("Point");
+        increment("Point");
         setInt("ExpNeeded", "{Level}*5+5");
     }
 }
@@ -127,12 +142,12 @@ block init {
         setInt("INT", 0); // 智慧，提升一點集氣技能的光彈傷害
         setInt("PSY", 0); // 精神，每十秒恢復一點體力
         setInt("Level", 1);
-        setInt("Point", 1);
+        setInt("Point", 5);
         setInt("Exp", 0);
         setInt("ExpNeeded", 10);
         addMapSign(x = 19, y = 28, rotation = 270, text = "【力量】\n消耗一點能力點，增加小刀一點傷害 (未實現)", buttonCode = "increaseSTR", buttonLabel = "確認");
-        addMapSign(x = 21, y = 28, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限 (未實現)", buttonCode = "increaseCON", buttonLabel = "確認");
-        addMapSign(x = 23, y = 28, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少10% (未實現)", buttonCode = "increaseAGI", buttonLabel = "確認");
+        addMapSign(x = 21, y = 28, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限", buttonCode = "increaseCON", buttonLabel = "確認");
+        addMapSign(x = 23, y = 28, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升近戰武器速度", buttonCode = "increaseAGI", buttonLabel = "確認");
         addMapSign(x = 25, y = 28, rotation = 270, text = "【智慧】\n消耗一點能力點，增加按X技能的光彈一點傷害", buttonCode = "increaseINT", buttonLabel = "確認");
         addMapSign(x = 27, y = 28, rotation = 270, text = "【精神】\n消耗一點能力點，每十秒恢復一點體力 (未實現)", buttonCode = "increasePSY", buttonLabel = "確認");
     }

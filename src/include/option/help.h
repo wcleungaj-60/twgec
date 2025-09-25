@@ -83,6 +83,7 @@ std::string getBlockMetadata() {
 
 std::string getActions() {
   std::string ret = "Supported Actions:\n";
+  ret += getDefaultMapItem(ActionActorAttributes::defaultMap, "設定角色屬性");
   ret += getDefaultMapItem(ActionActorDisappear::defaultMap, "-角色消失");
   ret += getDefaultMapItem(ActionActorFollow::defaultMap, "跟隨人物");
   ret += getDefaultMapItem(ActionActorTalk::defaultMap, "角色說話");

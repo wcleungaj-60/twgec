@@ -109,7 +109,7 @@
                         "cleanTalk": true,
                         "speech": "成功提升一點力量，尚餘{Point}點能力點",
                         "duration": "3000",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": "instance"
                     }
@@ -133,21 +133,7 @@
                 {
                     "type": "TalkButton",
                     "data": {
-                        "actorMatches": [
-                            {
-                                "actorCodes": [
-                                    {
-                                        "method": "contain",
-                                        "actorCode": ""
-                                    }
-                                ],
-                                "brain": "all",
-                                "camp": {
-                                    "campAll": true
-                                },
-                                "excludeActorCodes": []
-                            }
-                        ],
+                        "actorMatches": [],
                         "varname": "instance",
                         "checkButtoncode": true,
                         "buttonCode": "increaseSTR",
@@ -188,9 +174,37 @@
                         "cleanTalk": true,
                         "speech": "成功提升一點體質，尚餘{Point}點能力點",
                         "duration": "3000",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": "instance"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "maxHp",
+                                "operation": "set",
+                                "value": "100+10*{CON}"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
+                    }
+                },
+                {
+                    "type": "DeltaHp",
+                    "data": {
+                        "actorCode": "instance",
+                        "deltaType": "heal",
+                        "hp": "100+10*{CON}",
+                        "casterCode": ""
                     }
                 }
             ],
@@ -212,21 +226,7 @@
                 {
                     "type": "TalkButton",
                     "data": {
-                        "actorMatches": [
-                            {
-                                "actorCodes": [
-                                    {
-                                        "method": "contain",
-                                        "actorCode": ""
-                                    }
-                                ],
-                                "brain": "all",
-                                "camp": {
-                                    "campAll": true
-                                },
-                                "excludeActorCodes": []
-                            }
-                        ],
+                        "actorMatches": [],
                         "varname": "instance",
                         "checkButtoncode": true,
                         "buttonCode": "increaseCON",
@@ -267,9 +267,47 @@
                         "cleanTalk": true,
                         "speech": "成功提升一點敏捷，尚餘{Point}點能力點",
                         "duration": "3000",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": "instance"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "closeWeaponSpeed",
+                                "operation": "set",
+                                "value": "4-3/(1+0.05*{AGI})"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "weight",
+                                "operation": "set",
+                                "value": "3*pow(0.97,{AGI})"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
                     }
                 }
             ],
@@ -291,21 +329,7 @@
                 {
                     "type": "TalkButton",
                     "data": {
-                        "actorMatches": [
-                            {
-                                "actorCodes": [
-                                    {
-                                        "method": "contain",
-                                        "actorCode": ""
-                                    }
-                                ],
-                                "brain": "all",
-                                "camp": {
-                                    "campAll": true
-                                },
-                                "excludeActorCodes": []
-                            }
-                        ],
+                        "actorMatches": [],
                         "varname": "instance",
                         "checkButtoncode": true,
                         "buttonCode": "increaseAGI",
@@ -346,7 +370,7 @@
                         "cleanTalk": true,
                         "speech": "成功提升一點智慧，尚餘{Point}點能力點",
                         "duration": "3000",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": "instance"
                     }
@@ -370,21 +394,7 @@
                 {
                     "type": "TalkButton",
                     "data": {
-                        "actorMatches": [
-                            {
-                                "actorCodes": [
-                                    {
-                                        "method": "contain",
-                                        "actorCode": ""
-                                    }
-                                ],
-                                "brain": "all",
-                                "camp": {
-                                    "campAll": true
-                                },
-                                "excludeActorCodes": []
-                            }
-                        ],
+                        "actorMatches": [],
                         "varname": "instance",
                         "checkButtoncode": true,
                         "buttonCode": "increaseINT",
@@ -425,7 +435,7 @@
                         "cleanTalk": true,
                         "speech": "成功提升一點精神，尚餘{Point}點能力點",
                         "duration": "3000",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": "instance"
                     }
@@ -449,21 +459,7 @@
                 {
                     "type": "TalkButton",
                     "data": {
-                        "actorMatches": [
-                            {
-                                "actorCodes": [
-                                    {
-                                        "method": "contain",
-                                        "actorCode": ""
-                                    }
-                                ],
-                                "brain": "all",
-                                "camp": {
-                                    "campAll": true
-                                },
-                                "excludeActorCodes": []
-                            }
-                        ],
+                        "actorMatches": [],
                         "varname": "instance",
                         "checkButtoncode": true,
                         "buttonCode": "increasePSY",
@@ -633,6 +629,14 @@
                 {
                     "type": "SetGlobal",
                     "data": {
+                        "key": "Point",
+                        "valueType": "integer",
+                        "value": "{Point}+1"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
                         "key": "ExpNeeded",
                         "valueType": "integer",
                         "value": "{Level}*5+5"
@@ -671,7 +675,7 @@
                         "cleanTalk": true,
                         "speech": "【Lv{Level}】\nExp:{Exp}/{ExpNeeded}\n尚餘能力點：{Point}\n力量：{STR}\n體質：{CON}\n敏捷：{AGI}\n智慧：{INT}\n精神：{PSY}",
                         "duration": "3000",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": "{instance.id}"
                     }
@@ -760,7 +764,7 @@
                         "cleanTalk": true,
                         "speech": "光彈冷卻完畢",
                         "duration": "3000",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": "{instance.id}"
                     }
@@ -845,7 +849,7 @@
                     "data": {
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "1"
+                        "value": "5"
                     }
                 },
                 {
@@ -909,7 +913,7 @@
                         ],
                         "shape": "wood",
                         "rotation": "270",
-                        "speech": "【體質】\n消耗一點能力點，增加十點血量上限 (未實現)",
+                        "speech": "【體質】\n消耗一點能力點，增加十點血量上限",
                         "parsePolicy": "view",
                         "showButtons": true,
                         "btnsGroup": {
@@ -941,7 +945,7 @@
                         ],
                         "shape": "wood",
                         "rotation": "270",
-                        "speech": "【敏捷】\n消耗一點能力點，重量減少10% (未實現)",
+                        "speech": "【敏捷】\n消耗一點能力點，重量減少3%，並提升近戰武器速度",
                         "parsePolicy": "view",
                         "showButtons": true,
                         "btnsGroup": {
