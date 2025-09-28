@@ -384,7 +384,7 @@ void action::ActionDeltaHp::method(std::ofstream &of,
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorCode", defaultMap.get("actorCode")},
-      {"deltaType", defaultMap.get("type")},
+      {"deltaType", defaultMap.get("type", deltaHpKind::keywordEnum)},
       {"hp", defaultMap.get("value")},
       {"casterCode", defaultMap.get("casterCode")},
   });

@@ -1,5 +1,6 @@
 #include "codegen/instruction/check.h"
 #include "keyword.h"
+#include "utils/builtin.h"
 #include "utils/formatter.h"
 #include "utils/utils.h"
 #include <fstream>
@@ -9,6 +10,13 @@
 using namespace codegen;
 using namespace formatter;
 using namespace keyword;
+
+DefaultMap check::CheckForEachActor::defaultMap = DefaultMap(
+    {
+        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, ""}},
+        {"varname", {AST_STRING, CODEGEN_STRING, ""}},
+    },
+    "forEachActor");
 
 DefaultMap check::CheckNumber::defaultMap = DefaultMap(
     {
@@ -25,6 +33,28 @@ DefaultMap check::CheckString::defaultMap = DefaultMap(
         {"str", {AST_STRING, CODEGEN_STRING, ""}},
     },
     "checkString");
+
+void check::CheckForEachActor::method(std::ofstream &of,
+                                      std::unique_ptr<InstructionNode> &check) {
+  JsonArrayNode actorMatchesNode = getActorMatchesNode(check, "actor");
+  defaultMap.addInputMap(check->named_args);
+  JsonObjectNode _logiNode = JsonObjectNode("_and_or", "\"\"");
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"actorMatches", actorMatchesNode.to_string(24)},
+      {"varname", defaultMap.get("varname")},
+      {"maxTriggers", "\"0\""},
+      {"donotActOnEachPass", "false"},
+      {"varnameTotalLoops", "\"totalLoops\""},
+      {"varnameOfPassCount", "\"totalPasses\""},
+      {"_logi", _logiNode.to_string(24)},
+      {"_elseEventId", "\"\""},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"ForEachActor\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
 
 void check::CheckNumber::method(std::ofstream &of,
                                 std::unique_ptr<InstructionNode> &check) {

@@ -690,6 +690,38 @@ static KeywordEnum
                 });
 } // namespace actorAttrKind
 
+namespace actorBrainKind {
+const std::string keywordAI = "ai";
+const std::string keywordAIZh = "電腦";
+const std::string keywordPlayer = "player";
+const std::string keywordPlayerZh = "玩家";
+const std::string keywordAll = "all";
+const std::string keywordAllZh = "全部";
+static KeywordEnum keywordEnum("actor controller kind",
+                               {
+                                   {keywordAI, keywordAI},
+                                   {keywordAIZh, keywordAI},
+                                   {keywordPlayer, keywordPlayer},
+                                   {keywordPlayerZh, keywordPlayer},
+                                   {keywordAll, keywordAll},
+                                   {keywordAllZh, keywordAll},
+                               });
+} // namespace actorBrainKind
+
+namespace deltaHpKind {
+const std::string keywordHeal = "heal";
+const std::string keywordHealZh = "治療";
+const std::string keywordDamage = "damage";
+const std::string keywordDamageZh = "流血受傷";
+static KeywordEnum keywordEnum("actor controller kind",
+                               {
+                                   {keywordHeal, keywordHeal},
+                                   {keywordHealZh, keywordHeal},
+                                   {keywordDamage, keywordDamage},
+                                   {keywordDamageZh, keywordDamage},
+                               });
+} // namespace actorBrainKind
+
 } // namespace keyword
 
 #endif

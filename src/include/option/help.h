@@ -55,7 +55,7 @@ Builtin Struct:
     Point
         x: int, y: int
     ActorMatch
-        id: string, matchKind: string)";
+        controller: string, id: string, matchKind: string)";
 
 std::string getGlobalMetadata() {
   std::string ret = "Supported Global Metadata:\n";
@@ -106,6 +106,7 @@ std::string getChecks() {
   std::string ret = "Supported Checks:\n";
   ret += getDefaultMapItem(CheckNumber::defaultMap, "比較數字");
   ret += getDefaultMapItem(CheckString::defaultMap, "比對字串");
+  ret += getDefaultMapItem(CheckForEachActor::defaultMap, "找出所有角色");
   return ret;
 }
 

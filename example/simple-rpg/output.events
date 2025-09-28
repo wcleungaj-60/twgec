@@ -660,6 +660,71 @@
             "triggers": []
         },
         {
+            "id": "recover",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 10000,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "DeltaHp",
+                    "data": {
+                        "actorCode": "instance",
+                        "deltaType": "heal",
+                        "hp": "{PSY}",
+                        "casterCode": ""
+                    }
+                }
+            ],
+            "checks": [
+                {
+                    "type": "ForEachActor",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "player",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "maxTriggers": "0",
+                        "donotActOnEachPass": false,
+                        "varnameTotalLoops": "totalLoops",
+                        "varnameOfPassCount": "totalPasses",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                },
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{PSY}",
+                        "operator": ">",
+                        "value2": "0",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
+            "triggers": []
+        },
+        {
             "id": "pressZ",
             "disabled": false,
             "folder": "",
@@ -1009,7 +1074,7 @@
                         ],
                         "shape": "wood",
                         "rotation": "270",
-                        "speech": "【精神】\n消耗一點能力點，每十秒恢復一點體力 (未實現)",
+                        "speech": "【精神】\n消耗一點能力點，每十秒恢復一點體力",
                         "parsePolicy": "view",
                         "showButtons": true,
                         "btnsGroup": {

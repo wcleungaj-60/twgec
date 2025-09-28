@@ -14,6 +14,7 @@ namespace check {
                        std::unique_ptr<InstructionNode> &action);              \
   };
 
+REGISTER_CODE_GEN_CHECK(ForEachActor);
 REGISTER_CODE_GEN_CHECK(String);
 REGISTER_CODE_GEN_CHECK(Number);
 

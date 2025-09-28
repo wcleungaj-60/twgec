@@ -109,6 +109,18 @@ block levelUp {
     }
 }
 
+block recover {
+    __repeat__ = -1;
+    __repeatInterval__ = 10000;
+    checks {
+        forEachActor(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        checkNumber(lhs = "{PSY}", op = ">", rhs = 0);
+    }
+    actions {
+        deltaHp(actorCode = "instance", value = "{PSY}");
+    }
+}
+
 block pressZ {
     __repeat__ = -1;
     triggers {
@@ -136,11 +148,11 @@ block pressX {
 
 block init {
     actions {
-        setInt("STR", 0); // 力量，提升一點小刀傷害
-        setInt("CON", 0); // 體質，提升十點血量上限
-        setInt("AGI", 0); // 敏捷，重量*0.9
-        setInt("INT", 0); // 智慧，提升一點集氣技能的光彈傷害
-        setInt("PSY", 0); // 精神，每十秒恢復一點體力
+        setInt("STR", 0);
+        setInt("CON", 0);
+        setInt("AGI", 0);
+        setInt("INT", 0);
+        setInt("PSY", 0);
         setInt("Level", 1);
         setInt("Point", 5);
         setInt("Exp", 0);
@@ -149,6 +161,6 @@ block init {
         addMapSign(x = 21, y = 28, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限", buttonCode = "increaseCON", buttonLabel = "確認");
         addMapSign(x = 23, y = 28, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升近戰武器速度", buttonCode = "increaseAGI", buttonLabel = "確認");
         addMapSign(x = 25, y = 28, rotation = 270, text = "【智慧】\n消耗一點能力點，增加按X技能的光彈一點傷害", buttonCode = "increaseINT", buttonLabel = "確認");
-        addMapSign(x = 27, y = 28, rotation = 270, text = "【精神】\n消耗一點能力點，每十秒恢復一點體力 (未實現)", buttonCode = "increasePSY", buttonLabel = "確認");
+        addMapSign(x = 27, y = 28, rotation = 270, text = "【精神】\n消耗一點能力點，每十秒恢復一點體力", buttonCode = "increasePSY", buttonLabel = "確認");
     }
 }

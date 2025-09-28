@@ -7,6 +7,7 @@ using namespace codegen::formatter;
 DefaultMap actorMatchDefaultMap = DefaultMap(
     {
         {"matchKind", {AST_STRING, CODEGEN_STRING, "contain"}},
+        {"controller", {AST_STRING, CODEGEN_STRING, "all"}},
         {"id", {AST_STRING, CODEGEN_STRING, ""}},
     },
     "actorMatch");
@@ -18,6 +19,11 @@ JsonArrayNode getActorMatchesNode(std::unique_ptr<InstructionNode> &instr,
     if (namedArg->key == key) {
       auto actorMatchValueNode =
           dynamic_cast<ActorMatchValueNode *>(namedArg->expNode->value.get());
+      if (!actorMatchValueNode) {
+        std::cerr << "ActorMatch-typed value is expected at "
+                  << namedArg->expNode->loc << "\n";
+        return JsonArrayNode();
+      }
       actorMatchDefaultMap.addInputMap(actorMatchValueNode->named_args);
       JsonObjectNode actorCodeNode = JsonObjectNode({
           {"method",
@@ -29,7 +35,8 @@ JsonArrayNode getActorMatchesNode(std::unique_ptr<InstructionNode> &instr,
       JsonObjectNode campNode = JsonObjectNode("campAll", "true");
       JsonObjectNode actorMatchNode = JsonObjectNode({
           {"actorCodes", actorCodesNode.to_string(32)},
-          {"brain", "\"all\""},
+          {"brain",
+           actorMatchDefaultMap.get("controller", actorBrainKind::keywordEnum)},
           {"camp", campNode.to_string(32)},
           {"excludeActorCodes", "[]"},
       });
