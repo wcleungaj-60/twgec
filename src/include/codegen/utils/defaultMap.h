@@ -67,6 +67,7 @@ enum CodegenType {
   CODEGEN_STRING, // two `\"` will be added
   CODEGEN_BOOL,
   CODEGEN_ACTOR_MATCH,
+  CODEGEN_CUSTOM_WEAPON,
   CODEGEN_LIST_STRING,
   CODEGEN_LIST_POINT,  // {x,y}
   CODEGEN_LIST_PATROL, // {loc{x,y,range},rotation,duration}
@@ -106,6 +107,8 @@ private:
       if (it->second.codegenType == CODEGEN_STRING)
         ret += "\"" + it->second.defaultValue + "\"";
       else if (it->second.codegenType == CODEGEN_ACTOR_MATCH)
+        ret += "NULL";
+      else if (it->second.codegenType == CODEGEN_CUSTOM_WEAPON)
         ret += "NULL";
       else
         ret += it->second.defaultValue;

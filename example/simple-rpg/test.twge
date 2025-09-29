@@ -5,6 +5,8 @@ __thirdLocs__ = [Point(23,26)];
 __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
+__useCustomWeapons__ = true;
+__customWeapons__ = CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", scaleOnIcon = "0.8", pivotOnHandDegree = 58, damage = 5);
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 1;
 

@@ -67,8 +67,51 @@
                         "y": "26"
                     }
                 ],
-                "useCustomWeapons": false,
-                "customWeapons": [],
+                "useCustomWeapons": true,
+                "customWeapons": [
+                    {
+                        "code": "wind_staff",
+                        "config": {
+                                "type": "close",
+                                "clipAlias": "TWilightGameEventCompiler.weapon_wind_staff",
+                                "scaleOnGround": 0.8,
+                                "scaleOnIcon": 0.8,
+                                "pickTestFunc": "wider",
+                                "weight": 6,
+                                "damage": 5,
+                                "swapTime": 800,
+                                "frameName": "BLADE_TYPE",
+                                "clip": "",
+                                "fireTime": 1500,
+                                "fires": [
+                                    {
+                                        "fireType": "backslash",
+                                        "deltaDamage": 0
+                                    }
+                                ],
+                                "sprite": {
+                                    "pivotOnHand": {
+                                        "x": 0,
+                                        "y": 0,
+                                        "degrees": 58,
+                                        "scale": {
+                                            "x": 1,
+                                            "y": 1
+                                        }
+                                    },
+                                    "pivotOnIcon": {
+                                        "x": 0,
+                                        "y": 0,
+                                        "degrees": 0,
+                                        "scale": {
+                                            "x": 1,
+                                            "y": 1
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                ],
                 "useCustomItems": false,
                 "customItems": [],
                 "enabled": true,

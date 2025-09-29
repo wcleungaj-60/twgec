@@ -24,14 +24,14 @@ DefaultMap customWeaponDefaultMap = DefaultMap(
         {"fireTime", {AST_INT, CODEGEN_INT, "1500"}},
         {"fireType", {AST_INT, CODEGEN_STRING, "backslash"}},
         {"pivotOnHandX", {AST_INT, CODEGEN_INT, "0"}},
-        {"pivotOnHandXScale", {AST_INT, CODEGEN_INT, "0"}},
+        {"pivotOnHandXScale", {AST_INT, CODEGEN_INT, "1"}},
         {"pivotOnHandY", {AST_INT, CODEGEN_INT, "0"}},
-        {"pivotOnHandYScale", {AST_INT, CODEGEN_INT, "0"}},
+        {"pivotOnHandYScale", {AST_INT, CODEGEN_INT, "1"}},
         {"pivotOnHandDegree", {AST_INT, CODEGEN_INT, "0"}},
         {"pivotOnIconX", {AST_INT, CODEGEN_INT, "0"}},
-        {"pivotOnIconXScale", {AST_INT, CODEGEN_INT, "0"}},
+        {"pivotOnIconXScale", {AST_INT, CODEGEN_INT, "1"}},
         {"pivotOnIconY", {AST_INT, CODEGEN_INT, "0"}},
-        {"pivotOnIconYScale", {AST_INT, CODEGEN_INT, "0"}},
+        {"pivotOnIconYScale", {AST_INT, CODEGEN_INT, "1"}},
         {"pivotOnIconDegree", {AST_INT, CODEGEN_INT, "0"}},
     },
     "customWeapon");
@@ -69,16 +69,16 @@ JsonArrayNode getActorMatchesNode(std::unique_ptr<InstructionNode> &instr,
   return JsonArrayNode();
 }
 
-JsonArrayNode getCustomWeaponsNode(std::unique_ptr<InstructionNode> &instr,
+JsonArrayNode getCustomWeaponsNode(std::vector<std::unique_ptr<MetadataNode>> &metadatas,
                                    std::string key) {
   customWeaponDefaultMap.clearInputMap();
-  for (auto &namedArg : instr->named_args)
-    if (namedArg->key == key) {
+  for (auto &metadata : metadatas)
+    if (metadata->key == key) {
       auto customWeaponValueNode =
-          dynamic_cast<CustomWeaponValueNode *>(namedArg->expNode->value.get());
+          dynamic_cast<CustomWeaponValueNode *>(metadata->expNode->value.get());
       if (!customWeaponValueNode) {
         std::cerr << "CustomWeapon-typed value is expected at "
-                  << namedArg->expNode->loc << "\n";
+                  << metadata->expNode->loc << "\n";
         return JsonArrayNode();
       }
       customWeaponDefaultMap.addInputMap(customWeaponValueNode->named_args);
@@ -95,7 +95,7 @@ JsonArrayNode getCustomWeaponsNode(std::unique_ptr<InstructionNode> &instr,
           {"x", customWeaponDefaultMap.get("pivotOnHandX")},
           {"y", customWeaponDefaultMap.get("pivotOnHandY")},
           {"degrees", customWeaponDefaultMap.get("pivotOnHandDegree")},
-          {"scale", pivotOnHandScaleNode.to_string(44)},
+          {"scale", pivotOnHandScaleNode.to_string(40)},
       });
       JsonObjectNode pivotOnIconScaleNode = JsonObjectNode({
           {"x", customWeaponDefaultMap.get("pivotOnIconXScale")},
@@ -105,11 +105,11 @@ JsonArrayNode getCustomWeaponsNode(std::unique_ptr<InstructionNode> &instr,
           {"x", customWeaponDefaultMap.get("pivotOnIconX")},
           {"y", customWeaponDefaultMap.get("pivotOnIconY")},
           {"degrees", customWeaponDefaultMap.get("pivotOnIconDegree")},
-          {"scale", pivotOnHandScaleNode.to_string(44)},
+          {"scale", pivotOnHandScaleNode.to_string(40)},
       });
       JsonObjectNode spriteNode = JsonObjectNode({
-          {"pivotOnHand", pivotOnHandNode.to_string(40)},
-          {"pivotOnIcon", pivotOnIconNode.to_string(40)},
+          {"pivotOnHand", pivotOnHandNode.to_string(36)},
+          {"pivotOnIcon", pivotOnIconNode.to_string(36)},
       });
       JsonObjectNode configNode = JsonObjectNode({
           {"type", "\"close\""},
@@ -123,11 +123,12 @@ JsonArrayNode getCustomWeaponsNode(std::unique_ptr<InstructionNode> &instr,
           {"frameName", "\"BLADE_TYPE\""},
           {"clip", "\"\""},
           {"fireTime", customWeaponDefaultMap.get("fireTime")},
-          {"firesNode", firesNode.to_string(36)},
+          {"fires", firesNode.to_string(32)},
+          {"sprite", spriteNode.to_string(32)},
       });
       JsonObjectNode actorMatchNode = JsonObjectNode({
           {"code", customWeaponDefaultMap.get("code")},
-          {"actorCodes", configNode.to_string(32)},
+          {"config", configNode.to_string(28)},
       });
       return JsonArrayNode(std::make_shared<JsonObjectNode>(actorMatchNode));
     }

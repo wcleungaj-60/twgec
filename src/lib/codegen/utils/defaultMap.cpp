@@ -51,13 +51,15 @@ std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
   bool codegenListPatrol =
       defaultMap.at(key).codegenType == CODEGEN_LIST_PATROL;
   bool codegenListPoint = defaultMap.at(key).codegenType == CODEGEN_LIST_POINT;
+  bool codegenCustomWeapon =
+      defaultMap.at(key).codegenType == CODEGEN_CUSTOM_WEAPON;
 
   auto format = [&](std::string text) -> std::string {
     if (codegenInt || codegenBool) {
       return text;
     } else if (codegenString) {
       return "\"" + text + "\"";
-    } else if (codegenListPatrol || codegenListPoint) {
+    } else if (codegenListPatrol || codegenListPoint || codegenCustomWeapon) {
       if (text != "[]")
         std::cerr << "Compiler Implementation Error: codegenListPatrol and "
                      "codegenListPoint cannot be handled.\n";

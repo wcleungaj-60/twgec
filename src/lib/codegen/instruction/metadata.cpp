@@ -1,4 +1,6 @@
 #include "codegen/instruction/metadata.h"
+#include "utils/builtin.h"
+#include "utils/defaultMap.h"
 #include "utils/utils.h"
 #include <fstream>
 #include <iostream>
@@ -34,6 +36,8 @@ DefaultMap metadata::ConfigSetup::defaultMap = DefaultMap(
         {keyword::config::useDefaultCampLocs,
          {AST_BOOL, CODEGEN_BOOL, "false"}},
         {keyword::config::useCustomWeapons, {AST_BOOL, CODEGEN_BOOL, "false"}},
+        {keyword::config::customWeapons,
+         {AST_CUSTOM_WEAPON, CODEGEN_CUSTOM_WEAPON, "[]"}},
         {keyword::config::useCustomFarWeapons,
          {AST_BOOL, CODEGEN_BOOL, "false"}},
         {keyword::config::useCustomItems, {AST_BOOL, CODEGEN_BOOL, "false"}},
@@ -94,12 +98,13 @@ DefaultMap metadata::BlockSetup::defaultMap = DefaultMap(
 // "skydow"},
 //                           {"third", "royal", "skydow", "random"}),
 // INIT_META_UNSUPPORT(metaMap, keyword::config::initFocus);
-// INIT_META_UNSUPPORT(metaMap, keyword::config::customWeapons);
 // INIT_META_UNSUPPORT(metaMap, keyword::config::customFarWeapons);
 // INIT_META_UNSUPPORT(metaMap, keyword::config::customItems);
 
 void metadata::ConfigSetup::setup(
     std::ofstream &of, std::vector<std::unique_ptr<MetadataNode>> &metadatas) {
+  JsonArrayNode customWeaponsNode =
+      getCustomWeaponsNode(metadatas, "customWeapons");
   defaultMap.addInputMap(metadatas);
   of << inden(4) << "\"$schema\": " << defaultMap.get(keyword::config::schema)
      << "," << std::endl;
@@ -201,7 +206,8 @@ void metadata::ConfigSetup::setup(
      << std::endl;
   of << inden(16) << "\"useCustomWeapons\": "
      << defaultMap.get(keyword::config::useCustomWeapons) << "," << std::endl;
-  of << inden(16) << "\"customWeapons\": []," << std::endl;
+  of << inden(16) << "\"customWeapons\": " << customWeaponsNode.to_string(16)
+     << "," << std::endl;
   of << inden(16) << "\"useCustomItems\": "
      << defaultMap.get(keyword::config::useCustomItems) << "," << std::endl;
   of << inden(16) << "\"customItems\": []," << std::endl;

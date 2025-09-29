@@ -1,0 +1,1 @@
+__customWeapons__ = CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff");
