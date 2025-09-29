@@ -5,6 +5,7 @@ __map__ = "CG.TWEventsGameTemplate/gamemap.twmap";
 const string1 = "123";
 const string2 = "123" + "456";
 const actorMatch = ActorMatch(actorId = "player");
+const customWeapon = CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff");
 
 block init {
     actions {

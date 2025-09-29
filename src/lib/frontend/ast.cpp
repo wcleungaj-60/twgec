@@ -211,6 +211,8 @@ std::unique_ptr<ValueNode> ValueNode::clone() {
     return ptNode->clone();
   if (auto *amNode = dynamic_cast<ActorMatchValueNode *>(this))
     return amNode->clone();
+  if (auto *cwNode = dynamic_cast<CustomWeaponValueNode *>(this))
+    return cwNode->clone();
   std::cerr << "Compiler Implementation Error: Unsupported cloning . Found at "
             << loc << "\n";
   return nullptr;
@@ -229,6 +231,13 @@ std::unique_ptr<ValueNode> PointValueNode::clone() {
 
 std::unique_ptr<ValueNode> ActorMatchValueNode::clone() {
   auto newNode = std::make_unique<ActorMatchValueNode>(loc);
+  for (auto &namedArg : this->named_args)
+    newNode->named_args.push_back(namedArg->clone());
+  return newNode;
+}
+
+std::unique_ptr<ValueNode> CustomWeaponValueNode::clone() {
+  auto newNode = std::make_unique<CustomWeaponValueNode>(loc);
   for (auto &namedArg : this->named_args)
     newNode->named_args.push_back(namedArg->clone());
   return newNode;
@@ -355,6 +364,10 @@ bool ExpressionNode::propagateExp(
                    dynamic_cast<ActorMatchValueNode *>(value.get())) {
       for (auto &namedArg : actorMatchNode->named_args)
         namedArg->propagateExp(varExpMap);
+    } else if (auto *customWeaponNode =
+                   dynamic_cast<CustomWeaponValueNode *>(value.get())) {
+      for (auto &namedArg : customWeaponNode->named_args)
+        namedArg->propagateExp(varExpMap);
     }
   } else {
     ret &= lhs->propagateExp(varExpMap);
@@ -428,6 +441,7 @@ bool ExpressionNode::foldValue() {
     bool ret = true;
     auto valuePoint = dynamic_cast<PointValueNode *>(value.get());
     auto valueActorMatch = dynamic_cast<ActorMatchValueNode *>(value.get());
+    auto valueCustomWeapon = dynamic_cast<CustomWeaponValueNode *>(value.get());
     auto valueList = dynamic_cast<ListValueNode *>(value.get());
     if (valuePoint) {
       ret &= valuePoint->x->foldValue();
@@ -438,6 +452,9 @@ bool ExpressionNode::foldValue() {
       }
     } else if (valueActorMatch) {
       for (auto &namedArg : valueActorMatch->named_args)
+        ret &= namedArg.get()->foldValue();
+    } else if (valueCustomWeapon) {
+      for (auto &namedArg : valueCustomWeapon->named_args)
         ret &= namedArg.get()->foldValue();
     }
     return ret;

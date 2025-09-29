@@ -23,6 +23,7 @@ enum ASTType {
   AST_BOOL,
   AST_POINT,
   AST_ACTOR_MATCH,
+  AST_CUSTOM_WEAPON,
   AST_LIST_STRING,
   AST_LIST_POINT,
 };
@@ -43,6 +44,9 @@ inline std::ostream &operator<<(std::ostream &os, const ASTType &astType) {
     break;
   case AST_ACTOR_MATCH:
     os << "ActorMatch";
+    break;
+  case AST_CUSTOM_WEAPON:
+    os << "CustomWeapon";
     break;
   case AST_STRING:
     os << "string";

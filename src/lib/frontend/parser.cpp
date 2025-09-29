@@ -525,6 +525,18 @@ std::unique_ptr<ValueNode> Parser::parseValue() {
       return nullptr;
     return actorMatchValueNode;
   }
+  if (consume(TokenType::CUSTOM_WEAPON, false)) {
+    std::unique_ptr<CustomWeaponValueNode> customWeaponValueNode =
+        std::make_unique<CustomWeaponValueNode>(loc);
+    consume(TokenType::OPENPAR);
+    while (tokens.front().type != TokenType::CLOSEPAR) {
+      if (!parseCustomWeaponArgs(customWeaponValueNode))
+        return nullptr;
+    }
+    if (!consume(TokenType::CLOSEPAR))
+      return nullptr;
+    return customWeaponValueNode;
+  }
   if (consume(TokenType::OPENSQR, false)) {
     std::unique_ptr<ListValueNode> listNode =
         std::make_unique<ListValueNode>(loc);
@@ -552,7 +564,7 @@ std::unique_ptr<ValueNode> Parser::parseValue() {
   return nullptr;
 }
 
-// TODO: unify the instruction args and the actor Match args
+// TODO: unify the instruction args, actorMatch args, and customWeapon args
 bool Parser::parseActorMatchArgs(
     std::unique_ptr<ActorMatchValueNode> &actorMatchValueNode) {
   std::string identifierToken = tokens.front().value;
@@ -567,5 +579,22 @@ bool Parser::parseActorMatchArgs(
   actorMatchValueNode->named_args.push_back(std::move(namedArgNode));
   if (consume(TokenType::COMMA, /*errorThrowing*/ false))
     return parseActorMatchArgs(actorMatchValueNode);
+  return tokens.front().type == TokenType::CLOSEPAR;
+}
+
+bool Parser::parseCustomWeaponArgs(
+    std::unique_ptr<CustomWeaponValueNode> &customWeaponValueNode) {
+  std::string identifierToken = tokens.front().value;
+  Location loc = tokens.front().location;
+  if (!consume(TokenType::IDENTIFIER) || !consume(TokenType::ASSIGN))
+    return false;
+  std::unique_ptr<ExpressionNode> expNode = parseExp();
+  if (!expNode)
+    return false;
+  std::unique_ptr<NamedArgNode> namedArgNode =
+      std::make_unique<NamedArgNode>(identifierToken, expNode, loc);
+  customWeaponValueNode->named_args.push_back(std::move(namedArgNode));
+  if (consume(TokenType::COMMA, /*errorThrowing*/ false))
+    return parseCustomWeaponArgs(customWeaponValueNode);
   return tokens.front().type == TokenType::CLOSEPAR;
 }

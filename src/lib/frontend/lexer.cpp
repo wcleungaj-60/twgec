@@ -13,6 +13,7 @@ std::string _const = "const";
 std::string _if = "if";
 std::string Point = "Point";
 std::string ActorMatch = "ActorMatch";
+std::string CustomWeapon = "CustomWeapon";
 } // namespace keyword
 
 int Lexer::line = 1;
@@ -225,6 +226,8 @@ Token Lexer::nextToken() {
                                      TokenType::POINT);
       LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::ActorMatch,
                                      TokenType::ACTOR_MATCH);
+      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::CustomWeapon,
+                                     TokenType::CUSTOM_WEAPON);
       return identifierToken();
     }
   }

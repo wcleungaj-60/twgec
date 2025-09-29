@@ -25,6 +25,7 @@ private:
   bool parseInstructionArgs(std::unique_ptr<InstructionNode> &,
                             bool foundNamed = false);
   bool parseActorMatchArgs(std::unique_ptr<ActorMatchValueNode> &);
+  bool parseCustomWeaponArgs(std::unique_ptr<CustomWeaponValueNode> &);
   std::unique_ptr<ExpressionNode> parseExp();
   std::unique_ptr<ExpressionNode> parseExpLogicalOr();
   std::unique_ptr<ExpressionNode> parseExpLogicalAnd();

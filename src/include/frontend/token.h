@@ -28,6 +28,7 @@ enum class TokenType {
   /* Builtin Struct */
   POINT,       // Point
   ACTOR_MATCH, // ActorMatch
+  CUSTOM_WEAPON, // CustomWeapon
   /* Speical Character */
   OPENCUR,            // {
   CLOSECUR,           // }
@@ -78,6 +79,7 @@ inline std::ostream &operator<<(std::ostream &os, const TokenType &type) {
     // Builtin Struct
     LEXER_TOKEN_TYPE_PRINT(TokenType::POINT, "\'Point\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::ACTOR_MATCH, "\'ActorMatch\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::CUSTOM_WEAPON, "\'CustomWeapon\'");
     // Speical Character
     LEXER_TOKEN_TYPE_PRINT(TokenType::OPENCUR, "\'{\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::CLOSECUR, "\'}\'");
@@ -139,6 +141,7 @@ struct Token {
       // Builtin Struct
       LEXER_TOKEN_TYPE_PRINT(TokenType::POINT, "Point");
       LEXER_TOKEN_TYPE_PRINT(TokenType::ACTOR_MATCH, "ActorMatch");
+      LEXER_TOKEN_TYPE_PRINT(TokenType::CUSTOM_WEAPON, "CustomWeapon");
       // Speical Character
       LEXER_TOKEN_PRINT(TokenType::OPENCUR, "{");
       LEXER_TOKEN_PRINT(TokenType::CLOSECUR, "}");

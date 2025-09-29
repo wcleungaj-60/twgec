@@ -12,6 +12,30 @@ DefaultMap actorMatchDefaultMap = DefaultMap(
     },
     "actorMatch");
 
+DefaultMap customWeaponDefaultMap = DefaultMap(
+    {
+        {"reference", {AST_STRING, CODEGEN_STRING, ""}},
+        {"code", {AST_STRING, CODEGEN_STRING, ""}},
+        {"scaleOnGround", {AST_INT, CODEGEN_INT, "0.8"}},
+        {"scaleOnIcon", {AST_INT, CODEGEN_INT, "1"}},
+        {"weight", {AST_INT, CODEGEN_INT, "6"}},
+        {"damage", {AST_INT, CODEGEN_INT, "25"}},
+        {"swapTime", {AST_INT, CODEGEN_INT, "800"}},
+        {"fireTime", {AST_INT, CODEGEN_INT, "1500"}},
+        {"fireType", {AST_INT, CODEGEN_STRING, "backslash"}},
+        {"pivotOnHandX", {AST_INT, CODEGEN_INT, "0"}},
+        {"pivotOnHandXScale", {AST_INT, CODEGEN_INT, "0"}},
+        {"pivotOnHandY", {AST_INT, CODEGEN_INT, "0"}},
+        {"pivotOnHandYScale", {AST_INT, CODEGEN_INT, "0"}},
+        {"pivotOnHandDegree", {AST_INT, CODEGEN_INT, "0"}},
+        {"pivotOnIconX", {AST_INT, CODEGEN_INT, "0"}},
+        {"pivotOnIconXScale", {AST_INT, CODEGEN_INT, "0"}},
+        {"pivotOnIconY", {AST_INT, CODEGEN_INT, "0"}},
+        {"pivotOnIconYScale", {AST_INT, CODEGEN_INT, "0"}},
+        {"pivotOnIconDegree", {AST_INT, CODEGEN_INT, "0"}},
+    },
+    "customWeapon");
+
 JsonArrayNode getActorMatchesNode(std::unique_ptr<InstructionNode> &instr,
                                   std::string key) {
   actorMatchDefaultMap.clearInputMap();
@@ -39,6 +63,71 @@ JsonArrayNode getActorMatchesNode(std::unique_ptr<InstructionNode> &instr,
            actorMatchDefaultMap.get("controller", actorBrainKind::keywordEnum)},
           {"camp", campNode.to_string(32)},
           {"excludeActorCodes", "[]"},
+      });
+      return JsonArrayNode(std::make_shared<JsonObjectNode>(actorMatchNode));
+    }
+  return JsonArrayNode();
+}
+
+JsonArrayNode getCustomWeaponsNode(std::unique_ptr<InstructionNode> &instr,
+                                   std::string key) {
+  customWeaponDefaultMap.clearInputMap();
+  for (auto &namedArg : instr->named_args)
+    if (namedArg->key == key) {
+      auto customWeaponValueNode =
+          dynamic_cast<CustomWeaponValueNode *>(namedArg->expNode->value.get());
+      if (!customWeaponValueNode) {
+        std::cerr << "CustomWeapon-typed value is expected at "
+                  << namedArg->expNode->loc << "\n";
+        return JsonArrayNode();
+      }
+      customWeaponDefaultMap.addInputMap(customWeaponValueNode->named_args);
+      JsonObjectNode fireNode = JsonObjectNode({
+          {"fireType", customWeaponDefaultMap.get("fireType")},
+          {"deltaDamage", "0"},
+      });
+      JsonArrayNode firesNode = JsonArrayNode(std::make_shared<JsonObjectNode>(fireNode));
+      JsonObjectNode pivotOnHandScaleNode = JsonObjectNode({
+          {"x", customWeaponDefaultMap.get("pivotOnHandXScale")},
+          {"y", customWeaponDefaultMap.get("pivotOnHandYScale")},
+      });
+      JsonObjectNode pivotOnHandNode = JsonObjectNode({
+          {"x", customWeaponDefaultMap.get("pivotOnHandX")},
+          {"y", customWeaponDefaultMap.get("pivotOnHandY")},
+          {"degrees", customWeaponDefaultMap.get("pivotOnHandDegree")},
+          {"scale", pivotOnHandScaleNode.to_string(44)},
+      });
+      JsonObjectNode pivotOnIconScaleNode = JsonObjectNode({
+          {"x", customWeaponDefaultMap.get("pivotOnIconXScale")},
+          {"y", customWeaponDefaultMap.get("pivotOnIconYScale")},
+      });
+      JsonObjectNode pivotOnIconNode = JsonObjectNode({
+          {"x", customWeaponDefaultMap.get("pivotOnIconX")},
+          {"y", customWeaponDefaultMap.get("pivotOnIconY")},
+          {"degrees", customWeaponDefaultMap.get("pivotOnIconDegree")},
+          {"scale", pivotOnHandScaleNode.to_string(44)},
+      });
+      JsonObjectNode spriteNode = JsonObjectNode({
+          {"pivotOnHand", pivotOnHandNode.to_string(40)},
+          {"pivotOnIcon", pivotOnIconNode.to_string(40)},
+      });
+      JsonObjectNode configNode = JsonObjectNode({
+          {"type", "\"close\""},
+          {"clipAlias", customWeaponDefaultMap.get("reference")},
+          {"scaleOnGround", customWeaponDefaultMap.get("scaleOnGround")},
+          {"scaleOnIcon", customWeaponDefaultMap.get("scaleOnIcon")},
+          {"pickTestFunc", "\"wider\""},
+          {"weight", customWeaponDefaultMap.get("weight")},
+          {"damage", customWeaponDefaultMap.get("damage")},
+          {"swapTime", customWeaponDefaultMap.get("swapTime")},
+          {"frameName", "\"BLADE_TYPE\""},
+          {"clip", "\"\""},
+          {"fireTime", customWeaponDefaultMap.get("fireTime")},
+          {"firesNode", firesNode.to_string(36)},
+      });
+      JsonObjectNode actorMatchNode = JsonObjectNode({
+          {"code", customWeaponDefaultMap.get("code")},
+          {"actorCodes", configNode.to_string(32)},
       });
       return JsonArrayNode(std::make_shared<JsonObjectNode>(actorMatchNode));
     }

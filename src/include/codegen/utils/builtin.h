@@ -9,8 +9,11 @@ using namespace keyword;
 using namespace codegen::formatter;
 
 extern DefaultMap actorMatchDefaultMap;
+extern DefaultMap customWeaponDefaultMap;
 
 JsonArrayNode getActorMatchesNode(std::unique_ptr<InstructionNode> &instr,
+                                  std::string key);
+JsonArrayNode getCustomWeaponsNode(std::unique_ptr<InstructionNode> &instr,
                                   std::string key);
 
 #endif

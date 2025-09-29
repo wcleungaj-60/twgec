@@ -28,6 +28,7 @@ class PositionalArgNode;
 class ExpressionNode;
 class ValueNode;
 class ActorMatchValueNode;
+class CustomWeaponValueNode;
 class BoolValueNode;
 class IntValueNode;
 class ListValueNode;
@@ -359,6 +360,18 @@ public:
   std::unique_ptr<ValueNode> clone();
 };
 
+class CustomWeaponValueNode : public ValueNode {
+public:
+  // Variable
+  std::vector<std::unique_ptr<NamedArgNode>> named_args;
+
+  // Constructor
+  CustomWeaponValueNode(Location loc) : ValueNode(loc) {}
+
+  // Function
+  std::unique_ptr<ValueNode> clone();
+};
+
 class BoolValueNode : public ValueNode {
 public:
   // Variable
@@ -556,6 +569,16 @@ inline std::ostream &operator<<(std::ostream &os,
       os << actorMatchNode->named_args[i]->key << " = "
          << *actorMatchNode->named_args[i]->expNode.get();
       if (i != actorMatchNode->named_args.size() - 1)
+        os << ", ";
+    }
+    os << ")";
+  } else if (auto customWeaponNode =
+                 dynamic_cast<CustomWeaponValueNode *>(valueNode.get())) {
+    os << "CustomWeapon(";
+    for (auto i = 0; i < customWeaponNode->named_args.size(); i++) {
+      os << customWeaponNode->named_args[i]->key << " = "
+         << *customWeaponNode->named_args[i]->expNode.get();
+      if (i != customWeaponNode->named_args.size() - 1)
         os << ", ";
     }
     os << ")";

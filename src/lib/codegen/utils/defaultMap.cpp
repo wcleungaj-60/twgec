@@ -17,11 +17,13 @@ std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
   StringValueNode *stringNode = nullptr;
   ListValueNode *listNode = nullptr;
   ActorMatchValueNode *actorMatchNode = nullptr;
+  CustomWeaponValueNode *customWeaponNode = nullptr;
   bool astBool = defaultMap.at(key).astType == AST_BOOL;
   bool astInt = defaultMap.at(key).astType == AST_INT;
   bool astString = defaultMap.at(key).astType == AST_STRING;
   bool astPointList = defaultMap.at(key).astType == AST_LIST_POINT;
   bool astActorMatch = defaultMap.at(key).astType == AST_ACTOR_MATCH;
+  bool astCustomWeapon = defaultMap.at(key).astType == AST_CUSTOM_WEAPON;
   if (auto varNode = dynamic_cast<VariableValueNode *>(input.get())) {
     std::cerr
         << "Codegen Error: Cannot find the definition of variable `"
@@ -41,6 +43,8 @@ std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
     listNode = dynamic_cast<ListValueNode *>(input.get());
   if (astActorMatch)
     actorMatchNode = dynamic_cast<ActorMatchValueNode *>(input.get());
+  if (astCustomWeapon)
+    customWeaponNode = dynamic_cast<CustomWeaponValueNode *>(input.get());
   bool codegenBool = defaultMap.at(key).codegenType == CODEGEN_BOOL;
   bool codegenInt = defaultMap.at(key).codegenType == CODEGEN_INT;
   bool codegenString = defaultMap.at(key).codegenType == CODEGEN_STRING;
