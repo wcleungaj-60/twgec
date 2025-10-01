@@ -199,7 +199,7 @@ void action::ActionActorFollow::method(
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorCode", defaultMap.get("actorId")},
-      {"followType", defaultMap.get("type", followType::keywordEnum)},
+      {"followType", defaultMap.get("type", followActorKind::keywordEnum)},
       {"targetCode", defaultMap.get("targetId")},
   });
   JsonObjectNode rootNode = JsonObjectNode({
@@ -233,16 +233,16 @@ void action::ActionAddActor::method(std::ofstream &of,
   std::string externRole = defaultMap.get("externRole");
   bool hasExternRole = externRole != "\"\"";
   std::string role =
-      hasExternRole ? "8" : defaultMap.get("role", role::keywordEnum);
+      hasExternRole ? "8" : defaultMap.get("role", roleKind::keywordEnum);
   JsonObjectNode roleNode = JsonObjectNode({{"dr", role}});
   if (hasExternRole)
     roleNode.addNode("rsrc", externRole);
 
   JsonObjectNode weapon0Node = JsonObjectNode({
-      {"w0Type", defaultMap.get("weapon1", weapon::keywordEnum)},
+      {"w0Type", defaultMap.get("weapon1", weaponKind::keywordEnum)},
   });
   JsonObjectNode weapon1Node = JsonObjectNode({
-      {"w1Type", defaultMap.get("weapon2", weapon::keywordEnum)},
+      {"w1Type", defaultMap.get("weapon2", weaponKind::keywordEnum)},
   });
   JsonObjectNode locationNode = JsonObjectNode({
       {"x", defaultMap.get("x")},
@@ -256,7 +256,7 @@ void action::ActionAddActor::method(std::ofstream &of,
       {"actorType", "\"defaultType\""},
       {"weapon0", weapon0Node.to_string(24)},
       {"weapon1", weapon1Node.to_string(24)},
-      {"camp", defaultMap.get("camp", camp::keywordEnum)},
+      {"camp", defaultMap.get("camp", campKind::keywordEnum)},
       {"group", defaultMap.get("teamId")},
       {"location", locationNode.to_string(24)},
       {"shiftX", "0"},
@@ -422,7 +422,7 @@ void action::ActionMissionComplete::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
-      {"targetGroup", defaultMap.get("camp", campMissionComplete::keywordEnum)},
+      {"targetGroup", defaultMap.get("camp", campMissionCompleteKind::keywordEnum)},
   });
   JsonObjectNode rootNode = JsonObjectNode({
       {"type", "\"MissionComplete\""},
@@ -459,7 +459,7 @@ void action::ActionSetGlobal::method(std::ofstream &of,
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"key", defaultMap.get("key")},
-      {"valueType", defaultMap.get("type", valueType::keywordEnum)},
+      {"valueType", defaultMap.get("type", valueTypeKind::keywordEnum)},
       {"value", defaultMap.get("value")},
   });
   JsonObjectNode rootNode = JsonObjectNode({
@@ -475,7 +475,7 @@ void action::ActionSetObjectVar::method(
   JsonObjectNode dataNode = JsonObjectNode({
       {"objectId", defaultMap.get("object")},
       {"key", defaultMap.get("key")},
-      {"valueType", defaultMap.get("type", valueType::keywordEnum)},
+      {"valueType", defaultMap.get("type", valueTypeKind::keywordEnum)},
       {"value", defaultMap.get("value")},
   });
   JsonObjectNode rootNode = JsonObjectNode({

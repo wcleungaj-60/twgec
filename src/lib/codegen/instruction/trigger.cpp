@@ -114,8 +114,8 @@ void trigger::TriggerKeyboardPressed::method(
       {"playerId", defaultMap.get("actorId")},
       // `{instance.id}` is needed for parsing the playerLocal
       {"playerLocal", defaultMap.get("varName")},
-      {"timing", defaultMap.get("timing", keyPressTiming::keywordEnum)},
-      {"key", defaultMap.get("key", keyPressKey::keywordEnum)},
+      {"timing", defaultMap.get("timing", keyPressTimingKind::keywordEnum)},
+      {"key", defaultMap.get("key", keyPressKeyKind::keywordEnum)},
       {"keyLocal", "\"\""},
       {"ctrl", "\"\""},
       {"shift", "\"\""},
@@ -131,8 +131,8 @@ void trigger::TriggerReleasePower::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
   defaultMap.addInputMap(trigger->named_args, {"actor"});
   JsonArrayNode actorMatchesNode = getActorMatchesNode(trigger, "actor");
-  std::string ability = defaultMap.get("ability", ability::keywordEnum);
-  std::string weaponType = defaultMap.get("weapon", weapon::keywordEnum);
+  std::string ability = defaultMap.get("ability", abilityKind::keywordEnum);
+  std::string weaponType = defaultMap.get("weapon", weaponKind::keywordEnum);
 
   JsonObjectNode abilityNode = JsonObjectNode({
       {"value", ability},

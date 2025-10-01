@@ -8,10 +8,10 @@ using std::unique_ptr;
 
 bool implicitListPromotion(const unique_ptr<ModuleNode> &moduleNode) {
   for (auto &metadata : moduleNode->metadatas) {
-    if ((metadata->key == keyword::config::royalLocs ||
-         metadata->key == keyword::config::skydowLocs ||
-         metadata->key == keyword::config::thirdLocs ||
-         metadata->key == keyword::config::customWeapons) &&
+    if ((metadata->key == keyword::metadataKind::royalLocs ||
+         metadata->key == keyword::metadataKind::skydowLocs ||
+         metadata->key == keyword::metadataKind::thirdLocs ||
+         metadata->key == keyword::metadataKind::customWeapons) &&
         !dynamic_cast<ListValueNode *>(metadata->expNode->value.get())) {
       auto listNode =
           std::make_unique<ListValueNode>(metadata->expNode->value->loc);

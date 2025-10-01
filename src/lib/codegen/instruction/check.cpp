@@ -62,7 +62,7 @@ void check::CheckNumber::method(std::ofstream &of,
   JsonObjectNode _logiNode = JsonObjectNode("_and_or", "\"\"");
   JsonObjectNode dataNode = JsonObjectNode({
       {"value1", defaultMap.get("lhs")},
-      {"operator", defaultMap.get("op", _operator::keywordEnum)},
+      {"operator", defaultMap.get("op", operationKind::keywordEnum)},
       {"value2", defaultMap.get("rhs")},
       {"_logi", _logiNode.to_string(24)},
       {"_elseEventId", "\"\""},
