@@ -23,9 +23,9 @@ enum ASTType {
   AST_BOOL,
   AST_POINT,
   AST_ACTOR_MATCH,
-  AST_CUSTOM_WEAPON,
   AST_LIST_STRING,
   AST_LIST_POINT,
+  AST_LIST_CUSTOM_WEAPON,
 };
 
 inline std::ostream &operator<<(std::ostream &os, const ASTType &astType) {
@@ -45,7 +45,7 @@ inline std::ostream &operator<<(std::ostream &os, const ASTType &astType) {
   case AST_ACTOR_MATCH:
     os << "ActorMatch";
     break;
-  case AST_CUSTOM_WEAPON:
+  case AST_LIST_CUSTOM_WEAPON:
     os << "CustomWeapon";
     break;
   case AST_STRING:
@@ -67,7 +67,7 @@ enum CodegenType {
   CODEGEN_STRING, // two `\"` will be added
   CODEGEN_BOOL,
   CODEGEN_ACTOR_MATCH,
-  CODEGEN_CUSTOM_WEAPON,
+  CODEGEN_LIST_CUSTOM_WEAPON,
   CODEGEN_LIST_STRING,
   CODEGEN_LIST_POINT,  // {x,y}
   CODEGEN_LIST_PATROL, // {loc{x,y,range},rotation,duration}
@@ -108,7 +108,7 @@ private:
         ret += "\"" + it->second.defaultValue + "\"";
       else if (it->second.codegenType == CODEGEN_ACTOR_MATCH)
         ret += "NULL";
-      else if (it->second.codegenType == CODEGEN_CUSTOM_WEAPON)
+      else if (it->second.codegenType == CODEGEN_LIST_CUSTOM_WEAPON)
         ret += "NULL";
       else
         ret += it->second.defaultValue;

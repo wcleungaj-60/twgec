@@ -2,6 +2,8 @@ BUILD_DIR="build"
 TEST_DIR="test"
 SMOKE_DIR="example"
 
+# TODO: support transformation pass test
+
 unit_test() {
     local path=$1
     local test_file="$1/test.twge"

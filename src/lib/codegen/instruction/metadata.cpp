@@ -37,7 +37,7 @@ DefaultMap metadata::ConfigSetup::defaultMap = DefaultMap(
          {AST_BOOL, CODEGEN_BOOL, "false"}},
         {keyword::config::useCustomWeapons, {AST_BOOL, CODEGEN_BOOL, "false"}},
         {keyword::config::customWeapons,
-         {AST_CUSTOM_WEAPON, CODEGEN_CUSTOM_WEAPON, "[]"}},
+         {AST_LIST_CUSTOM_WEAPON, CODEGEN_LIST_CUSTOM_WEAPON, "[]"}},
         {keyword::config::useCustomFarWeapons,
          {AST_BOOL, CODEGEN_BOOL, "false"}},
         {keyword::config::useCustomItems, {AST_BOOL, CODEGEN_BOOL, "false"}},
@@ -104,7 +104,7 @@ DefaultMap metadata::BlockSetup::defaultMap = DefaultMap(
 void metadata::ConfigSetup::setup(
     std::ofstream &of, std::vector<std::unique_ptr<MetadataNode>> &metadatas) {
   JsonArrayNode customWeaponsNode =
-      getCustomWeaponsNode(metadatas, "customWeapons");
+      getCustomWeaponsListNode(metadatas, "customWeapons");
   defaultMap.addInputMap(metadatas);
   of << inden(4) << "\"$schema\": " << defaultMap.get(keyword::config::schema)
      << "," << std::endl;

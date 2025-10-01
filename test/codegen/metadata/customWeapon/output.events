@@ -52,7 +52,7 @@
                 "skydowLocs": [],
                 "royalLocs": [],
                 "thirdLocs": [],
-                "useCustomWeapons": false,
+                "useCustomWeapons": true,
                 "customWeapons": [
                     {
                         "code": "wind_staff",

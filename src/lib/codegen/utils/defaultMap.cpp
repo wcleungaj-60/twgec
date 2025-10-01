@@ -23,7 +23,7 @@ std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
   bool astString = defaultMap.at(key).astType == AST_STRING;
   bool astPointList = defaultMap.at(key).astType == AST_LIST_POINT;
   bool astActorMatch = defaultMap.at(key).astType == AST_ACTOR_MATCH;
-  bool astCustomWeapon = defaultMap.at(key).astType == AST_CUSTOM_WEAPON;
+  bool astCustomWeapon = defaultMap.at(key).astType == AST_LIST_CUSTOM_WEAPON;
   if (auto varNode = dynamic_cast<VariableValueNode *>(input.get())) {
     std::cerr
         << "Codegen Error: Cannot find the definition of variable `"
@@ -52,7 +52,7 @@ std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
       defaultMap.at(key).codegenType == CODEGEN_LIST_PATROL;
   bool codegenListPoint = defaultMap.at(key).codegenType == CODEGEN_LIST_POINT;
   bool codegenCustomWeapon =
-      defaultMap.at(key).codegenType == CODEGEN_CUSTOM_WEAPON;
+      defaultMap.at(key).codegenType == CODEGEN_LIST_CUSTOM_WEAPON;
 
   auto format = [&](std::string text) -> std::string {
     if (codegenInt || codegenBool) {
@@ -89,6 +89,7 @@ std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
   }
   // List Input Generation
   if (listNode) {
+    // TODO: Move it to the builtin
     if (codegenListPatrol) {
       std::string ret = "[\n";
       for (auto idx = 0; idx < listNode->items.size(); idx++) {
