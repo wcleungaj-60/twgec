@@ -27,6 +27,8 @@ bool functionInling(const std::unique_ptr<ModuleNode> &moduleNode);
 bool constantFolding(const std::unique_ptr<ModuleNode> &moduleNode);
 // Flatten the if-statement and remove the dead condition branch
 bool ifStatementPropagation(const std::unique_ptr<ModuleNode> &moduleNode);
+// Promote type `A` to `list[A]` implicitly
+bool implicitListPromotion(const std::unique_ptr<ModuleNode> &moduleNode);
 
 inline bool loweringPipeline(const std::unique_ptr<ModuleNode> &moduleNode,
                              Option opt) {
@@ -37,6 +39,7 @@ inline bool loweringPipeline(const std::unique_ptr<ModuleNode> &moduleNode,
   TRANSFORM_WITH_PRINT(functionInling, "Function Inlining");
   TRANSFORM_WITH_PRINT(constantFolding, "Constant Folding");
   TRANSFORM_WITH_PRINT(ifStatementPropagation, "Statement Propagation");
+  TRANSFORM_WITH_PRINT(implicitListPromotion, "Implicit List Promotion");
   if (opt.printASTBefore)
     moduleNode->print("AST Before Code Generation");
   return true;

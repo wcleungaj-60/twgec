@@ -1,7 +1,7 @@
 // Metadata Setting
-__skydowLocs__ = [Point(23,26)];
-__royalLocs__ = [Point(23,26)];
-__thirdLocs__ = [Point(23,26)];
+__skydowLocs__ = Point(23,26);
+__royalLocs__ = Point(23,26);
+__thirdLocs__ = Point(23,26);
 __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;

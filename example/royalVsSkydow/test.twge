@@ -1,5 +1,5 @@
-__skydowLocs__ = [Point(7,1)];
-__royalLocs__ = [Point(22,18)];
+__skydowLocs__ = Point(7,1);
+__royalLocs__ = Point(22,18);
 __thirdLocs__ = [Point(28,1),Point(1,28)];
 __title__ = "皇家天影之爭";
 __useDefaultItems__ = true;

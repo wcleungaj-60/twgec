@@ -10,6 +10,7 @@ add_executable(twgec
     lib/transform/constantFolding.cpp
     lib/transform/functionInlining.cpp
     lib/transform/ifStatementPropagation.cpp
+    lib/transform/implicitListPromotion.cpp
     lib/transform/symbolChecking.cpp
     lib/codegen/codegen.cpp
     lib/codegen/instruction/action.cpp

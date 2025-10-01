@@ -3,7 +3,7 @@ const pt = Point(8,8);
 __schema__ = "https://code.gamelet.com/gassets/schema/events/v1";
 __title__ = "我的任務";
 __map__ = "CG.TWEventsGameTemplate/gamemap.twmap";
-__skydowLocs__ = [pt];
+__skydowLocs__ = pt;
 
 def testInt(v) : actions {
     actorTalk(duration = v);
