@@ -22,6 +22,7 @@ DefaultMap trigger::TriggerActorFire::defaultMap = DefaultMap(
     {
         {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, ""}},
         {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
+        {"weapon", {AST_STRING, CODEGEN_STRING, ""}},
     },
     "actorFire");
 
@@ -82,6 +83,11 @@ void trigger::TriggerActorFire::method(
       {"fireTriggerType", "\"all\""},
       {"damageTypes", "[]"},
   });
+  if (defaultMap.get("weapon") != "\"\"") {
+    dataNode.addNode("checkWeaponType", "true")
+        .addNode("weaponTypeCheck", "\"include\"")
+        .addNode("weaponType", defaultMap.get("weapon"));
+  }
   JsonObjectNode rootNode = JsonObjectNode({
       {"type", "\"ActorFire\""},
       {"data", dataNode.to_string(20)},

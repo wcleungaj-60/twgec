@@ -75,7 +75,7 @@
                                 "type": "close",
                                 "clipAlias": "TWilightGameEventCompiler.weapon_wind_staff",
                                 "scaleOnGround": 0.8,
-                                "scaleOnIcon": 0.8,
+                                "scaleOnIcon": 1,
                                 "pickTestFunc": "wider",
                                 "weight": 6,
                                 "damage": 5,
@@ -91,18 +91,18 @@
                                 ],
                                 "sprite": {
                                     "pivotOnHand": {
-                                        "x": 0,
-                                        "y": 0,
+                                        "x": 2,
+                                        "y": 9,
                                         "degrees": 58,
                                         "scale": {
-                                            "x": 1,
-                                            "y": 1
+                                            "x": 1.3,
+                                            "y": 1.5
                                         }
                                     },
                                     "pivotOnIcon": {
-                                        "x": 0,
-                                        "y": 0,
-                                        "degrees": 0,
+                                        "x": 20,
+                                        "y": 20,
+                                        "degrees": -40,
                                         "scale": {
                                             "x": 1,
                                             "y": 1
@@ -806,13 +806,13 @@
             ]
         },
         {
-            "id": "pressX",
+            "id": "staffAttack",
             "disabled": false,
             "folder": "",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
-            "repeatInterval": 3000,
+            "repeatInterval": 0,
             "devOnly": false,
             "actions": [
                 {
@@ -820,76 +820,29 @@
                     "data": {
                         "fromPos": {
                             "posType": "actor",
-                            "actorCode": "{instance.id}",
+                            "actorCode": "instance",
                             "alive": true
                         },
                         "toType": "angle",
-                        "toAngle": "{{instance.id}.bodyRotation}*180/3.14",
-                        "damage": "{INT} + 1",
+                        "toAngle": "{instance.bodyRotation}*180/3.14",
+                        "damage": "{INT} + 10",
                         "scale": "0.5",
                         "speed": "0.7"
-                    }
-                },
-                {
-                    "type": "EnblastEffect",
-                    "data": {
-                        "fromPos": {
-                            "posType": "actor",
-                            "actorCode": "{instance.id}",
-                            "alive": true
-                        },
-                        "toType": "angle",
-                        "toAngle": "{{instance.id}.bodyRotation}*180/3.14+20",
-                        "damage": "{INT} + 1",
-                        "scale": "0.5",
-                        "speed": "0.7"
-                    }
-                },
-                {
-                    "type": "EnblastEffect",
-                    "data": {
-                        "fromPos": {
-                            "posType": "actor",
-                            "actorCode": "{instance.id}",
-                            "alive": true
-                        },
-                        "toType": "angle",
-                        "toAngle": "{{instance.id}.bodyRotation}*180/3.14-20",
-                        "damage": "{INT} + 1",
-                        "scale": "0.5",
-                        "speed": "0.7"
-                    }
-                },
-                {
-                    "type": "Wait",
-                    "data": {
-                        "duration": "3000"
-                    }
-                },
-                {
-                    "type": "ActorTalk",
-                    "data": {
-                        "cleanTalk": true,
-                        "speech": "光彈冷卻完畢",
-                        "duration": "3000",
-                        "wait": false,
-                        "waitMore": "100",
-                        "actorCode": "{instance.id}"
                     }
                 }
             ],
             "checks": [],
             "triggers": [
                 {
-                    "type": "KeyboardPressed",
+                    "type": "ActorFire",
                     "data": {
-                        "playerId": "*",
-                        "playerLocal": "instance",
-                        "timing": "",
-                        "key": 88,
-                        "keyLocal": "",
-                        "ctrl": "",
-                        "shift": ""
+                        "actorMatches": [],
+                        "varname": "instance",
+                        "fireTriggerType": "all",
+                        "damageTypes": [],
+                        "checkWeaponType": true,
+                        "weaponTypeCheck": "include",
+                        "weaponType": "custom_wind_staff"
                     }
                 }
             ]
@@ -974,6 +927,23 @@
                         "key": "ExpNeeded",
                         "valueType": "integer",
                         "value": "10"
+                    }
+                },
+                {
+                    "type": "AddStuff",
+                    "data": {
+                        "itemCode": "item*",
+                        "itemType": "custom_wind_staff",
+                        "loop": true,
+                        "loopInterval": "10000",
+                        "location": {
+                            "x": "23",
+                            "y": "26",
+                            "range": "0"
+                        },
+                        "rotation": "0",
+                        "cameraZoomPolicy": "none",
+                        "localVarname": "item"
                     }
                 },
                 {
@@ -1085,7 +1055,7 @@
                         ],
                         "shape": "wood",
                         "rotation": "270",
-                        "speech": "【智慧】\n消耗一點能力點，增加按X技能的光彈一點傷害",
+                        "speech": "【智慧】\n消耗一點能力點，增加木杖光彈一點傷害",
                         "parsePolicy": "view",
                         "showButtons": true,
                         "btnsGroup": {

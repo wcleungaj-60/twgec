@@ -103,7 +103,7 @@ JsonObjectNode getCustomWeaponsNode(std::unique_ptr<ExpressionNode> &expNode) {
       {"x", customWeaponDefaultMap.get("pivotOnIconX")},
       {"y", customWeaponDefaultMap.get("pivotOnIconY")},
       {"degrees", customWeaponDefaultMap.get("pivotOnIconDegree")},
-      {"scale", pivotOnHandScaleNode.to_string(40)},
+      {"scale", pivotOnIconScaleNode.to_string(40)},
   });
   JsonObjectNode spriteNode = JsonObjectNode({
       {"pivotOnHand", pivotOnHandNode.to_string(36)},

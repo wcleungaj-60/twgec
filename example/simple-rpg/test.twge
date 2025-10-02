@@ -6,12 +6,16 @@ __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __useCustomWeapons__ = true;
-__customWeapons__ = CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", scaleOnIcon = "0.8", pivotOnHandDegree = 58, damage = 5);
+__customWeapons__ = [
+    CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 5, 
+    pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5",
+    pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20)
+];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 1;
 
 // Constant Definition
-const INSTANCE_ANGLE = "{{instance.id}.bodyRotation}*180/3.14";
+const INSTANCE_ANGLE = "{instance.bodyRotation}*180/3.14";
 const STATUS_TEXT = "【Lv{Level}】\nExp:{Exp}/{ExpNeeded}\n尚餘能力點：{Point}\n力量：{STR}\n體質：{CON}\n敏捷：{AGI}\n智慧：{INT}\n精神：{PSY}";
 
 // Utils Function Definition
@@ -133,18 +137,14 @@ block pressZ {
     }
 }
 
-block pressX {
+block staffAttack {
     __repeat__ = -1;
-    __repeatInterval__ = 3000;
     triggers {
-        keyboardPressed(varName = "instance", key = "X");
+        // TODO: check weapon type in keyword
+        actorFire(weapon = "custom_wind_staff", varName = "instance");
     }
     actions {
-        enblastEffect(fromActor = "{instance.id}", toAngle = INSTANCE_ANGLE, scale = "0.5", damage = "{INT} + 1");
-        enblastEffect(fromActor = "{instance.id}", toAngle = INSTANCE_ANGLE + "+20", scale = "0.5", damage = "{INT} + 1");
-        enblastEffect(fromActor = "{instance.id}", toAngle = INSTANCE_ANGLE + "-20", scale = "0.5", damage = "{INT} + 1");
-        wait(duration = 3000);
-        actorTalk(actorId = "{instance.id}", text = "光彈冷卻完畢");
+        enblastEffect(fromActor = "instance", toAngle = INSTANCE_ANGLE, scale = "0.5", damage = "{INT} + 10");
     }
 }
 
@@ -159,10 +159,11 @@ block init {
         setInt("Point", 5);
         setInt("Exp", 0);
         setInt("ExpNeeded", 10);
+        addStuff(x = 23, y = 26, item = "custom_wind_staff");
         addMapSign(x = 19, y = 28, rotation = 270, text = "【力量】\n消耗一點能力點，增加小刀一點傷害 (未實現)", buttonCode = "increaseSTR", buttonLabel = "確認");
         addMapSign(x = 21, y = 28, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限", buttonCode = "increaseCON", buttonLabel = "確認");
         addMapSign(x = 23, y = 28, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升近戰武器速度", buttonCode = "increaseAGI", buttonLabel = "確認");
-        addMapSign(x = 25, y = 28, rotation = 270, text = "【智慧】\n消耗一點能力點，增加按X技能的光彈一點傷害", buttonCode = "increaseINT", buttonLabel = "確認");
+        addMapSign(x = 25, y = 28, rotation = 270, text = "【智慧】\n消耗一點能力點，增加木杖光彈一點傷害", buttonCode = "increaseINT", buttonLabel = "確認");
         addMapSign(x = 27, y = 28, rotation = 270, text = "【精神】\n消耗一點能力點，每十秒恢復一點體力", buttonCode = "increasePSY", buttonLabel = "確認");
     }
 }

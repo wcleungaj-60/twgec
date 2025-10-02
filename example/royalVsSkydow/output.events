@@ -719,7 +719,7 @@
                         "cleanTalk": true,
                         "speech": "已選擇職業：{instance.job}",
                         "duration": "3000",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": "instance"
                     }
@@ -744,21 +744,7 @@
                 {
                     "type": "TalkButton",
                     "data": {
-                        "actorMatches": [
-                            {
-                                "actorCodes": [
-                                    {
-                                        "method": "contain",
-                                        "actorCode": ""
-                                    }
-                                ],
-                                "brain": "all",
-                                "camp": {
-                                    "campAll": true
-                                },
-                                "excludeActorCodes": []
-                            }
-                        ],
+                        "actorMatches": [],
                         "varname": "instance",
                         "checkButtoncode": true,
                         "buttonCode": "chooseJobR1",
@@ -792,7 +778,7 @@
                         "cleanTalk": true,
                         "speech": "已選擇職業：{instance.job}",
                         "duration": "3000",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": "instance"
                     }
@@ -825,21 +811,7 @@
                 {
                     "type": "TalkButton",
                     "data": {
-                        "actorMatches": [
-                            {
-                                "actorCodes": [
-                                    {
-                                        "method": "contain",
-                                        "actorCode": ""
-                                    }
-                                ],
-                                "brain": "all",
-                                "camp": {
-                                    "campAll": true
-                                },
-                                "excludeActorCodes": []
-                            }
-                        ],
+                        "actorMatches": [],
                         "varname": "instance",
                         "checkButtoncode": true,
                         "buttonCode": "chooseJobR2",
@@ -873,7 +845,7 @@
                         "cleanTalk": true,
                         "speech": "已選擇職業：{instance.job}",
                         "duration": "3000",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": "instance"
                     }
@@ -898,21 +870,7 @@
                 {
                     "type": "TalkButton",
                     "data": {
-                        "actorMatches": [
-                            {
-                                "actorCodes": [
-                                    {
-                                        "method": "contain",
-                                        "actorCode": ""
-                                    }
-                                ],
-                                "brain": "all",
-                                "camp": {
-                                    "campAll": true
-                                },
-                                "excludeActorCodes": []
-                            }
-                        ],
+                        "actorMatches": [],
                         "varname": "instance",
                         "checkButtoncode": true,
                         "buttonCode": "chooseJobS1",
@@ -946,7 +904,7 @@
                         "cleanTalk": true,
                         "speech": "已選擇職業：{instance.job}",
                         "duration": "3000",
-                        "wait": true,
+                        "wait": false,
                         "waitMore": "100",
                         "actorCode": "instance"
                     }
@@ -971,21 +929,7 @@
                 {
                     "type": "TalkButton",
                     "data": {
-                        "actorMatches": [
-                            {
-                                "actorCodes": [
-                                    {
-                                        "method": "contain",
-                                        "actorCode": ""
-                                    }
-                                ],
-                                "brain": "all",
-                                "camp": {
-                                    "campAll": true
-                                },
-                                "excludeActorCodes": []
-                            }
-                        ],
+                        "actorMatches": [],
                         "varname": "instance",
                         "checkButtoncode": true,
                         "buttonCode": "chooseJobS2",
@@ -1033,21 +977,7 @@
                 {
                     "type": "ReleasePower",
                     "data": {
-                        "actorMatches": [
-                            {
-                                "actorCodes": [
-                                    {
-                                        "method": "contain",
-                                        "actorCode": ""
-                                    }
-                                ],
-                                "brain": "all",
-                                "camp": {
-                                    "campAll": true
-                                },
-                                "excludeActorCodes": []
-                            }
-                        ],
+                        "actorMatches": [],
                         "varname": "instance",
                         "preventDefault": "false",
                         "manaUsage": "0",
@@ -1106,21 +1036,7 @@
                 {
                     "type": "ReleasePower",
                     "data": {
-                        "actorMatches": [
-                            {
-                                "actorCodes": [
-                                    {
-                                        "method": "contain",
-                                        "actorCode": ""
-                                    }
-                                ],
-                                "brain": "all",
-                                "camp": {
-                                    "campAll": true
-                                },
-                                "excludeActorCodes": []
-                            }
-                        ],
+                        "actorMatches": [],
                         "varname": "instance",
                         "preventDefault": "false",
                         "manaUsage": "0",
@@ -1253,21 +1169,7 @@
                 {
                     "type": "ReleasePower",
                     "data": {
-                        "actorMatches": [
-                            {
-                                "actorCodes": [
-                                    {
-                                        "method": "contain",
-                                        "actorCode": ""
-                                    }
-                                ],
-                                "brain": "all",
-                                "camp": {
-                                    "campAll": true
-                                },
-                                "excludeActorCodes": []
-                            }
-                        ],
+                        "actorMatches": [],
                         "varname": "instance",
                         "preventDefault": "false",
                         "manaUsage": "0",
@@ -1318,7 +1220,7 @@
                             }
                         ],
                         "varname": "instance",
-                        "timing": "over",
+                        "timing": "preDead",
                         "deathsVarname": "deaths",
                         "hitterMatches": [],
                         "hitterVarname": ""
@@ -1364,7 +1266,7 @@
                             }
                         ],
                         "varname": "instance",
-                        "timing": "over",
+                        "timing": "preDead",
                         "deathsVarname": "deaths",
                         "hitterMatches": [],
                         "hitterVarname": ""
