@@ -19,6 +19,7 @@ add_executable(twgec
     lib/codegen/instruction/trigger.cpp
     lib/codegen/utils/builtin.cpp
     lib/codegen/utils/defaultMap.cpp
+    lib/utils/keyword.cpp
     lib/main.cpp
 )
 

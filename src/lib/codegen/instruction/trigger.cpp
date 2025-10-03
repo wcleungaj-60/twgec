@@ -5,6 +5,7 @@
 #include <fstream>
 #include <map>
 #include <memory>
+#include <vector>
 
 using namespace codegen;
 using namespace formatter;
@@ -134,12 +135,13 @@ void trigger::TriggerKeyboardPressed::method(
 }
 
 void trigger::TriggerReleasePower::method(
-    std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
+    std::ofstream &of, std::unique_ptr<InstructionNode> &trigger,
+    std::map<std::string, std::string> extraEnum) {
   defaultMap.addInputMap(trigger->named_args, {"actor"});
   JsonArrayNode actorMatchesNode = getActorMatchesNode(trigger, "actor");
   std::string ability = defaultMap.get("ability", abilityKind::keywordEnum);
-  // TODO: Enable Custom Weapon
-  std::string weaponType = defaultMap.get("weapon");
+  std::string weaponType =
+      defaultMap.get("weapon", weaponKind::keywordEnum, extraEnum);
 
   JsonObjectNode abilityNode = JsonObjectNode({
       {"value", ability},

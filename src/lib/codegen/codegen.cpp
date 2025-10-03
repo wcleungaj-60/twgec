@@ -4,6 +4,7 @@
 #include "instruction/check.h"
 #include "instruction/metadata.h"
 #include "instruction/trigger.h"
+#include "keyword.h"
 #include "utils/utils.h"
 #include <fstream>
 #include <iostream>
@@ -14,8 +15,34 @@ void CodeGenerator::codegen(std::string filepath) {
   std::ofstream outputFile(filepath);
   if (!outputFile)
     return;
+  preCodegen();
   codegenModuleNode(outputFile);
   outputFile.close();
+}
+
+void CodeGenerator::preCodegen() {
+  for (auto &metadata : moduleNode->metadatas) {
+    if (metadata->key != keyword::metadataKind::customWeapons)
+      continue;
+    auto listNode =
+        dynamic_cast<ListValueNode *>(metadata->expNode->value.get());
+    if (!listNode)
+      continue;
+    for (auto &item : listNode->items) {
+      auto cwNode = dynamic_cast<CustomWeaponValueNode *>(item->value.get());
+      if (!cwNode)
+        continue;
+      for (auto &namedArg : cwNode->named_args)
+        if (namedArg->key == "code") {
+          auto stringNode =
+              dynamic_cast<StringValueNode *>(namedArg->expNode->value.get());
+          if (!stringNode)
+            break;
+          string keyName = "custom_" + stringNode->value;
+          customWeaponsKeywordEnum.insert({keyName, keyName});
+        }
+    }
+  }
 }
 
 void CodeGenerator::codegenModuleNode(std::ofstream &of) {
@@ -117,7 +144,8 @@ void CodeGenerator::codegenTrigger(std::ofstream &of,
   CODEGEN_TRIGGER("actorFire", ActorFire);
   CODEGEN_TRIGGER("clickButton", ClickButton);
   CODEGEN_TRIGGER("keyboardPressed", KeyboardPressed);
-  CODEGEN_TRIGGER("releasePower", ReleasePower);
+  CODEGEN_TRIGGER_EXTRA_ARG("releasePower", ReleasePower,
+                            customWeaponsKeywordEnum);
   std::cerr << "Codegen error: Cannot found the corresponding trigger name \""
             << trigger->identifier << "\" at " << trigger.get()->loc << "\n";
 }

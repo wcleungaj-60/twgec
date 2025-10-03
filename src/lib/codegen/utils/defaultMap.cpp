@@ -1,12 +1,57 @@
 #include "utils/defaultMap.h"
+#include "utils.h"
+#include <algorithm>
 #include <iostream>
+#include <set>
+#include <sstream>
+#include <vector>
 
 using namespace codegen;
+using std::cerr;
 
-std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
+void DefaultMap::verifyInputMap() {
+  for (auto &input : inputMap)
+    if (defaultMap.find(input.first) == defaultMap.end()) {
+      cerr << "Codegen Warnings: Undefined key \"" << input.first << "\" at "
+           << input.second->loc << "\n";
+      string name =
+          isMetadata ? "available metadata list" : "function signature";
+      cerr << "Please following this " << name << ":\n" << print() << "\n";
+    }
+};
+
+string DefaultMap::print() {
+  string ret = functionName + "(\n";
+  for (auto it = defaultMap.begin(); it != defaultMap.end(); ++it) {
+    ret += inden(4);
+    std::ostringstream oss;
+    oss << it->second.astType;
+    ret += oss.str() + inden(16 - oss.str().size());
+    string key = it->first;
+    if (isMetadata)
+      key = "__" + key + "__";
+    ret += " " + key + " = ";
+    if (it->second.codegenType == CODEGEN_STRING)
+      ret += "\"" + it->second.defaultValue + "\"";
+    else if (it->second.codegenType == CODEGEN_ACTOR_MATCH)
+      ret += "NULL";
+    else if (it->second.codegenType == CODEGEN_LIST_CUSTOM_WEAPON)
+      ret += "NULL";
+    else
+      ret += it->second.defaultValue;
+    if (std::next(it) != defaultMap.end())
+      ret += ", ";
+    ret += "\n";
+  }
+  ret += ")";
+  return ret;
+}
+
+string DefaultMap::get(string key, keyword::KeywordEnum keywordEnum,
+                       std::map<string, string> extraEnum) {
   if (defaultMap.find(key) == defaultMap.end()) {
-    std::cerr << "Compiler Implementation Error: Found unknown key \'" << key
-              << "\'\n";
+    cerr << "Compiler Implementation Error: Found unknown key \'" << key
+         << "\'\n";
     return "";
   }
 
@@ -25,10 +70,9 @@ std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
   bool astActorMatch = defaultMap.at(key).astType == AST_ACTOR_MATCH;
   bool astCustomWeapon = defaultMap.at(key).astType == AST_LIST_CUSTOM_WEAPON;
   if (auto varNode = dynamic_cast<VariableValueNode *>(input.get())) {
-    std::cerr
-        << "Codegen Error: Cannot find the definition of variable `"
-        << varNode->value << "` at " << input->loc
-        << ". Please define it as a constant value or function\'s param.\n";
+    cerr << "Codegen Error: Cannot find the definition of variable `"
+         << varNode->value << "` at " << input->loc
+         << ". Please define it as a constant value or function\'s param.\n";
     return "";
   }
   if (astInt) {
@@ -54,18 +98,18 @@ std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
   bool codegenCustomWeapon =
       defaultMap.at(key).codegenType == CODEGEN_LIST_CUSTOM_WEAPON;
 
-  auto format = [&](std::string text) -> std::string {
+  auto format = [&](string text) -> string {
     if (codegenInt || codegenBool) {
       return text;
     } else if (codegenString) {
       return "\"" + text + "\"";
     } else if (codegenListPatrol || codegenListPoint || codegenCustomWeapon) {
       if (text != "[]")
-        std::cerr << "Compiler Implementation Error: codegenListPatrol and "
-                     "codegenListPoint cannot be handled.\n";
+        cerr << "Compiler Implementation Error: codegenListPatrol and "
+                "codegenListPoint cannot be handled.\n";
       return text;
     } else {
-      std::cerr << "Compiler Implementation Error: Unreachable codegen type.\n";
+      cerr << "Compiler Implementation Error: Unreachable codegen type.\n";
       return text;
     }
   };
@@ -81,17 +125,17 @@ std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
     return format(stringNode->value);
   // Enum Input Geneartion
   if (stringNode && !keywordEnum.isEmpty()) {
-    std::pair<bool, std::string> enumResult =
-        keywordEnum.get(stringNode->value);
+    std::pair<bool, string> enumResult =
+        keywordEnum.get(stringNode->value, extraEnum);
     if (!enumResult.first)
-      std::cerr << " ->  Found at " << stringNode->loc << "\n";
+      cerr << " ->  Found at " << stringNode->loc << "\n";
     return format(enumResult.second);
   }
   // List Input Generation
   if (listNode) {
     // TODO: Move it to the builtin
     if (codegenListPatrol) {
-      std::string ret = "[\n";
+      string ret = "[\n";
       for (auto idx = 0; idx < listNode->items.size(); idx++) {
         if (auto *pointNode = dynamic_cast<PointValueNode *>(
                 listNode->items[idx]->value.get())) {
@@ -99,35 +143,35 @@ std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
           auto yInt = dynamic_cast<IntValueNode *>(pointNode->y->value.get());
           if (!pointNode->x->isValue || !pointNode->y->isValue || !xInt ||
               !yInt) {
-            std::cerr << "Codegen Error: incorrect type conversion at "
-                      << pointNode->loc << "\n";
+            cerr << "Codegen Error: incorrect type conversion at "
+                 << pointNode->loc << "\n";
             return "";
           }
-          ret += std::string(28, ' ') + "{\n";
-          ret += std::string(32, ' ') + "\"loc\": {\n";
-          ret += std::string(36, ' ') + "\"x\": \"" +
-                 std::to_string(xInt->value) + "\",\n";
-          ret += std::string(36, ' ') + "\"y\": \"" +
-                 std::to_string(yInt->value) + "\",\n";
-          ret += std::string(36, ' ') + "\"range\": \"0\"\n";
-          ret += std::string(32, ' ') + "},\n";
-          ret += std::string(32, ' ') + "\"rotation\": \"0\",\n";
-          ret += std::string(32, ' ') + "\"duration\": \"3000\"\n";
-          ret += std::string(28, ' ') + "}";
+          ret += string(28, ' ') + "{\n";
+          ret += string(32, ' ') + "\"loc\": {\n";
+          ret += string(36, ' ') + "\"x\": \"" + std::to_string(xInt->value) +
+                 "\",\n";
+          ret += string(36, ' ') + "\"y\": \"" + std::to_string(yInt->value) +
+                 "\",\n";
+          ret += string(36, ' ') + "\"range\": \"0\"\n";
+          ret += string(32, ' ') + "},\n";
+          ret += string(32, ' ') + "\"rotation\": \"0\",\n";
+          ret += string(32, ' ') + "\"duration\": \"3000\"\n";
+          ret += string(28, ' ') + "}";
           if (idx != listNode->items.size() - 1)
             ret += ",";
           ret += "\n";
         } else {
-          std::cerr << "Codegen Error: incorrect type conversion at "
-                    << listNode->items[idx]->value->loc << "\n";
+          cerr << "Codegen Error: incorrect type conversion at "
+               << listNode->items[idx]->value->loc << "\n";
           return "";
         }
       }
-      ret += std::string(24, ' ') + "]";
+      ret += string(24, ' ') + "]";
       return ret;
     }
     if (codegenListPoint) {
-      std::string ret = "[\n";
+      string ret = "[\n";
       for (auto idx = 0; idx < listNode->items.size(); idx++) {
         if (auto *pointNode = dynamic_cast<PointValueNode *>(
                 listNode->items[idx]->value.get())) {
@@ -135,30 +179,61 @@ std::string DefaultMap::get(std::string key, keyword::KeywordEnum keywordEnum) {
           auto yInt = dynamic_cast<IntValueNode *>(pointNode->y->value.get());
           if (!pointNode->x->isValue || !pointNode->y->isValue || !xInt ||
               !yInt) {
-            std::cerr << "Codegen Error: incorrect type conversion at "
-                      << pointNode->loc << "\n";
+            cerr << "Codegen Error: incorrect type conversion at "
+                 << pointNode->loc << "\n";
             return "";
           }
-          ret += std::string(20, ' ') + "{\n";
-          ret += std::string(24, ' ') + "\"x\": \"" +
-                 std::to_string(xInt->value) + "\",\n";
-          ret += std::string(24, ' ') + "\"y\": \"" +
-                 std::to_string(yInt->value) + "\"\n";
-          ret += std::string(20, ' ') + "}";
+          ret += string(20, ' ') + "{\n";
+          ret += string(24, ' ') + "\"x\": \"" + std::to_string(xInt->value) +
+                 "\",\n";
+          ret += string(24, ' ') + "\"y\": \"" + std::to_string(yInt->value) +
+                 "\"\n";
+          ret += string(20, ' ') + "}";
           if (idx != listNode->items.size() - 1)
             ret += ",";
           ret += "\n";
         } else {
-          std::cerr << "Codegen Error: incorrect type conversion at "
-                    << listNode->items[idx]->value->loc << "\n";
+          cerr << "Codegen Error: incorrect type conversion at "
+               << listNode->items[idx]->value->loc << "\n";
           return "";
         }
       }
-      ret += std::string(16, ' ') + "]";
+      ret += string(16, ' ') + "]";
       return ret;
     }
   }
-  std::cerr << "Compiler Implementation Error: incorrect type conversion at "
-            << input->loc << "\n";
+  cerr << "Compiler Implementation Error: incorrect type conversion at "
+       << input->loc << "\n";
   return "";
+}
+
+void DefaultMap::addInputMap(vector<unique_ptr<MetadataNode>> &metadatas) {
+  clearInputMap();
+  std::set<string> keySet;
+  for (auto &metadata : metadatas) {
+    string key = metadata->key;
+    if (keySet.count(key))
+      cerr << "Codegen Warnings: Redefined key \"" << key << "\" at "
+           << metadata->loc << "\n";
+    inputMap.insert({key, std::move(metadata->expNode->value)});
+    keySet.insert(key);
+  }
+  verifyInputMap();
+}
+
+void DefaultMap::addInputMap(vector<unique_ptr<NamedArgNode>> &namedArgs,
+                             vector<string> exclusion) {
+  clearInputMap();
+  std::set<string> keySet;
+  for (auto &namedArg : namedArgs) {
+    string key = namedArg->key;
+    if (std::find(exclusion.begin(), exclusion.end(), key) != exclusion.end())
+      continue;
+    if (keySet.count(key))
+      cerr << "Codegen Warnings: Redefined key \"" << key << "\" at "
+           << namedArg->loc << "\n";
+    inputMap.insert({key, std::move(namedArg->expNode->value)});
+    keySet.insert(key);
+  }
+  verifyInputMap();
 }

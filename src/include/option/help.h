@@ -6,6 +6,7 @@
 #include "codegen/instruction/metadata.h"
 #include "codegen/instruction/trigger.h"
 #include "utils.h"
+#include <sstream>
 #include <string>
 
 namespace {

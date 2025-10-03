@@ -16,10 +16,18 @@
   if (trigger->identifier == inputName)                                        \
   return trigger::Trigger##outputClass::method(of, trigger)
 
+#define CODEGEN_TRIGGER_EXTRA_ARG(inputName, outputClass, ...)                 \
+  if (trigger->identifier == inputName)                                        \
+  return trigger::Trigger##outputClass::method(of, trigger, __VA_ARGS__)
+
 namespace codegen {
 class CodeGenerator {
 private:
+  // Variable
   const std::unique_ptr<ModuleNode> &moduleNode;
+  std::map<std::string, std::string> customWeaponsKeywordEnum;
+  // Functions
+  void preCodegen();
   void codegenModuleNode(std::ofstream &of);
   void codegenBlocks(std::ofstream &of);
   void codegenAction(std::ofstream &of, std::unique_ptr<InstructionNode> &);
@@ -29,8 +37,10 @@ private:
   void codegenTrigger(std::ofstream &of, std::unique_ptr<InstructionNode> &);
 
 public:
+  // Constructor
   CodeGenerator(const std::unique_ptr<ModuleNode> &moduleNode)
       : moduleNode(moduleNode){};
+  // Functions
   void codegen(std::string filepath);
 };
 } // namespace codegen
