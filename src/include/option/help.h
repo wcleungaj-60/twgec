@@ -42,14 +42,30 @@ const std::string introduction =
     "`game.events` file from `*.twge` file.";
 
 const std::string sectionOption = R"(
-Usage: twgec [options] file
+Usage: twgec <option>* file
 Options:
-    --help              Display this information.
-    -o=<file>           Set the output file path
-    --print-ast-before  Print the AST before each transformation.
-    --print-ast-all     Print the AST before and after each transformation.
-    --print-ast-after   Print the AST after each transformation.
-    --print-token       Print the Token of the language.)";
+    --help                                    Display this information.
+    -o=<file>                                 Set the output file path.
+    --pass=<pass>(,<pass>)*                   Run specific pass(es).
+                                              Please refer to the pass in the next section.
+    --print-ast-before                        Print the AST before each transformation.
+    --print-ast-before-only=<pass>(,<pass>)*  Print the AST before specific pass(es).
+                                              Please refer to the pass in the next section.
+    --print-ast-all                           Print the AST before and after each transformation.
+    --print-ast-after                         Print the AST after each transformation.
+    --print-ast-after-only=<pass>(,<pass>)*   Print the AST after specific pass(es).
+                                              Please refer to the pass in the next section.
+    --print-token                             Print the Token of the language.
+    
+Passes:
+    symbolChecking
+    argBinding
+    blockInling
+    blockLegalization
+    functionInling
+    constantFolding
+    ifStatementPropagation
+    implicitListPromotion)";
 
 const std::string sectionBuiltinStruct = R"(
 Builtin Struct:

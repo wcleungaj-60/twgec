@@ -10,6 +10,9 @@ struct Option {
   bool printASTBefore = false;
   bool printASTAfter = false;
   bool help = false;
+  std::vector<std::string> runOnly = {};
+  std::vector<std::string> printASTBeforeOnly = {};
+  std::vector<std::string> printASTAfterOnly = {};
   std::string argFilePath = "";
   std::string outputFile = "game.events";
 };
@@ -26,8 +29,25 @@ inline Option parseCommand(int argc, char *argv[]) {
       option.printASTAfter = true;
     } else if (std::string(argv[i]) == "--print-ast-before") {
       option.printASTBefore = true;
+    } else if (std::string(argv[i]).substr(0, 24) ==
+               "--print-ast-before-only=") {
+      std::string token;
+      std::stringstream ss(std::string(argv[i]).substr(24));
+      while (std::getline(ss, token, ','))
+        option.printASTBeforeOnly.push_back(token);
     } else if (std::string(argv[i]) == "--print-ast-after") {
       option.printASTAfter = true;
+    } else if (std::string(argv[i]).substr(0, 23) ==
+               "--print-ast-after-only=") {
+      std::string token;
+      std::stringstream ss(std::string(argv[i]).substr(23));
+      while (std::getline(ss, token, ','))
+        option.printASTAfterOnly.push_back(token);
+    } else if (std::string(argv[i]).substr(0, 11) == "--run-only=") {
+      std::string token;
+      std::stringstream ss(std::string(argv[i]).substr(11));
+      while (std::getline(ss, token, ','))
+        option.runOnly.push_back(token);
     } else if (std::string(argv[i]) == "--help") {
       std::cerr << helpMessage << "\n";
     } else if (std::string(argv[i]).substr(0, 3) == "-o=") {

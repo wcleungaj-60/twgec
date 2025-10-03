@@ -1,17 +1,36 @@
 #include "ast.h"
 #include "option/option.h"
-namespace transform {
+#include <algorithm>
 
-#define TRANSFORM_WITH_PRINT(passFunc, passName)                               \
-  if (opt.printASTBefore) {                                                    \
-    moduleNode->print(std::string("AST Before ") + passName);                  \
-  }                                                                            \
-  if (!passFunc(std::move(moduleNode))) {                                      \
-    return false;                                                              \
-  }                                                                            \
-  if (opt.printASTAfter) {                                                     \
-    moduleNode->print(std::string("AST After ") + passName);                   \
-  }
+namespace transform {
+namespace {
+#define RUN_PASS(passFunc, passName)                                           \
+  if (!runPass(passFunc, passName, moduleNode, opt))                           \
+    return false;
+
+bool runPass(bool (*passFunc)(const std::unique_ptr<ModuleNode> &),
+             std::string passName,
+             const std::unique_ptr<ModuleNode> &moduleNode, Option opt) {
+  if (!opt.runOnly.empty() &&
+      std::find(opt.runOnly.begin(), opt.runOnly.end(),
+                std::string(passName)) == opt.runOnly.end())
+    return true;
+  // Print Before
+  if (opt.printASTBefore ||
+      std::find(opt.printASTBeforeOnly.begin(), opt.printASTBeforeOnly.end(),
+                std::string(passName)) != opt.printASTBeforeOnly.end())
+    moduleNode->print(std::string("AST Before ") + passName);
+  // Pass Execution
+  if (!passFunc(std::move(moduleNode)))
+    return false;
+  // Print After
+  if (opt.printASTAfter ||
+      std::find(opt.printASTAfterOnly.begin(), opt.printASTAfterOnly.end(),
+                std::string(passName)) != opt.printASTAfterOnly.end())
+    moduleNode->print(std::string("AST After ") + passName);
+  return true;
+}
+} // namespace
 
 // Symbol redefinition or use before define will be checked
 bool symbolChecking(const std::unique_ptr<ModuleNode> &moduleNode);
@@ -32,14 +51,14 @@ bool implicitListPromotion(const std::unique_ptr<ModuleNode> &moduleNode);
 
 inline bool loweringPipeline(const std::unique_ptr<ModuleNode> &moduleNode,
                              Option opt) {
-  TRANSFORM_WITH_PRINT(symbolChecking, "Symbol Checking");
-  TRANSFORM_WITH_PRINT(argBinding, "Arg Binding");
-  TRANSFORM_WITH_PRINT(blockInling, "Block Inling");
-  TRANSFORM_WITH_PRINT(blockLegalization, "Block Legalization");
-  TRANSFORM_WITH_PRINT(functionInling, "Function Inlining");
-  TRANSFORM_WITH_PRINT(constantFolding, "Constant Folding");
-  TRANSFORM_WITH_PRINT(ifStatementPropagation, "Statement Propagation");
-  TRANSFORM_WITH_PRINT(implicitListPromotion, "Implicit List Promotion");
+  RUN_PASS(symbolChecking, "symbolChecking");
+  RUN_PASS(argBinding, "argBinding");
+  RUN_PASS(blockInling, "blockInling");
+  RUN_PASS(blockLegalization, "blockLegalization");
+  RUN_PASS(functionInling, "functionInling");
+  RUN_PASS(constantFolding, "constantFolding");
+  RUN_PASS(ifStatementPropagation, "ifStatementPropagation");
+  RUN_PASS(implicitListPromotion, "implicitListPromotion");
   if (opt.printASTBefore)
     moduleNode->print("AST Before Code Generation");
   return true;
