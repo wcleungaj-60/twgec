@@ -138,7 +138,8 @@ void trigger::TriggerReleasePower::method(
   defaultMap.addInputMap(trigger->named_args, {"actor"});
   JsonArrayNode actorMatchesNode = getActorMatchesNode(trigger, "actor");
   std::string ability = defaultMap.get("ability", abilityKind::keywordEnum);
-  std::string weaponType = defaultMap.get("weapon", weaponKind::keywordEnum);
+  // TODO: Enable Custom Weapon
+  std::string weaponType = defaultMap.get("weapon");
 
   JsonObjectNode abilityNode = JsonObjectNode({
       {"value", ability},

@@ -100,6 +100,7 @@ std::string getActions() {
   ret += getDefaultMapItem(ActionConsole::defaultMap, "控制台輸出");
   ret += getDefaultMapItem(ActionSetGlobal::defaultMap, "儲存全域變數");
   ret += getDefaultMapItem(ActionSetObjectVar::defaultMap, "儲存物件變數");
+  ret += getDefaultMapItem(ActionSetWeaponAbility::defaultMap, "設定武器技能");
   ret += getDefaultMapItem(ActionWait::defaultMap, "等待");
   return ret;
 }

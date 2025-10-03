@@ -146,6 +146,15 @@ DefaultMap action::ActionSetObjectVar::defaultMap = DefaultMap(
     },
     "setObjectVar");
 
+DefaultMap action::ActionSetWeaponAbility::defaultMap = DefaultMap(
+    {
+        {"weapon", {AST_STRING, CODEGEN_STRING, ""}},
+        {"level", {AST_INT, CODEGEN_INT, "1"}},
+        {"operation", {AST_STRING, CODEGEN_STRING, "set"}},
+        {"ability", {AST_STRING, CODEGEN_STRING, "sounded"}},
+    },
+    "setWeaponAbility");
+
 DefaultMap action::ActionWait::defaultMap = DefaultMap(
     {
         {"duration", {AST_INT, CODEGEN_STRING, "0"}},
@@ -422,7 +431,8 @@ void action::ActionMissionComplete::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
-      {"targetGroup", defaultMap.get("camp", campMissionCompleteKind::keywordEnum)},
+      {"targetGroup",
+       defaultMap.get("camp", campMissionCompleteKind::keywordEnum)},
   });
   JsonObjectNode rootNode = JsonObjectNode({
       {"type", "\"MissionComplete\""},
@@ -480,6 +490,26 @@ void action::ActionSetObjectVar::method(
   });
   JsonObjectNode rootNode = JsonObjectNode({
       {"type", "\"SetObjectVar\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
+
+void action::ActionSetWeaponAbility::method(
+    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
+  defaultMap.addInputMap(action->named_args);
+  JsonObjectNode campNode = JsonObjectNode("campAll", "true");
+  JsonObjectNode abilityNode = JsonObjectNode(
+      "value", defaultMap.get("ability", abilityKind::keywordEnum));
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"weaponType", defaultMap.get("weapon")},
+      {"camp", campNode.to_string(24)},
+      {"abilityLevel", defaultMap.get("level")},
+      {"operation", defaultMap.get("operation", valueTypeKind::keywordEnum)},
+      {"ability", abilityNode.to_string(24)},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"SetWeaponAbility\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);

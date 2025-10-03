@@ -96,6 +96,7 @@ void CodeGenerator::codegenAction(std::ofstream &of,
   CODEGEN_ACTION("print", Console);
   CODEGEN_ACTION("setGlobal", SetGlobal);
   CODEGEN_ACTION("setObjectVar", SetObjectVar);
+  CODEGEN_ACTION("setWeaponAbility", SetWeaponAbility);
   CODEGEN_ACTION("wait", Wait);
   std::cerr << "Codegen error: Cannot found the corresponding action name \""
             << action->identifier << "\" at " << action.get()->loc << "\n";

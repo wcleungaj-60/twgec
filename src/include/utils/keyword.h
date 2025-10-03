@@ -42,16 +42,17 @@ const std::string keywordThird = "third";
 const std::string keywordThirdZh = "第三";
 const std::string keywordCivil = "civil";
 const std::string keywordCivilZh = "平民";
-static KeywordEnum keywordEnum("camp kind", {
-                                           {keywordSkydow, keywordSkydow},
-                                           {keywordSkydowZh, keywordSkydow},
-                                           {keywordRoyal, keywordRoyal},
-                                           {keywordRoyalZh, keywordRoyal},
-                                           {keywordThird, keywordThird},
-                                           {keywordThirdZh, keywordThird},
-                                           {keywordCivil, keywordCivil},
-                                           {keywordCivilZh, keywordCivil},
-                                       });
+static KeywordEnum keywordEnum("camp kind",
+                               {
+                                   {keywordSkydow, keywordSkydow},
+                                   {keywordSkydowZh, keywordSkydow},
+                                   {keywordRoyal, keywordRoyal},
+                                   {keywordRoyalZh, keywordRoyal},
+                                   {keywordThird, keywordThird},
+                                   {keywordThirdZh, keywordThird},
+                                   {keywordCivil, keywordCivil},
+                                   {keywordCivilZh, keywordCivil},
+                               });
 } // namespace campKind
 
 namespace campMissionCompleteKind {
@@ -63,16 +64,17 @@ const std::string keywordThird = "third";
 const std::string keywordThirdZh = "第三";
 const std::string keywordAll = "all";
 const std::string keywordAllZh = "所有";
-static KeywordEnum keywordEnum("camp mission complete kind", {
-                                           {keywordSkydow, keywordSkydow},
-                                           {keywordSkydowZh, keywordSkydow},
-                                           {keywordRoyal, keywordRoyal},
-                                           {keywordRoyalZh, keywordRoyal},
-                                           {keywordThird, keywordThird},
-                                           {keywordThirdZh, keywordThird},
-                                           {keywordAll, keywordAll},
-                                           {keywordAllZh, keywordAll},
-                                       });
+static KeywordEnum keywordEnum("camp mission complete kind",
+                               {
+                                   {keywordSkydow, keywordSkydow},
+                                   {keywordSkydowZh, keywordSkydow},
+                                   {keywordRoyal, keywordRoyal},
+                                   {keywordRoyalZh, keywordRoyal},
+                                   {keywordThird, keywordThird},
+                                   {keywordThirdZh, keywordThird},
+                                   {keywordAll, keywordAll},
+                                   {keywordAllZh, keywordAll},
+                               });
 } // namespace campMissionCompleteKind
 
 namespace weaponKind {
@@ -413,6 +415,8 @@ const std::string keywordSurroundFrisbee = "surroundFrisbee";
 const std::string keywordNineDragons = "nineDragons";
 const std::string keywordSkyJumps = "skyJumps";
 const std::string keywordDarkRainstorm = "darkRainstorm";
+const std::string keywordSounded = "sounded";
+const std::string keywordNothing = "nothing";
 const std::string keywordEnblastShieldZh = "光牙風甲";
 const std::string keywordWarpZh = "閃現術";
 const std::string keywordBugformZh = "蟲化術";
@@ -447,6 +451,8 @@ const std::string keywordSurroundFrisbeeZh = "護身迴旋鏢";
 const std::string keywordNineDragonsZh = "九龍閃";
 const std::string keywordSkyJumpsZh = "影天縱";
 const std::string keywordDarkRainstormZh = "黑炎暴雨";
+const std::string keywordSoundedZh = "有聲假技能";
+const std::string keywordNothingZh = "無聲假技能";
 
 static KeywordEnum
     keywordEnum("ability kind",
@@ -485,6 +491,8 @@ static KeywordEnum
                     {keywordNineDragons, keywordNineDragons},
                     {keywordSkyJumps, keywordSkyJumps},
                     {keywordDarkRainstorm, keywordDarkRainstorm},
+                    {keywordSounded, keywordSounded},
+                    {keywordNothing, keywordNothing},
                     {keywordEnblastShieldZh, keywordEnblastShield},
                     {keywordWarpZh, keywordWarp},
                     {keywordBugformZh, keywordBugform},
@@ -519,6 +527,8 @@ static KeywordEnum
                     {keywordNineDragonsZh, keywordNineDragons},
                     {keywordSkyJumpsZh, keywordSkyJumps},
                     {keywordDarkRainstormZh, keywordDarkRainstorm},
+                    {keywordSoundedZh, keywordSounded},
+                    {keywordNothingZh, keywordNothing},
                 });
 } // namespace abilityKind
 
@@ -530,13 +540,13 @@ const std::string keywordLTE = "<=";
 const std::string keywordEQ = "==";
 const std::string keywordNE = "!=";
 static KeywordEnum keywordEnum("operation kind", {
-                                               {keywordGT, keywordGT},
-                                               {keywordGTE, keywordGTE},
-                                               {keywordLT, keywordLT},
-                                               {keywordLTE, keywordLTE},
-                                               {keywordEQ, keywordEQ},
-                                               {keywordNE, keywordNE},
-                                           });
+                                                     {keywordGT, keywordGT},
+                                                     {keywordGTE, keywordGTE},
+                                                     {keywordLT, keywordLT},
+                                                     {keywordLTE, keywordLTE},
+                                                     {keywordEQ, keywordEQ},
+                                                     {keywordNE, keywordNE},
+                                                 });
 } // namespace operationKind
 
 namespace followActorKind {
@@ -720,7 +730,25 @@ static KeywordEnum keywordEnum("delta hp kind",
                                    {keywordDamage, keywordDamage},
                                    {keywordDamageZh, keywordDamage},
                                });
-} // namespace actorBrainKind
+} // namespace deltaHpKind
+
+namespace SetAbilityOperationKind {
+const std::string keywordSet = "set";
+const std::string keywordSetZh = "設定技能";
+const std::string keywordNone = "none";
+const std::string keywordNoneZh = "無技能";
+const std::string keywordRemove = "remove";
+const std::string keywordRemoveZh = "預設技能";
+static KeywordEnum keywordEnum("set ability operation kind",
+                               {
+                                   {keywordSet, keywordSet},
+                                   {keywordSetZh, keywordSet},
+                                   {keywordNone, keywordNone},
+                                   {keywordNoneZh, keywordNone},
+                                   {keywordRemove, keywordRemove},
+                                   {keywordRemoveZh, keywordRemove},
+                               });
+} // namespace SetAbilityOperationKind
 
 } // namespace keyword
 
