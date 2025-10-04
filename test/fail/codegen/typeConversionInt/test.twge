@@ -1,0 +1,5 @@
+block init {
+    checks {
+        checkNumber(lhs = false);
+    }
+}

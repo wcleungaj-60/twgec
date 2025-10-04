@@ -71,6 +71,7 @@ string DefaultMap::get(string key, keyword::KeywordEnum keywordEnum,
                        std::map<string, string> extraEnum) {
   // Handle Unknown key or unknown value
   auto codegenType = defaultMap.at(key).codegenType;
+  auto astType = defaultMap.at(key).astType;
   const std::shared_ptr<ValueNode> &input = inputMap[key];
   if (defaultMap.find(key) == defaultMap.end()) {
     assert(false && "Found unknown key\n");
@@ -99,25 +100,46 @@ string DefaultMap::get(string key, keyword::KeywordEnum keywordEnum,
     break;
   }
 
-  // Handle Primitive Type
-  if (auto intNode = dynamic_cast<IntValueNode *>(input.get()))
-    return getCodeGen(codegenType, std::to_string(intNode->value));
-  if (auto boolNode = dynamic_cast<BoolValueNode *>(input.get()))
-    return getCodeGen(codegenType, boolNode->value ? "true" : "false");
-  StringValueNode *stringNode = dynamic_cast<StringValueNode *>(input.get());
-  if (!stringNode) {
-    assert(false && "Incorrect type conversion\n");
+  // Handle Int Type
+  if (astType == AST_INT) {
+    if (auto intNode = dynamic_cast<IntValueNode *>(input.get()))
+      return getCodeGen(codegenType, std::to_string(intNode->value));
+    else if (auto stringNode = dynamic_cast<StringValueNode *>(input.get()))
+      return getCodeGen(codegenType, stringNode->value);
+    else
+      cerr << "int-typed or string-typed value is expected at " << input->loc
+           << "\n";
     return "";
   }
 
-  // Handle String Type and Enum
-  if (keywordEnum.isEmpty())
-    return getCodeGen(codegenType, stringNode->value);
-  std::pair<bool, string> enumResult =
-      keywordEnum.get(stringNode->value, extraEnum);
-  if (!enumResult.first)
-    cerr << " ->  Found at " << stringNode->loc << "\n";
-  return getCodeGen(codegenType, enumResult.second);
+  // Handle Bool Type
+  if (astType == AST_BOOL) {
+    if (auto boolNode = dynamic_cast<BoolValueNode *>(input.get()))
+      return getCodeGen(codegenType, boolNode->value ? "true" : "false");
+    else
+      cerr << "bool-typed value is expected at " << input->loc << "\n";
+    return "";
+  }
+
+  // Handle String Type (and Enum)
+  if (astType == AST_STRING) {
+    auto stringNode = dynamic_cast<StringValueNode *>(input.get());
+    if (!stringNode) {
+      cerr << "string-typed value is expected at " << input->loc << "\n";
+      return "";
+    }
+    if (keywordEnum.isEmpty())
+      return getCodeGen(codegenType, stringNode->value);
+    std::pair<bool, string> enumResult =
+        keywordEnum.get(stringNode->value, extraEnum);
+    if (!enumResult.first)
+      cerr << " ->  Found at " << stringNode->loc << "\n";
+    return getCodeGen(codegenType, enumResult.second);
+  }
+
+  // Unreachable
+  assert(false && "Incorrect type conversion\n");
+  return "";
 }
 
 void DefaultMap::addInputMap(vector<unique_ptr<MetadataNode>> &metadatas) {

@@ -149,7 +149,7 @@ DefaultMap customWeaponDefaultMap = DefaultMap(
         {"damage", {AST_INT, CODEGEN_INT, "25"}},
         {"swapTime", {AST_INT, CODEGEN_INT, "800"}},
         {"fireTime", {AST_INT, CODEGEN_INT, "1500"}},
-        {"fireType", {AST_INT, CODEGEN_STRING, "backslash"}},
+        {"fireType", {AST_STRING, CODEGEN_STRING, "backslash"}},
         {"pivotOnHandX", {AST_INT, CODEGEN_INT, "0"}},
         {"pivotOnHandXScale", {AST_INT, CODEGEN_INT, "1"}},
         {"pivotOnHandY", {AST_INT, CODEGEN_INT, "0"}},
