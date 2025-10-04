@@ -54,7 +54,7 @@ DefaultMap trigger::TriggerReleasePower::defaultMap = DefaultMap(
     "releasePower");
 
 void trigger::TriggerActorDead::method(
-    std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
+    std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger) {
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", defaultMap.get("actor")},
@@ -72,7 +72,7 @@ void trigger::TriggerActorDead::method(
 }
 
 void trigger::TriggerActorFire::method(
-    std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
+    std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger) {
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", defaultMap.get("actor")},
@@ -93,7 +93,7 @@ void trigger::TriggerActorFire::method(
 }
 
 void trigger::TriggerClickButton::method(
-    std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
+    std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger) {
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", defaultMap.get("actor")},
@@ -110,7 +110,7 @@ void trigger::TriggerClickButton::method(
 }
 
 void trigger::TriggerKeyboardPressed::method(
-    std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
+    std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger) {
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"playerId", defaultMap.get("actorId")},
@@ -130,7 +130,7 @@ void trigger::TriggerKeyboardPressed::method(
 }
 
 void trigger::TriggerReleasePower::method(
-    std::ofstream &of, std::unique_ptr<InstructionNode> &trigger,
+    std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger,
     std::map<std::string, std::string> extraEnum) {
   defaultMap.addInputMap(trigger->named_args);
   std::string ability = defaultMap.get("ability", abilityKind::keywordEnum);

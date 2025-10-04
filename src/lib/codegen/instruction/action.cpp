@@ -162,7 +162,7 @@ DefaultMap action::ActionWait::defaultMap = DefaultMap(
     "wait");
 
 void action::ActionActorAttributes::method(
-    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
+    std::ofstream &of, std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode opNode = JsonObjectNode({
       {"attr", defaultMap.get("attr", actorAttrKind::keywordEnum)},
@@ -189,7 +189,7 @@ void action::ActionActorAttributes::method(
 }
 
 void action::ActionActorDisappear::method(
-    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
+    std::ofstream &of, std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorCode", defaultMap.get("actorId")},
@@ -204,7 +204,7 @@ void action::ActionActorDisappear::method(
 }
 
 void action::ActionActorFollow::method(
-    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
+    std::ofstream &of, std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorCode", defaultMap.get("actorId")},
@@ -219,7 +219,7 @@ void action::ActionActorFollow::method(
 }
 
 void action::ActionActorTalk::method(std::ofstream &of,
-                                     std::unique_ptr<InstructionNode> &action) {
+                                     std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"cleanTalk", defaultMap.get("cleanTalk")},
@@ -237,7 +237,7 @@ void action::ActionActorTalk::method(std::ofstream &of,
 }
 
 void action::ActionAddActor::method(std::ofstream &of,
-                                    std::unique_ptr<InstructionNode> &action) {
+                                    std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
   std::string externRole = defaultMap.get("externRole");
   bool hasExternRole = externRole != "\"\"";
@@ -307,7 +307,7 @@ void action::ActionAddActor::method(std::ofstream &of,
 }
 
 void action::ActionAddMapSign::method(
-    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
+    std::ofstream &of, std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode btnNode = JsonObjectNode({
       {"buttonCode", defaultMap.get("buttonCode")},
@@ -349,7 +349,7 @@ void action::ActionAddMapSign::method(
 }
 
 void action::ActionAddStuff::method(std::ofstream &of,
-                                    std::unique_ptr<InstructionNode> &action) {
+                                    std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode locationNode = JsonObjectNode({
       {"x", defaultMap.get("x")},
@@ -374,7 +374,7 @@ void action::ActionAddStuff::method(std::ofstream &of,
 }
 
 void action::ActionConsole::method(std::ofstream &of,
-                                   std::unique_ptr<InstructionNode> &action) {
+                                   std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"logType", defaultMap.get("type")},
@@ -389,7 +389,7 @@ void action::ActionConsole::method(std::ofstream &of,
 }
 
 void action::ActionDeltaHp::method(std::ofstream &of,
-                                   std::unique_ptr<InstructionNode> &action) {
+                                   std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorCode", defaultMap.get("actorCode")},
@@ -405,7 +405,7 @@ void action::ActionDeltaHp::method(std::ofstream &of,
 }
 
 void action::ActionEnblastEffect::method(
-    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
+    std::ofstream &of, std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode fromPosNode = JsonObjectNode({
       {"posType", defaultMap.get("fromType")},
@@ -428,7 +428,7 @@ void action::ActionEnblastEffect::method(
 }
 
 void action::ActionMissionComplete::method(
-    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
+    std::ofstream &of, std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"targetGroup",
@@ -442,7 +442,7 @@ void action::ActionMissionComplete::method(
 }
 
 void action::ActionLongBo::method(std::ofstream &of,
-                                  std::unique_ptr<InstructionNode> &action) {
+                                  std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"posType", "\"actor\""},
@@ -465,7 +465,7 @@ void action::ActionLongBo::method(std::ofstream &of,
 }
 
 void action::ActionSetGlobal::method(std::ofstream &of,
-                                     std::unique_ptr<InstructionNode> &action) {
+                                     std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"key", defaultMap.get("key")},
@@ -480,7 +480,7 @@ void action::ActionSetGlobal::method(std::ofstream &of,
 }
 
 void action::ActionSetObjectVar::method(
-    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
+    std::ofstream &of, std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"objectId", defaultMap.get("object")},
@@ -496,7 +496,7 @@ void action::ActionSetObjectVar::method(
 }
 
 void action::ActionSetWeaponAbility::method(
-    std::ofstream &of, std::unique_ptr<InstructionNode> &action) {
+    std::ofstream &of, std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode campNode = JsonObjectNode("campAll", "true");
   JsonObjectNode abilityNode = JsonObjectNode(
@@ -516,7 +516,7 @@ void action::ActionSetWeaponAbility::method(
 }
 
 void action::ActionWait::method(std::ofstream &of,
-                                std::unique_ptr<InstructionNode> &action) {
+                                std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"duration", defaultMap.get("duration")},

@@ -17,7 +17,7 @@ bool blockInling(const unique_ptr<ModuleNode> &moduleNode) {
   for (auto &blockNode : moduleNode->blocks)
     if (blockNode->blockConstructor) {
       std::map<std::string, unique_ptr<ExpressionNode>> callerParamMap;
-      for (auto &arg : blockNode->blockConstructor->named_args)
+      for (auto &arg : blockNode->blockConstructor->paramApps->named_args)
         callerParamMap.insert({arg->key, std::move(arg->expNode)});
       blockNode->blockBody =
           blockDefMap.at(blockNode->blockConstructor->identifier)->clone();

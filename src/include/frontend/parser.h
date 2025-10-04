@@ -22,8 +22,7 @@ private:
   std::unique_ptr<CompositeInstrNode> parseCompositeInstr();
   std::unique_ptr<BranchNode> parseBranch();
   std::unique_ptr<InstructionNode> parseInstruction();
-  bool parseInstructionArgs(std::unique_ptr<InstructionNode> &,
-                            bool foundNamed = false);
+  std::unique_ptr<ParamAppsNode> parseParamAppsNode();
   bool parseActorMatchArgs(std::unique_ptr<ActorMatchValueNode> &);
   bool parseCustomWeaponArgs(std::unique_ptr<CustomWeaponValueNode> &);
   std::unique_ptr<ExpressionNode> parseExp();

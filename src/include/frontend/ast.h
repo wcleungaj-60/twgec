@@ -22,8 +22,9 @@ class CompositeInstrNode;
 class BranchNode;
 // Instruction level
 class InstructionNode;
-class NamedArgNode;
-class PositionalArgNode;
+class ParamAppsNode;
+class NamedParamAppsNode;
+class PositionalParamAppsNode;
 // Expression level
 class ExpressionNode;
 class ValueNode;
@@ -284,12 +285,12 @@ public:
   // Variable
   Location loc;
   std::string identifier;
-  std::vector<std::unique_ptr<PositionalArgNode>> positional_args;
-  std::vector<std::unique_ptr<NamedArgNode>> named_args;
+  std::unique_ptr<ParamAppsNode> paramApps;
 
   // Constructor
-  InstructionNode(std::string identifier, Location loc)
-      : identifier(identifier), loc(loc) {}
+  InstructionNode(std::string identifier,
+                  std::unique_ptr<ParamAppsNode> paramApps, Location loc)
+      : identifier(identifier), paramApps(std::move(paramApps)), loc(loc) {}
 
   // Function
   void print(int indent = 0);
@@ -299,7 +300,25 @@ public:
   bool hasUnresolvedValue();
 };
 
-class NamedArgNode {
+class ParamAppsNode {
+public:
+  // Variable
+  Location loc;
+  std::vector<std::unique_ptr<PositionalParamAppsNode>> positional_args;
+  std::vector<std::unique_ptr<NamedParamAppsNode>> named_args;
+
+  // Constructor
+  ParamAppsNode(Location loc) : loc(loc) {}
+
+  // Function
+  void print(int indent = 0);
+  std::unique_ptr<ParamAppsNode> clone();
+  bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
+  bool foldValue();
+  bool hasUnresolvedValue();
+};
+
+class NamedParamAppsNode {
 public:
   // Variable
   Location loc;
@@ -307,29 +326,30 @@ public:
   std::unique_ptr<ExpressionNode> expNode;
 
   // Constructor
-  NamedArgNode(const std::string &key, std::unique_ptr<ExpressionNode> &expNode,
-               Location loc)
+  NamedParamAppsNode(const std::string &key,
+                     std::unique_ptr<ExpressionNode> &expNode, Location loc)
       : key(key), expNode(std::move(expNode)), loc(loc) {}
 
   // Function
-  std::unique_ptr<NamedArgNode> clone();
+  std::unique_ptr<NamedParamAppsNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
   bool hasUnresolvedValue();
 };
 
-class PositionalArgNode {
+class PositionalParamAppsNode {
 public:
   // Variable
   Location loc;
   std::unique_ptr<ExpressionNode> expNode;
 
   // Constructor
-  PositionalArgNode(std::unique_ptr<ExpressionNode> &expNode, Location loc)
+  PositionalParamAppsNode(std::unique_ptr<ExpressionNode> &expNode,
+                          Location loc)
       : expNode(std::move(expNode)), loc(loc) {}
 
   // Function
-  std::unique_ptr<PositionalArgNode> clone();
+  std::unique_ptr<PositionalParamAppsNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
   bool hasUnresolvedValue();
@@ -351,7 +371,7 @@ public:
 class ActorMatchValueNode : public ValueNode {
 public:
   // Variable
-  std::vector<std::unique_ptr<NamedArgNode>> named_args;
+  std::vector<std::unique_ptr<NamedParamAppsNode>> named_args;
 
   // Constructor
   ActorMatchValueNode(Location loc) : ValueNode(loc) {}
@@ -363,7 +383,7 @@ public:
 class CustomWeaponValueNode : public ValueNode {
 public:
   // Variable
-  std::vector<std::unique_ptr<NamedArgNode>> named_args;
+  std::vector<std::unique_ptr<NamedParamAppsNode>> named_args;
 
   // Constructor
   CustomWeaponValueNode(Location loc) : ValueNode(loc) {}
