@@ -102,6 +102,33 @@ JsonObjectNode getPatrolPathNode(std::unique_ptr<ExpressionNode> &expNode) {
   });
   return patrolPathNode;
 }
+
+JsonObjectNode getSpawnPointNode(std::unique_ptr<ExpressionNode> &expNode) {
+  customWeaponDefaultMap.clearInputMap();
+  auto pointValueNode = dynamic_cast<PointValueNode *>(expNode->value.get());
+  if (!pointValueNode) {
+    std::cerr << "Point-typed value is expected at " << expNode->loc << "\n";
+    return JsonObjectNode();
+  }
+  auto xValueNode =
+      dynamic_cast<IntValueNode *>(pointValueNode->x->value.get());
+  if (!xValueNode) {
+    std::cerr << "Int-typed value is expected at " << pointValueNode->x->loc
+              << "\n";
+    return JsonObjectNode();
+  }
+  auto yValueNode =
+      dynamic_cast<IntValueNode *>(pointValueNode->y->value.get());
+  if (!yValueNode) {
+    std::cerr << "Int-typed value is expected at " << pointValueNode->y->loc
+              << "\n";
+    return JsonObjectNode();
+  }
+  return JsonObjectNode({
+      {"x", "\"" + std::to_string(xValueNode->value) + "\""},
+      {"y", "\"" + std::to_string(yValueNode->value) + "\""},
+  });
+}
 } // namespace
 
 DefaultMap actorMatchDefaultMap = DefaultMap(
@@ -200,6 +227,24 @@ JsonArrayNode getPatrolPathListNode(std::unique_ptr<InstructionNode> &instr,
       else
         std::cerr << "list-typed value is expected at "
                   << namedArg->expNode->loc << "\n";
+    }
+  return arrayNode;
+}
+
+JsonArrayNode
+getSpawnPointListNode(std::vector<std::unique_ptr<MetadataNode>> &metadatas,
+                      std::string key) {
+  JsonArrayNode arrayNode = JsonArrayNode();
+  for (auto &metadata : metadatas)
+    if (metadata->key == key) {
+      if (auto listNode =
+              dynamic_cast<ListValueNode *>(metadata->expNode->value.get()))
+        for (auto &item : listNode->items)
+          arrayNode.addNode(
+              std::make_shared<JsonObjectNode>(getSpawnPointNode(item)));
+      else
+        std::cerr << "list-typed value is expected at "
+                  << metadata->expNode->loc << "\n";
     }
   return arrayNode;
 }

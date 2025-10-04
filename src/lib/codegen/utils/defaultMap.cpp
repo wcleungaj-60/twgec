@@ -4,7 +4,6 @@
 #include <iostream>
 #include <set>
 #include <sstream>
-#include <vector>
 
 using namespace codegen;
 using std::cerr;
@@ -130,41 +129,6 @@ string DefaultMap::get(string key, keyword::KeywordEnum keywordEnum,
     if (!enumResult.first)
       cerr << " ->  Found at " << stringNode->loc << "\n";
     return format(enumResult.second);
-  }
-  // List Input Generation
-  if (listNode) {
-    // TODO: Move it to the builtin
-    if (codegenListPoint) {
-      string ret = "[\n";
-      for (auto idx = 0; idx < listNode->items.size(); idx++) {
-        if (auto *pointNode = dynamic_cast<PointValueNode *>(
-                listNode->items[idx]->value.get())) {
-          auto xInt = dynamic_cast<IntValueNode *>(pointNode->x->value.get());
-          auto yInt = dynamic_cast<IntValueNode *>(pointNode->y->value.get());
-          if (!pointNode->x->isValue || !pointNode->y->isValue || !xInt ||
-              !yInt) {
-            cerr << "Codegen Error: incorrect type conversion at "
-                 << pointNode->loc << "\n";
-            return "";
-          }
-          ret += string(20, ' ') + "{\n";
-          ret += string(24, ' ') + "\"x\": \"" + std::to_string(xInt->value) +
-                 "\",\n";
-          ret += string(24, ' ') + "\"y\": \"" + std::to_string(yInt->value) +
-                 "\"\n";
-          ret += string(20, ' ') + "}";
-          if (idx != listNode->items.size() - 1)
-            ret += ",";
-          ret += "\n";
-        } else {
-          cerr << "Codegen Error: incorrect type conversion at "
-               << listNode->items[idx]->value->loc << "\n";
-          return "";
-        }
-      }
-      ret += string(16, ' ') + "]";
-      return ret;
-    }
   }
   cerr << "Compiler Implementation Error: incorrect type conversion at "
        << input->loc << "\n";

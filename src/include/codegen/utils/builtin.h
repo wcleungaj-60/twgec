@@ -20,4 +20,8 @@ getCustomWeaponsListNode(std::vector<std::unique_ptr<MetadataNode>> &metadatas,
 JsonArrayNode getPatrolPathListNode(std::unique_ptr<InstructionNode> &instr,
                                     std::string key);
 
+JsonArrayNode
+getSpawnPointListNode(std::vector<std::unique_ptr<MetadataNode>> &metadata,
+                      std::string key);
+
 #endif
