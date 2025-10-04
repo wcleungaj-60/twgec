@@ -17,4 +17,7 @@ JsonArrayNode
 getCustomWeaponsListNode(std::vector<std::unique_ptr<MetadataNode>> &metadatas,
                          std::string key);
 
+JsonArrayNode getPatrolPathListNode(std::unique_ptr<InstructionNode> &instr,
+                                    std::string key);
+
 #endif

@@ -19,7 +19,19 @@ The `codegen` directory will generate the `events.json` from a legal AST.
 
 ## test
 Unit tests and the test script will be written under this directory.
-
+directory structure:
+```
+test
+├── fail
+│   ├── codegen
+│   ├── lexer
+│   └── transform
+└── pass
+    ├── codegen
+    └── transform
+```
 In the leaf directory, there must be
 - exactly one `test.twge` file for the `twgec` compilation.
-- either an `output.events` or an `error.log` file for the compilation result verification.
+- If that is under the `fail` directory, `error.log` is expected to be there.
+- If that is under the `pass/codegen` directory, `output.events` is expected to be there.
+- If that is under the `pass/transform` directory, `print.twge` is expected to be there.

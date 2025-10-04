@@ -134,42 +134,6 @@ string DefaultMap::get(string key, keyword::KeywordEnum keywordEnum,
   // List Input Generation
   if (listNode) {
     // TODO: Move it to the builtin
-    if (codegenListPatrol) {
-      string ret = "[\n";
-      for (auto idx = 0; idx < listNode->items.size(); idx++) {
-        if (auto *pointNode = dynamic_cast<PointValueNode *>(
-                listNode->items[idx]->value.get())) {
-          auto xInt = dynamic_cast<IntValueNode *>(pointNode->x->value.get());
-          auto yInt = dynamic_cast<IntValueNode *>(pointNode->y->value.get());
-          if (!pointNode->x->isValue || !pointNode->y->isValue || !xInt ||
-              !yInt) {
-            cerr << "Codegen Error: incorrect type conversion at "
-                 << pointNode->loc << "\n";
-            return "";
-          }
-          ret += string(28, ' ') + "{\n";
-          ret += string(32, ' ') + "\"loc\": {\n";
-          ret += string(36, ' ') + "\"x\": \"" + std::to_string(xInt->value) +
-                 "\",\n";
-          ret += string(36, ' ') + "\"y\": \"" + std::to_string(yInt->value) +
-                 "\",\n";
-          ret += string(36, ' ') + "\"range\": \"0\"\n";
-          ret += string(32, ' ') + "},\n";
-          ret += string(32, ' ') + "\"rotation\": \"0\",\n";
-          ret += string(32, ' ') + "\"duration\": \"3000\"\n";
-          ret += string(28, ' ') + "}";
-          if (idx != listNode->items.size() - 1)
-            ret += ",";
-          ret += "\n";
-        } else {
-          cerr << "Codegen Error: incorrect type conversion at "
-               << listNode->items[idx]->value->loc << "\n";
-          return "";
-        }
-      }
-      ret += string(24, ' ') + "]";
-      return ret;
-    }
     if (codegenListPoint) {
       string ret = "[\n";
       for (auto idx = 0; idx < listNode->items.size(); idx++) {

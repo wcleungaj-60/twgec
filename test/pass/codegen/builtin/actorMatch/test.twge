@@ -1,0 +1,5 @@
+block init {
+    triggers {
+        actorDead(actor = ActorMatch(id = "sniper"));
+    }
+}

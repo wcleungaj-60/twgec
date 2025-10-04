@@ -1,5 +1,6 @@
 #include "instruction/action.h"
 #include "keyword.h"
+#include "utils/builtin.h"
 #include "utils/defaultMap.h"
 #include "utils/formatter.h"
 #include "utils/utils.h"
@@ -238,6 +239,7 @@ void action::ActionActorTalk::method(std::ofstream &of,
 
 void action::ActionAddActor::method(std::ofstream &of,
                                     std::unique_ptr<InstructionNode> &action) {
+  JsonArrayNode patrolPathListNode = getPatrolPathListNode(action, "patrol");
   defaultMap.addInputMap(action->named_args);
   std::string externRole = defaultMap.get("externRole");
   bool hasExternRole = externRole != "\"\"";
@@ -290,7 +292,7 @@ void action::ActionAddActor::method(std::ofstream &of,
       {"thinkInterval", "60"},
       {"farAutoLevel", "\"0\""},
       {"patrols", "true"},
-      {"patrolPath", defaultMap.get("patrol")},
+      {"patrolPath", patrolPathListNode.to_string(24)},
       {"bornDelayDuration", "\"0\""},
       {"bornDuration", "\"1000\""},
       {"bornLockDuration", "\"1000\""},

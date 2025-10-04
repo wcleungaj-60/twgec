@@ -1,0 +1,7 @@
+block init {
+    actions {
+        addActor(patrol = [Point(1,1),Point(2,2)]);
+        addActor(patrol = [Point(2,2),Point(0,0),Point(2,2)]);
+        addActor(patrol = [Point(2,1)]);
+    }
+}

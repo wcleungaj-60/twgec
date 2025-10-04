@@ -1,0 +1,8 @@
+__customWeapons__ = [
+    CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 5, fireType = "單手橫劈",
+    pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5",
+    pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),
+    CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 30, fireType = "大刀砍劈",
+    pivotOnHandDegree = 35, pivotOnHandX = -12,
+    pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)
+];

@@ -1,8 +1,108 @@
 #include "utils/builtin.h"
+#include <string>
 
 using namespace codegen;
 using namespace keyword;
 using namespace codegen::formatter;
+
+namespace {
+JsonObjectNode getCustomWeaponsNode(std::unique_ptr<ExpressionNode> &expNode) {
+  customWeaponDefaultMap.clearInputMap();
+  auto customWeaponValueNode =
+      dynamic_cast<CustomWeaponValueNode *>(expNode->value.get());
+  if (!customWeaponValueNode) {
+    std::cerr << "CustomWeapon-typed value is expected at " << expNode->loc
+              << "\n";
+    return JsonObjectNode();
+  }
+  customWeaponDefaultMap.addInputMap(customWeaponValueNode->named_args);
+  JsonObjectNode fireNode = JsonObjectNode({
+      {"fireType", customWeaponDefaultMap.get(
+                       "fireType", CustomWeaponAttackKind::keywordEnum)},
+      {"deltaDamage", "0"},
+  });
+  JsonArrayNode firesNode =
+      JsonArrayNode(std::make_shared<JsonObjectNode>(fireNode));
+  JsonObjectNode pivotOnHandScaleNode = JsonObjectNode({
+      {"x", customWeaponDefaultMap.get("pivotOnHandXScale")},
+      {"y", customWeaponDefaultMap.get("pivotOnHandYScale")},
+  });
+  JsonObjectNode pivotOnHandNode = JsonObjectNode({
+      {"x", customWeaponDefaultMap.get("pivotOnHandX")},
+      {"y", customWeaponDefaultMap.get("pivotOnHandY")},
+      {"degrees", customWeaponDefaultMap.get("pivotOnHandDegree")},
+      {"scale", pivotOnHandScaleNode.to_string(40)},
+  });
+  JsonObjectNode pivotOnIconScaleNode = JsonObjectNode({
+      {"x", customWeaponDefaultMap.get("pivotOnIconXScale")},
+      {"y", customWeaponDefaultMap.get("pivotOnIconYScale")},
+  });
+  JsonObjectNode pivotOnIconNode = JsonObjectNode({
+      {"x", customWeaponDefaultMap.get("pivotOnIconX")},
+      {"y", customWeaponDefaultMap.get("pivotOnIconY")},
+      {"degrees", customWeaponDefaultMap.get("pivotOnIconDegree")},
+      {"scale", pivotOnIconScaleNode.to_string(40)},
+  });
+  JsonObjectNode spriteNode = JsonObjectNode({
+      {"pivotOnHand", pivotOnHandNode.to_string(36)},
+      {"pivotOnIcon", pivotOnIconNode.to_string(36)},
+  });
+  JsonObjectNode configNode = JsonObjectNode({
+      {"type", "\"close\""},
+      {"clipAlias", customWeaponDefaultMap.get("reference")},
+      {"scaleOnGround", customWeaponDefaultMap.get("scaleOnGround")},
+      {"scaleOnIcon", customWeaponDefaultMap.get("scaleOnIcon")},
+      {"pickTestFunc", "\"wider\""},
+      {"weight", customWeaponDefaultMap.get("weight")},
+      {"damage", customWeaponDefaultMap.get("damage")},
+      {"swapTime", customWeaponDefaultMap.get("swapTime")},
+      {"frameName", "\"BLADE_TYPE\""},
+      {"clip", "\"\""},
+      {"fireTime", customWeaponDefaultMap.get("fireTime")},
+      {"fires", firesNode.to_string(32)},
+      {"sprite", spriteNode.to_string(32)},
+  });
+  JsonObjectNode actorMatchNode = JsonObjectNode({
+      {"code", customWeaponDefaultMap.get("code")},
+      {"config", configNode.to_string(28)},
+  });
+  return actorMatchNode;
+}
+
+JsonObjectNode getPatrolPathNode(std::unique_ptr<ExpressionNode> &expNode) {
+  customWeaponDefaultMap.clearInputMap();
+  auto pointValueNode = dynamic_cast<PointValueNode *>(expNode->value.get());
+  if (!pointValueNode) {
+    std::cerr << "Point-typed value is expected at " << expNode->loc << "\n";
+    return JsonObjectNode();
+  }
+  auto xValueNode =
+      dynamic_cast<IntValueNode *>(pointValueNode->x->value.get());
+  if (!xValueNode) {
+    std::cerr << "Int-typed value is expected at " << pointValueNode->x->loc
+              << "\n";
+    return JsonObjectNode();
+  }
+  auto yValueNode =
+      dynamic_cast<IntValueNode *>(pointValueNode->y->value.get());
+  if (!yValueNode) {
+    std::cerr << "Int-typed value is expected at " << pointValueNode->y->loc
+              << "\n";
+    return JsonObjectNode();
+  }
+  JsonObjectNode locNode = JsonObjectNode({
+      {"x", "\"" + std::to_string(xValueNode->value) + "\""},
+      {"y", "\"" + std::to_string(yValueNode->value) + "\""},
+      {"range", "\"0\""},
+  });
+  JsonObjectNode patrolPathNode = JsonObjectNode({
+      {"loc", locNode.to_string(32)},
+      {"rotation", "\"0\""},
+      {"duration", "\"3000\""},
+  });
+  return patrolPathNode;
+}
+} // namespace
 
 DefaultMap actorMatchDefaultMap = DefaultMap(
     {
@@ -69,69 +169,6 @@ JsonArrayNode getActorMatchesNode(std::unique_ptr<InstructionNode> &instr,
   return JsonArrayNode();
 }
 
-JsonObjectNode getCustomWeaponsNode(std::unique_ptr<ExpressionNode> &expNode) {
-  customWeaponDefaultMap.clearInputMap();
-  auto customWeaponValueNode =
-      dynamic_cast<CustomWeaponValueNode *>(expNode->value.get());
-  if (!customWeaponValueNode) {
-    std::cerr << "CustomWeapon-typed value is expected at " << expNode->loc
-              << "\n";
-    return JsonObjectNode();
-  }
-  customWeaponDefaultMap.addInputMap(customWeaponValueNode->named_args);
-  JsonObjectNode fireNode = JsonObjectNode({
-      {"fireType", customWeaponDefaultMap.get(
-                       "fireType", CustomWeaponAttackKind::keywordEnum)},
-      {"deltaDamage", "0"},
-  });
-  JsonArrayNode firesNode =
-      JsonArrayNode(std::make_shared<JsonObjectNode>(fireNode));
-  JsonObjectNode pivotOnHandScaleNode = JsonObjectNode({
-      {"x", customWeaponDefaultMap.get("pivotOnHandXScale")},
-      {"y", customWeaponDefaultMap.get("pivotOnHandYScale")},
-  });
-  JsonObjectNode pivotOnHandNode = JsonObjectNode({
-      {"x", customWeaponDefaultMap.get("pivotOnHandX")},
-      {"y", customWeaponDefaultMap.get("pivotOnHandY")},
-      {"degrees", customWeaponDefaultMap.get("pivotOnHandDegree")},
-      {"scale", pivotOnHandScaleNode.to_string(40)},
-  });
-  JsonObjectNode pivotOnIconScaleNode = JsonObjectNode({
-      {"x", customWeaponDefaultMap.get("pivotOnIconXScale")},
-      {"y", customWeaponDefaultMap.get("pivotOnIconYScale")},
-  });
-  JsonObjectNode pivotOnIconNode = JsonObjectNode({
-      {"x", customWeaponDefaultMap.get("pivotOnIconX")},
-      {"y", customWeaponDefaultMap.get("pivotOnIconY")},
-      {"degrees", customWeaponDefaultMap.get("pivotOnIconDegree")},
-      {"scale", pivotOnIconScaleNode.to_string(40)},
-  });
-  JsonObjectNode spriteNode = JsonObjectNode({
-      {"pivotOnHand", pivotOnHandNode.to_string(36)},
-      {"pivotOnIcon", pivotOnIconNode.to_string(36)},
-  });
-  JsonObjectNode configNode = JsonObjectNode({
-      {"type", "\"close\""},
-      {"clipAlias", customWeaponDefaultMap.get("reference")},
-      {"scaleOnGround", customWeaponDefaultMap.get("scaleOnGround")},
-      {"scaleOnIcon", customWeaponDefaultMap.get("scaleOnIcon")},
-      {"pickTestFunc", "\"wider\""},
-      {"weight", customWeaponDefaultMap.get("weight")},
-      {"damage", customWeaponDefaultMap.get("damage")},
-      {"swapTime", customWeaponDefaultMap.get("swapTime")},
-      {"frameName", "\"BLADE_TYPE\""},
-      {"clip", "\"\""},
-      {"fireTime", customWeaponDefaultMap.get("fireTime")},
-      {"fires", firesNode.to_string(32)},
-      {"sprite", spriteNode.to_string(32)},
-  });
-  JsonObjectNode actorMatchNode = JsonObjectNode({
-      {"code", customWeaponDefaultMap.get("code")},
-      {"config", configNode.to_string(28)},
-  });
-  return actorMatchNode;
-}
-
 JsonArrayNode
 getCustomWeaponsListNode(std::vector<std::unique_ptr<MetadataNode>> &metadatas,
                          std::string key) {
@@ -146,6 +183,23 @@ getCustomWeaponsListNode(std::vector<std::unique_ptr<MetadataNode>> &metadatas,
       else
         std::cerr << "list-typed value is expected at "
                   << metadata->expNode->loc << "\n";
+    }
+  return arrayNode;
+}
+
+JsonArrayNode getPatrolPathListNode(std::unique_ptr<InstructionNode> &instr,
+                                    std::string key) {
+  JsonArrayNode arrayNode = JsonArrayNode();
+  for (auto &namedArg : instr->named_args)
+    if (namedArg->key == key) {
+      if (auto listNode =
+              dynamic_cast<ListValueNode *>(namedArg->expNode->value.get()))
+        for (auto &item : listNode->items)
+          arrayNode.addNode(
+              std::make_shared<JsonObjectNode>(getPatrolPathNode(item)));
+      else
+        std::cerr << "list-typed value is expected at "
+                  << namedArg->expNode->loc << "\n";
     }
   return arrayNode;
 }
