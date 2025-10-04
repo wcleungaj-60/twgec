@@ -14,7 +14,7 @@ unit_test() {
             if diff error.log $test_error ; then
                 echo "twge test success:    $test_file"
             else
-                echo "twge test fail:       $test_file"
+                echo -e "\033[0;31mtwge test fail:       $test_file\033[0m"
             fi
             rm error.log
         elif [[ -s $test_result ]] && [[ ! -s $test_error ]] && [[ ! -s $test_print ]]; then
@@ -22,11 +22,11 @@ unit_test() {
                 if diff game.events "$test_result"; then
                     echo "twge test success:    $test_file"
                 else
-                    echo "twge test fail:       $test_file"
+                    echo -e "\033[0;31mtwge test fail:       $test_file\033[0m"
                 fi
             else
                 cat error.log
-                echo "twge test fail:       $test_file"
+                echo -e "\033[0;31mtwge test fail:       $test_file\033[0m"
                 rm error.log
             fi
             rm game.events
@@ -38,7 +38,7 @@ unit_test() {
                 if diff print.twge "$test_print"; then
                     echo "twge test success:    $test_file"
                 else
-                    echo "twge test fail:       $test_file"
+                    echo -e "\033[0;31mtwge test fail:       $test_file\033[0m"
                 fi
             else
                 echo "The first line does not start with '// OPTION: '"
@@ -60,7 +60,7 @@ smoke_test() {
         echo "twge test success:    $input_file"
     else
         cat error.log
-        echo "twge test fail:       $input_file"
+        echo -e "\033[0;31mtwge test fail:       $input_file\033[0m"
     fi
     rm game.events
     rm error.log

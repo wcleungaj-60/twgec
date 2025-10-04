@@ -65,11 +65,11 @@ DefaultMap metadata::ConfigSetup::defaultMap = DefaultMap(
         {keyword::metadataKind::gamezoneCode,
          {AST_STRING, CODEGEN_STRING, "mission"}},
         {keyword::metadataKind::skydowLocs,
-         {AST_LIST_POINT, CODEGEN_LIST_POINT, "[]"}},
+         {AST_LIST_POINT, CODEGEN_LIST_SPAWN_POINT, "[]"}},
         {keyword::metadataKind::royalLocs,
-         {AST_LIST_POINT, CODEGEN_LIST_POINT, "[]"}},
+         {AST_LIST_POINT, CODEGEN_LIST_SPAWN_POINT, "[]"}},
         {keyword::metadataKind::thirdLocs,
-         {AST_LIST_POINT, CODEGEN_LIST_POINT, "[]"}},
+         {AST_LIST_POINT, CODEGEN_LIST_SPAWN_POINT, "[]"}},
         {keyword::metadataKind::preloadSources,
          {AST_LIST_STRING, CODEGEN_LIST_STRING, "[]"}},
         {keyword::metadataKind::preloadResourcesExclude,
@@ -116,14 +116,6 @@ DefaultMap metadata::BlockSetup::defaultMap = DefaultMap(
 
 void metadata::ConfigSetup::setup(
     std::ofstream &of, std::vector<std::unique_ptr<MetadataNode>> &metadatas) {
-  JsonArrayNode customWeaponsNode =
-      getCustomWeaponsListNode(metadatas, "customWeapons");
-  JsonArrayNode skydowLocsNode =
-      getSpawnPointListNode(metadatas, keyword::metadataKind::skydowLocs);
-  JsonArrayNode royalLocsNode =
-      getSpawnPointListNode(metadatas, keyword::metadataKind::royalLocs);
-  JsonArrayNode thirdLocsNode =
-      getSpawnPointListNode(metadatas, keyword::metadataKind::thirdLocs);
   defaultMap.addInputMap(metadatas);
   of << inden(4)
      << "\"$schema\": " << defaultMap.get(keyword::metadataKind::schema) << ","
@@ -219,17 +211,21 @@ void metadata::ConfigSetup::setup(
   of << inden(16) << "\"useDefaultCampLocs\": "
      << defaultMap.get(keyword::metadataKind::useDefaultCampLocs) << ","
      << std::endl;
-  of << inden(16) << "\"skydowLocs\": " << skydowLocsNode.to_string(16) << ","
-     << std::endl;
-  of << inden(16) << "\"royalLocs\": " << royalLocsNode.to_string(16) << ","
-     << std::endl;
-  of << inden(16) << "\"thirdLocs\": " << thirdLocsNode.to_string(16) << ","
-     << std::endl;
+  of << inden(16)
+     << "\"skydowLocs\": " << defaultMap.get(keyword::metadataKind::skydowLocs)
+     << "," << std::endl;
+  of << inden(16)
+     << "\"royalLocs\": " << defaultMap.get(keyword::metadataKind::royalLocs)
+     << "," << std::endl;
+  of << inden(16)
+     << "\"thirdLocs\": " << defaultMap.get(keyword::metadataKind::thirdLocs)
+     << "," << std::endl;
   of << inden(16) << "\"useCustomWeapons\": "
      << defaultMap.get(keyword::metadataKind::useCustomWeapons) << ","
      << std::endl;
-  of << inden(16) << "\"customWeapons\": " << customWeaponsNode.to_string(16)
-     << "," << std::endl;
+  of << inden(16) << "\"customWeapons\": "
+     << defaultMap.get(keyword::metadataKind::customWeapons) << ","
+     << std::endl;
   of << inden(16) << "\"useCustomItems\": "
      << defaultMap.get(keyword::metadataKind::useCustomItems) << ","
      << std::endl;

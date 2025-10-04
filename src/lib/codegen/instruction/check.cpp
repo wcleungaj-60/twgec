@@ -13,7 +13,7 @@ using namespace keyword;
 
 DefaultMap check::CheckForEachActor::defaultMap = DefaultMap(
     {
-        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, ""}},
+        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
         {"varname", {AST_STRING, CODEGEN_STRING, ""}},
     },
     "forEachActor");
@@ -36,11 +36,10 @@ DefaultMap check::CheckString::defaultMap = DefaultMap(
 
 void check::CheckForEachActor::method(std::ofstream &of,
                                       std::unique_ptr<InstructionNode> &check) {
-  JsonArrayNode actorMatchesNode = getActorMatchesNode(check, "actor");
   defaultMap.addInputMap(check->named_args);
   JsonObjectNode _logiNode = JsonObjectNode("_and_or", "\"\"");
   JsonObjectNode dataNode = JsonObjectNode({
-      {"actorMatches", actorMatchesNode.to_string(24)},
+      {"actorMatches", defaultMap.get("actor")},
       {"varname", defaultMap.get("varname")},
       {"maxTriggers", "\"0\""},
       {"donotActOnEachPass", "false"},

@@ -197,24 +197,7 @@ std::unique_ptr<ExpressionNode> ExpressionNode::clone() {
 }
 
 std::unique_ptr<ValueNode> ValueNode::clone() {
-  if (auto *stringNode = dynamic_cast<StringValueNode *>(this))
-    return stringNode->clone();
-  if (auto *intNode = dynamic_cast<IntValueNode *>(this))
-    return intNode->clone();
-  if (auto *boolNode = dynamic_cast<BoolValueNode *>(this))
-    return boolNode->clone();
-  if (auto *listNode = dynamic_cast<ListValueNode *>(this))
-    return listNode->clone();
-  if (auto *varNode = dynamic_cast<VariableValueNode *>(this))
-    return varNode->clone();
-  if (auto *ptNode = dynamic_cast<PointValueNode *>(this))
-    return ptNode->clone();
-  if (auto *amNode = dynamic_cast<ActorMatchValueNode *>(this))
-    return amNode->clone();
-  if (auto *cwNode = dynamic_cast<CustomWeaponValueNode *>(this))
-    return cwNode->clone();
-  std::cerr << "Compiler Implementation Error: Unsupported cloning . Found at "
-            << loc << "\n";
+  assert(false && "ValueNode clone is forbidden\n");
   return nullptr;
 }
 

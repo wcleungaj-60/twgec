@@ -11,17 +11,9 @@ using namespace codegen::formatter;
 extern DefaultMap actorMatchDefaultMap;
 extern DefaultMap customWeaponDefaultMap;
 
-JsonArrayNode getActorMatchesNode(std::unique_ptr<InstructionNode> &instr,
-                                  std::string key);
-JsonArrayNode
-getCustomWeaponsListNode(std::vector<std::unique_ptr<MetadataNode>> &metadatas,
-                         std::string key);
-
-JsonArrayNode getPatrolPathListNode(std::unique_ptr<InstructionNode> &instr,
-                                    std::string key);
-
-JsonArrayNode
-getSpawnPointListNode(std::vector<std::unique_ptr<MetadataNode>> &metadata,
-                      std::string key);
+JsonArrayNode getActorMatchesNode(const std::shared_ptr<ValueNode> &);
+JsonArrayNode getCustomWeaponsListNode(const std::shared_ptr<ValueNode> &);
+JsonArrayNode getPatrolPathListNode(const std::shared_ptr<ValueNode> &);
+JsonArrayNode getSpawnPointListNode(const std::shared_ptr<ValueNode> &);
 
 #endif

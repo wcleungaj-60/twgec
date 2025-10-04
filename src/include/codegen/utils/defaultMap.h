@@ -69,8 +69,8 @@ enum CodegenType {
   CODEGEN_ACTOR_MATCH,
   CODEGEN_LIST_CUSTOM_WEAPON,
   CODEGEN_LIST_STRING,
-  CODEGEN_LIST_POINT,  // {x,y}
-  CODEGEN_LIST_PATROL, // {loc{x,y,range},rotation,duration}
+  CODEGEN_LIST_SPAWN_POINT,  // {x,y}
+  CODEGEN_LIST_PATROL_POINT, // {loc{x,y,range},rotation,duration}
 };
 
 struct DefaultMapValue {
@@ -99,8 +99,7 @@ public:
   // Functions
   void clearInputMap() { inputMap = {}; }
   void addInputMap(vector<unique_ptr<MetadataNode>> &metadatas);
-  void addInputMap(vector<unique_ptr<NamedArgNode>> &namedArgs,
-                   vector<string> exclusion = {});
+  void addInputMap(vector<unique_ptr<NamedArgNode>> &namedArgs);
   string get(string key, keyword::KeywordEnum keywordEnum = emptyKeywordEnum,
              std::map<string, string> extraEnum = {});
 };

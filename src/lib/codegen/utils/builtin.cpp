@@ -163,88 +163,66 @@ DefaultMap customWeaponDefaultMap = DefaultMap(
     },
     "customWeapon");
 
-JsonArrayNode getActorMatchesNode(std::unique_ptr<InstructionNode> &instr,
-                                  std::string key) {
+JsonArrayNode getActorMatchesNode(const std::shared_ptr<ValueNode> &valueNode) {
   actorMatchDefaultMap.clearInputMap();
-  for (auto &namedArg : instr->named_args)
-    if (namedArg->key == key) {
-      auto actorMatchValueNode =
-          dynamic_cast<ActorMatchValueNode *>(namedArg->expNode->value.get());
-      if (!actorMatchValueNode) {
-        std::cerr << "ActorMatch-typed value is expected at "
-                  << namedArg->expNode->loc << "\n";
-        return JsonArrayNode();
-      }
-      actorMatchDefaultMap.addInputMap(actorMatchValueNode->named_args);
-      JsonObjectNode actorCodeNode = JsonObjectNode({
-          {"method",
-           actorMatchDefaultMap.get("matchKind", matchKind::keywordEnum)},
-          {"actorCode", actorMatchDefaultMap.get("id")},
-      });
-      JsonArrayNode actorCodesNode =
-          JsonArrayNode(std::make_shared<JsonObjectNode>(actorCodeNode));
-      JsonObjectNode campNode = JsonObjectNode("campAll", "true");
-      JsonObjectNode actorMatchNode = JsonObjectNode({
-          {"actorCodes", actorCodesNode.to_string(32)},
-          {"brain",
-           actorMatchDefaultMap.get("controller", actorBrainKind::keywordEnum)},
-          {"camp", campNode.to_string(32)},
-          {"excludeActorCodes", "[]"},
-      });
-      return JsonArrayNode(std::make_shared<JsonObjectNode>(actorMatchNode));
-    }
+  auto actorMatchValueNode =
+      dynamic_cast<ActorMatchValueNode *>(valueNode.get());
+  if (!actorMatchValueNode) {
+    std::cerr << "ActorMatch-typed value is expected at " << valueNode->loc
+              << "\n";
+    return JsonArrayNode();
+  }
+  actorMatchDefaultMap.addInputMap(actorMatchValueNode->named_args);
+  JsonObjectNode actorCodeNode = JsonObjectNode({
+      {"method", actorMatchDefaultMap.get("matchKind", matchKind::keywordEnum)},
+      {"actorCode", actorMatchDefaultMap.get("id")},
+  });
+  JsonArrayNode actorCodesNode =
+      JsonArrayNode(std::make_shared<JsonObjectNode>(actorCodeNode));
+  JsonObjectNode campNode = JsonObjectNode("campAll", "true");
+  JsonObjectNode actorMatchNode = JsonObjectNode({
+      {"actorCodes", actorCodesNode.to_string(32)},
+      {"brain",
+       actorMatchDefaultMap.get("controller", actorBrainKind::keywordEnum)},
+      {"camp", campNode.to_string(32)},
+      {"excludeActorCodes", "[]"},
+  });
+  return JsonArrayNode(std::make_shared<JsonObjectNode>(actorMatchNode));
   return JsonArrayNode();
 }
 
 JsonArrayNode
-getCustomWeaponsListNode(std::vector<std::unique_ptr<MetadataNode>> &metadatas,
-                         std::string key) {
+getCustomWeaponsListNode(const std::shared_ptr<ValueNode> &valueNode) {
   JsonArrayNode arrayNode = JsonArrayNode();
-  for (auto &metadata : metadatas)
-    if (metadata->key == key) {
-      if (auto listNode =
-              dynamic_cast<ListValueNode *>(metadata->expNode->value.get()))
-        for (auto &item : listNode->items)
-          arrayNode.addNode(
-              std::make_shared<JsonObjectNode>(getCustomWeaponsNode(item)));
-      else
-        std::cerr << "list-typed value is expected at "
-                  << metadata->expNode->loc << "\n";
-    }
-  return arrayNode;
-}
-
-JsonArrayNode getPatrolPathListNode(std::unique_ptr<InstructionNode> &instr,
-                                    std::string key) {
-  JsonArrayNode arrayNode = JsonArrayNode();
-  for (auto &namedArg : instr->named_args)
-    if (namedArg->key == key) {
-      if (auto listNode =
-              dynamic_cast<ListValueNode *>(namedArg->expNode->value.get()))
-        for (auto &item : listNode->items)
-          arrayNode.addNode(
-              std::make_shared<JsonObjectNode>(getPatrolPathNode(item)));
-      else
-        std::cerr << "list-typed value is expected at "
-                  << namedArg->expNode->loc << "\n";
-    }
+  if (auto listNode = dynamic_cast<ListValueNode *>(valueNode.get()))
+    for (auto &item : listNode->items)
+      arrayNode.addNode(
+          std::make_shared<JsonObjectNode>(getCustomWeaponsNode(item)));
+  else
+    std::cerr << "list-typed value is expected at " << valueNode->loc << "\n";
   return arrayNode;
 }
 
 JsonArrayNode
-getSpawnPointListNode(std::vector<std::unique_ptr<MetadataNode>> &metadatas,
-                      std::string key) {
+getPatrolPathListNode(const std::shared_ptr<ValueNode> &valueNode) {
   JsonArrayNode arrayNode = JsonArrayNode();
-  for (auto &metadata : metadatas)
-    if (metadata->key == key) {
-      if (auto listNode =
-              dynamic_cast<ListValueNode *>(metadata->expNode->value.get()))
-        for (auto &item : listNode->items)
-          arrayNode.addNode(
-              std::make_shared<JsonObjectNode>(getSpawnPointNode(item)));
-      else
-        std::cerr << "list-typed value is expected at "
-                  << metadata->expNode->loc << "\n";
-    }
+  if (auto listNode = dynamic_cast<ListValueNode *>(valueNode.get()))
+    for (auto &item : listNode->items)
+      arrayNode.addNode(
+          std::make_shared<JsonObjectNode>(getPatrolPathNode(item)));
+  else
+    std::cerr << "list-typed value is expected at " << valueNode->loc << "\n";
+  return arrayNode;
+}
+
+JsonArrayNode
+getSpawnPointListNode(const std::shared_ptr<ValueNode> &valueNode) {
+  JsonArrayNode arrayNode = JsonArrayNode();
+  if (auto listNode = dynamic_cast<ListValueNode *>(valueNode.get()))
+    for (auto &item : listNode->items)
+      arrayNode.addNode(
+          std::make_shared<JsonObjectNode>(getSpawnPointNode(item)));
+  else
+    std::cerr << "list-typed value is expected at " << valueNode->loc << "\n";
   return arrayNode;
 }

@@ -61,7 +61,7 @@ DefaultMap action::ActionAddActor::defaultMap = DefaultMap(
         {"role", {AST_STRING, CODEGEN_INT, "0"}},
         {"externRole", {AST_STRING, CODEGEN_STRING, ""}},
         {"strength", {AST_INT, CODEGEN_STRING, "1"}},
-        {"patrol", {AST_LIST_POINT, CODEGEN_LIST_PATROL, "[]"}},
+        {"patrol", {AST_LIST_POINT, CODEGEN_LIST_PATROL_POINT, "[]"}},
     },
     "addActor");
 
@@ -239,7 +239,6 @@ void action::ActionActorTalk::method(std::ofstream &of,
 
 void action::ActionAddActor::method(std::ofstream &of,
                                     std::unique_ptr<InstructionNode> &action) {
-  JsonArrayNode patrolPathListNode = getPatrolPathListNode(action, "patrol");
   defaultMap.addInputMap(action->named_args);
   std::string externRole = defaultMap.get("externRole");
   bool hasExternRole = externRole != "\"\"";
@@ -292,7 +291,7 @@ void action::ActionAddActor::method(std::ofstream &of,
       {"thinkInterval", "60"},
       {"farAutoLevel", "\"0\""},
       {"patrols", "true"},
-      {"patrolPath", patrolPathListNode.to_string(24)},
+      {"patrolPath", defaultMap.get("patrol")},
       {"bornDelayDuration", "\"0\""},
       {"bornDuration", "\"1000\""},
       {"bornLockDuration", "\"1000\""},

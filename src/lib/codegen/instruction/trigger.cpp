@@ -13,7 +13,7 @@ using namespace keyword;
 
 DefaultMap trigger::TriggerActorDead::defaultMap = DefaultMap(
     {
-        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, ""}},
+        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
         {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
         {"hitterVarName", {AST_STRING, CODEGEN_STRING, ""}},
     },
@@ -21,7 +21,7 @@ DefaultMap trigger::TriggerActorDead::defaultMap = DefaultMap(
 
 DefaultMap trigger::TriggerActorFire::defaultMap = DefaultMap(
     {
-        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, ""}},
+        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
         {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
         {"weapon", {AST_STRING, CODEGEN_STRING, ""}},
     },
@@ -29,7 +29,7 @@ DefaultMap trigger::TriggerActorFire::defaultMap = DefaultMap(
 
 DefaultMap trigger::TriggerClickButton::defaultMap = DefaultMap(
     {
-        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, ""}},
+        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
         {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
         {"buttonId", {AST_STRING, CODEGEN_STRING, ""}},
     },
@@ -46,7 +46,7 @@ DefaultMap trigger::TriggerKeyboardPressed::defaultMap = DefaultMap(
 
 DefaultMap trigger::TriggerReleasePower::defaultMap = DefaultMap(
     {
-        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, ""}},
+        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
         {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
         {"ability", {AST_STRING, CODEGEN_STRING, ""}},
         {"preventDefault", {AST_BOOL, CODEGEN_STRING, "false"}},
@@ -57,10 +57,9 @@ DefaultMap trigger::TriggerReleasePower::defaultMap = DefaultMap(
 
 void trigger::TriggerActorDead::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
-  defaultMap.addInputMap(trigger->named_args, {"actor"});
-  JsonArrayNode actorMatchesNode = getActorMatchesNode(trigger, "actor");
+  defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
-      {"actorMatches", actorMatchesNode.to_string(24)},
+      {"actorMatches", defaultMap.get("actor")},
       {"varname", defaultMap.get("varName")},
       {"timing", "\"preDead\""},
       {"deathsVarname", "\"deaths\""},
@@ -76,10 +75,9 @@ void trigger::TriggerActorDead::method(
 
 void trigger::TriggerActorFire::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
-  defaultMap.addInputMap(trigger->named_args, {"actor"});
-  JsonArrayNode actorMatchesNode = getActorMatchesNode(trigger, "actor");
+  defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
-      {"actorMatches", actorMatchesNode.to_string(24)},
+      {"actorMatches", defaultMap.get("actor")},
       {"varname", defaultMap.get("varName")},
       {"fireTriggerType", "\"all\""},
       {"damageTypes", "[]"},
@@ -98,10 +96,9 @@ void trigger::TriggerActorFire::method(
 
 void trigger::TriggerClickButton::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger) {
-  defaultMap.addInputMap(trigger->named_args, {"actor"});
-  JsonArrayNode actorMatchesNode = getActorMatchesNode(trigger, "actor");
+  defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
-      {"actorMatches", actorMatchesNode.to_string(24)},
+      {"actorMatches", defaultMap.get("actor")},
       {"varname", defaultMap.get("varName")},
       {"checkButtoncode", "true"},
       {"buttonCode", defaultMap.get("buttonId")},
@@ -137,8 +134,7 @@ void trigger::TriggerKeyboardPressed::method(
 void trigger::TriggerReleasePower::method(
     std::ofstream &of, std::unique_ptr<InstructionNode> &trigger,
     std::map<std::string, std::string> extraEnum) {
-  defaultMap.addInputMap(trigger->named_args, {"actor"});
-  JsonArrayNode actorMatchesNode = getActorMatchesNode(trigger, "actor");
+  defaultMap.addInputMap(trigger->named_args);
   std::string ability = defaultMap.get("ability", abilityKind::keywordEnum);
   std::string weaponType =
       defaultMap.get("weapon", weaponKind::keywordEnum, extraEnum);
@@ -147,7 +143,7 @@ void trigger::TriggerReleasePower::method(
       {"value", ability},
   });
   JsonObjectNode dataNode = JsonObjectNode({
-      {"actorMatches", actorMatchesNode.to_string(24)},
+      {"actorMatches", defaultMap.get("actor")},
       {"varname", defaultMap.get("varName")},
       {"preventDefault", defaultMap.get("preventDefault")},
       {"manaUsage", defaultMap.get("manaUsage")},

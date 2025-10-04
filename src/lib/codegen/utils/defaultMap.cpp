@@ -1,12 +1,33 @@
 #include "utils/defaultMap.h"
 #include "utils.h"
-#include <algorithm>
+#include "utils/builtin.h"
 #include <iostream>
 #include <set>
 #include <sstream>
 
 using namespace codegen;
 using std::cerr;
+
+namespace {
+string getCodeGen(CodegenType codegenType, string text) {
+  switch (codegenType) {
+  case CODEGEN_INT:
+  case CODEGEN_BOOL:
+    return text;
+  case CODEGEN_STRING:
+    return "\"" + text + "\"";
+  case CODEGEN_ACTOR_MATCH:
+  case CODEGEN_LIST_CUSTOM_WEAPON:
+  case CODEGEN_LIST_SPAWN_POINT:
+  case CODEGEN_LIST_PATROL_POINT:
+    assert(text == "[]" && "`[]` is expected as a default value.\n");
+    return text;
+  default:
+    assert(false && "Unreachable codegen type.\n");
+    return text;
+  }
+};
+} // namespace
 
 void DefaultMap::verifyInputMap() {
   for (auto &input : inputMap)
@@ -48,91 +69,55 @@ string DefaultMap::print() {
 
 string DefaultMap::get(string key, keyword::KeywordEnum keywordEnum,
                        std::map<string, string> extraEnum) {
+  // Handle Unknown key or unknown value
+  auto codegenType = defaultMap.at(key).codegenType;
+  const std::shared_ptr<ValueNode> &input = inputMap[key];
   if (defaultMap.find(key) == defaultMap.end()) {
-    cerr << "Compiler Implementation Error: Found unknown key \'" << key
-         << "\'\n";
+    assert(false && "Found unknown key\n");
     return "";
   }
-
-  // Variable Initialization
-  const std::shared_ptr<ValueNode> &input = inputMap[key];
-  IntValueNode *intNode = nullptr;
-  BoolValueNode *boolNode = nullptr;
-  StringValueNode *stringNode = nullptr;
-  ListValueNode *listNode = nullptr;
-  ActorMatchValueNode *actorMatchNode = nullptr;
-  CustomWeaponValueNode *customWeaponNode = nullptr;
-  bool astBool = defaultMap.at(key).astType == AST_BOOL;
-  bool astInt = defaultMap.at(key).astType == AST_INT;
-  bool astString = defaultMap.at(key).astType == AST_STRING;
-  bool astPointList = defaultMap.at(key).astType == AST_LIST_POINT;
-  bool astActorMatch = defaultMap.at(key).astType == AST_ACTOR_MATCH;
-  bool astCustomWeapon = defaultMap.at(key).astType == AST_LIST_CUSTOM_WEAPON;
   if (auto varNode = dynamic_cast<VariableValueNode *>(input.get())) {
     cerr << "Codegen Error: Cannot find the definition of variable `"
          << varNode->value << "` at " << input->loc
          << ". Please define it as a constant value or function\'s param.\n";
     return "";
   }
-  if (astInt) {
-    intNode = dynamic_cast<IntValueNode *>(input.get());
-    stringNode = dynamic_cast<StringValueNode *>(input.get());
-  }
-  if (astBool)
-    boolNode = dynamic_cast<BoolValueNode *>(input.get());
-  if (astString)
-    stringNode = dynamic_cast<StringValueNode *>(input.get());
-  if (astPointList)
-    listNode = dynamic_cast<ListValueNode *>(input.get());
-  if (astActorMatch)
-    actorMatchNode = dynamic_cast<ActorMatchValueNode *>(input.get());
-  if (astCustomWeapon)
-    customWeaponNode = dynamic_cast<CustomWeaponValueNode *>(input.get());
-  bool codegenBool = defaultMap.at(key).codegenType == CODEGEN_BOOL;
-  bool codegenInt = defaultMap.at(key).codegenType == CODEGEN_INT;
-  bool codegenString = defaultMap.at(key).codegenType == CODEGEN_STRING;
-  bool codegenListPatrol =
-      defaultMap.at(key).codegenType == CODEGEN_LIST_PATROL;
-  bool codegenListPoint = defaultMap.at(key).codegenType == CODEGEN_LIST_POINT;
-  bool codegenCustomWeapon =
-      defaultMap.at(key).codegenType == CODEGEN_LIST_CUSTOM_WEAPON;
-
-  auto format = [&](string text) -> string {
-    if (codegenInt || codegenBool) {
-      return text;
-    } else if (codegenString) {
-      return "\"" + text + "\"";
-    } else if (codegenListPatrol || codegenListPoint || codegenCustomWeapon) {
-      if (text != "[]")
-        cerr << "Compiler Implementation Error: codegenListPatrol and "
-                "codegenListPoint cannot be handled.\n";
-      return text;
-    } else {
-      cerr << "Compiler Implementation Error: Unreachable codegen type.\n";
-      return text;
-    }
-  };
-
-  // Return search result
   if (!input)
-    return format(defaultMap.at(key).defaultValue);
-  if (intNode)
-    return format(std::to_string(intNode->value));
-  if (boolNode)
-    return format(boolNode->value ? "true" : "false");
-  if (stringNode && keywordEnum.isEmpty())
-    return format(stringNode->value);
-  // Enum Input Geneartion
-  if (stringNode && !keywordEnum.isEmpty()) {
-    std::pair<bool, string> enumResult =
-        keywordEnum.get(stringNode->value, extraEnum);
-    if (!enumResult.first)
-      cerr << " ->  Found at " << stringNode->loc << "\n";
-    return format(enumResult.second);
+    return getCodeGen(codegenType, defaultMap.at(key).defaultValue);
+
+  // Handle Built-in Type
+  switch (codegenType) {
+  case CODEGEN_LIST_CUSTOM_WEAPON:
+    return getCustomWeaponsListNode(input).to_string(16);
+  case CODEGEN_LIST_SPAWN_POINT:
+    return getSpawnPointListNode(input).to_string(16);
+  case CODEGEN_LIST_PATROL_POINT:
+    return getPatrolPathListNode(input).to_string(24);
+  case CODEGEN_ACTOR_MATCH:
+    return getActorMatchesNode(input).to_string(24);
+  default:
+    break;
   }
-  cerr << "Compiler Implementation Error: incorrect type conversion at "
-       << input->loc << "\n";
-  return "";
+
+  // Handle Primitive Type
+  if (auto intNode = dynamic_cast<IntValueNode *>(input.get()))
+    return getCodeGen(codegenType, std::to_string(intNode->value));
+  if (auto boolNode = dynamic_cast<BoolValueNode *>(input.get()))
+    return getCodeGen(codegenType, boolNode->value ? "true" : "false");
+  StringValueNode *stringNode = dynamic_cast<StringValueNode *>(input.get());
+  if (!stringNode) {
+    assert(false && "Incorrect type conversion\n");
+    return "";
+  }
+
+  // Handle String Type and Enum
+  if (keywordEnum.isEmpty())
+    return getCodeGen(codegenType, stringNode->value);
+  std::pair<bool, string> enumResult =
+      keywordEnum.get(stringNode->value, extraEnum);
+  if (!enumResult.first)
+    cerr << " ->  Found at " << stringNode->loc << "\n";
+  return getCodeGen(codegenType, enumResult.second);
 }
 
 void DefaultMap::addInputMap(vector<unique_ptr<MetadataNode>> &metadatas) {
@@ -149,14 +134,11 @@ void DefaultMap::addInputMap(vector<unique_ptr<MetadataNode>> &metadatas) {
   verifyInputMap();
 }
 
-void DefaultMap::addInputMap(vector<unique_ptr<NamedArgNode>> &namedArgs,
-                             vector<string> exclusion) {
+void DefaultMap::addInputMap(vector<unique_ptr<NamedArgNode>> &namedArgs) {
   clearInputMap();
   std::set<string> keySet;
   for (auto &namedArg : namedArgs) {
     string key = namedArg->key;
-    if (std::find(exclusion.begin(), exclusion.end(), key) != exclusion.end())
-      continue;
     if (keySet.count(key))
       cerr << "Codegen Warnings: Redefined key \"" << key << "\" at "
            << namedArg->loc << "\n";
