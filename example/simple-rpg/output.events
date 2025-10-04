@@ -754,13 +754,13 @@
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
-            "repeatInterval": 12000,
+            "repeatInterval": 8000,
             "devOnly": false,
             "actions": [
                 {
                     "type": "AddActor",
                     "data": {
-                        "actorCode": "monster*",
+                        "actorCode": "monster_deer*",
                         "name": "鹿(60)",
                         "role": {
                             "dr": 40
@@ -820,7 +820,35 @@
                     }
                 }
             ],
-            "checks": [],
+            "checks": [
+                {
+                    "type": "ActorCount",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": "monster_deer"
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "operator": "<",
+                        "varname": "",
+                        "value": "5",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
             "triggers": []
         },
         {

@@ -1,6 +1,5 @@
 #include "codegen/instruction/metadata.h"
 #include "keyword.h"
-#include "utils/builtin.h"
 #include "utils/defaultMap.h"
 #include "utils/utils.h"
 #include <fstream>

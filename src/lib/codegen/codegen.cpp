@@ -131,6 +131,7 @@ void CodeGenerator::codegenAction(std::ofstream &of,
 
 void CodeGenerator::codegenCheck(std::ofstream &of,
                                  std::unique_ptr<InstructionNode> &check) {
+  CODEGEN_CHECK("actorCount", ActorCount);
   CODEGEN_CHECK("forEachActor", ForEachActor);
   CODEGEN_CHECK("checkString", String);
   CODEGEN_CHECK("checkNumber", Number);

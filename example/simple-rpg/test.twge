@@ -115,12 +115,12 @@ block monsterDead {
 
 block monsterSpawn {
     __repeat__ = -1;
-    __repeatInterval__ = 12000;
+    __repeatInterval__ = 8000;
     checks {
-        //TODO: Support Check number of character
+        actorCount(actor = ActorMatch(id = "monster_deer", matchKind = "contain"), op = "<", value = "5");
     }
     actions {
-        addActor(name = "鹿(60)", id = "monster*", camp = "第三", 
+        addActor(name = "鹿(60)", id = "monster_deer*", camp = "第三", 
                 hp = 60, x = "random(5,25)", y = "random(5,25)", localVarname = "actor", 
                 weapon1 = "fist", weapon2 = "fist", strength = "10", role = "鹿");
         actorFollow(actorId = "actor", type = "跟隨自己");

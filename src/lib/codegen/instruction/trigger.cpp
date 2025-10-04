@@ -1,11 +1,9 @@
 #include "codegen/instruction/trigger.h"
 #include "keyword.h"
-#include "utils/builtin.h"
 #include "utils/formatter.h"
 #include <fstream>
 #include <map>
 #include <memory>
-#include <vector>
 
 using namespace codegen;
 using namespace formatter;

@@ -124,6 +124,7 @@ std::string getActions() {
 
 std::string getChecks() {
   std::string ret = "Supported Checks:\n";
+  ret += getDefaultMapItem(CheckActorCount::defaultMap, "計算人數");
   ret += getDefaultMapItem(CheckNumber::defaultMap, "比較數字");
   ret += getDefaultMapItem(CheckString::defaultMap, "比對字串");
   ret += getDefaultMapItem(CheckForEachActor::defaultMap, "找出所有角色");
