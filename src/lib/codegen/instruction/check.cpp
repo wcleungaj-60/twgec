@@ -43,7 +43,7 @@ DefaultMap check::CheckString::defaultMap = DefaultMap(
     "checkString");
 
 void check::CheckActorCount::method(std::ofstream &of,
-                                    std::unique_ptr<InstructionNode> &check) {
+                                    std::unique_ptr<ParamAppsNode> &check) {
   defaultMap.addInputMap(check->named_args);
   JsonObjectNode _logiNode = JsonObjectNode("_and_or", "\"\"");
   JsonObjectNode dataNode = JsonObjectNode({
@@ -62,7 +62,7 @@ void check::CheckActorCount::method(std::ofstream &of,
 }
 
 void check::CheckForEachActor::method(std::ofstream &of,
-                                      std::unique_ptr<InstructionNode> &check) {
+                                      std::unique_ptr<ParamAppsNode> &check) {
   defaultMap.addInputMap(check->named_args);
   JsonObjectNode _logiNode = JsonObjectNode("_and_or", "\"\"");
   JsonObjectNode dataNode = JsonObjectNode({
@@ -83,7 +83,7 @@ void check::CheckForEachActor::method(std::ofstream &of,
 }
 
 void check::CheckNumber::method(std::ofstream &of,
-                                std::unique_ptr<InstructionNode> &check) {
+                                std::unique_ptr<ParamAppsNode> &check) {
   defaultMap.addInputMap(check->named_args);
   JsonObjectNode _logiNode = JsonObjectNode("_and_or", "\"\"");
   JsonObjectNode dataNode = JsonObjectNode({
@@ -101,7 +101,7 @@ void check::CheckNumber::method(std::ofstream &of,
 }
 
 void check::CheckString::method(std::ofstream &of,
-                                std::unique_ptr<InstructionNode> &check) {
+                                std::unique_ptr<ParamAppsNode> &check) {
   defaultMap.addInputMap(check->named_args);
   JsonObjectNode _logiNode = JsonObjectNode("_and_or", "\"\"");
   JsonObjectNode dataNode = JsonObjectNode({

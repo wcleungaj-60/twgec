@@ -11,7 +11,7 @@ namespace action {
   public:                                                                      \
     static DefaultMap defaultMap;                                              \
     static void method(std::ofstream &of,                                      \
-                       std::unique_ptr<InstructionNode> &action);              \
+                       std::unique_ptr<ParamAppsNode> &action);                \
   };
 
 REGISTER_CODE_GEN_ACTION(ActorAttributes);

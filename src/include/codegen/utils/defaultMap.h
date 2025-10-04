@@ -99,7 +99,7 @@ public:
   // Functions
   void clearInputMap() { inputMap = {}; }
   void addInputMap(vector<unique_ptr<MetadataNode>> &metadatas);
-  void addInputMap(vector<unique_ptr<NamedArgNode>> &namedArgs);
+  void addInputMap(vector<unique_ptr<NamedParamAppsNode>> &namedArgs);
   string get(string key, keyword::KeywordEnum keywordEnum = emptyKeywordEnum,
              std::map<string, string> extraEnum = {});
 };

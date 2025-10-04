@@ -12,27 +12,28 @@ bool argBinding(std::map<std::string, std::unique_ptr<FunDefNode>> &funDefs,
     return true;
   // Currently only the function can map positional arg into named arg
   auto funParam = funDefs.find(instr->identifier)->second->params;
-  if (instr->positional_args.size() > funParam.size()) {
+  if (instr->paramApps->positional_args.size() > funParam.size()) {
     std::cerr << "Syntax Error: Too much positional arguments. Found at "
               << instr->loc << "\n";
     return false;
   }
-  std::vector<std::unique_ptr<NamedArgNode>> bindedArgs;
-  for (int i = 0; i < instr->positional_args.size(); i++) {
-    auto &posArg = instr->positional_args[i];
-    bindedArgs.push_back(std::make_unique<NamedArgNode>(
+  std::vector<std::unique_ptr<NamedParamAppsNode>> bindedArgs;
+  for (int i = 0; i < instr->paramApps->positional_args.size(); i++) {
+    auto &posArg = instr->paramApps->positional_args[i];
+    bindedArgs.push_back(std::make_unique<NamedParamAppsNode>(
         funParam[i], posArg.get()->expNode, posArg->loc));
   }
-  instr->named_args.insert(instr->named_args.begin(),
-                           std::make_move_iterator(bindedArgs.begin()),
-                           std::make_move_iterator(bindedArgs.end()));
-  instr->positional_args.clear();
-  if (instr->named_args.size() != funParam.size()) {
+  instr->paramApps->named_args.insert(
+      instr->paramApps->named_args.begin(),
+      std::make_move_iterator(bindedArgs.begin()),
+      std::make_move_iterator(bindedArgs.end()));
+  instr->paramApps->positional_args.clear();
+  if (instr->paramApps->named_args.size() != funParam.size()) {
     std::cerr << "Syntax Error: Unmatched number of arguments of function `"
               << instr->identifier << "`. Expected: " << funParam.size()
               << " arguments defined at "
               << funDefs.find(instr->identifier)->second->loc << ". Found "
-              << instr->named_args.size() << " arguments passed at "
+              << instr->paramApps->named_args.size() << " arguments passed at "
               << instr->loc << ".\n";
     return false;
   }

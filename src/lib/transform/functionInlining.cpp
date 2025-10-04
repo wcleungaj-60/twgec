@@ -30,7 +30,7 @@ bool isValidFuncCaller(std::unique_ptr<InstructionNode> &caller,
   std::map<string, unique_ptr<ExpressionNode>> namedArgsMap;
   for (string param : funDef->params)
     paramSet.insert(param);
-  for (auto &namedArg : caller->named_args) {
+  for (auto &namedArg : caller->paramApps->named_args) {
     namedArgsMap.insert({namedArg->key, namedArg->expNode->clone()});
     argSet.insert(namedArg->key);
   }
@@ -69,7 +69,7 @@ bool functionInling(
     auto &callerInstr = compositeInstrs[idx]->instruction;
     auto pos = compositeInstrs.begin() + idx;
     auto funDefNode = funDefMap[callerInstr->identifier]->clone();
-    for (auto &arg : callerInstr->named_args)
+    for (auto &arg : callerInstr->paramApps->named_args)
       callerParamMap.insert({arg->key, std::move(arg->expNode)});
     compositeInstrs.erase(pos);
     auto clonedFunRootInstrSet =

@@ -156,7 +156,7 @@ void DefaultMap::addInputMap(vector<unique_ptr<MetadataNode>> &metadatas) {
   verifyInputMap();
 }
 
-void DefaultMap::addInputMap(vector<unique_ptr<NamedArgNode>> &namedArgs) {
+void DefaultMap::addInputMap(vector<unique_ptr<NamedParamAppsNode>> &namedArgs) {
   clearInputMap();
   std::set<string> keySet;
   for (auto &namedArg : namedArgs) {

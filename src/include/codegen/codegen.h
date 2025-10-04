@@ -6,19 +6,20 @@
 
 #define CODEGEN_ACTION(inputName, outputClass)                                 \
   if (action->identifier == inputName)                                         \
-  return action::Action##outputClass::method(of, action)
+  return action::Action##outputClass::method(of, action->paramApps)
 
 #define CODEGEN_CHECK(inputName, outputClass)                                  \
   if (check->identifier == inputName)                                          \
-  return check::Check##outputClass::method(of, check)
+  return check::Check##outputClass::method(of, check->paramApps)
 
 #define CODEGEN_TRIGGER(inputName, outputClass)                                \
   if (trigger->identifier == inputName)                                        \
-  return trigger::Trigger##outputClass::method(of, trigger)
+  return trigger::Trigger##outputClass::method(of, trigger->paramApps)
 
 #define CODEGEN_TRIGGER_EXTRA_ARG(inputName, outputClass, ...)                 \
   if (trigger->identifier == inputName)                                        \
-  return trigger::Trigger##outputClass::method(of, trigger, __VA_ARGS__)
+  return trigger::Trigger##outputClass::method(of, trigger->paramApps,         \
+                                               __VA_ARGS__)
 
 namespace codegen {
 class CodeGenerator {

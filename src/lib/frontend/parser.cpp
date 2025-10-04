@@ -315,46 +315,52 @@ std::unique_ptr<InstructionNode> Parser::parseInstruction() {
       return nullptr;
   }
   std::unique_ptr<InstructionNode> instructionNode =
-      std::make_unique<InstructionNode>(identifier, loc);
-  consume(TokenType::OPENPAR);
-  while (tokens.front().type != TokenType::CLOSEPAR) {
-    if (!parseInstructionArgs(instructionNode))
-      return nullptr;
-  }
-  if (!consume(TokenType::CLOSEPAR) || !consume(TokenType::SEMICOLON))
+      std::make_unique<InstructionNode>(identifier,
+                                        std::move(parseParamAppsNode()), loc);
+  if (!instructionNode->paramApps)
+    return nullptr;
+  if (!consume(TokenType::SEMICOLON))
     return nullptr;
   return instructionNode;
 }
 
-bool Parser::parseInstructionArgs(std::unique_ptr<InstructionNode> &actionNode,
-                                  bool foundNamed) {
-  std::string identifierToken = tokens.front().value;
+std::unique_ptr<ParamAppsNode> Parser::parseParamAppsNode() {
   Location loc = tokens.front().location;
-  bool isParsingNamedArg =
-      foundNamed || (tokens.front().type == TokenType::IDENTIFIER &&
-                     getTokenWithIndex(1).type == TokenType::ASSIGN);
-  if (isParsingNamedArg) {
-    if (!consume(TokenType::IDENTIFIER) || !consume(TokenType::ASSIGN))
-      return false;
-    std::unique_ptr<ExpressionNode> expNode = parseExp();
-    if (!expNode)
-      return false;
-    std::unique_ptr<NamedArgNode> namedArgNode =
-        std::make_unique<NamedArgNode>(identifierToken, expNode, loc);
-    actionNode->named_args.push_back(std::move(namedArgNode));
+  if (!consume(TokenType::OPENPAR))
+    return nullptr;
+  std::unique_ptr<ParamAppsNode> paramAppsNode =
+      std::make_unique<ParamAppsNode>(loc);
+  bool foundNamed = false;
+  while (true) {
+    std::string identifierToken = tokens.front().value;
+    loc = tokens.front().location;
+    bool isParsingNamedArg =
+        foundNamed || (tokens.front().type == TokenType::IDENTIFIER &&
+                       getTokenWithIndex(1).type == TokenType::ASSIGN);
+    if (isParsingNamedArg) {
+      if (!consume(TokenType::IDENTIFIER) || !consume(TokenType::ASSIGN))
+        return nullptr;
+      std::unique_ptr<ExpressionNode> expNode = parseExp();
+      if (!expNode)
+        return nullptr;
+      std::unique_ptr<NamedParamAppsNode> namedArgNode =
+          std::make_unique<NamedParamAppsNode>(identifierToken, expNode, loc);
+      paramAppsNode->named_args.push_back(std::move(namedArgNode));
+    } else {
+      std::unique_ptr<ExpressionNode> expNode = parseExp();
+      if (!expNode)
+        return nullptr;
+      std::unique_ptr<PositionalParamAppsNode> posArgNode =
+          std::make_unique<PositionalParamAppsNode>(expNode, loc);
+      paramAppsNode->positional_args.push_back(std::move(posArgNode));
+    }
     if (consume(TokenType::COMMA, /*errorThrowing*/ false))
-      return parseInstructionArgs(actionNode, /*foundNamed*/ true);
-  } else {
-    std::unique_ptr<ExpressionNode> expNode = parseExp();
-    if (!expNode)
-      return false;
-    std::unique_ptr<PositionalArgNode> posArgNode =
-        std::make_unique<PositionalArgNode>(expNode, loc);
-    actionNode->positional_args.push_back(std::move(posArgNode));
-    if (consume(TokenType::COMMA, /*errorThrowing*/ false))
-      return parseInstructionArgs(actionNode);
+      continue;
+    if (!consume(TokenType::CLOSEPAR))
+      return nullptr;
+    else
+      return paramAppsNode;
   }
-  return tokens.front().type == TokenType::CLOSEPAR;
 }
 
 /**
@@ -574,8 +580,8 @@ bool Parser::parseActorMatchArgs(
   std::unique_ptr<ExpressionNode> expNode = parseExp();
   if (!expNode)
     return false;
-  std::unique_ptr<NamedArgNode> namedArgNode =
-      std::make_unique<NamedArgNode>(identifierToken, expNode, loc);
+  std::unique_ptr<NamedParamAppsNode> namedArgNode =
+      std::make_unique<NamedParamAppsNode>(identifierToken, expNode, loc);
   actorMatchValueNode->named_args.push_back(std::move(namedArgNode));
   if (consume(TokenType::COMMA, /*errorThrowing*/ false))
     return parseActorMatchArgs(actorMatchValueNode);
@@ -591,8 +597,8 @@ bool Parser::parseCustomWeaponArgs(
   std::unique_ptr<ExpressionNode> expNode = parseExp();
   if (!expNode)
     return false;
-  std::unique_ptr<NamedArgNode> namedArgNode =
-      std::make_unique<NamedArgNode>(identifierToken, expNode, loc);
+  std::unique_ptr<NamedParamAppsNode> namedArgNode =
+      std::make_unique<NamedParamAppsNode>(identifierToken, expNode, loc);
   customWeaponValueNode->named_args.push_back(std::move(namedArgNode));
   if (consume(TokenType::COMMA, /*errorThrowing*/ false))
     return parseCustomWeaponArgs(customWeaponValueNode);

@@ -87,7 +87,13 @@ void BranchNode::print(int indent) {
 }
 
 void InstructionNode::print(int indent) {
-  std::cout << inden(indent) << identifier << "(";
+  std::cout << inden(indent) << identifier;
+  paramApps->print(indent);
+  std::cout << ";\n";
+}
+
+void ParamAppsNode::print(int indent) {
+  std::cout << "(";
   for (int i = 0; i < positional_args.size(); i++) {
     std::cout << *positional_args[i]->expNode;
     if (i != positional_args.size() - 1 || !named_args.empty())
@@ -99,7 +105,7 @@ void InstructionNode::print(int indent) {
     if (i != named_args.size() - 1)
       std::cout << ", ";
   }
-  std::cout << ");\n";
+  std::cout << ")";
 }
 
 //------------ clone ------------//
@@ -170,7 +176,11 @@ std::unique_ptr<BranchNode> BranchNode::clone() {
 }
 
 std::unique_ptr<InstructionNode> InstructionNode::clone() {
-  auto newNode = std::make_unique<InstructionNode>(identifier, loc);
+  return std::make_unique<InstructionNode>(identifier, paramApps->clone(), loc);
+}
+
+std::unique_ptr<ParamAppsNode> ParamAppsNode::clone() {
+  auto newNode = std::make_unique<ParamAppsNode>(loc);
   for (auto &namedArg : named_args)
     newNode.get()->named_args.push_back(namedArg.get()->clone());
   for (auto &positionalArg : positional_args)
@@ -178,14 +188,14 @@ std::unique_ptr<InstructionNode> InstructionNode::clone() {
   return newNode;
 }
 
-std::unique_ptr<NamedArgNode> NamedArgNode::clone() {
+std::unique_ptr<NamedParamAppsNode> NamedParamAppsNode::clone() {
   auto newExp = std::move(expNode.get()->clone());
-  return std::make_unique<NamedArgNode>(key, newExp, loc);
+  return std::make_unique<NamedParamAppsNode>(key, newExp, loc);
 }
 
-std::unique_ptr<PositionalArgNode> PositionalArgNode::clone() {
+std::unique_ptr<PositionalParamAppsNode> PositionalParamAppsNode::clone() {
   auto newExp = std::move(expNode.get()->clone());
-  return std::make_unique<PositionalArgNode>(newExp, loc);
+  return std::make_unique<PositionalParamAppsNode>(newExp, loc);
 }
 
 std::unique_ptr<ExpressionNode> ExpressionNode::clone() {
@@ -305,6 +315,11 @@ bool BranchNode::propagateExp(
 
 bool InstructionNode::propagateExp(
     std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
+  return paramApps->propagateExp(varExpMap);
+}
+
+bool ParamAppsNode::propagateExp(
+    std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
   bool ret = true;
   for (auto &namedArg : named_args)
     ret &= namedArg->propagateExp(varExpMap);
@@ -313,12 +328,12 @@ bool InstructionNode::propagateExp(
   return ret;
 }
 
-bool NamedArgNode::propagateExp(
+bool NamedParamAppsNode::propagateExp(
     std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
   return expNode->propagateExp(varExpMap);
 }
 
-bool PositionalArgNode::propagateExp(
+bool PositionalParamAppsNode::propagateExp(
     std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
   return expNode->propagateExp(varExpMap);
 }
@@ -407,6 +422,10 @@ bool BranchNode::foldValue() {
 }
 
 bool InstructionNode::foldValue() {
+  return paramApps->foldValue();
+}
+
+bool ParamAppsNode::foldValue() {
   bool ret = true;
   for (auto &namedArg : named_args)
     ret &= namedArg->foldValue();
@@ -415,9 +434,9 @@ bool InstructionNode::foldValue() {
   return ret;
 }
 
-bool NamedArgNode::foldValue() { return expNode->foldValue(); }
+bool NamedParamAppsNode::foldValue() { return expNode->foldValue(); }
 
-bool PositionalArgNode::foldValue() { return expNode->foldValue(); }
+bool PositionalParamAppsNode::foldValue() { return expNode->foldValue(); }
 
 bool ExpressionNode::foldValue() {
   if (isValue) {
@@ -605,6 +624,10 @@ bool BranchNode::hasUnresolvedValue() {
 }
 
 bool InstructionNode::hasUnresolvedValue() {
+  return paramApps->hasUnresolvedValue();
+}
+
+bool ParamAppsNode::hasUnresolvedValue() {
   bool ret = false;
   for (auto &namedArg : named_args)
     ret |= namedArg->hasUnresolvedValue();
@@ -613,11 +636,11 @@ bool InstructionNode::hasUnresolvedValue() {
   return ret;
 }
 
-bool NamedArgNode::hasUnresolvedValue() {
+bool NamedParamAppsNode::hasUnresolvedValue() {
   return expNode->hasUnresolvedValue();
 }
 
-bool PositionalArgNode::hasUnresolvedValue() {
+bool PositionalParamAppsNode::hasUnresolvedValue() {
   return expNode->hasUnresolvedValue();
 }
 
