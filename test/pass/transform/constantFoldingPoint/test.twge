@@ -1,0 +1,16 @@
+// OPTION: --print-ast-after-only=constantFolding
+def testListPoint(v): actions {
+    addActor(patrol = v);
+}
+
+def testPoint(v): actions {
+    addActor(patrol = [v,Point(0,0),v]);
+}
+
+block init {
+    actions {
+        testListPoint([Point(1,1),Point(2,2)]);
+        testPoint(Point(2,2));
+        testListPoint([Point(1+1,1)]);
+    }
+}

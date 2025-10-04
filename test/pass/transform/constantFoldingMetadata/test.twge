@@ -1,0 +1,6 @@
+// OPTION: --print-ast-after-only=constantFolding
+const POINT = Point(8,8);
+const STRING = "123" + "456";
+
+__skydowLocs__ = POINT;
+__title__ = STRING;

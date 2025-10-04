@@ -1,0 +1,12 @@
+//---------------------------------//
+//--- AST After constantFolding ---//
+//---------------------------------//
+block init {
+    actions {
+        print(text = "123456789");
+    }
+    checks {
+    }
+    triggers {
+    }
+}

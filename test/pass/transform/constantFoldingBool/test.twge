@@ -1,0 +1,13 @@
+// OPTION: --print-ast-after-only=constantFolding
+def testBool(v) : actions {
+    actorTalk(cleanTalk = v);
+}
+
+block init {
+    actions {
+        testBool(2 > 3 && 5 < 7);
+        testBool(2 <= 3 || 5 >= 7);
+        testBool("23" != "57");
+        testBool("23" == "57");
+    }
+}

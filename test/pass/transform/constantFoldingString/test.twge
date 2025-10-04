@@ -1,0 +1,6 @@
+// OPTION: --print-ast-after-only=constantFolding
+block init {
+    actions {
+        print(text = "123" + "456" + "789");
+    }
+}

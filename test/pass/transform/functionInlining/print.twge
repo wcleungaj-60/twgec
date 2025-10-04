@@ -1,0 +1,26 @@
+//--------------------------------//
+//--- AST After functionInling ---//
+//--------------------------------//
+block init {
+    actions {
+        print(text = "A");
+        print(text = "B");
+        print(text = "A");
+        print(text = "C");
+        print(text = "A");
+        print(text = "B");
+        print(text = "A");
+        print(text = "D");
+        print(text = "A");
+        print(text = "B");
+        print(text = "A");
+        print(text = "C");
+        print(text = "A");
+        print(text = "B");
+        print(text = "A");
+    }
+    checks {
+    }
+    triggers {
+    }
+}

@@ -1,0 +1,15 @@
+//---------------------------------//
+//--- AST After constantFolding ---//
+//---------------------------------//
+block init {
+    actions {
+        actorTalk(cleanTalk = false);
+        actorTalk(cleanTalk = true);
+        actorTalk(cleanTalk = true);
+        actorTalk(cleanTalk = false);
+    }
+    checks {
+    }
+    triggers {
+    }
+}

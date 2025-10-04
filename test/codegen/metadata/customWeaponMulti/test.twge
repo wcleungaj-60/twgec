@@ -1,7 +1,0 @@
-__useCustomWeapons__ = true;
-__customWeapons__ = [
-    CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff"),
-    CustomWeapon(reference = "TWilightGameEventCompiler.weapon_dark_staff", code = "dark_staff"),
-    CustomWeapon(reference = "TWilightGameEventCompiler.weapon_water_staff", code = "water_staff"),
-    CustomWeapon(reference = "TWilightGameEventCompiler.weapon_light_staff", code = "light_staff")
-];

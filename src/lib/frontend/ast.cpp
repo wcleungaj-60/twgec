@@ -7,10 +7,10 @@ void ModuleNode::print(std::string title, int indent) {
   std::cout << "//----" << std::string(title.size(), '-') << "----//\n";
   std::cout << "//--- " << title << " ---//\n";
   std::cout << "//----" << std::string(title.size(), '-') << "----//\n";
-  for (auto &metadata : metadatas)
-    metadata->print(indent);
   for (auto &constDef : constDefs)
     constDef->print(indent);
+  for (auto &metadata : metadatas)
+    metadata->print(indent);
   for (auto &funDef : funDefs)
     funDef->print(indent);
   for (auto &block : blocks)
@@ -38,7 +38,7 @@ void FunDefNode::print(int indent) {
 }
 
 void ConstDefNode::print(int indent) {
-  std::cout << inden(indent) << "const " << key << " = " << *expNode << "\n";
+  std::cout << inden(indent) << "const " << key << " = " << *expNode << ";\n";
 }
 
 void BlockNode::print(int indent) {

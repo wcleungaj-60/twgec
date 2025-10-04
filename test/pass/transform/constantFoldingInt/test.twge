@@ -1,0 +1,20 @@
+// OPTION: --print-ast-after-only=constantFolding
+def testInt(v) : actions {
+    actorTalk(duration = v);
+}
+
+block init {
+    actions {
+        testInt(2 + 3 + 5 + 7);
+        testInt(2 + 3 + 5 * 7);
+        testInt(2 + 3 * 5 + 7);
+        testInt(2 + 3 * 5 * 7);
+        testInt(2 * 3 + 5 + 7);
+        testInt(2 * 3 + 5 * 7);
+        testInt(2 * 3 * 5 + 7);
+        testInt(2 * 3 * 5 * 7);
+        testInt(2 + 3 * (5 + 7));
+        testInt((2 + 3) * 5 + 7);
+        testInt((2 + 3) * (5 + 7));
+    }
+}

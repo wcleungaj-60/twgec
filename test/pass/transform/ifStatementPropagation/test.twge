@@ -1,0 +1,25 @@
+// OPTION: --print-ast-after-only=ifStatementPropagation
+block init {
+    actions {
+        if(true) {
+            print(text = "print true 1");
+            print(text = "print true 2");
+            print(text = "print true 3");
+        }
+        if(false) {
+            print(text = "print false 1");
+            print(text = "print false 2");
+            print(text = "print false 3");
+        }
+        if(true) {
+            print(text = "print true 1");
+            print(text = "print true 2");
+            print(text = "print true 3");
+        }
+        if(false) {
+            print(text = "print false 1");
+            print(text = "print false 2");
+            print(text = "print false 3");
+        }
+    }
+}

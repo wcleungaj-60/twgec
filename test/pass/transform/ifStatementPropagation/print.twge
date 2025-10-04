@@ -1,0 +1,17 @@
+//----------------------------------------//
+//--- AST After ifStatementPropagation ---//
+//----------------------------------------//
+block init {
+    actions {
+        print(text = "print true 1");
+        print(text = "print true 2");
+        print(text = "print true 3");
+        print(text = "print true 1");
+        print(text = "print true 2");
+        print(text = "print true 3");
+    }
+    checks {
+    }
+    triggers {
+    }
+}

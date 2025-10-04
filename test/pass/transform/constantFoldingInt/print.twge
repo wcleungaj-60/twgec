@@ -1,0 +1,22 @@
+//---------------------------------//
+//--- AST After constantFolding ---//
+//---------------------------------//
+block init {
+    actions {
+        actorTalk(duration = 17);
+        actorTalk(duration = 40);
+        actorTalk(duration = 24);
+        actorTalk(duration = 107);
+        actorTalk(duration = 18);
+        actorTalk(duration = 41);
+        actorTalk(duration = 37);
+        actorTalk(duration = 210);
+        actorTalk(duration = 38);
+        actorTalk(duration = 32);
+        actorTalk(duration = 60);
+    }
+    checks {
+    }
+    triggers {
+    }
+}
