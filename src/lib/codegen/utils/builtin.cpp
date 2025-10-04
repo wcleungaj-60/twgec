@@ -80,7 +80,8 @@ JsonObjectNode getCustomWeaponsNode(std::unique_ptr<ExpressionNode> &expNode) {
   }
   customWeaponDefaultMap.addInputMap(customWeaponValueNode->named_args);
   JsonObjectNode fireNode = JsonObjectNode({
-      {"fireType", customWeaponDefaultMap.get("fireType")},
+      {"fireType", customWeaponDefaultMap.get(
+                       "fireType", CustomWeaponAttackKind::keywordEnum)},
       {"deltaDamage", "0"},
   });
   JsonArrayNode firesNode =

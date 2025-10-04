@@ -13,7 +13,6 @@ extern DefaultMap customWeaponDefaultMap;
 
 JsonArrayNode getActorMatchesNode(std::unique_ptr<InstructionNode> &instr,
                                   std::string key);
-// TODO: 1. update the keyword for weapon 2. add enum for attack
 JsonArrayNode
 getCustomWeaponsListNode(std::vector<std::unique_ptr<MetadataNode>> &metadatas,
                          std::string key);

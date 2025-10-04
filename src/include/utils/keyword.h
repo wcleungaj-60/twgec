@@ -740,6 +740,40 @@ static KeywordEnum keywordEnum("set ability operation kind",
                                });
 } // namespace SetAbilityOperationKind
 
+namespace CustomWeaponAttackKind {
+const string keywordSlash = "slash";
+const string keywordSlashZh = "雙手橫劈";
+const string keywordPierce = "pierce";
+const string keywordPierceZh = "雙手突刺";
+const string keywordSwing = "swing";
+const string keywordSwingZh = "橫掃千軍";
+const string keywordBrandish = "brandish";
+const string keywordBrandishZh = "關刀砍劈";
+const string keywordKnife = "knife";
+const string keywordKnifeZh = "小刀前刺";
+const string keywordBackslash = "backslash";
+const string keywordBackslashZh = "單手橫劈";
+const string keywordSword = "sword";
+const string keywordSwordZh = "大刀砍劈";
+static KeywordEnum keywordEnum("custom weapon attack kind",
+                               {
+                                   {keywordSlash, keywordSlash},
+                                   {keywordSlashZh, keywordSlash},
+                                   {keywordPierce, keywordPierce},
+                                   {keywordPierceZh, keywordPierce},
+                                   {keywordSwing, keywordSwing},
+                                   {keywordSwingZh, keywordSwing},
+                                   {keywordBrandish, keywordBrandish},
+                                   {keywordBrandishZh, keywordBrandish},
+                                   {keywordKnife, keywordKnife},
+                                   {keywordKnifeZh, keywordKnife},
+                                   {keywordBackslash, keywordBackslash},
+                                   {keywordBackslashZh, keywordBackslash},
+                                   {keywordSword, keywordSword},
+                                   {keywordSwordZh, keywordSword},
+                               });
+} // namespace CustomWeaponAttackKind
+
 } // namespace keyword
 
 #endif
