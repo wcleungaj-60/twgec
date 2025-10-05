@@ -73,6 +73,7 @@ DefaultMap action::ActionAddMapSign::defaultMap = DefaultMap(
         {"y", {AST_INT, CODEGEN_STRING, "0"}},
         {"range", {AST_INT, CODEGEN_STRING, "0"}},
         {"rotation", {AST_INT, CODEGEN_STRING, "0"}},
+        {"showButtons", {AST_BOOL, CODEGEN_BOOL, "true"}},
     },
     "addMapSign");
 
@@ -116,6 +117,16 @@ DefaultMap action::ActionEnblastEffect::defaultMap = DefaultMap(
         {"speed", {AST_INT, CODEGEN_STRING, "0.7"}},
     },
     "enblastEffect");
+
+DefaultMap action::ActionMapWarp::defaultMap = DefaultMap(
+    {
+        {"fromX", {AST_INT, CODEGEN_STRING, "0"}},
+        {"fromY", {AST_INT, CODEGEN_STRING, "0"}},
+        {"toX", {AST_INT, CODEGEN_STRING, "0"}},
+        {"toY", {AST_INT, CODEGEN_STRING, "0"}},
+        {"direction", {AST_STRING, CODEGEN_STRING, "right"}},
+    },
+    "mapWrap");
 
 DefaultMap action::ActionMissionComplete::defaultMap = DefaultMap(
     {
@@ -338,7 +349,7 @@ void action::ActionAddMapSign::method(std::ofstream &of,
       {"rotation", defaultMap.get("rotation")},
       {"speech", defaultMap.get("text")},
       {"parsePolicy", "\"view\""},
-      {"showButtons", "true"},
+      {"showButtons", defaultMap.get("showButtons")},
       {"btnsGroup", btnsGroupNode.to_string(24)},
   });
   JsonObjectNode rootNode = JsonObjectNode({
@@ -422,6 +433,34 @@ void action::ActionEnblastEffect::method(
   });
   JsonObjectNode rootNode = JsonObjectNode({
       {"type", "\"EnblastEffect\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
+
+void action::ActionMapWarp::method(std::ofstream &of,
+                                   std::unique_ptr<ParamAppsNode> &action) {
+  defaultMap.addInputMap(action->named_args);
+  JsonObjectNode locationNode = JsonObjectNode({
+      {"x", defaultMap.get("fromX")},
+      {"y", defaultMap.get("fromY")},
+      {"range", "\"0\""},
+  });
+  JsonObjectNode targetNode = JsonObjectNode({
+      {"x", defaultMap.get("toX")},
+      {"y", defaultMap.get("toY")},
+      {"range", "\"0\""},
+  });
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"location", locationNode.to_string(24)},
+      {"op", "\"add\""},
+      // TODO: add keyword for directionKind
+      {"direction", defaultMap.get("direction")},
+      {"warpSpeed", "\"imme\""},
+      {"target", targetNode.to_string(24)},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"MapWarp\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);

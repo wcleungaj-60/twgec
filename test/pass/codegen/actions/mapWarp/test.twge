@@ -1,0 +1,5 @@
+block init {
+    actions {
+        mapWarp(fromX = 10, fromY = 20, toX = 10, toY = 22, direction = "down");
+    }
+}

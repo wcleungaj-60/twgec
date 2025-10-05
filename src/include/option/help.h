@@ -111,6 +111,7 @@ std::string getActions() {
   ret += getDefaultMapItem(ActionAddStuff::defaultMap, "+武器道具");
   ret += getDefaultMapItem(ActionDeltaHp::defaultMap, "角色加減血");
   ret += getDefaultMapItem(ActionEnblastEffect::defaultMap, "光彈特效");
+  ret += getDefaultMapItem(ActionMapWarp::defaultMap, "設定地圖傳送點");
   ret += getDefaultMapItem(ActionMissionComplete::defaultMap, "任務完成");
   ret += getDefaultMapItem(ActionLongBo::defaultMap, "+龍波");
   // `print` is used in the front-end instead of `console`

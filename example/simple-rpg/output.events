@@ -51,20 +51,20 @@
                 "useDefaultCampLocs": false,
                 "skydowLocs": [
                     {
-                        "x": "23",
-                        "y": "26"
+                        "x": "10",
+                        "y": "10"
                     }
                 ],
                 "royalLocs": [
                     {
-                        "x": "23",
-                        "y": "26"
+                        "x": "10",
+                        "y": "10"
                     }
                 ],
                 "thirdLocs": [
                     {
-                        "x": "23",
-                        "y": "26"
+                        "x": "10",
+                        "y": "10"
                     }
                 ],
                 "useCustomWeapons": true,
@@ -269,7 +269,7 @@
                     "data": {
                         "key": "HP",
                         "valueType": "integer",
-                        "value": "100+10*{CON}"
+                        "value": "100 + 10*{CON} + 2*{Lv}"
                     }
                 },
                 {
@@ -289,15 +289,6 @@
                         "setStatic": "u",
                         "setTornadoRes": "u",
                         "bloodType": "u"
-                    }
-                },
-                {
-                    "type": "DeltaHp",
-                    "data": {
-                        "actorCode": "instance",
-                        "deltaType": "heal",
-                        "hp": "{HP}",
-                        "casterCode": ""
                     }
                 }
             ],
@@ -581,7 +572,7 @@
                         },
                         "toType": "angle",
                         "toAngle": "{instance.bodyRotation}*180/3.14+32",
-                        "damage": "{INT} + 10",
+                        "damage": "{INT} + {PSY}/2 + 10",
                         "scale": "0.5",
                         "speed": "0.7"
                     }
@@ -596,7 +587,7 @@
                         },
                         "toType": "angle",
                         "toAngle": "{instance.bodyRotation}*180/3.14+16",
-                        "damage": "{INT} + 10",
+                        "damage": "{INT} + {PSY}/2 + 10",
                         "scale": "0.5",
                         "speed": "0.7"
                     }
@@ -611,7 +602,7 @@
                         },
                         "toType": "angle",
                         "toAngle": "{instance.bodyRotation}*180/3.14",
-                        "damage": "{INT} + 10",
+                        "damage": "{INT} + {PSY}/2 + 10",
                         "scale": "0.5",
                         "speed": "0.7"
                     }
@@ -626,7 +617,7 @@
                         },
                         "toType": "angle",
                         "toAngle": "{instance.bodyRotation}*180/3.14-16",
-                        "damage": "{INT} + 10",
+                        "damage": "{INT} + {PSY}/2 + 10",
                         "scale": "0.5",
                         "speed": "0.7"
                     }
@@ -641,7 +632,7 @@
                         },
                         "toType": "angle",
                         "toAngle": "{instance.bodyRotation}*180/3.14-32",
-                        "damage": "{INT} + 10",
+                        "damage": "{INT} + {PSY}/2 + 10",
                         "scale": "0.5",
                         "speed": "0.7"
                     }
@@ -775,8 +766,8 @@
                         "camp": "third",
                         "group": "0",
                         "location": {
-                            "x": "random(5,25)",
-                            "y": "random(5,25)",
+                            "x": "random(21,40)",
+                            "y": "random(0,19)",
                             "range": "0"
                         },
                         "shiftX": 0,
@@ -896,6 +887,33 @@
                 {
                     "type": "SetGlobal",
                     "data": {
+                        "key": "HP",
+                        "valueType": "integer",
+                        "value": "100 + 10*{CON} + 2*{Lv}"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "maxHp",
+                                "operation": "set",
+                                "value": "{HP}"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
                         "key": "ExpNeeded",
                         "valueType": "integer",
                         "value": "{Level}*2+4"
@@ -933,7 +951,7 @@
                     "data": {
                         "actorCode": "instance",
                         "deltaType": "heal",
-                        "hp": "{PSY}",
+                        "hp": "1 + {PSY} + {CON}/2",
                         "casterCode": ""
                     }
                 }
@@ -962,18 +980,6 @@
                         "donotActOnEachPass": false,
                         "varnameTotalLoops": "totalLoops",
                         "varnameOfPassCount": "totalPasses",
-                        "_logi": {
-                            "_and_or": ""
-                        },
-                        "_elseEventId": ""
-                    }
-                },
-                {
-                    "type": "NumberCheck",
-                    "data": {
-                        "value1": "{PSY}",
-                        "operator": ">",
-                        "value2": "0",
                         "_logi": {
                             "_and_or": ""
                         },
@@ -1041,7 +1047,7 @@
                         },
                         "toType": "angle",
                         "toAngle": "{instance.bodyRotation}*180/3.14",
-                        "damage": "{INT} + 10",
+                        "damage": "{INT} + {PSY}/2 + 10",
                         "scale": "0.5",
                         "speed": "0.7"
                     }
@@ -1286,8 +1292,8 @@
                         "loop": true,
                         "loopInterval": "10000",
                         "location": {
-                            "x": "23",
-                            "y": "25",
+                            "x": "4",
+                            "y": "8",
                             "range": "0"
                         },
                         "rotation": "0",
@@ -1303,8 +1309,8 @@
                         "loop": true,
                         "loopInterval": "10000",
                         "location": {
-                            "x": "23",
-                            "y": "25",
+                            "x": "4",
+                            "y": "8",
                             "range": "0"
                         },
                         "rotation": "0",
@@ -1320,8 +1326,8 @@
                         "loop": true,
                         "loopInterval": "10000",
                         "location": {
-                            "x": "23",
-                            "y": "25",
+                            "x": "4",
+                            "y": "8",
                             "range": "0"
                         },
                         "rotation": "0",
@@ -1337,8 +1343,8 @@
                         "loop": true,
                         "loopInterval": "10000",
                         "location": {
-                            "x": "23",
-                            "y": "25",
+                            "x": "4",
+                            "y": "8",
                             "range": "0"
                         },
                         "rotation": "0",
@@ -1354,93 +1360,8 @@
                         "loop": true,
                         "loopInterval": "10000",
                         "location": {
-                            "x": "23",
-                            "y": "25",
-                            "range": "0"
-                        },
-                        "rotation": "0",
-                        "cameraZoomPolicy": "none",
-                        "localVarname": "item"
-                    }
-                },
-                {
-                    "type": "AddStuff",
-                    "data": {
-                        "itemCode": "item*",
-                        "itemType": "custom_iron_sword",
-                        "loop": true,
-                        "loopInterval": "10000",
-                        "location": {
-                            "x": "23",
-                            "y": "23",
-                            "range": "0"
-                        },
-                        "rotation": "0",
-                        "cameraZoomPolicy": "none",
-                        "localVarname": "item"
-                    }
-                },
-                {
-                    "type": "AddStuff",
-                    "data": {
-                        "itemCode": "item*",
-                        "itemType": "custom_iron_sword",
-                        "loop": true,
-                        "loopInterval": "10000",
-                        "location": {
-                            "x": "23",
-                            "y": "23",
-                            "range": "0"
-                        },
-                        "rotation": "0",
-                        "cameraZoomPolicy": "none",
-                        "localVarname": "item"
-                    }
-                },
-                {
-                    "type": "AddStuff",
-                    "data": {
-                        "itemCode": "item*",
-                        "itemType": "custom_iron_sword",
-                        "loop": true,
-                        "loopInterval": "10000",
-                        "location": {
-                            "x": "23",
-                            "y": "23",
-                            "range": "0"
-                        },
-                        "rotation": "0",
-                        "cameraZoomPolicy": "none",
-                        "localVarname": "item"
-                    }
-                },
-                {
-                    "type": "AddStuff",
-                    "data": {
-                        "itemCode": "item*",
-                        "itemType": "custom_iron_sword",
-                        "loop": true,
-                        "loopInterval": "10000",
-                        "location": {
-                            "x": "23",
-                            "y": "23",
-                            "range": "0"
-                        },
-                        "rotation": "0",
-                        "cameraZoomPolicy": "none",
-                        "localVarname": "item"
-                    }
-                },
-                {
-                    "type": "AddStuff",
-                    "data": {
-                        "itemCode": "item*",
-                        "itemType": "custom_iron_sword",
-                        "loop": true,
-                        "loopInterval": "10000",
-                        "location": {
-                            "x": "23",
-                            "y": "23",
+                            "x": "4",
+                            "y": "8",
                             "range": "0"
                         },
                         "rotation": "0",
@@ -1454,14 +1375,235 @@
                         "localVarname": "",
                         "locs": [
                             {
-                                "x": "19",
-                                "y": "28",
+                                "x": "4",
+                                "y": "7",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "90",
+                        "speech": "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈",
+                        "parsePolicy": "view",
+                        "showButtons": false,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "",
+                                    "close": true,
+                                    "label": "",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "6",
+                                "y": "7",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "90",
+                        "speech": "【鐵劍】\n武器傷害：【30+力量*3】\n技能：恢復四分之一的血量",
+                        "parsePolicy": "view",
+                        "showButtons": false,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "",
+                                    "close": true,
+                                    "label": "",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "MapWarp",
+                    "data": {
+                        "location": {
+                            "x": "19",
+                            "y": "9",
+                            "range": "0"
+                        },
+                        "op": "add",
+                        "direction": "right",
+                        "warpSpeed": "imme",
+                        "target": {
+                            "x": "21",
+                            "y": "9",
+                            "range": "0"
+                        }
+                    }
+                },
+                {
+                    "type": "MapWarp",
+                    "data": {
+                        "location": {
+                            "x": "19",
+                            "y": "10",
+                            "range": "0"
+                        },
+                        "op": "add",
+                        "direction": "right",
+                        "warpSpeed": "imme",
+                        "target": {
+                            "x": "21",
+                            "y": "10",
+                            "range": "0"
+                        }
+                    }
+                },
+                {
+                    "type": "MapWarp",
+                    "data": {
+                        "location": {
+                            "x": "21",
+                            "y": "9",
+                            "range": "0"
+                        },
+                        "op": "add",
+                        "direction": "left",
+                        "warpSpeed": "imme",
+                        "target": {
+                            "x": "19",
+                            "y": "9",
+                            "range": "0"
+                        }
+                    }
+                },
+                {
+                    "type": "MapWarp",
+                    "data": {
+                        "location": {
+                            "x": "21",
+                            "y": "10",
+                            "range": "0"
+                        },
+                        "op": "add",
+                        "direction": "left",
+                        "warpSpeed": "imme",
+                        "target": {
+                            "x": "19",
+                            "y": "10",
+                            "range": "0"
+                        }
+                    }
+                },
+                {
+                    "type": "AddStuff",
+                    "data": {
+                        "itemCode": "item*",
+                        "itemType": "custom_iron_sword",
+                        "loop": true,
+                        "loopInterval": "10000",
+                        "location": {
+                            "x": "6",
+                            "y": "8",
+                            "range": "0"
+                        },
+                        "rotation": "0",
+                        "cameraZoomPolicy": "none",
+                        "localVarname": "item"
+                    }
+                },
+                {
+                    "type": "AddStuff",
+                    "data": {
+                        "itemCode": "item*",
+                        "itemType": "custom_iron_sword",
+                        "loop": true,
+                        "loopInterval": "10000",
+                        "location": {
+                            "x": "6",
+                            "y": "8",
+                            "range": "0"
+                        },
+                        "rotation": "0",
+                        "cameraZoomPolicy": "none",
+                        "localVarname": "item"
+                    }
+                },
+                {
+                    "type": "AddStuff",
+                    "data": {
+                        "itemCode": "item*",
+                        "itemType": "custom_iron_sword",
+                        "loop": true,
+                        "loopInterval": "10000",
+                        "location": {
+                            "x": "6",
+                            "y": "8",
+                            "range": "0"
+                        },
+                        "rotation": "0",
+                        "cameraZoomPolicy": "none",
+                        "localVarname": "item"
+                    }
+                },
+                {
+                    "type": "AddStuff",
+                    "data": {
+                        "itemCode": "item*",
+                        "itemType": "custom_iron_sword",
+                        "loop": true,
+                        "loopInterval": "10000",
+                        "location": {
+                            "x": "6",
+                            "y": "8",
+                            "range": "0"
+                        },
+                        "rotation": "0",
+                        "cameraZoomPolicy": "none",
+                        "localVarname": "item"
+                    }
+                },
+                {
+                    "type": "AddStuff",
+                    "data": {
+                        "itemCode": "item*",
+                        "itemType": "custom_iron_sword",
+                        "loop": true,
+                        "loopInterval": "10000",
+                        "location": {
+                            "x": "6",
+                            "y": "8",
+                            "range": "0"
+                        },
+                        "rotation": "0",
+                        "cameraZoomPolicy": "none",
+                        "localVarname": "item"
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "3",
+                                "y": "17",
                                 "range": "0"
                             }
                         ],
                         "shape": "wood",
                         "rotation": "270",
-                        "speech": "【力量】\n消耗一點能力點，增加鐵劍三點傷害",
+                        "speech": "【力量】\n消耗一點能力點，提升劍類傷害",
                         "parsePolicy": "view",
                         "showButtons": true,
                         "btnsGroup": {
@@ -1486,14 +1628,14 @@
                         "localVarname": "",
                         "locs": [
                             {
-                                "x": "21",
-                                "y": "28",
+                                "x": "5",
+                                "y": "17",
                                 "range": "0"
                             }
                         ],
                         "shape": "wood",
                         "rotation": "270",
-                        "speech": "【體質】\n消耗一點能力點，增加十點血量上限",
+                        "speech": "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力",
                         "parsePolicy": "view",
                         "showButtons": true,
                         "btnsGroup": {
@@ -1518,8 +1660,8 @@
                         "localVarname": "",
                         "locs": [
                             {
-                                "x": "23",
-                                "y": "28",
+                                "x": "7",
+                                "y": "17",
                                 "range": "0"
                             }
                         ],
@@ -1550,14 +1692,14 @@
                         "localVarname": "",
                         "locs": [
                             {
-                                "x": "25",
-                                "y": "28",
+                                "x": "9",
+                                "y": "17",
                                 "range": "0"
                             }
                         ],
                         "shape": "wood",
                         "rotation": "270",
-                        "speech": "【智慧】\n消耗一點能力點，增加法杖光彈一點傷害",
+                        "speech": "【智慧】\n消耗一點能力點，提升杖類傷害",
                         "parsePolicy": "view",
                         "showButtons": true,
                         "btnsGroup": {
@@ -1582,14 +1724,14 @@
                         "localVarname": "",
                         "locs": [
                             {
-                                "x": "27",
-                                "y": "28",
+                                "x": "11",
+                                "y": "17",
                                 "range": "0"
                             }
                         ],
                         "shape": "wood",
                         "rotation": "270",
-                        "speech": "【精神】\n消耗一點能力點，每十秒恢復一點體力",
+                        "speech": "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力",
                         "parsePolicy": "view",
                         "showButtons": true,
                         "btnsGroup": {

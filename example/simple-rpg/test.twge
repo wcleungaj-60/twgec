@@ -1,7 +1,23 @@
+// Constant Definition
+const INSTANCE_ANGLE = "{instance.bodyRotation}*180/3.14";
+const WIND_STAFF_ENBLAST_DAMAGE = "{INT} + {PSY}/2 + 10";
+const HP_FORMULA = "100 + 10*{CON} + 2*{Lv}";
+const RECOVERY_FORMULA = "1 + {PSY} + {CON}/2";
+const STATUS_TEXT = 
+"【Lv{Level}】\n" +
+"Exp:{Exp}/{ExpNeeded}\n" +
+"尚餘能力點：{Point}\n" +
+"力量：{STR}\n" +
+"體質：{CON}\n" +
+"敏捷：{AGI}\n" +
+"智慧：{INT}\n" +
+"精神：{PSY}";
+const SPAWN_POINT = Point(10,10);
+
 // Metadata Setting
-__skydowLocs__ = Point(23,26);
-__royalLocs__ = Point(23,26);
-__thirdLocs__ = Point(23,26);
+__skydowLocs__ = SPAWN_POINT;
+__royalLocs__ = SPAWN_POINT;
+__thirdLocs__ = SPAWN_POINT;
 __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
@@ -16,10 +32,6 @@ __customWeapons__ = [
 ];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 1;
-
-// Constant Definition
-const INSTANCE_ANGLE = "{instance.bodyRotation}*180/3.14";
-const STATUS_TEXT = "【Lv{Level}】\nExp:{Exp}/{ExpNeeded}\n尚餘能力點：{Point}\n力量：{STR}\n體質：{CON}\n敏捷：{AGI}\n智慧：{INT}\n精神：{PSY}";
 
 // Utils Function Definition
 def setInt(key, value) : actions {
@@ -54,11 +66,10 @@ def clickIncreaseDef(type, typeZh) : block {
     actions {
         decrement("Point");
         increment(type);
-        actorTalk(actorId = "instance", text = "成功提升一點"+typeZh+"，尚餘{Point}點能力點");
+        actorTalk(actorId = "instance", text = "成功提升一點" + typeZh + "，尚餘{Point}點能力點");
         if(type == "CON") {
-            setInt("HP", "100+10*{CON}");
+            setInt("HP", HP_FORMULA);
             actorAttributes(actorId = "instance", attr = "maxHp", value = "{HP}");
-            deltaHp(actorCode = "instance", value = "{HP}");
         }
         if(type == "AGI") {
             // when AGI = 0, closeWeaponSpeed = 1
@@ -80,11 +91,12 @@ def releasePowerDef(weapon) : block {
     }
     actions {
         if(weapon == "custom_wind_staff") {
-        enblastEffect(fromActor = "instance", toAngle = INSTANCE_ANGLE + "+32", scale = "0.5", damage = "{INT} + 10");
-        enblastEffect(fromActor = "instance", toAngle = INSTANCE_ANGLE + "+16", scale = "0.5", damage = "{INT} + 10");
-        enblastEffect(fromActor = "instance", toAngle = INSTANCE_ANGLE, scale = "0.5", damage = "{INT} + 10");
-        enblastEffect(fromActor = "instance", toAngle = INSTANCE_ANGLE + "-16", scale = "0.5", damage = "{INT} + 10");
-        enblastEffect(fromActor = "instance", toAngle = INSTANCE_ANGLE + "-32", scale = "0.5", damage = "{INT} + 10");
+        // TODO: Implicit Conversion from Int to String
+        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE,  toAngle = INSTANCE_ANGLE + "+32");
+        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE,  toAngle = INSTANCE_ANGLE + "+16");
+        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE,  toAngle = INSTANCE_ANGLE);
+        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE,  toAngle = INSTANCE_ANGLE + "-16");
+        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE,  toAngle = INSTANCE_ANGLE + "-32");
         }
         if(weapon == "custom_iron_sword") {
             deltaHp(actorCode = "instance", value = "{HP}/4");
@@ -121,7 +133,7 @@ block monsterSpawn {
     }
     actions {
         addActor(name = "鹿(60)", id = "monster_deer*", camp = "第三", 
-                hp = 60, x = "random(5,25)", y = "random(5,25)", localVarname = "actor", 
+                hp = 60, x = "random(21,40)", y = "random(0,19)", localVarname = "actor", 
                 weapon1 = "fist", weapon2 = "fist", strength = "10", role = "鹿");
         actorFollow(actorId = "actor", type = "跟隨自己");
     }
@@ -137,6 +149,8 @@ block levelUp {
         increment("Level");
         increment("Point");
         increment("Point");
+        setInt("HP", HP_FORMULA);
+        actorAttributes(actorId = "instance", attr = "maxHp", value = "{HP}");
         setInt("ExpNeeded", "{Level}*2+4");
     }
 }
@@ -146,10 +160,9 @@ block recover {
     __repeatInterval__ = 10000;
     checks {
         forEachActor(actor = ActorMatch(controller = "玩家"), varname = "instance");
-        checkNumber(lhs = "{PSY}", op = ">", rhs = 0);
     }
     actions {
-        deltaHp(actorCode = "instance", value = "{PSY}");
+        deltaHp(actorCode = "instance", value = RECOVERY_FORMULA);
     }
 }
 
@@ -169,7 +182,7 @@ block staffAttack {
         actorFire(weapon = "custom_wind_staff", varName = "instance");
     }
     actions {
-        enblastEffect(fromActor = "instance", toAngle = INSTANCE_ANGLE, scale = "0.5", damage = "{INT} + 10");
+        enblastEffect(fromActor = "instance", toAngle = INSTANCE_ANGLE, scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE);
     }
 }
 
@@ -199,20 +212,26 @@ block init {
         setWeaponAbility(weapon = "小刀", operation = "無技能", level = 2);
         setWeaponAbility(weapon = "custom_wind_staff");
         setWeaponAbility(weapon = "custom_iron_sword");
-        addStuff(x = 23, y = 25, item = "custom_wind_staff");
-        addStuff(x = 23, y = 25, item = "custom_wind_staff");
-        addStuff(x = 23, y = 25, item = "custom_wind_staff");
-        addStuff(x = 23, y = 25, item = "custom_wind_staff");
-        addStuff(x = 23, y = 25, item = "custom_wind_staff");
-        addStuff(x = 23, y = 23, item = "custom_iron_sword");
-        addStuff(x = 23, y = 23, item = "custom_iron_sword");
-        addStuff(x = 23, y = 23, item = "custom_iron_sword");
-        addStuff(x = 23, y = 23, item = "custom_iron_sword");
-        addStuff(x = 23, y = 23, item = "custom_iron_sword");
-        addMapSign(x = 19, y = 28, rotation = 270, text = "【力量】\n消耗一點能力點，增加鐵劍三點傷害", buttonCode = "increaseSTR", buttonLabel = "確認");
-        addMapSign(x = 21, y = 28, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限", buttonCode = "increaseCON", buttonLabel = "確認");
-        addMapSign(x = 23, y = 28, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttonCode = "increaseAGI", buttonLabel = "確認");
-        addMapSign(x = 25, y = 28, rotation = 270, text = "【智慧】\n消耗一點能力點，增加法杖光彈一點傷害", buttonCode = "increaseINT", buttonLabel = "確認");
-        addMapSign(x = 27, y = 28, rotation = 270, text = "【精神】\n消耗一點能力點，每十秒恢復一點體力", buttonCode = "increasePSY", buttonLabel = "確認");
+        addStuff(x = 4, y = 8, item = "custom_wind_staff");
+        addStuff(x = 4, y = 8, item = "custom_wind_staff");
+        addStuff(x = 4, y = 8, item = "custom_wind_staff");
+        addStuff(x = 4, y = 8, item = "custom_wind_staff");
+        addStuff(x = 4, y = 8, item = "custom_wind_staff");
+        addMapSign(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
+        addMapSign(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：恢復四分之一的血量", showButtons = false);
+        mapWarp(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "right");
+        mapWarp(fromX = 19, fromY = 10, toX = 21, toY = 10, direction = "right");
+        mapWarp(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "left");
+        mapWarp(fromX = 21, fromY = 10, toX = 19, toY = 10, direction = "left");
+        addStuff(x = 6, y = 8, item = "custom_iron_sword");
+        addStuff(x = 6, y = 8, item = "custom_iron_sword");
+        addStuff(x = 6, y = 8, item = "custom_iron_sword");
+        addStuff(x = 6, y = 8, item = "custom_iron_sword");
+        addStuff(x = 6, y = 8, item = "custom_iron_sword");
+        addMapSign(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttonCode = "increaseSTR", buttonLabel = "確認");
+        addMapSign(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttonCode = "increaseCON", buttonLabel = "確認");
+        addMapSign(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttonCode = "increaseAGI", buttonLabel = "確認");
+        addMapSign(x = 9, y = 17, rotation = 270, text = "【智慧】\n消耗一點能力點，提升杖類傷害", buttonCode = "increaseINT", buttonLabel = "確認");
+        addMapSign(x = 11, y = 17, rotation = 270, text = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力", buttonCode = "increasePSY", buttonLabel = "確認");
     }
 }
