@@ -223,17 +223,11 @@ std::unique_ptr<ValueNode> PointValueNode::clone() {
 }
 
 std::unique_ptr<ValueNode> ActorMatchValueNode::clone() {
-  auto newNode = std::make_unique<ActorMatchValueNode>(loc);
-  for (auto &namedArg : this->named_args)
-    newNode->named_args.push_back(namedArg->clone());
-  return newNode;
+  return std::make_unique<ActorMatchValueNode>(paramApps->clone(), loc);
 }
 
 std::unique_ptr<ValueNode> CustomWeaponValueNode::clone() {
-  auto newNode = std::make_unique<CustomWeaponValueNode>(loc);
-  for (auto &namedArg : this->named_args)
-    newNode->named_args.push_back(namedArg->clone());
-  return newNode;
+  return std::make_unique<CustomWeaponValueNode>(paramApps->clone(), loc);
 }
 
 std::unique_ptr<ValueNode> StringValueNode::clone() {
@@ -360,12 +354,10 @@ bool ExpressionNode::propagateExp(
         item->propagateExp(varExpMap);
     } else if (auto *actorMatchNode =
                    dynamic_cast<ActorMatchValueNode *>(value.get())) {
-      for (auto &namedArg : actorMatchNode->named_args)
-        namedArg->propagateExp(varExpMap);
+      actorMatchNode->paramApps->propagateExp(varExpMap);
     } else if (auto *customWeaponNode =
                    dynamic_cast<CustomWeaponValueNode *>(value.get())) {
-      for (auto &namedArg : customWeaponNode->named_args)
-        namedArg->propagateExp(varExpMap);
+      customWeaponNode->paramApps->propagateExp(varExpMap);
     }
   } else {
     ret &= lhs->propagateExp(varExpMap);
@@ -421,9 +413,7 @@ bool BranchNode::foldValue() {
   return ret;
 }
 
-bool InstructionNode::foldValue() {
-  return paramApps->foldValue();
-}
+bool InstructionNode::foldValue() { return paramApps->foldValue(); }
 
 bool ParamAppsNode::foldValue() {
   bool ret = true;
@@ -449,15 +439,12 @@ bool ExpressionNode::foldValue() {
       ret &= valuePoint->x->foldValue();
       ret &= valuePoint->y->foldValue();
     } else if (valueList) {
-      for (auto &item : valueList->items) {
+      for (auto &item : valueList->items)
         ret &= item->foldValue();
-      }
     } else if (valueActorMatch) {
-      for (auto &namedArg : valueActorMatch->named_args)
-        ret &= namedArg.get()->foldValue();
+      ret &= valueActorMatch->paramApps->foldValue();
     } else if (valueCustomWeapon) {
-      for (auto &namedArg : valueCustomWeapon->named_args)
-        ret &= namedArg.get()->foldValue();
+      ret &= valueCustomWeapon->paramApps->foldValue();
     }
     return ret;
   }

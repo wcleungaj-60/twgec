@@ -32,7 +32,7 @@ void CodeGenerator::preCodegen() {
       auto cwNode = dynamic_cast<CustomWeaponValueNode *>(item->value.get());
       if (!cwNode)
         continue;
-      for (auto &namedArg : cwNode->named_args)
+      for (auto &namedArg : cwNode->paramApps->named_args)
         if (namedArg->key == "code") {
           auto stringNode =
               dynamic_cast<StringValueNode *>(namedArg->expNode->value.get());

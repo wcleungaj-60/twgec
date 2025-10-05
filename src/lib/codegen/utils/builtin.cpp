@@ -15,7 +15,8 @@ JsonObjectNode getCustomWeaponsNode(std::unique_ptr<ExpressionNode> &expNode) {
               << "\n";
     return JsonObjectNode();
   }
-  customWeaponDefaultMap.addInputMap(customWeaponValueNode->named_args);
+  customWeaponDefaultMap.addInputMap(
+      customWeaponValueNode->paramApps->named_args);
   JsonObjectNode fireNode = JsonObjectNode({
       {"fireType", customWeaponDefaultMap.get(
                        "fireType", CustomWeaponAttackKind::keywordEnum)},
@@ -172,7 +173,7 @@ JsonArrayNode getActorMatchesNode(const std::shared_ptr<ValueNode> &valueNode) {
               << "\n";
     return JsonArrayNode();
   }
-  actorMatchDefaultMap.addInputMap(actorMatchValueNode->named_args);
+  actorMatchDefaultMap.addInputMap(actorMatchValueNode->paramApps->named_args);
   JsonObjectNode actorCodeNode = JsonObjectNode({
       {"method", actorMatchDefaultMap.get("matchKind", matchKind::keywordEnum)},
       {"actorCode", actorMatchDefaultMap.get("id")},

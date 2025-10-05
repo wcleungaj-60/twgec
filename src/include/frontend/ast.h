@@ -371,10 +371,11 @@ public:
 class ActorMatchValueNode : public ValueNode {
 public:
   // Variable
-  std::vector<std::unique_ptr<NamedParamAppsNode>> named_args;
+  std::unique_ptr<ParamAppsNode> paramApps;
 
   // Constructor
-  ActorMatchValueNode(Location loc) : ValueNode(loc) {}
+  ActorMatchValueNode(std::unique_ptr<ParamAppsNode> paramApps, Location loc)
+      : paramApps(std::move(paramApps)), ValueNode(loc) {}
 
   // Function
   std::unique_ptr<ValueNode> clone();
@@ -383,10 +384,11 @@ public:
 class CustomWeaponValueNode : public ValueNode {
 public:
   // Variable
-  std::vector<std::unique_ptr<NamedParamAppsNode>> named_args;
+  std::unique_ptr<ParamAppsNode> paramApps;
 
   // Constructor
-  CustomWeaponValueNode(Location loc) : ValueNode(loc) {}
+  CustomWeaponValueNode(std::unique_ptr<ParamAppsNode> paramApps, Location loc)
+      : paramApps(std::move(paramApps)), ValueNode(loc) {}
 
   // Function
   std::unique_ptr<ValueNode> clone();
@@ -585,20 +587,20 @@ inline std::ostream &operator<<(std::ostream &os,
   } else if (auto actorMatchNode =
                  dynamic_cast<ActorMatchValueNode *>(valueNode.get())) {
     os << "ActorMatch(";
-    for (auto i = 0; i < actorMatchNode->named_args.size(); i++) {
-      os << actorMatchNode->named_args[i]->key << " = "
-         << *actorMatchNode->named_args[i]->expNode.get();
-      if (i != actorMatchNode->named_args.size() - 1)
+    for (auto i = 0; i < actorMatchNode->paramApps->named_args.size(); i++) {
+      os << actorMatchNode->paramApps->named_args[i]->key << " = "
+         << *actorMatchNode->paramApps->named_args[i]->expNode.get();
+      if (i != actorMatchNode->paramApps->named_args.size() - 1)
         os << ", ";
     }
     os << ")";
   } else if (auto customWeaponNode =
                  dynamic_cast<CustomWeaponValueNode *>(valueNode.get())) {
     os << "CustomWeapon(";
-    for (auto i = 0; i < customWeaponNode->named_args.size(); i++) {
-      os << customWeaponNode->named_args[i]->key << " = "
-         << *customWeaponNode->named_args[i]->expNode.get();
-      if (i != customWeaponNode->named_args.size() - 1)
+    for (auto i = 0; i < customWeaponNode->paramApps->named_args.size(); i++) {
+      os << customWeaponNode->paramApps->named_args[i]->key << " = "
+         << *customWeaponNode->paramApps->named_args[i]->expNode.get();
+      if (i != customWeaponNode->paramApps->named_args.size() - 1)
         os << ", ";
     }
     os << ")";

@@ -23,8 +23,6 @@ private:
   std::unique_ptr<BranchNode> parseBranch();
   std::unique_ptr<InstructionNode> parseInstruction();
   std::unique_ptr<ParamAppsNode> parseParamAppsNode();
-  bool parseActorMatchArgs(std::unique_ptr<ActorMatchValueNode> &);
-  bool parseCustomWeaponArgs(std::unique_ptr<CustomWeaponValueNode> &);
   std::unique_ptr<ExpressionNode> parseExp();
   std::unique_ptr<ExpressionNode> parseExpLogicalOr();
   std::unique_ptr<ExpressionNode> parseExpLogicalAnd();
