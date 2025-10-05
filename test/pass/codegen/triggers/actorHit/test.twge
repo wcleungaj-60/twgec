@@ -1,0 +1,5 @@
+block init {
+    triggers {
+        actorHit(actor = ActorMatch(), hitter = ActorMatch(), weapon = "custom_iron_sword");
+    }
+}

@@ -722,7 +722,7 @@ static KeywordEnum keywordEnum("delta hp kind",
                                });
 } // namespace deltaHpKind
 
-namespace SetAbilityOperationKind {
+namespace SetWeaponAbilityOperationKind {
 const string keywordSet = "set";
 const string keywordSetZh = "設定技能";
 const string keywordNone = "none";
@@ -738,7 +738,7 @@ static KeywordEnum keywordEnum("set ability operation kind",
                                    {keywordRemove, keywordRemove},
                                    {keywordRemoveZh, keywordRemove},
                                });
-} // namespace SetAbilityOperationKind
+} // namespace SetWeaponAbilityOperationKind
 
 namespace CustomWeaponAttackKind {
 const string keywordSlash = "slash";

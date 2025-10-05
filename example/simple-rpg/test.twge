@@ -173,6 +173,16 @@ block staffAttack {
     }
 }
 
+block swordAttack {
+    __repeat__ = -1;
+    triggers {
+        actorHit(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
+    }
+    actions {
+        deltaHp(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "{STR}*3");
+    }
+}
+
 block init {
     actions {
         setInt("STR", 0);
@@ -185,6 +195,8 @@ block init {
         setInt("Exp", 0);
         setInt("ExpNeeded", 6);
         setInt("HP", 100);
+        setWeaponAbility(weapon = "小刀", operation = "無技能", level = 1);
+        setWeaponAbility(weapon = "小刀", operation = "無技能", level = 2);
         setWeaponAbility(weapon = "custom_wind_staff");
         setWeaponAbility(weapon = "custom_iron_sword");
         addStuff(x = 23, y = 25, item = "custom_wind_staff");
@@ -197,10 +209,10 @@ block init {
         addStuff(x = 23, y = 23, item = "custom_iron_sword");
         addStuff(x = 23, y = 23, item = "custom_iron_sword");
         addStuff(x = 23, y = 23, item = "custom_iron_sword");
-        addMapSign(x = 19, y = 28, rotation = 270, text = "【力量】\n消耗一點能力點，增加小刀一點傷害 (未實現)", buttonCode = "increaseSTR", buttonLabel = "確認");
+        addMapSign(x = 19, y = 28, rotation = 270, text = "【力量】\n消耗一點能力點，增加鐵劍三點傷害", buttonCode = "increaseSTR", buttonLabel = "確認");
         addMapSign(x = 21, y = 28, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限", buttonCode = "increaseCON", buttonLabel = "確認");
-        addMapSign(x = 23, y = 28, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升近戰武器速度", buttonCode = "increaseAGI", buttonLabel = "確認");
-        addMapSign(x = 25, y = 28, rotation = 270, text = "【智慧】\n消耗一點能力點，增加木杖光彈一點傷害", buttonCode = "increaseINT", buttonLabel = "確認");
+        addMapSign(x = 23, y = 28, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttonCode = "increaseAGI", buttonLabel = "確認");
+        addMapSign(x = 25, y = 28, rotation = 270, text = "【智慧】\n消耗一點能力點，增加法杖光彈一點傷害", buttonCode = "increaseINT", buttonLabel = "確認");
         addMapSign(x = 27, y = 28, rotation = 270, text = "【精神】\n消耗一點能力點，每十秒恢復一點體力", buttonCode = "increasePSY", buttonLabel = "確認");
     }
 }

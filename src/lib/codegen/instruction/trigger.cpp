@@ -25,6 +25,17 @@ DefaultMap trigger::TriggerActorFire::defaultMap = DefaultMap(
     },
     "actorFire");
 
+DefaultMap trigger::TriggerActorHit::defaultMap = DefaultMap(
+    {
+        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
+        {"hitter", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
+        {"actorVarName", {AST_STRING, CODEGEN_STRING, ""}},
+        {"hitterVarName", {AST_STRING, CODEGEN_STRING, ""}},
+        {"damageValueVarName", {AST_STRING, CODEGEN_STRING, ""}},
+        {"weapon", {AST_STRING, CODEGEN_STRING, ""}},
+    },
+    "actorHit");
+
 DefaultMap trigger::TriggerClickButton::defaultMap = DefaultMap(
     {
         {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
@@ -87,6 +98,32 @@ void trigger::TriggerActorFire::method(
   }
   JsonObjectNode rootNode = JsonObjectNode({
       {"type", "\"ActorFire\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
+
+void trigger::TriggerActorHit::method(std::ofstream &of,
+                                      std::unique_ptr<ParamAppsNode> &trigger) {
+  defaultMap.addInputMap(trigger->named_args);
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"actorMatches", defaultMap.get("actor")},
+      {"varname", defaultMap.get("actorVarName")},
+      {"hitterMatches", defaultMap.get("hitter")},
+      {"hitterVarname", defaultMap.get("hitterVarName")},
+      {"damageTypes", "[]"},
+      {"damageVarname", defaultMap.get("damageValueVarName")},
+      {"aliveType", "\"skip\""},
+      {"checkFallDmg", "\"a\""},
+      {"checkDeviceDmg", "\"a\""},
+  });
+  if (defaultMap.get("weapon") != "\"\"") {
+    dataNode.addNode("checkWeaponType", "true")
+        .addNode("weaponTypeCheck", "\"include\"")
+        .addNode("weaponType", defaultMap.get("weapon"));
+  }
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"ActorHit\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);

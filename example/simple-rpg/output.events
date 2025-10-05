@@ -1064,6 +1064,75 @@
             ]
         },
         {
+            "id": "swordAttack",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "DeltaHp",
+                    "data": {
+                        "actorCode": "instance",
+                        "deltaType": "damage",
+                        "hp": "{STR}*3",
+                        "casterCode": "attacker"
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "ActorHit",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "hitterMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "hitterVarname": "attacker",
+                        "damageTypes": [],
+                        "damageVarname": "",
+                        "aliveType": "skip",
+                        "checkFallDmg": "a",
+                        "checkDeviceDmg": "a",
+                        "checkWeaponType": true,
+                        "weaponTypeCheck": "include",
+                        "weaponType": "custom_iron_sword"
+                    }
+                }
+            ]
+        },
+        {
             "id": "init",
             "disabled": false,
             "folder": "",
@@ -1151,6 +1220,34 @@
                         "key": "HP",
                         "valueType": "integer",
                         "value": "100"
+                    }
+                },
+                {
+                    "type": "SetWeaponAbility",
+                    "data": {
+                        "weaponType": "knife",
+                        "camp": {
+                            "campAll": true
+                        },
+                        "abilityLevel": 1,
+                        "operation": "none",
+                        "ability": {
+                            "value": "sounded"
+                        }
+                    }
+                },
+                {
+                    "type": "SetWeaponAbility",
+                    "data": {
+                        "weaponType": "knife",
+                        "camp": {
+                            "campAll": true
+                        },
+                        "abilityLevel": 2,
+                        "operation": "none",
+                        "ability": {
+                            "value": "sounded"
+                        }
                     }
                 },
                 {
@@ -1364,7 +1461,7 @@
                         ],
                         "shape": "wood",
                         "rotation": "270",
-                        "speech": "【力量】\n消耗一點能力點，增加小刀一點傷害 (未實現)",
+                        "speech": "【力量】\n消耗一點能力點，增加鐵劍三點傷害",
                         "parsePolicy": "view",
                         "showButtons": true,
                         "btnsGroup": {
@@ -1428,7 +1525,7 @@
                         ],
                         "shape": "wood",
                         "rotation": "270",
-                        "speech": "【敏捷】\n消耗一點能力點，重量減少3%，並提升近戰武器速度",
+                        "speech": "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度",
                         "parsePolicy": "view",
                         "showButtons": true,
                         "btnsGroup": {
@@ -1460,7 +1557,7 @@
                         ],
                         "shape": "wood",
                         "rotation": "270",
-                        "speech": "【智慧】\n消耗一點能力點，增加木杖光彈一點傷害",
+                        "speech": "【智慧】\n消耗一點能力點，增加法杖光彈一點傷害",
                         "parsePolicy": "view",
                         "showButtons": true,
                         "btnsGroup": {

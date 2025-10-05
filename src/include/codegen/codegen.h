@@ -8,6 +8,10 @@
   if (action->identifier == inputName)                                         \
   return action::Action##outputClass::method(of, action->paramApps)
 
+#define CODEGEN_ACTION_EXTRA_ARG(inputName, outputClass, ...)                  \
+  if (action->identifier == inputName)                                         \
+  return action::Action##outputClass::method(of, action->paramApps, __VA_ARGS__)
+
 #define CODEGEN_CHECK(inputName, outputClass)                                  \
   if (check->identifier == inputName)                                          \
   return check::Check##outputClass::method(of, check->paramApps)

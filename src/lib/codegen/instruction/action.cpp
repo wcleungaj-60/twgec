@@ -203,8 +203,8 @@ void action::ActionActorDisappear::method(
   of << inden(16) << rootNode.to_string(16);
 }
 
-void action::ActionActorFollow::method(
-    std::ofstream &of, std::unique_ptr<ParamAppsNode> &action) {
+void action::ActionActorFollow::method(std::ofstream &of,
+                                       std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorCode", defaultMap.get("actorId")},
@@ -306,8 +306,8 @@ void action::ActionAddActor::method(std::ofstream &of,
   of << inden(16) << rootNode.to_string(16);
 }
 
-void action::ActionAddMapSign::method(
-    std::ofstream &of, std::unique_ptr<ParamAppsNode> &action) {
+void action::ActionAddMapSign::method(std::ofstream &of,
+                                      std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode btnNode = JsonObjectNode({
       {"buttonCode", defaultMap.get("buttonCode")},
@@ -496,16 +496,19 @@ void action::ActionSetObjectVar::method(
 }
 
 void action::ActionSetWeaponAbility::method(
-    std::ofstream &of, std::unique_ptr<ParamAppsNode> &action) {
+    std::ofstream &of, std::unique_ptr<ParamAppsNode> &action,
+    std::map<std::string, std::string> extraEnum) {
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode campNode = JsonObjectNode("campAll", "true");
   JsonObjectNode abilityNode = JsonObjectNode(
       "value", defaultMap.get("ability", abilityKind::keywordEnum));
   JsonObjectNode dataNode = JsonObjectNode({
-      {"weaponType", defaultMap.get("weapon")},
+      {"weaponType",
+       defaultMap.get("weapon", weaponKind::keywordEnum, extraEnum)},
       {"camp", campNode.to_string(24)},
       {"abilityLevel", defaultMap.get("level")},
-      {"operation", defaultMap.get("operation", valueTypeKind::keywordEnum)},
+      {"operation",
+       defaultMap.get("operation", SetWeaponAbilityOperationKind::keywordEnum)},
       {"ability", abilityNode.to_string(24)},
   });
   JsonObjectNode rootNode = JsonObjectNode({
