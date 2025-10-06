@@ -1,17 +1,17 @@
 // Constant Definition
 const INSTANCE_ANGLE = "{instance.bodyRotation}*180/3.14";
-const WIND_STAFF_ENBLAST_DAMAGE = "{INT} + {PSY}/2 + 10";
-const HP_FORMULA = "100 + 10*{CON} + 2*{Lv}";
-const RECOVERY_FORMULA = "1 + {PSY} + {CON}/2";
+const WIND_STAFF_ENBLAST_DAMAGE = "{instance.INT} + {instance.PSY}/2 + 10";
+const HP_FORMULA = "98 + 10*{instance.CON} + 2*{instance.Level}";
+const RECOVERY_FORMULA = "1 + {instance.PSY} + {instance.CON}/2";
 const STATUS_TEXT = 
-"【Lv{Level}】\n" +
-"Exp:{Exp}/{ExpNeeded}\n" +
-"尚餘能力點：{Point}\n" +
-"力量：{STR}\n" +
-"體質：{CON}\n" +
-"敏捷：{AGI}\n" +
-"智慧：{INT}\n" +
-"精神：{PSY}";
+"【Lv{{instance.id}.Level}】\n" +
+"Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" +
+"尚餘能力點：{{instance.id}.Point}\n" +
+"力量：{{instance.id}.STR}\n" +
+"體質：{{instance.id}.CON}\n" +
+"敏捷：{{instance.id}.AGI}\n" +
+"智慧：{{instance.id}.INT}\n" +
+"精神：{{instance.id}.PSY}";
 const SPAWN_POINT = Point(10,10);
 
 // Metadata Setting
@@ -31,28 +31,7 @@ __customWeapons__ = [
     pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)
 ];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
-__roomSize__ = 1;
-
-// Utils Function Definition
-def setInt(key, value) : actions {
-    setGlobal(key = key, type = "integer", value = value);
-}
-
-def setNum(key, value) : actions {
-    setGlobal(key = key, type = "number", value = value);
-}
-
-def setString(key, value) : actions {
-    setGlobal(key = key, type = "string", value = value);
-}
-
-def increment(key) : actions {
-    setInt(key = key, value = "{"+key+"}+1");
-}
-
-def decrement(key) : actions {
-    setInt(key = key, value = "{"+key+"}-1");
-}
+__roomSize__ = 8;
 
 // Block Function Definition
 def clickIncreaseDef(type, typeZh) : block {
@@ -61,15 +40,15 @@ def clickIncreaseDef(type, typeZh) : block {
         clickButton(varName = "instance", buttonId = "increase" + type);
     }
     checks {
-        checkNumber(lhs = "{Point}", op = ">", rhs = 0);
+        checkNumber(lhs = "{instance.Point}", op = ">", rhs = 0);
     }
     actions {
-        decrement("Point");
-        increment(type);
-        actorTalk(actorId = "instance", text = "成功提升一點" + typeZh + "，尚餘{Point}點能力點");
+        setObjectVar(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
+        setObjectVar(key = type, object = "instance", type = "integer", value = "{instance."+type+"}+1");
+        actorTalk(actorId = "instance", text = "成功提升一點" + typeZh + "，尚餘{instance.Point}點能力點");
         if(type == "CON") {
-            setInt("HP", HP_FORMULA);
-            actorAttributes(actorId = "instance", attr = "maxHp", value = "{HP}");
+            setObjectVar(key = "HP", object = "instance", type = "integer", value = HP_FORMULA);
+            actorAttributes(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
         }
         if(type == "AGI") {
             // when AGI = 0, closeWeaponSpeed = 1
@@ -78,8 +57,8 @@ def clickIncreaseDef(type, typeZh) : block {
             // when AGI = 25, closeWeaponSpeed = 2.6667
             // when AGI = 125, closeWeaponSpeed = 3.5862
             // when AGI = inf, closeWeaponSpeed = 4
-            actorAttributes(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{AGI})");
-            actorAttributes(actorId = "instance", attr = "weight", value = "3*pow(0.97,{AGI})");
+            actorAttributes(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+            actorAttributes(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         }
     }
 }
@@ -99,7 +78,7 @@ def releasePowerDef(weapon) : block {
         enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE,  toAngle = INSTANCE_ANGLE + "-32");
         }
         if(weapon == "custom_iron_sword") {
-            deltaHp(actorCode = "instance", value = "{HP}/4");
+            deltaHp(actorCode = "instance", value = "{instance.HP}/4");
         }
     }
 }
@@ -117,11 +96,13 @@ block releasePowerIronSword = releasePowerDef("custom_iron_sword");
 block monsterDead {
     __repeat__ = -1;
     triggers {
-        actorDead(actor = ActorMatch(id = "monster"));
+        actorDead(actor = ActorMatch(id = "monster"), hitterVarName = "attacker");
     }
     actions {
-        increment("Exp");
+        setObjectVar(key = "Exp", object = "attacker", type = "integer", value = "{attacker.Exp}+1");
+        // TODO: Add item
         // TODO: Popup text
+        // TODO: Call event
     }
 }
 
@@ -142,16 +123,16 @@ block monsterSpawn {
 block levelUp {
     __repeat__ = -1;
     checks {
-        checkNumber(lhs = "{Exp}", op = ">=", rhs = "{ExpNeeded}");
+        forEachActor(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        checkNumber(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
-        setInt("Exp", "{Exp}-{ExpNeeded}");
-        increment("Level");
-        increment("Point");
-        increment("Point");
-        setInt("HP", HP_FORMULA);
-        actorAttributes(actorId = "instance", attr = "maxHp", value = "{HP}");
-        setInt("ExpNeeded", "{Level}*2+4");
+        setObjectVar(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}-{instance.ExpNeeded}");
+        setObjectVar(key = "Level", object = "instance", type = "integer", value = "{instance.Level}+1");
+        setObjectVar(key = "Point", object = "instance", type = "integer", value = "{instance.Point}+2");
+        setObjectVar(key = "ExpNeeded", object = "instance", type = "integer", value = "{instance.Level}*2+4");
+        setObjectVar(key = "HP", object = "instance", type = "integer", value = HP_FORMULA);
+        actorAttributes(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
     }
 }
 
@@ -192,22 +173,31 @@ block swordAttack {
         actorHit(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
     }
     actions {
-        deltaHp(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "{STR}*3");
+        deltaHp(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "{attacker.STR}*3");
+    }
+}
+
+block newPlayer {
+    __repeat__ = -1;
+    triggers {
+        actorAdded(varName = "instance");
+    }
+    actions {
+        setObjectVar(key = "STR", object = "instance", type = "integer", value = 0);
+        setObjectVar(key = "CON", object = "instance", type = "integer", value = 0);
+        setObjectVar(key = "AGI", object = "instance", type = "integer", value = 0);
+        setObjectVar(key = "INT", object = "instance", type = "integer", value = 0);
+        setObjectVar(key = "PSY", object = "instance", type = "integer", value = 0);
+        setObjectVar(key = "Level", object = "instance", type = "integer", value = 1);
+        setObjectVar(key = "Point", object = "instance", type = "integer", value = 5);
+        setObjectVar(key = "Exp", object = "instance", type = "integer", value = 0);
+        setObjectVar(key = "ExpNeeded", object = "instance", type = "integer", value = 6);
+        setObjectVar(key = "HP", object = "instance", type = "integer", value = 100);
     }
 }
 
 block init {
     actions {
-        setInt("STR", 0);
-        setInt("CON", 0);
-        setInt("AGI", 0);
-        setInt("INT", 0);
-        setInt("PSY", 0);
-        setInt("Level", 1);
-        setInt("Point", 5);
-        setInt("Exp", 0);
-        setInt("ExpNeeded", 6);
-        setInt("HP", 100);
         setWeaponAbility(weapon = "小刀", operation = "無技能", level = 1);
         setWeaponAbility(weapon = "小刀", operation = "無技能", level = 2);
         setWeaponAbility(weapon = "custom_wind_staff");
