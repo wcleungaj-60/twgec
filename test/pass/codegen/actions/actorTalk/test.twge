@@ -1,7 +1,3 @@
-__schema__ = "https://code.gamelet.com/gassets/schema/events/v1";
-__title__ = "我的任務";
-__map__ = "CG.TWEventsGameTemplate/gamemap.twmap";
-
 block init {
     actions {
         actorTalk(cleanTalk = false, wait = false, text = "test", duration = 1000, actorId = "instance");

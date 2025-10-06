@@ -1,7 +1,3 @@
-__schema__ = "https://code.gamelet.com/gassets/schema/events/v1";
-__title__ = "我的任務";
-__map__ = "CG.TWEventsGameTemplate/gamemap.twmap";
-
 block init {
     checks {
         forEachActor(actor = ActorMatch(controller = "玩家"), varname = "instance");
