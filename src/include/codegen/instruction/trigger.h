@@ -23,6 +23,7 @@ namespace trigger {
                        std::map<std::string, std::string> extraEnum);          \
   };
 
+REGISTER_CODE_GEN_TRIGGER(ActorAdded);
 REGISTER_CODE_GEN_TRIGGER(ActorDead);
 REGISTER_CODE_GEN_TRIGGER(ActorFire);
 REGISTER_CODE_GEN_TRIGGER(ActorHit);

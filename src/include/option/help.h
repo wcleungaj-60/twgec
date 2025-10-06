@@ -134,6 +134,7 @@ std::string getChecks() {
 
 std::string getTriggers() {
   std::string ret = "Supported Triggers:\n";
+  ret += getDefaultMapItem(TriggerActorAdded::defaultMap, "角色進入戰場");
   ret += getDefaultMapItem(TriggerActorDead::defaultMap, "角色死亡");
   ret += getDefaultMapItem(TriggerActorFire::defaultMap, "角色發動攻擊");
   ret += getDefaultMapItem(TriggerActorHit::defaultMap, "角色受傷");

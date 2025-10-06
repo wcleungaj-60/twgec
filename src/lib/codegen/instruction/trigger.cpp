@@ -9,6 +9,13 @@ using namespace codegen;
 using namespace formatter;
 using namespace keyword;
 
+DefaultMap trigger::TriggerActorAdded::defaultMap = DefaultMap(
+    {
+        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
+        {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
+    },
+    "actorAdded");
+
 DefaultMap trigger::TriggerActorDead::defaultMap = DefaultMap(
     {
         {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
@@ -63,6 +70,20 @@ DefaultMap trigger::TriggerReleasePower::defaultMap = DefaultMap(
         {"weapon", {AST_STRING, CODEGEN_STRING, ""}},
     },
     "releasePower");
+
+void trigger::TriggerActorAdded::method(
+    std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger) {
+  defaultMap.addInputMap(trigger->named_args);
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"actorMatches", defaultMap.get("actor")},
+      {"varname", defaultMap.get("varName")},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"ActorAdded\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
 
 void trigger::TriggerActorDead::method(
     std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger) {
