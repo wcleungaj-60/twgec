@@ -119,6 +119,7 @@ void CodeGenerator::codegenAction(std::ofstream &of,
   CODEGEN_ACTION("deltaHp", DeltaHp);
   CODEGEN_ACTION("enblastEffect", EnblastEffect);
   CODEGEN_ACTION("getCookie", GetCookie);
+  CODEGEN_ACTION("getUserState", GetUserState);
   CODEGEN_ACTION("mapWarp", MapWarp);
   CODEGEN_ACTION("missionComplete", MissionComplete);
   CODEGEN_ACTION("longBo", LongBo);
@@ -126,8 +127,10 @@ void CodeGenerator::codegenAction(std::ofstream &of,
   CODEGEN_ACTION("setCookie", SetCookie);
   CODEGEN_ACTION("setGlobal", SetGlobal);
   CODEGEN_ACTION("setObjectVar", SetObjectVar);
+  CODEGEN_ACTION("setUserState", SetUserState);
   // TODO: a better way to deal with the extraEnum
-  CODEGEN_ACTION_EXTRA_ARG("setWeaponAbility", SetWeaponAbility, customWeaponsKeywordEnum);
+  CODEGEN_ACTION_EXTRA_ARG("setWeaponAbility", SetWeaponAbility,
+                           customWeaponsKeywordEnum);
   CODEGEN_ACTION("wait", Wait);
   std::cerr << "Codegen error: Cannot found the corresponding action name \""
             << action->identifier << "\" at " << action.get()->loc << "\n";

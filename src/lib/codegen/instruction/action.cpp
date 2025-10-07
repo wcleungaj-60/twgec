@@ -123,7 +123,16 @@ DefaultMap action::ActionGetCookie::defaultMap = DefaultMap(
         {"cookies", {AST_STRING, CODEGEN_STRING, ""}},
         {"varName", {AST_STRING, CODEGEN_STRING, ""}},
     },
-    "setCookie");
+    "getCookie");
+
+DefaultMap action::ActionGetUserState::defaultMap = DefaultMap(
+    {
+        {"playerId", {AST_STRING, CODEGEN_STRING, ""}},
+        {"category", {AST_STRING, CODEGEN_STRING, ""}},
+        {"key", {AST_STRING, CODEGEN_STRING, ""}},
+        {"varName", {AST_STRING, CODEGEN_STRING, ""}},
+    },
+    "getUserState");
 
 DefaultMap action::ActionMapWarp::defaultMap = DefaultMap(
     {
@@ -172,6 +181,16 @@ DefaultMap action::ActionSetObjectVar::defaultMap = DefaultMap(
         {"value", {AST_INT, CODEGEN_STRING, ""}},
     },
     "setObjectVar");
+
+DefaultMap action::ActionSetUserState::defaultMap = DefaultMap(
+    {
+        {"playerId", {AST_STRING, CODEGEN_STRING, ""}},
+        {"category", {AST_STRING, CODEGEN_STRING, ""}},
+        {"key", {AST_STRING, CODEGEN_STRING, ""}},
+        {"type", {AST_STRING, CODEGEN_STRING, ""}},
+        {"value", {AST_STRING, CODEGEN_STRING, ""}},
+    },
+    "setUserState");
 
 DefaultMap action::ActionSetWeaponAbility::defaultMap = DefaultMap(
     {
@@ -468,6 +487,22 @@ void action::ActionGetCookie::method(std::ofstream &of,
   of << inden(16) << rootNode.to_string(16);
 }
 
+void action::ActionGetUserState::method(
+    std::ofstream &of, std::unique_ptr<ParamAppsNode> &action) {
+  defaultMap.addInputMap(action->named_args);
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"playerId", defaultMap.get("playerId")},
+      {"category", defaultMap.get("category")},
+      {"key", defaultMap.get("key")},
+      {"varname", defaultMap.get("varName")},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"GetUserState\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
+
 void action::ActionMapWarp::method(std::ofstream &of,
                                    std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
@@ -537,10 +572,10 @@ void action::ActionSetCookie::method(std::ofstream &of,
                                      std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
   string playerId = defaultMap.get("playerId");
-  JsonObjectNode dataNode =
-      (playerId == "\"\"")
-          ? JsonObjectNode("playerTarget", "\"all\"")
-          : JsonObjectNode({{"playerTarget", "\"one\""}, {"playerId", playerId}});
+  JsonObjectNode dataNode = (playerId == "\"\"")
+                                ? JsonObjectNode("playerTarget", "\"all\"")
+                                : JsonObjectNode({{"playerTarget", "\"one\""},
+                                                  {"playerId", playerId}});
 
   dataNode.addNode("key", defaultMap.get("cookies"))
       .addNode("valueType", defaultMap.get("type", valueTypeKind::keywordEnum))
@@ -579,6 +614,23 @@ void action::ActionSetObjectVar::method(
   });
   JsonObjectNode rootNode = JsonObjectNode({
       {"type", "\"SetObjectVar\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
+
+void action::ActionSetUserState::method(
+    std::ofstream &of, std::unique_ptr<ParamAppsNode> &action) {
+  defaultMap.addInputMap(action->named_args);
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"playerId", defaultMap.get("playerId")},
+      {"category", defaultMap.get("category")},
+      {"key", defaultMap.get("key")},
+      {"valueType", defaultMap.get("type", valueTypeKind::keywordEnum)},
+      {"value", defaultMap.get("value")},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"SetUserState\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);

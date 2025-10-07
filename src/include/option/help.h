@@ -112,6 +112,7 @@ std::string getActions() {
   ret += getDefaultMapItem(ActionDeltaHp::defaultMap, "角色加減血");
   ret += getDefaultMapItem(ActionEnblastEffect::defaultMap, "光彈特效");
   ret += getDefaultMapItem(ActionGetCookie::defaultMap, "取得Cookies");
+  ret += getDefaultMapItem(ActionGetUserState::defaultMap, "取得玩家狀態");
   ret += getDefaultMapItem(ActionMapWarp::defaultMap, "設定地圖傳送點");
   ret += getDefaultMapItem(ActionMissionComplete::defaultMap, "任務完成");
   ret += getDefaultMapItem(ActionLongBo::defaultMap, "+龍波");
@@ -121,6 +122,7 @@ std::string getActions() {
   ret += getDefaultMapItem(ActionSetGlobal::defaultMap, "儲存全域變數");
   ret += getDefaultMapItem(ActionSetObjectVar::defaultMap, "儲存物件變數");
   ret += getDefaultMapItem(ActionSetWeaponAbility::defaultMap, "設定武器技能");
+  ret += getDefaultMapItem(ActionSetUserState::defaultMap, "儲存玩家狀態");
   ret += getDefaultMapItem(ActionWait::defaultMap, "等待");
   return ret;
 }

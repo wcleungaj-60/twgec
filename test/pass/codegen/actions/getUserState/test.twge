@@ -1,0 +1,5 @@
+block init {
+    actions {
+        getUserState(playerId = "{instance}", category = "twgec-simple-rpg", key = "level", varName = "temp");
+    }
+}
