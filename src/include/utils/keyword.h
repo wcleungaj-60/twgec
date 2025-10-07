@@ -337,21 +337,29 @@ const string customItems = "customItems";
 
 namespace valueTypeKind {
 const string keywordString = "string";
+const string keywordStringZh = "字串";
 const string keywordInteger = "integer";
+const string keywordIntegerZh = "整數";
 const string keywordInt = "int";
 const string keywordNumber = "number";
+const string keywordNumberZh = "數字";
 const string keywordNum = "num";
 const string keywordBoolean = "boolean";
+const string keywordBooleanZh = "布林值";
 const string keywordBool = "bool";
 const string keywordJson = "json";
 static KeywordEnum keywordEnum("value type kind",
                                {
                                    {keywordString, keywordString},
+                                   {keywordStringZh, keywordString},
                                    {keywordInteger, keywordInteger},
+                                   {keywordIntegerZh, keywordInteger},
                                    {keywordInt, keywordInteger},
                                    {keywordNumber, keywordNumber},
+                                   {keywordNumberZh, keywordNumber},
                                    {keywordNum, keywordNumber},
                                    {keywordBoolean, keywordBoolean},
+                                   {keywordBooleanZh, keywordBoolean},
                                    {keywordBool, keywordBoolean},
                                    {keywordJson, keywordJson},
                                });

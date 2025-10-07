@@ -118,6 +118,13 @@ DefaultMap action::ActionEnblastEffect::defaultMap = DefaultMap(
     },
     "enblastEffect");
 
+DefaultMap action::ActionGetCookie::defaultMap = DefaultMap(
+    {
+        {"cookies", {AST_STRING, CODEGEN_STRING, ""}},
+        {"varName", {AST_STRING, CODEGEN_STRING, ""}},
+    },
+    "setCookie");
+
 DefaultMap action::ActionMapWarp::defaultMap = DefaultMap(
     {
         {"fromX", {AST_INT, CODEGEN_STRING, "0"}},
@@ -139,6 +146,15 @@ DefaultMap action::ActionLongBo::defaultMap = DefaultMap(
         {"actorCode", {AST_STRING, CODEGEN_STRING, ""}},
     },
     "longBo");
+
+DefaultMap action::ActionSetCookie::defaultMap = DefaultMap(
+    {
+        {"playerId", {AST_STRING, CODEGEN_STRING, ""}},
+        {"cookies", {AST_STRING, CODEGEN_STRING, ""}},
+        {"type", {AST_STRING, CODEGEN_STRING, "string"}},
+        {"value", {AST_STRING, CODEGEN_STRING, ""}},
+    },
+    "setCookie");
 
 DefaultMap action::ActionSetGlobal::defaultMap = DefaultMap(
     {
@@ -438,6 +454,20 @@ void action::ActionEnblastEffect::method(
   of << inden(16) << rootNode.to_string(16);
 }
 
+void action::ActionGetCookie::method(std::ofstream &of,
+                                     std::unique_ptr<ParamAppsNode> &action) {
+  defaultMap.addInputMap(action->named_args);
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"ckey", defaultMap.get("cookies")},
+      {"key", defaultMap.get("varName")},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"GetCookie\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
+
 void action::ActionMapWarp::method(std::ofstream &of,
                                    std::unique_ptr<ParamAppsNode> &action) {
   defaultMap.addInputMap(action->named_args);
@@ -498,6 +528,26 @@ void action::ActionLongBo::method(std::ofstream &of,
   });
   JsonObjectNode rootNode = JsonObjectNode({
       {"type", "\"Longbo\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
+
+void action::ActionSetCookie::method(std::ofstream &of,
+                                     std::unique_ptr<ParamAppsNode> &action) {
+  defaultMap.addInputMap(action->named_args);
+  string playerId = defaultMap.get("playerId");
+  JsonObjectNode dataNode =
+      (playerId == "\"\"")
+          ? JsonObjectNode("playerTarget", "\"all\"")
+          : JsonObjectNode({{"playerTarget", "\"one\""}, {"playerId", playerId}});
+
+  dataNode.addNode("key", defaultMap.get("cookies"))
+      .addNode("valueType", defaultMap.get("type", valueTypeKind::keywordEnum))
+      .addNode("value", defaultMap.get("value"));
+
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"SetCookie\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);

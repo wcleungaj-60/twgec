@@ -1,0 +1,6 @@
+block init {
+    actions {
+        setCookie(playerId = "{instance.id}", cookies = "AGI", type = "integer", value = "{instance.AGI}");
+        setCookie(cookies = "{instance.id}.AGI", type = "integer", value = "{instance.AGI}");
+    }
+}
