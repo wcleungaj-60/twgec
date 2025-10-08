@@ -7,7 +7,12 @@ namespace transform {
 using std::string;
 using std::unique_ptr;
 
-bool ifStatementPropagation(std::unique_ptr<InstrSetNode> &instrSet) {
+namespace {
+enum PropagationResult { ERROR = 0, PROPAGATED = 1, UNCHANGED = 2 };
+}
+
+PropagationResult
+ifStatementPropagation(std::unique_ptr<InstrSetNode> &instrSet) {
   std::vector<int> ifStatementIdxes;
   auto &compositeInstrs = instrSet->instructions;
   // Step 1: Get the if-statement index
@@ -20,12 +25,12 @@ bool ifStatementPropagation(std::unique_ptr<InstrSetNode> &instrSet) {
       std::cerr << "Syntax Error: Boolean value is expected in the if statment "
                    "condition. Found at "
                 << compositeInstrs[idx]->loc << ".\n";
-      return false;
+      return PropagationResult::ERROR;
     }
     ifStatementIdxes.push_back(idx);
   }
   if (ifStatementIdxes.empty())
-    return true;
+    return PropagationResult::UNCHANGED;
   std::reverse(ifStatementIdxes.begin(), ifStatementIdxes.end());
   // Step 2: Flatten the if-statement
   for (int idx : ifStatementIdxes) {
@@ -41,14 +46,22 @@ bool ifStatementPropagation(std::unique_ptr<InstrSetNode> &instrSet) {
           pos, std::make_move_iterator(clonedTrueBlock->instructions.begin()),
           std::make_move_iterator(clonedTrueBlock->instructions.end()));
   }
-  return true;
+  return PropagationResult::PROPAGATED;
 }
 
 bool ifStatementPropagation(const unique_ptr<ModuleNode> &moduleNode) {
-  for (auto &blockNode : moduleNode->blocks)
-    for (auto &typedInstrSet : blockNode->blockBody->typedInstrSets)
-      if (!ifStatementPropagation(typedInstrSet->instrSet))
-        return false;
+  PropagationResult result = PropagationResult::PROPAGATED;
+  while (result == PropagationResult::PROPAGATED) {
+    result = PropagationResult::UNCHANGED;
+    for (auto &blockNode : moduleNode->blocks)
+      for (auto &typedInstrSet : blockNode->blockBody->typedInstrSets) {
+        auto blockResult = ifStatementPropagation(typedInstrSet->instrSet);
+        if (blockResult == PropagationResult::ERROR)
+          return false;
+        if (blockResult == PropagationResult::PROPAGATED)
+          result = PropagationResult::PROPAGATED;
+      }
+  }
   return true;
 }
 } // namespace transform

@@ -36,7 +36,7 @@ __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 
 //-------------------debug-------------------//
-def cerr(text): actions {
+def debug(text): actions {
     if(DEBUG_MODE) {
         print(type = "error", text = text);
     }
@@ -72,16 +72,8 @@ def loadStateDef(hasSavedBefore) : block {
         } 
     }
     actions {
-        if(DEBUG_MODE && hasSavedBefore == false) {
-            print(type = "error", text = "loadStateDef: instance_savedBefore = {{instance}_savedBefore} != 1");
-        }
-        if(DEBUG_MODE && hasSavedBefore) {
-            // TODO: It is really buggy that `{{instance}_savedBefore}` needs to be string
-            print(type = "error", text = "loadStateDef: instance_savedBefore = {{instance}_savedBefore} == 1");
-        }
         setObjectVar(key = "completedInit", object = "instance", type = "string", value = 2);
         if(hasSavedBefore) {
-            // TODO: Support nested-if
             setObjectVarFromUserState("Point");
             setObjectVarFromUserState("ExpNeeded");
             setObjectVarFromUserState("Level");
@@ -140,11 +132,11 @@ def releasePowerDef(weapon) : block {
     actions {
         if(weapon == "custom_wind_staff") {
         // TODO: Implicit Conversion from Int to String
-        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE,  toAngle = INSTANCE_ANGLE + "+32");
-        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE,  toAngle = INSTANCE_ANGLE + "+16");
-        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE,  toAngle = INSTANCE_ANGLE);
-        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE,  toAngle = INSTANCE_ANGLE + "-16");
-        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE,  toAngle = INSTANCE_ANGLE + "-32");
+        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE + "+32");
+        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE + "+16");
+        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE);
+        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE + "-16");
+        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE + "-32");
         }
         if(weapon == "custom_iron_sword") {
             deltaHp(actorCode = "instance", value = "{instance.HP}/4");

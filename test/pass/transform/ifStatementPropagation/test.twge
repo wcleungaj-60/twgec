@@ -21,5 +21,29 @@ block init {
             print(text = "print false 2");
             print(text = "print false 3");
         }
+        if(true) {
+            if(true) {
+                print(text = "print true-true 1");
+                print(text = "print true-true 2");
+                print(text = "print true-true 3");
+            }
+            if(false) {
+                print(text = "print true-false 1");
+                print(text = "print true-false 2");
+                print(text = "print true-false 3");
+            }
+        }
+        if(false) {
+            if(true) {
+                print(text = "print false-true 1");
+                print(text = "print false-true 2");
+                print(text = "print false-true 3");
+            }
+            if(false) {
+                print(text = "print false-false 1");
+                print(text = "print false-false 2");
+                print(text = "print false-false 3");
+            }
+        }
     }
 }
