@@ -165,8 +165,7 @@ block releasePowerIronSword = releasePowerDef("custom_iron_sword");
 block monsterDead {
     __repeat__ = -1;
     triggers {
-        // TODO: default varName should be empty
-        actorDead(actor = ActorMatch(id = "monster"), hitterVarName = "instance", varName = "");
+        actorDead(actor = ActorMatch(id = "monster"), hitterVarName = "instance");
     }
     actions {
         setObjectVar(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}+1");

@@ -92,7 +92,7 @@
                                 "excludeActorCodes": []
                             }
                         ],
-                        "varname": "instance",
+                        "varname": "",
                         "fireTriggerType": "all",
                         "damageTypes": []
                     }

@@ -92,7 +92,7 @@
                                 "excludeActorCodes": []
                             }
                         ],
-                        "varname": "instance",
+                        "varname": "",
                         "timing": "preDead",
                         "deathsVarname": "deaths",
                         "hitterMatches": [],

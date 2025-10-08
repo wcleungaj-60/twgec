@@ -12,14 +12,14 @@ using namespace keyword;
 DefaultMap trigger::TriggerActorAdded::defaultMap = DefaultMap(
     {
         {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
-        {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
+        {"varName", {AST_STRING, CODEGEN_STRING, ""}},
     },
     "actorAdded");
 
 DefaultMap trigger::TriggerActorDead::defaultMap = DefaultMap(
     {
         {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
-        {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
+        {"varName", {AST_STRING, CODEGEN_STRING, ""}},
         {"hitterVarName", {AST_STRING, CODEGEN_STRING, ""}},
     },
     "actorDead");
@@ -27,7 +27,7 @@ DefaultMap trigger::TriggerActorDead::defaultMap = DefaultMap(
 DefaultMap trigger::TriggerActorFire::defaultMap = DefaultMap(
     {
         {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
-        {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
+        {"varName", {AST_STRING, CODEGEN_STRING, ""}},
         {"weapon", {AST_STRING, CODEGEN_STRING, ""}},
     },
     "actorFire");
@@ -46,7 +46,7 @@ DefaultMap trigger::TriggerActorHit::defaultMap = DefaultMap(
 DefaultMap trigger::TriggerClickButton::defaultMap = DefaultMap(
     {
         {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
-        {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
+        {"varName", {AST_STRING, CODEGEN_STRING, ""}},
         {"buttonId", {AST_STRING, CODEGEN_STRING, ""}},
     },
     "clickButton");
@@ -63,7 +63,7 @@ DefaultMap trigger::TriggerKeyboardPressed::defaultMap = DefaultMap(
 DefaultMap trigger::TriggerReleasePower::defaultMap = DefaultMap(
     {
         {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
-        {"varName", {AST_STRING, CODEGEN_STRING, "instance"}},
+        {"varName", {AST_STRING, CODEGEN_STRING, ""}},
         {"ability", {AST_STRING, CODEGEN_STRING, ""}},
         {"preventDefault", {AST_BOOL, CODEGEN_STRING, "false"}},
         {"manaUsage", {AST_INT, CODEGEN_STRING, "0"}},
