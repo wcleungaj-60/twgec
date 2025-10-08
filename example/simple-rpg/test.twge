@@ -13,6 +13,8 @@ const STATUS_TEXT =
 "智慧：{{instance.id}.INT}\n" +
 "精神：{{instance.id}.PSY}";
 const SPAWN_POINT = Point(10,10);
+const DEBUG_MODE = false;
+const USER_STATE_CATEGORY = "simple-rpg-test";
 
 // Metadata Setting
 __skydowLocs__ = SPAWN_POINT;
@@ -33,6 +35,85 @@ __customWeapons__ = [
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 
+//-------------------debug-------------------//
+def cerr(text): actions {
+    if(DEBUG_MODE) {
+        print(type = "error", text = text);
+    }
+}
+
+//-------------------UpdatePlayerAttributes-------------------//
+def updatePlayerAttributes(actorId): actions {
+    setObjectVar(key = "HP", object = actorId, type = "integer", value = "98 + 10*{"+actorId+".CON} + 2*{"+actorId+".Level}");
+    actorAttributes(actorId = actorId, attr = "maxHp", value = "{"+actorId+".HP}");
+    actorAttributes(actorId = actorId, attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{"+actorId+".AGI})");
+    actorAttributes(actorId = actorId, attr = "weight", value = "3*pow(0.97,{"+actorId+".AGI})");
+}
+
+//-------------------Load Store Handling-----------------//
+def setObjectVarFromUserState(key) : actions {
+    getUserState(category = USER_STATE_CATEGORY, key = key, playerId = "{instance}", varName = "{instance}_"+key);
+    setObjectVar(key = key, object = "instance", type = "integer", value = "{{instance}_"+key+"}");
+}
+def setUserStateFromObjectVar(key) : actions {
+    setUserState(category = USER_STATE_CATEGORY, key = key, playerId = "{instance}", type = "string", value = "{{instance}."+key+"}");
+}
+
+def loadStateDef(hasSavedBefore) : block {
+    __repeat__ = -1;
+    checks {
+        forEachActor(actor = ActorMatch(controller = "player"), varname = "instance");
+        checkNumber(lhs = "{instance.completedInit}", op = "==", rhs = 1);
+        if(hasSavedBefore) {
+            checkString(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
+        }
+        if(hasSavedBefore == false) {
+            checkString(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
+        } 
+    }
+    actions {
+        if(DEBUG_MODE && hasSavedBefore == false) {
+            print(type = "error", text = "loadStateDef: instance_savedBefore = {{instance}_savedBefore} != 1");
+        }
+        if(DEBUG_MODE && hasSavedBefore) {
+            // TODO: It is really buggy that `{{instance}_savedBefore}` needs to be string
+            print(type = "error", text = "loadStateDef: instance_savedBefore = {{instance}_savedBefore} == 1");
+        }
+        setObjectVar(key = "completedInit", object = "instance", type = "string", value = 2);
+        if(hasSavedBefore) {
+            // TODO: Support nested-if
+            setObjectVarFromUserState("STR");
+            setObjectVarFromUserState("CON");
+            setObjectVarFromUserState("AGI");
+            setObjectVarFromUserState("INT");
+            setObjectVarFromUserState("PSY");
+            setObjectVarFromUserState("Level");
+            setObjectVarFromUserState("Point");
+            setObjectVarFromUserState("Exp");
+            setObjectVarFromUserState("ExpNeeded");
+            setObjectVarFromUserState("HP");
+            updatePlayerAttributes("instance");
+            deltaHp(actorCode = "instance", type = "heal", value = 9999);
+        }
+    }
+}
+block loadStateSaved = loadStateDef(hasSavedBefore = true);
+block loadStateNew = loadStateDef(hasSavedBefore = false);
+
+def saveUserState() : actions {
+    setUserStateFromObjectVar("STR");
+    setUserStateFromObjectVar("CON");
+    setUserStateFromObjectVar("AGI");
+    setUserStateFromObjectVar("INT");
+    setUserStateFromObjectVar("PSY");
+    setUserStateFromObjectVar("Level");
+    setUserStateFromObjectVar("Point");
+    setUserStateFromObjectVar("Exp");
+    setUserStateFromObjectVar("ExpNeeded");
+    setUserStateFromObjectVar("HP");
+    setUserState(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+}
+
 // Block Function Definition
 def clickIncreaseDef(type, typeZh) : block {
     __repeat__ = -1;
@@ -46,20 +127,8 @@ def clickIncreaseDef(type, typeZh) : block {
         setObjectVar(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
         setObjectVar(key = type, object = "instance", type = "integer", value = "{instance."+type+"}+1");
         actorTalk(actorId = "instance", text = "成功提升一點" + typeZh + "，尚餘{instance.Point}點能力點");
-        if(type == "CON") {
-            setObjectVar(key = "HP", object = "instance", type = "integer", value = HP_FORMULA);
-            actorAttributes(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        }
-        if(type == "AGI") {
-            // when AGI = 0, closeWeaponSpeed = 1
-            // when AGI = 1, closeWeaponSpeed = 1.1429
-            // when AGI = 5, closeWeaponSpeed = 1.6000
-            // when AGI = 25, closeWeaponSpeed = 2.6667
-            // when AGI = 125, closeWeaponSpeed = 3.5862
-            // when AGI = inf, closeWeaponSpeed = 4
-            actorAttributes(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
-            actorAttributes(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
-        }
+        updatePlayerAttributes("instance");
+        saveUserState();
     }
 }
 
@@ -96,10 +165,12 @@ block releasePowerIronSword = releasePowerDef("custom_iron_sword");
 block monsterDead {
     __repeat__ = -1;
     triggers {
-        actorDead(actor = ActorMatch(id = "monster"), hitterVarName = "attacker");
+        // TODO: default varName should be empty
+        actorDead(actor = ActorMatch(id = "monster"), hitterVarName = "instance", varName = "");
     }
     actions {
-        setObjectVar(key = "Exp", object = "attacker", type = "integer", value = "{attacker.Exp}+1");
+        setObjectVar(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}+1");
+        saveUserState();
         // TODO: Add item
         // TODO: Popup text
         // TODO: Call event
@@ -133,6 +204,7 @@ block levelUp {
         setObjectVar(key = "ExpNeeded", object = "instance", type = "integer", value = "{instance.Level}*2+4");
         setObjectVar(key = "HP", object = "instance", type = "integer", value = HP_FORMULA);
         actorAttributes(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
+        saveUserState();
     }
 }
 
@@ -180,7 +252,7 @@ block swordAttack {
 block newPlayer {
     __repeat__ = -1;
     triggers {
-        actorAdded(varName = "instance");
+        actorAdded(actor = ActorMatch(controller = "player"), varName = "instance");
     }
     actions {
         setObjectVar(key = "STR", object = "instance", type = "integer", value = 0);
@@ -193,6 +265,8 @@ block newPlayer {
         setObjectVar(key = "Exp", object = "instance", type = "integer", value = 0);
         setObjectVar(key = "ExpNeeded", object = "instance", type = "integer", value = 6);
         setObjectVar(key = "HP", object = "instance", type = "integer", value = 100);
+        getUserState(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
+        setObjectVar(key = "completedInit", object = "instance", type = "integer", value = 1);
     }
 }
 

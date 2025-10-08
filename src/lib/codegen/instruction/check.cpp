@@ -17,7 +17,7 @@ DefaultMap check::CheckActorCount::defaultMap = DefaultMap(
         {"op", {AST_STRING, CODEGEN_STRING, "=="}},
         {"value", {AST_INT, CODEGEN_STRING, ""}},
     },
-    "forEachActor");
+    "actorCount");
 
 DefaultMap check::CheckForEachActor::defaultMap = DefaultMap(
     {
