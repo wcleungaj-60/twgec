@@ -68,7 +68,7 @@ def loadStateDef(hasSavedBefore) : block {
             checkString(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
         }
         if(hasSavedBefore == false) {
-            checkString(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
+            checkString(str = "{{instance}_savedBefore}", matchKind = "equal", value = "undefined");
         } 
     }
     actions {
@@ -82,15 +82,15 @@ def loadStateDef(hasSavedBefore) : block {
         setObjectVar(key = "completedInit", object = "instance", type = "string", value = 2);
         if(hasSavedBefore) {
             // TODO: Support nested-if
+            setObjectVarFromUserState("Point");
+            setObjectVarFromUserState("ExpNeeded");
+            setObjectVarFromUserState("Level");
             setObjectVarFromUserState("STR");
             setObjectVarFromUserState("CON");
             setObjectVarFromUserState("AGI");
             setObjectVarFromUserState("INT");
             setObjectVarFromUserState("PSY");
-            setObjectVarFromUserState("Level");
-            setObjectVarFromUserState("Point");
             setObjectVarFromUserState("Exp");
-            setObjectVarFromUserState("ExpNeeded");
             setObjectVarFromUserState("HP");
             updatePlayerAttributes("instance");
             deltaHp(actorCode = "instance", type = "heal", value = 9999);
@@ -101,15 +101,15 @@ block loadStateSaved = loadStateDef(hasSavedBefore = true);
 block loadStateNew = loadStateDef(hasSavedBefore = false);
 
 def saveUserState() : actions {
+    setUserStateFromObjectVar("Point");
+    setUserStateFromObjectVar("ExpNeeded");
+    setUserStateFromObjectVar("Level");
     setUserStateFromObjectVar("STR");
     setUserStateFromObjectVar("CON");
     setUserStateFromObjectVar("AGI");
     setUserStateFromObjectVar("INT");
     setUserStateFromObjectVar("PSY");
-    setUserStateFromObjectVar("Level");
-    setUserStateFromObjectVar("Point");
     setUserStateFromObjectVar("Exp");
-    setUserStateFromObjectVar("ExpNeeded");
     setUserStateFromObjectVar("HP");
     setUserState(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
 }

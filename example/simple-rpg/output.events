@@ -186,6 +186,60 @@
                     "data": {
                         "playerId": "{instance}",
                         "category": "simple-rpg-test",
+                        "key": "Point",
+                        "varname": "{instance}_Point"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "Point",
+                        "valueType": "integer",
+                        "value": "{{instance}_Point}"
+                    }
+                },
+                {
+                    "type": "GetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "ExpNeeded",
+                        "varname": "{instance}_ExpNeeded"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "ExpNeeded",
+                        "valueType": "integer",
+                        "value": "{{instance}_ExpNeeded}"
+                    }
+                },
+                {
+                    "type": "GetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Level",
+                        "varname": "{instance}_Level"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "Level",
+                        "valueType": "integer",
+                        "value": "{{instance}_Level}"
+                    }
+                },
+                {
+                    "type": "GetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
                         "key": "STR",
                         "varname": "{instance}_STR"
                     }
@@ -276,42 +330,6 @@
                     "data": {
                         "playerId": "{instance}",
                         "category": "simple-rpg-test",
-                        "key": "Level",
-                        "varname": "{instance}_Level"
-                    }
-                },
-                {
-                    "type": "SetObjectVar",
-                    "data": {
-                        "objectId": "instance",
-                        "key": "Level",
-                        "valueType": "integer",
-                        "value": "{{instance}_Level}"
-                    }
-                },
-                {
-                    "type": "GetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "Point",
-                        "varname": "{instance}_Point"
-                    }
-                },
-                {
-                    "type": "SetObjectVar",
-                    "data": {
-                        "objectId": "instance",
-                        "key": "Point",
-                        "valueType": "integer",
-                        "value": "{{instance}_Point}"
-                    }
-                },
-                {
-                    "type": "GetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
                         "key": "Exp",
                         "varname": "{instance}_Exp"
                     }
@@ -323,24 +341,6 @@
                         "key": "Exp",
                         "valueType": "integer",
                         "value": "{{instance}_Exp}"
-                    }
-                },
-                {
-                    "type": "GetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "ExpNeeded",
-                        "varname": "{instance}_ExpNeeded"
-                    }
-                },
-                {
-                    "type": "SetObjectVar",
-                    "data": {
-                        "objectId": "instance",
-                        "key": "ExpNeeded",
-                        "valueType": "integer",
-                        "value": "{{instance}_ExpNeeded}"
                     }
                 },
                 {
@@ -560,7 +560,7 @@
                 {
                     "type": "String",
                     "data": {
-                        "value": "1",
+                        "value": "undefined",
                         "method": "equal",
                         "str": "{{instance}_savedBefore}",
                         "eventLocal": "",
@@ -683,6 +683,36 @@
                     "data": {
                         "playerId": "{instance}",
                         "category": "simple-rpg-test",
+                        "key": "Point",
+                        "valueType": "string",
+                        "value": "{{instance}.Point}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "ExpNeeded",
+                        "valueType": "string",
+                        "value": "{{instance}.ExpNeeded}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Level",
+                        "valueType": "string",
+                        "value": "{{instance}.Level}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -733,39 +763,9 @@
                     "data": {
                         "playerId": "{instance}",
                         "category": "simple-rpg-test",
-                        "key": "Level",
-                        "valueType": "string",
-                        "value": "{{instance}.Level}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "Point",
-                        "valueType": "string",
-                        "value": "{{instance}.Point}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "ExpNeeded",
-                        "valueType": "string",
-                        "value": "{{instance}.ExpNeeded}"
                     }
                 },
                 {
@@ -926,6 +926,36 @@
                     "data": {
                         "playerId": "{instance}",
                         "category": "simple-rpg-test",
+                        "key": "Point",
+                        "valueType": "string",
+                        "value": "{{instance}.Point}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "ExpNeeded",
+                        "valueType": "string",
+                        "value": "{{instance}.ExpNeeded}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Level",
+                        "valueType": "string",
+                        "value": "{{instance}.Level}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -976,39 +1006,9 @@
                     "data": {
                         "playerId": "{instance}",
                         "category": "simple-rpg-test",
-                        "key": "Level",
-                        "valueType": "string",
-                        "value": "{{instance}.Level}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "Point",
-                        "valueType": "string",
-                        "value": "{{instance}.Point}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "ExpNeeded",
-                        "valueType": "string",
-                        "value": "{{instance}.ExpNeeded}"
                     }
                 },
                 {
@@ -1169,6 +1169,36 @@
                     "data": {
                         "playerId": "{instance}",
                         "category": "simple-rpg-test",
+                        "key": "Point",
+                        "valueType": "string",
+                        "value": "{{instance}.Point}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "ExpNeeded",
+                        "valueType": "string",
+                        "value": "{{instance}.ExpNeeded}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Level",
+                        "valueType": "string",
+                        "value": "{{instance}.Level}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -1219,39 +1249,9 @@
                     "data": {
                         "playerId": "{instance}",
                         "category": "simple-rpg-test",
-                        "key": "Level",
-                        "valueType": "string",
-                        "value": "{{instance}.Level}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "Point",
-                        "valueType": "string",
-                        "value": "{{instance}.Point}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "ExpNeeded",
-                        "valueType": "string",
-                        "value": "{{instance}.ExpNeeded}"
                     }
                 },
                 {
@@ -1412,6 +1412,36 @@
                     "data": {
                         "playerId": "{instance}",
                         "category": "simple-rpg-test",
+                        "key": "Point",
+                        "valueType": "string",
+                        "value": "{{instance}.Point}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "ExpNeeded",
+                        "valueType": "string",
+                        "value": "{{instance}.ExpNeeded}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Level",
+                        "valueType": "string",
+                        "value": "{{instance}.Level}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -1462,39 +1492,9 @@
                     "data": {
                         "playerId": "{instance}",
                         "category": "simple-rpg-test",
-                        "key": "Level",
-                        "valueType": "string",
-                        "value": "{{instance}.Level}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "Point",
-                        "valueType": "string",
-                        "value": "{{instance}.Point}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "ExpNeeded",
-                        "valueType": "string",
-                        "value": "{{instance}.ExpNeeded}"
                     }
                 },
                 {
@@ -1655,6 +1655,36 @@
                     "data": {
                         "playerId": "{instance}",
                         "category": "simple-rpg-test",
+                        "key": "Point",
+                        "valueType": "string",
+                        "value": "{{instance}.Point}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "ExpNeeded",
+                        "valueType": "string",
+                        "value": "{{instance}.ExpNeeded}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Level",
+                        "valueType": "string",
+                        "value": "{{instance}.Level}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -1705,39 +1735,9 @@
                     "data": {
                         "playerId": "{instance}",
                         "category": "simple-rpg-test",
-                        "key": "Level",
-                        "valueType": "string",
-                        "value": "{{instance}.Level}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "Point",
-                        "valueType": "string",
-                        "value": "{{instance}.Point}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "ExpNeeded",
-                        "valueType": "string",
-                        "value": "{{instance}.ExpNeeded}"
                     }
                 },
                 {
@@ -1950,6 +1950,36 @@
                     "data": {
                         "playerId": "{instance}",
                         "category": "simple-rpg-test",
+                        "key": "Point",
+                        "valueType": "string",
+                        "value": "{{instance}.Point}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "ExpNeeded",
+                        "valueType": "string",
+                        "value": "{{instance}.ExpNeeded}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Level",
+                        "valueType": "string",
+                        "value": "{{instance}.Level}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -2000,39 +2030,9 @@
                     "data": {
                         "playerId": "{instance}",
                         "category": "simple-rpg-test",
-                        "key": "Level",
-                        "valueType": "string",
-                        "value": "{{instance}.Level}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "Point",
-                        "valueType": "string",
-                        "value": "{{instance}.Point}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "ExpNeeded",
-                        "valueType": "string",
-                        "value": "{{instance}.ExpNeeded}"
                     }
                 },
                 {
@@ -2268,6 +2268,36 @@
                     "data": {
                         "playerId": "{instance}",
                         "category": "simple-rpg-test",
+                        "key": "Point",
+                        "valueType": "string",
+                        "value": "{{instance}.Point}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "ExpNeeded",
+                        "valueType": "string",
+                        "value": "{{instance}.ExpNeeded}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Level",
+                        "valueType": "string",
+                        "value": "{{instance}.Level}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -2318,39 +2348,9 @@
                     "data": {
                         "playerId": "{instance}",
                         "category": "simple-rpg-test",
-                        "key": "Level",
-                        "valueType": "string",
-                        "value": "{{instance}.Level}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "Point",
-                        "valueType": "string",
-                        "value": "{{instance}.Point}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "ExpNeeded",
-                        "valueType": "string",
-                        "value": "{{instance}.ExpNeeded}"
                     }
                 },
                 {

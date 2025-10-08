@@ -28,6 +28,12 @@ block loadStateSaved {
     }
     actions {
         setObjectVar(key = "completedInit", object = "instance", type = "string", value = 2);
+        getUserState(category = "simple-rpg-test", key = "Point", playerId = "{instance}", varName = "{instance}_Point");
+        setObjectVar(key = "Point", object = "instance", type = "integer", value = "{{instance}_Point}");
+        getUserState(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", varName = "{instance}_ExpNeeded");
+        setObjectVar(key = "ExpNeeded", object = "instance", type = "integer", value = "{{instance}_ExpNeeded}");
+        getUserState(category = "simple-rpg-test", key = "Level", playerId = "{instance}", varName = "{instance}_Level");
+        setObjectVar(key = "Level", object = "instance", type = "integer", value = "{{instance}_Level}");
         getUserState(category = "simple-rpg-test", key = "STR", playerId = "{instance}", varName = "{instance}_STR");
         setObjectVar(key = "STR", object = "instance", type = "integer", value = "{{instance}_STR}");
         getUserState(category = "simple-rpg-test", key = "CON", playerId = "{instance}", varName = "{instance}_CON");
@@ -38,14 +44,8 @@ block loadStateSaved {
         setObjectVar(key = "INT", object = "instance", type = "integer", value = "{{instance}_INT}");
         getUserState(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", varName = "{instance}_PSY");
         setObjectVar(key = "PSY", object = "instance", type = "integer", value = "{{instance}_PSY}");
-        getUserState(category = "simple-rpg-test", key = "Level", playerId = "{instance}", varName = "{instance}_Level");
-        setObjectVar(key = "Level", object = "instance", type = "integer", value = "{{instance}_Level}");
-        getUserState(category = "simple-rpg-test", key = "Point", playerId = "{instance}", varName = "{instance}_Point");
-        setObjectVar(key = "Point", object = "instance", type = "integer", value = "{{instance}_Point}");
         getUserState(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", varName = "{instance}_Exp");
         setObjectVar(key = "Exp", object = "instance", type = "integer", value = "{{instance}_Exp}");
-        getUserState(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", varName = "{instance}_ExpNeeded");
-        setObjectVar(key = "ExpNeeded", object = "instance", type = "integer", value = "{{instance}_ExpNeeded}");
         getUserState(category = "simple-rpg-test", key = "HP", playerId = "{instance}", varName = "{instance}_HP");
         setObjectVar(key = "HP", object = "instance", type = "integer", value = "{{instance}_HP}");
         setObjectVar(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
@@ -62,7 +62,7 @@ block loadStateNew {
     checks {
         forEachActor(actor = ActorMatch(controller = "player"), varname = "instance");
         checkNumber(lhs = "{instance.completedInit}", op = "==", rhs = 1);
-        checkString(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
+        checkString(str = "{{instance}_savedBefore}", matchKind = "equal", value = "undefined");
     }
     actions {
         setObjectVar(key = "completedInit", object = "instance", type = "string", value = 2);
@@ -86,15 +86,15 @@ block clickIncreaseSTR {
         actorAttributes(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
         actorAttributes(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
         actorAttributes(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        setUserState(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        setUserState(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        setUserState(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
         setUserState(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
         setUserState(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
         setUserState(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
         setUserState(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
         setUserState(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
-        setUserState(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
-        setUserState(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         setUserState(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
-        setUserState(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
         setUserState(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
         setUserState(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
@@ -115,15 +115,15 @@ block clickIncreaseCON {
         actorAttributes(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
         actorAttributes(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
         actorAttributes(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        setUserState(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        setUserState(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        setUserState(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
         setUserState(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
         setUserState(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
         setUserState(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
         setUserState(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
         setUserState(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
-        setUserState(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
-        setUserState(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         setUserState(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
-        setUserState(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
         setUserState(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
         setUserState(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
@@ -144,15 +144,15 @@ block clickIncreaseAGI {
         actorAttributes(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
         actorAttributes(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
         actorAttributes(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        setUserState(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        setUserState(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        setUserState(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
         setUserState(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
         setUserState(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
         setUserState(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
         setUserState(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
         setUserState(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
-        setUserState(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
-        setUserState(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         setUserState(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
-        setUserState(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
         setUserState(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
         setUserState(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
@@ -173,15 +173,15 @@ block clickIncreaseINT {
         actorAttributes(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
         actorAttributes(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
         actorAttributes(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        setUserState(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        setUserState(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        setUserState(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
         setUserState(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
         setUserState(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
         setUserState(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
         setUserState(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
         setUserState(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
-        setUserState(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
-        setUserState(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         setUserState(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
-        setUserState(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
         setUserState(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
         setUserState(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
@@ -202,15 +202,15 @@ block clickIncreasePSY {
         actorAttributes(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
         actorAttributes(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
         actorAttributes(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        setUserState(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        setUserState(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        setUserState(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
         setUserState(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
         setUserState(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
         setUserState(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
         setUserState(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
         setUserState(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
-        setUserState(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
-        setUserState(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         setUserState(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
-        setUserState(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
         setUserState(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
         setUserState(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
@@ -248,15 +248,15 @@ block monsterDead {
     }
     actions {
         setObjectVar(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}+1");
+        setUserState(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        setUserState(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        setUserState(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
         setUserState(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
         setUserState(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
         setUserState(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
         setUserState(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
         setUserState(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
-        setUserState(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
-        setUserState(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         setUserState(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
-        setUserState(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
         setUserState(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
         setUserState(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
@@ -289,15 +289,15 @@ block levelUp {
         setObjectVar(key = "ExpNeeded", object = "instance", type = "integer", value = "{instance.Level}*2+4");
         setObjectVar(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         actorAttributes(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
+        setUserState(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        setUserState(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        setUserState(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
         setUserState(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
         setUserState(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
         setUserState(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
         setUserState(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
         setUserState(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
-        setUserState(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
-        setUserState(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         setUserState(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
-        setUserState(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
         setUserState(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
         setUserState(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }

@@ -1219,7 +1219,7 @@
                                 "excludeActorCodes": []
                             }
                         ],
-                        "varname": "instance",
+                        "varname": "",
                         "timing": "preDead",
                         "deathsVarname": "deaths",
                         "hitterMatches": [],
@@ -1265,7 +1265,7 @@
                                 "excludeActorCodes": []
                             }
                         ],
-                        "varname": "instance",
+                        "varname": "",
                         "timing": "preDead",
                         "deathsVarname": "deaths",
                         "hitterMatches": [],
