@@ -1,14 +1,6 @@
 //---------------------------------------//
 //--- AST After implicitListPromotion ---//
 //---------------------------------------//
-const INSTANCE_ANGLE = "{instance.bodyRotation}*180/3.14";
-const WIND_STAFF_ENBLAST_DAMAGE = "{instance.INT} + {instance.PSY}/2 + 10";
-const HP_FORMULA = "98 + 10*{instance.CON} + 2*{instance.Level}";
-const RECOVERY_FORMULA = "1 + {instance.PSY} + {instance.CON}/2";
-const STATUS_TEXT = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
-const SPAWN_POINT = Point(10,10);
-const DEBUG_MODE = false;
-const USER_STATE_CATEGORY = "simple-rpg-test";
 __skydowLocs__ = [Point(10,10)];
 __royalLocs__ = [Point(10,10)];
 __thirdLocs__ = [Point(10,10)];

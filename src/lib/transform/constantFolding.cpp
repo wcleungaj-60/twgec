@@ -12,6 +12,7 @@ bool constantFolding(const unique_ptr<ModuleNode> &moduleNode) {
     constDefMap.insert({constDef->key, constDef->expNode->clone()});
   moduleNode->propagateExp(constDefMap);
   moduleNode->foldValue();
+  moduleNode->constDefs.clear();
   return !moduleNode->hasUnresolvedValue();
 }
 } // namespace transform

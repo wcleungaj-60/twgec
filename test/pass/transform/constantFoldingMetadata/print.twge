@@ -1,7 +1,5 @@
 //---------------------------------//
 //--- AST After constantFolding ---//
 //---------------------------------//
-const POINT = Point(8,8);
-const STRING = ("123" + "456");
 __skydowLocs__ = Point(8,8);
 __title__ = "123456";
