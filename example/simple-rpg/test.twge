@@ -154,6 +154,25 @@ block releasePowerWindStaff = releasePowerDef("custom_wind_staff");
 block releasePowerIronSword = releasePowerDef("custom_iron_sword");
 
 // Block Implementation
+
+block clickResetPoint {
+    __repeat__ = -1;
+    triggers {
+        clickButton(varName = "instance", buttonId = "ResetPoint");
+    }
+    actions {
+        setObjectVar(key = "Point", object = "instance", type = "integer", value = "{instance.Level}*2+3");
+        setObjectVar(key = "STR", object = "instance", type = "integer", value = 0);
+        setObjectVar(key = "CON", object = "instance", type = "integer", value = 0);
+        setObjectVar(key = "AGI", object = "instance", type = "integer", value = 0);
+        setObjectVar(key = "INT", object = "instance", type = "integer", value = 0);
+        setObjectVar(key = "PSY", object = "instance", type = "integer", value = 0);
+        actorTalk(actorId = "instance", text = "成功重設能力點，目前有{instance.Point}點能力點");
+        updatePlayerAttributes("instance");
+        saveUserState();
+    }
+}
+
 block monsterDead {
     __repeat__ = -1;
     triggers {
@@ -288,5 +307,6 @@ block init {
         addMapSign(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttonCode = "increaseAGI", buttonLabel = "確認");
         addMapSign(x = 9, y = 17, rotation = 270, text = "【智慧】\n消耗一點能力點，提升杖類傷害", buttonCode = "increaseINT", buttonLabel = "確認");
         addMapSign(x = 11, y = 17, rotation = 270, text = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力", buttonCode = "increasePSY", buttonLabel = "確認");
+        addMapSign(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttonCode = "ResetPoint", buttonLabel = "確認");
     }
 }
