@@ -271,7 +271,7 @@ block monsterDead {
         actorDead(actor = ActorMatch(id = "monster"), hitterVarName = "instance");
     }
     actions {
-        setObjectVar(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}+1");
+        setObjectVar(key = "Exp", object = "instance", type = "integer", value = "({instance.Exp}+1)");
         setUserState(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         setUserState(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
         setUserState(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
@@ -308,8 +308,8 @@ block levelUp {
     }
     actions {
         setObjectVar(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}-{instance.ExpNeeded}");
-        setObjectVar(key = "Level", object = "instance", type = "integer", value = "{instance.Level}+1");
-        setObjectVar(key = "Point", object = "instance", type = "integer", value = "{instance.Point}+2");
+        setObjectVar(key = "Level", object = "instance", type = "integer", value = "({instance.Level}+1)");
+        setObjectVar(key = "Point", object = "instance", type = "integer", value = "({instance.Point}+2)");
         setObjectVar(key = "ExpNeeded", object = "instance", type = "integer", value = "{instance.Level}*2+4");
         setObjectVar(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         actorAttributes(actorId = "instance", attr = "maxHp", value = "{instance.HP}");

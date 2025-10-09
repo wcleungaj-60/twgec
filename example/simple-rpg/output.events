@@ -2208,7 +2208,7 @@
                         "objectId": "instance",
                         "key": "Exp",
                         "valueType": "integer",
-                        "value": "{instance.Exp}+1"
+                        "value": "({instance.Exp}+1)"
                     }
                 },
                 {
@@ -2480,7 +2480,7 @@
                         "objectId": "instance",
                         "key": "Level",
                         "valueType": "integer",
-                        "value": "{instance.Level}+1"
+                        "value": "({instance.Level}+1)"
                     }
                 },
                 {
@@ -2489,7 +2489,7 @@
                         "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "{instance.Point}+2"
+                        "value": "({instance.Point}+2)"
                     }
                 },
                 {

@@ -42,6 +42,11 @@ def debug(text): actions {
     }
 }
 
+//-------------------setInstanceInt-------------------//
+def setInstanceInt(key, value): actions {
+    setObjectVar(key = key, object = "instance", type = "integer", value = value);
+}
+
 //-------------------biMapWarp-------------------//
 def biMapWarp(x1, y1, x2, y2): actions {
     if (x1 == x2 && y1 < y2) {
@@ -79,7 +84,7 @@ def updatePlayerAttributes(actorId): actions {
 //-------------------Load Store Handling-----------------//
 def setObjectVarFromUserState(key) : actions {
     getUserState(category = USER_STATE_CATEGORY, key = key, playerId = "{instance}", varName = "{instance}_"+key);
-    setObjectVar(key = key, object = "instance", type = "integer", value = "{{instance}_"+key+"}");
+    setInstanceInt(key, "{{instance}_"+key+"}");
 }
 def setUserStateFromObjectVar(key) : actions {
     setUserState(category = USER_STATE_CATEGORY, key = key, playerId = "{instance}", type = "string", value = "{{instance}."+key+"}");
@@ -142,8 +147,8 @@ def clickIncreaseDef(type, typeZh) : block {
         checkNumber(lhs = "{instance.Point}", op = ">", rhs = 0);
     }
     actions {
-        setObjectVar(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        setObjectVar(key = type, object = "instance", type = "integer", value = "{instance."+type+"}+1");
+        setInstanceInt("Point", "{instance.Point}-1");
+        setInstanceInt(type, "{instance."+type+"}+1");
         actorTalk(actorId = "instance", text = "成功提升一點" + typeZh + "，尚餘{instance.Point}點能力點");
         updatePlayerAttributes("instance");
         saveUserState();
@@ -186,12 +191,12 @@ block clickResetPoint {
         clickButton(varName = "instance", buttonId = "ResetPoint");
     }
     actions {
-        setObjectVar(key = "Point", object = "instance", type = "integer", value = "{instance.Level}*2+3");
-        setObjectVar(key = "STR", object = "instance", type = "integer", value = 0);
-        setObjectVar(key = "CON", object = "instance", type = "integer", value = 0);
-        setObjectVar(key = "AGI", object = "instance", type = "integer", value = 0);
-        setObjectVar(key = "INT", object = "instance", type = "integer", value = 0);
-        setObjectVar(key = "PSY", object = "instance", type = "integer", value = 0);
+        setInstanceInt("Point", "{instance.Level}*2+3");
+        setInstanceInt("STR", 0);
+        setInstanceInt("CON", 0);
+        setInstanceInt("AGI", 0);
+        setInstanceInt("INT", 0);
+        setInstanceInt("PSY", 0);
         actorTalk(actorId = "instance", text = "成功重設能力點，目前有{instance.Point}點能力點");
         updatePlayerAttributes("instance");
         saveUserState();
@@ -204,7 +209,7 @@ block monsterDead {
         actorDead(actor = ActorMatch(id = "monster"), hitterVarName = "instance");
     }
     actions {
-        setObjectVar(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}+1");
+        setInstanceInt("Exp", "{instance.Exp}"+1);
         saveUserState();
         // TODO: Add item
         // TODO: Popup text
@@ -233,11 +238,11 @@ block levelUp {
         checkNumber(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
-        setObjectVar(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}-{instance.ExpNeeded}");
-        setObjectVar(key = "Level", object = "instance", type = "integer", value = "{instance.Level}+1");
-        setObjectVar(key = "Point", object = "instance", type = "integer", value = "{instance.Point}+2");
-        setObjectVar(key = "ExpNeeded", object = "instance", type = "integer", value = "{instance.Level}*2+4");
-        setObjectVar(key = "HP", object = "instance", type = "integer", value = HP_FORMULA);
+        setInstanceInt("Exp", "{instance.Exp}-{instance.ExpNeeded}");
+        setInstanceInt("Level", "{instance.Level}"+1);
+        setInstanceInt("Point", "{instance.Point}"+2);
+        setInstanceInt("ExpNeeded", "{instance.Level}*2+4");
+        setInstanceInt("HP", HP_FORMULA);
         actorAttributes(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
         saveUserState();
     }
@@ -290,18 +295,18 @@ block newPlayer {
         actorAdded(actor = ActorMatch(controller = "player"), varName = "instance");
     }
     actions {
-        setObjectVar(key = "STR", object = "instance", type = "integer", value = 0);
-        setObjectVar(key = "CON", object = "instance", type = "integer", value = 0);
-        setObjectVar(key = "AGI", object = "instance", type = "integer", value = 0);
-        setObjectVar(key = "INT", object = "instance", type = "integer", value = 0);
-        setObjectVar(key = "PSY", object = "instance", type = "integer", value = 0);
-        setObjectVar(key = "Level", object = "instance", type = "integer", value = 1);
-        setObjectVar(key = "Point", object = "instance", type = "integer", value = 5);
-        setObjectVar(key = "Exp", object = "instance", type = "integer", value = 0);
-        setObjectVar(key = "ExpNeeded", object = "instance", type = "integer", value = 6);
-        setObjectVar(key = "HP", object = "instance", type = "integer", value = 100);
+        setInstanceInt("STR", 0);
+        setInstanceInt("CON", 0);
+        setInstanceInt("AGI", 0);
+        setInstanceInt("INT", 0);
+        setInstanceInt("PSY", 0);
+        setInstanceInt("Level", 1);
+        setInstanceInt("Point", 5);
+        setInstanceInt("Exp", 0);
+        setInstanceInt("ExpNeeded", 6);
+        setInstanceInt("HP", 100);
         getUserState(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
-        setObjectVar(key = "completedInit", object = "instance", type = "integer", value = 1);
+        setInstanceInt("completedInit", 1);
     }
 }
 
