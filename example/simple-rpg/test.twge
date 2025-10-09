@@ -42,6 +42,32 @@ def debug(text): actions {
     }
 }
 
+//-------------------biMapWarp-------------------//
+def biMapWarp(x1, y1, x2, y2): actions {
+    if (x1 == x2 && y1 < y2) {
+        mapWarp(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "下");
+        mapWarp(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "上");
+    }
+    if (x1 == x2 && y1 > y2) {
+        mapWarp(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "上");
+        mapWarp(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "下");
+    }
+    if (x1 > x2 && y1 == y2) {
+        mapWarp(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "左");
+        mapWarp(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "右");
+    }
+    if (x1 < x2 && y1 == y2) {
+        mapWarp(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "右");
+        mapWarp(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "左");
+    }
+    if (x1 == x2 && y1 == y2) {
+        print(type = "error", text = "Cannot set the same point as the mapWarp src and dst");
+    }
+    if (x1 != x2 && y1 != y2) {
+        print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
+    }
+}
+
 //-------------------UpdatePlayerAttributes-------------------//
 def updatePlayerAttributes(actorId): actions {
     setObjectVar(key = "HP", object = actorId, type = "integer", value = "98 + 10*{"+actorId+".CON} + 2*{"+actorId+".Level}");
@@ -292,10 +318,8 @@ block init {
         addStuff(x = 4, y = 8, item = "custom_wind_staff");
         addMapSign(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
         addMapSign(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：恢復四分之一的血量", showButtons = false);
-        mapWarp(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "right");
-        mapWarp(fromX = 19, fromY = 10, toX = 21, toY = 10, direction = "right");
-        mapWarp(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "left");
-        mapWarp(fromX = 21, fromY = 10, toX = 19, toY = 10, direction = "left");
+        biMapWarp(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
+        biMapWarp(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
         addStuff(x = 6, y = 8, item = "custom_iron_sword");
         addStuff(x = 6, y = 8, item = "custom_iron_sword");
         addStuff(x = 6, y = 8, item = "custom_iron_sword");

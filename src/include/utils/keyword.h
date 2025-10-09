@@ -782,6 +782,36 @@ static KeywordEnum keywordEnum("custom weapon attack kind",
                                });
 } // namespace CustomWeaponAttackKind
 
+namespace MapWarpKind {
+const string keywordLeft = "left";
+const string keywordLeftZh = "左";
+const string keywordRight = "right";
+const string keywordRightZh = "右";
+const string keywordDown = "down";
+const string keywordDownZh = "下";
+const string keywordUp = "up";
+const string keywordUpZh = "上";
+const string keywordFall = "fall";
+const string keywordFallZh = "停留時傳送";
+const string keywordStay = "stay";
+const string keywordStayZh = "停留時不傳送";
+static KeywordEnum keywordEnum("map warp kind",
+                               {
+                                   {keywordLeft, keywordLeft},
+                                   {keywordLeftZh, keywordLeft},
+                                   {keywordRight, keywordRight},
+                                   {keywordRightZh, keywordRight},
+                                   {keywordDown, keywordDown},
+                                   {keywordDownZh, keywordDown},
+                                   {keywordUp, keywordUp},
+                                   {keywordUpZh, keywordUp},
+                                   {keywordFall, keywordFall},
+                                   {keywordFallZh, keywordFall},
+                                   {keywordStay, keywordStay},
+                                   {keywordStayZh, keywordStay},
+                               });
+} // namespace MapWarpKind
+
 } // namespace keyword
 
 #endif

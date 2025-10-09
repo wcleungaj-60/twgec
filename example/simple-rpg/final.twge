@@ -408,10 +408,10 @@ block init {
         addStuff(x = 4, y = 8, item = "custom_wind_staff");
         addMapSign(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
         addMapSign(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：恢復四分之一的血量", showButtons = false);
-        mapWarp(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "right");
-        mapWarp(fromX = 19, fromY = 10, toX = 21, toY = 10, direction = "right");
-        mapWarp(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "left");
-        mapWarp(fromX = 21, fromY = 10, toX = 19, toY = 10, direction = "left");
+        mapWarp(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "右");
+        mapWarp(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "左");
+        mapWarp(fromX = 19, fromY = 10, toX = 21, toY = 10, direction = "右");
+        mapWarp(fromX = 21, fromY = 10, toX = 19, toY = 10, direction = "左");
         addStuff(x = 6, y = 8, item = "custom_iron_sword");
         addStuff(x = 6, y = 8, item = "custom_iron_sword");
         addStuff(x = 6, y = 8, item = "custom_iron_sword");

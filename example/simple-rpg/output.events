@@ -3268,24 +3268,6 @@
                     "type": "MapWarp",
                     "data": {
                         "location": {
-                            "x": "19",
-                            "y": "10",
-                            "range": "0"
-                        },
-                        "op": "add",
-                        "direction": "right",
-                        "warpSpeed": "imme",
-                        "target": {
-                            "x": "21",
-                            "y": "10",
-                            "range": "0"
-                        }
-                    }
-                },
-                {
-                    "type": "MapWarp",
-                    "data": {
-                        "location": {
                             "x": "21",
                             "y": "9",
                             "range": "0"
@@ -3296,6 +3278,24 @@
                         "target": {
                             "x": "19",
                             "y": "9",
+                            "range": "0"
+                        }
+                    }
+                },
+                {
+                    "type": "MapWarp",
+                    "data": {
+                        "location": {
+                            "x": "19",
+                            "y": "10",
+                            "range": "0"
+                        },
+                        "op": "add",
+                        "direction": "right",
+                        "warpSpeed": "imme",
+                        "target": {
+                            "x": "21",
+                            "y": "10",
                             "range": "0"
                         }
                     }

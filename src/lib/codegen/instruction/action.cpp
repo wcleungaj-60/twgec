@@ -143,7 +143,7 @@ DefaultMap action::ActionMapWarp::defaultMap = DefaultMap(
         {"toY", {AST_INT, CODEGEN_STRING, "0"}},
         {"direction", {AST_STRING, CODEGEN_STRING, "right"}},
     },
-    "mapWrap");
+    "mapWarp");
 
 DefaultMap action::ActionMissionComplete::defaultMap = DefaultMap(
     {
@@ -533,8 +533,7 @@ void action::ActionMapWarp::method(std::ofstream &of,
   JsonObjectNode dataNode = JsonObjectNode({
       {"location", locationNode.to_string(24)},
       {"op", "\"add\""},
-      // TODO: add keyword for directionKind
-      {"direction", defaultMap.get("direction")},
+      {"direction", defaultMap.get("direction", MapWarpKind::keywordEnum)},
       {"warpSpeed", "\"imme\""},
       {"target", targetNode.to_string(24)},
   });
