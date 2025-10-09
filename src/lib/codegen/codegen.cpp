@@ -39,7 +39,7 @@ void CodeGenerator::preCodegen() {
           if (!stringNode)
             break;
           string keyName = "custom_" + stringNode->value;
-          customWeaponsKeywordEnum.insert({keyName, keyName});
+          userDefinedMeta.customWeaponsKeywordEnum.insert({keyName, keyName});
         }
     }
   }
@@ -128,9 +128,7 @@ void CodeGenerator::codegenAction(std::ofstream &of,
   CODEGEN_ACTION("setGlobal", SetGlobal);
   CODEGEN_ACTION("setObjectVar", SetObjectVar);
   CODEGEN_ACTION("setUserState", SetUserState);
-  // TODO: a better way to deal with the extraEnum
-  CODEGEN_ACTION_EXTRA_ARG("setWeaponAbility", SetWeaponAbility,
-                           customWeaponsKeywordEnum);
+  CODEGEN_ACTION("setWeaponAbility", SetWeaponAbility);
   CODEGEN_ACTION("wait", Wait);
   std::cerr << "Codegen error: Cannot found the corresponding action name \""
             << action->identifier << "\" at " << action.get()->loc << "\n";
@@ -154,8 +152,7 @@ void CodeGenerator::codegenTrigger(std::ofstream &of,
   CODEGEN_TRIGGER("actorHit", ActorHit);
   CODEGEN_TRIGGER("clickButton", ClickButton);
   CODEGEN_TRIGGER("keyboardPressed", KeyboardPressed);
-  CODEGEN_TRIGGER_EXTRA_ARG("releasePower", ReleasePower,
-                            customWeaponsKeywordEnum);
+  CODEGEN_TRIGGER("releasePower", ReleasePower);
   std::cerr << "Codegen error: Cannot found the corresponding trigger name \""
             << trigger->identifier << "\" at " << trigger.get()->loc << "\n";
 }

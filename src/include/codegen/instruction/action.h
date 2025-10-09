@@ -1,6 +1,7 @@
 #ifndef CODEGEN_ACTION_H
 #define CODEGEN_ACTION_H
 
+#include "codegen.h"
 #include "utils/defaultMap.h"
 
 namespace codegen {
@@ -11,16 +12,8 @@ namespace action {
   public:                                                                      \
     static DefaultMap defaultMap;                                              \
     static void method(std::ofstream &of,                                      \
-                       std::unique_ptr<ParamAppsNode> &action);                \
-  };
-
-#define REGISTER_CODE_GEN_ACTION_WITH_EXTRA_ENUM(name)                         \
-  class Action##name {                                                         \
-  public:                                                                      \
-    static DefaultMap defaultMap;                                              \
-    static void method(std::ofstream &of,                                      \
                        std::unique_ptr<ParamAppsNode> &action,                 \
-                       std::map<std::string, std::string> extraEnum);          \
+                       UserDefinedMetadata userDefinedMeta);                   \
   };
 
 REGISTER_CODE_GEN_ACTION(ActorAttributes);
@@ -42,7 +35,7 @@ REGISTER_CODE_GEN_ACTION(SetCookie);
 REGISTER_CODE_GEN_ACTION(SetGlobal);
 REGISTER_CODE_GEN_ACTION(SetObjectVar);
 REGISTER_CODE_GEN_ACTION(SetUserState);
-REGISTER_CODE_GEN_ACTION_WITH_EXTRA_ENUM(SetWeaponAbility);
+REGISTER_CODE_GEN_ACTION(SetWeaponAbility);
 REGISTER_CODE_GEN_ACTION(Wait);
 
 } // namespace action

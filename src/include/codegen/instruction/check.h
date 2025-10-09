@@ -1,6 +1,7 @@
 #ifndef CODEGEN_CHECK_H
 #define CODEGEN_CHECK_H
 
+#include "codegen.h"
 #include "utils/defaultMap.h"
 
 namespace codegen {
@@ -11,7 +12,8 @@ namespace check {
   public:                                                                      \
     static DefaultMap defaultMap;                                              \
     static void method(std::ofstream &of,                                      \
-                       std::unique_ptr<ParamAppsNode> &action);              \
+                       std::unique_ptr<ParamAppsNode> &check,                  \
+                       UserDefinedMetadata userDefinedMeta);                   \
   };
 
 REGISTER_CODE_GEN_CHECK(ActorCount);

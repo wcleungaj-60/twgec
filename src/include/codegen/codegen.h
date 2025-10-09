@@ -6,31 +6,31 @@
 
 #define CODEGEN_ACTION(inputName, outputClass)                                 \
   if (action->identifier == inputName)                                         \
-  return action::Action##outputClass::method(of, action->paramApps)
-
-#define CODEGEN_ACTION_EXTRA_ARG(inputName, outputClass, ...)                  \
-  if (action->identifier == inputName)                                         \
-  return action::Action##outputClass::method(of, action->paramApps, __VA_ARGS__)
+  return action::Action##outputClass::method(of, action->paramApps,            \
+                                             userDefinedMeta)
 
 #define CODEGEN_CHECK(inputName, outputClass)                                  \
   if (check->identifier == inputName)                                          \
-  return check::Check##outputClass::method(of, check->paramApps)
+  return check::Check##outputClass::method(of, check->paramApps,               \
+                                           userDefinedMeta)
 
 #define CODEGEN_TRIGGER(inputName, outputClass)                                \
   if (trigger->identifier == inputName)                                        \
-  return trigger::Trigger##outputClass::method(of, trigger->paramApps)
-
-#define CODEGEN_TRIGGER_EXTRA_ARG(inputName, outputClass, ...)                 \
-  if (trigger->identifier == inputName)                                        \
   return trigger::Trigger##outputClass::method(of, trigger->paramApps,         \
-                                               __VA_ARGS__)
+                                               userDefinedMeta)
 
 namespace codegen {
+
+struct UserDefinedMetadata {
+  // It will be handled in the `preCodegen`
+  std::map<std::string, std::string> customWeaponsKeywordEnum;
+};
+
 class CodeGenerator {
 private:
   // Variable
   const std::unique_ptr<ModuleNode> &moduleNode;
-  std::map<std::string, std::string> customWeaponsKeywordEnum;
+  UserDefinedMetadata userDefinedMeta;
   // Functions
   void preCodegen();
   void codegenModuleNode(std::ofstream &of);

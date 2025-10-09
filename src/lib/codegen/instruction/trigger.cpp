@@ -71,8 +71,9 @@ DefaultMap trigger::TriggerReleasePower::defaultMap = DefaultMap(
     },
     "releasePower");
 
-void trigger::TriggerActorAdded::method(
-    std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger) {
+void trigger::TriggerActorAdded::method(std::ofstream &of,
+                                        std::unique_ptr<ParamAppsNode> &trigger,
+                                        UserDefinedMetadata userDefinedMeta) {
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", defaultMap.get("actor")},
@@ -85,8 +86,9 @@ void trigger::TriggerActorAdded::method(
   of << inden(16) << rootNode.to_string(16);
 }
 
-void trigger::TriggerActorDead::method(
-    std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger) {
+void trigger::TriggerActorDead::method(std::ofstream &of,
+                                       std::unique_ptr<ParamAppsNode> &trigger,
+                                       UserDefinedMetadata userDefinedMeta) {
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", defaultMap.get("actor")},
@@ -103,8 +105,9 @@ void trigger::TriggerActorDead::method(
   of << inden(16) << rootNode.to_string(16);
 }
 
-void trigger::TriggerActorFire::method(
-    std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger) {
+void trigger::TriggerActorFire::method(std::ofstream &of,
+                                       std::unique_ptr<ParamAppsNode> &trigger,
+                                       UserDefinedMetadata userDefinedMeta) {
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", defaultMap.get("actor")},
@@ -125,7 +128,8 @@ void trigger::TriggerActorFire::method(
 }
 
 void trigger::TriggerActorHit::method(std::ofstream &of,
-                                      std::unique_ptr<ParamAppsNode> &trigger) {
+                                      std::unique_ptr<ParamAppsNode> &trigger,
+                                      UserDefinedMetadata userDefinedMeta) {
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", defaultMap.get("actor")},
@@ -151,7 +155,8 @@ void trigger::TriggerActorHit::method(std::ofstream &of,
 }
 
 void trigger::TriggerClickButton::method(
-    std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger) {
+    std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger,
+    UserDefinedMetadata userDefinedMeta) {
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", defaultMap.get("actor")},
@@ -168,7 +173,8 @@ void trigger::TriggerClickButton::method(
 }
 
 void trigger::TriggerKeyboardPressed::method(
-    std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger) {
+    std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger,
+    UserDefinedMetadata userDefinedMeta) {
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"playerId", defaultMap.get("actorId")},
@@ -189,11 +195,12 @@ void trigger::TriggerKeyboardPressed::method(
 
 void trigger::TriggerReleasePower::method(
     std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger,
-    std::map<std::string, std::string> extraEnum) {
+    UserDefinedMetadata userDefinedMeta) {
   defaultMap.addInputMap(trigger->named_args);
   std::string ability = defaultMap.get("ability", abilityKind::keywordEnum);
   std::string weaponType =
-      defaultMap.get("weapon", weaponKind::keywordEnum, extraEnum);
+      defaultMap.get("weapon", weaponKind::keywordEnum,
+                     userDefinedMeta.customWeaponsKeywordEnum);
 
   JsonObjectNode abilityNode = JsonObjectNode({
       {"value", ability},
