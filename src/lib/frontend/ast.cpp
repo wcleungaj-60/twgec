@@ -1,6 +1,7 @@
 #include "frontend/ast.h"
 #include "utils/utils.h"
 #include <iostream>
+#include <string>
 
 //------------ print ------------//
 void ModuleNode::print(std::string title, int indent) {
@@ -548,6 +549,60 @@ bool ExpressionNode::foldValue() {
     } else if (isOr) {
       value = std::make_unique<BoolValueNode>(lhsBool->value || rhsBool->value,
                                               lhsBool->loc);
+      isFolded = true;
+    }
+  } else if (lhsStr && rhsInt) {
+    if (isAdd) {
+      value = std::make_unique<StringValueNode>(
+          "(" + lhsStr->value + "+" + std::to_string(rhsInt->value) + ")",
+          lhsStr->loc);
+      isFolded = true;
+    } else if (isSub) {
+      value = std::make_unique<StringValueNode>(
+          "(" + lhsStr->value + "-" + std::to_string(rhsInt->value) + ")",
+          lhsStr->loc);
+      isFolded = true;
+    } else if (isMul) {
+      value = std::make_unique<StringValueNode>(
+          "(" + lhsStr->value + "*" + std::to_string(rhsInt->value) + ")",
+          lhsStr->loc);
+      isFolded = true;
+    } else if (isDiv) {
+      value = std::make_unique<StringValueNode>(
+          "(" + lhsStr->value + "/" + std::to_string(rhsInt->value) + ")",
+          lhsStr->loc);
+      isFolded = true;
+    } else if (isMod) {
+      value = std::make_unique<StringValueNode>(
+          "(" + lhsStr->value + "%" + std::to_string(rhsInt->value) + ")",
+          lhsStr->loc);
+      isFolded = true;
+    }
+  } else if (lhsInt && rhsStr) {
+    if (isAdd) {
+      value = std::make_unique<StringValueNode>(
+          "(" + std::to_string(lhsInt->value) + "+" + rhsStr->value + ")",
+          lhsInt->loc);
+      isFolded = true;
+    } else if (isSub) {
+      value = std::make_unique<StringValueNode>(
+          "(" + std::to_string(lhsInt->value) + "-" + rhsStr->value + ")",
+          lhsInt->loc);
+      isFolded = true;
+    } else if (isMul) {
+      value = std::make_unique<StringValueNode>(
+          "(" + std::to_string(lhsInt->value) + "*" + rhsStr->value + ")",
+          lhsInt->loc);
+      isFolded = true;
+    } else if (isDiv) {
+      value = std::make_unique<StringValueNode>(
+          "(" + std::to_string(lhsInt->value) + "/" + rhsStr->value + ")",
+          lhsInt->loc);
+      isFolded = true;
+    } else if (isMod) {
+      value = std::make_unique<StringValueNode>(
+          "(" + std::to_string(lhsInt->value) + "%" + rhsStr->value + ")",
+          lhsInt->loc);
       isFolded = true;
     }
   }

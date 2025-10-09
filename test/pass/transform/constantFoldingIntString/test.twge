@@ -1,0 +1,7 @@
+// OPTION: --print-ast-after-only=constantFolding
+block init {
+    actions {
+        print(text = "{variable}" + 123 * 678);
+        print(text = ("{variable}" + 123) * 678);
+    }
+}

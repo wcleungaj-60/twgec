@@ -213,11 +213,11 @@ block releasePowerWindStaff {
         releasePower(varName = "instance", weapon = "custom_wind_staff");
     }
     actions {
-        enblastEffect(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14+32");
-        enblastEffect(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14+16");
+        enblastEffect(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+32)");
+        enblastEffect(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+16)");
         enblastEffect(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14");
-        enblastEffect(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14-16");
-        enblastEffect(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14-32");
+        enblastEffect(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-16)");
+        enblastEffect(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-32)");
     }
     checks {
     }

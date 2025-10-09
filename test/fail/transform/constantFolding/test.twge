@@ -4,7 +4,7 @@ def testInt(v) : actions {
 
 block init {
     actions {
-        testInt(1 + "string");
+        testInt(true + "string");
         testInt(3 * true);
         testInt(v = tmp);
     }

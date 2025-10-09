@@ -131,12 +131,11 @@ def releasePowerDef(weapon) : block {
     }
     actions {
         if(weapon == "custom_wind_staff") {
-        // TODO: Implicit Conversion from Int to String
-        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE + "+32");
-        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE + "+16");
+        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE + 32);
+        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE + 16);
         enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE);
-        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE + "-16");
-        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE + "-32");
+        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE - 16);
+        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE - 32);
         }
         if(weapon == "custom_iron_sword") {
             deltaHp(actorCode = "instance", value = "{instance.HP}/4");

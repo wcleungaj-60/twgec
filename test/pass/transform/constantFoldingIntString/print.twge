@@ -1,0 +1,13 @@
+//---------------------------------//
+//--- AST After constantFolding ---//
+//---------------------------------//
+block init {
+    actions {
+        print(text = "({variable}+83394)");
+        print(text = "(({variable}+123)*678)");
+    }
+    checks {
+    }
+    triggers {
+    }
+}
