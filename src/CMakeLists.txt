@@ -13,10 +13,11 @@ add_executable(twgec
     lib/transform/implicitListPromotion.cpp
     lib/transform/symbolChecking.cpp
     lib/codegen/codegen.cpp
-    lib/codegen/instruction/action.cpp
-    lib/codegen/instruction/check.cpp
     lib/codegen/instruction/metadata.cpp
-    lib/codegen/instruction/trigger.cpp
+    lib/codegen/instruction/enhff/action.cpp
+    lib/codegen/instruction/std/action.cpp
+    lib/codegen/instruction/std/check.cpp
+    lib/codegen/instruction/std/trigger.cpp
     lib/codegen/utils/builtin.cpp
     lib/codegen/utils/defaultMap.cpp
     lib/utils/keyword.cpp

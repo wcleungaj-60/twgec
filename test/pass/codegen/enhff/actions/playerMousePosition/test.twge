@@ -1,0 +1,5 @@
+block init {
+    actions {
+        EnhFF::playerMousePosition(actorId = "instance", varX = "myX", varY = "myY");
+    }
+}

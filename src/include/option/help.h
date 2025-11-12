@@ -21,11 +21,13 @@ using namespace codegen::trigger;
 
 std::string getDefaultMapItem(codegen::DefaultMap defaultMap,
                               std::string nameZh) {
+  int padding = 28;
   std::map<std::string, codegen::DefaultMapValue> defaultMapParam =
       defaultMap.defaultMap;
   std::string instrName = defaultMap.functionName;
   std::string ret;
-  ret += inden(4) + instrName + inden(16 - instrName.size()) + nameZh + "\n";
+  assert(instrName.size() <= padding);
+  ret += inden(4) + instrName + inden(padding - instrName.size()) + nameZh + "\n";
   ret += inden(7);
   for (auto param : defaultMapParam) {
     std::ostringstream oss;
@@ -124,6 +126,7 @@ std::string getActions() {
   ret += getDefaultMapItem(ActionSetWeaponAbility::defaultMap, "設定武器技能");
   ret += getDefaultMapItem(ActionSetUserState::defaultMap, "儲存玩家狀態");
   ret += getDefaultMapItem(ActionWait::defaultMap, "等待");
+  ret += getDefaultMapItem(ActionEnhFFPlayerMousePosition::defaultMap, "玩家滑鼠座標");
   return ret;
 }
 

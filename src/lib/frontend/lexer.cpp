@@ -277,7 +277,9 @@ Token Lexer::stringToken() {
 Token Lexer::identifierToken() {
   size_t start = pos;
   int startColumn = column;
-  while (pos < input.length() && (isalnum(input[pos]) || input[pos] == '_')) {
+  // TODO: A better checking for `::` namespace
+  while (pos < input.length() &&
+         (isalnum(input[pos]) || input[pos] == '_' || input[pos] == ':')) {
     column++;
     pos++;
   }

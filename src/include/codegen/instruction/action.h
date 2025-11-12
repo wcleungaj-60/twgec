@@ -16,6 +16,7 @@ namespace action {
                        UserDefinedMetadata userDefinedMeta);                   \
   };
 
+// Standard Module
 REGISTER_CODE_GEN_ACTION(ActorAttributes);
 REGISTER_CODE_GEN_ACTION(ActorDisappear);
 REGISTER_CODE_GEN_ACTION(ActorFollow);
@@ -37,6 +38,9 @@ REGISTER_CODE_GEN_ACTION(SetObjectVar);
 REGISTER_CODE_GEN_ACTION(SetUserState);
 REGISTER_CODE_GEN_ACTION(SetWeaponAbility);
 REGISTER_CODE_GEN_ACTION(Wait);
+
+// EnhFF module
+REGISTER_CODE_GEN_ACTION(EnhFFPlayerMousePosition);
 
 } // namespace action
 } // namespace codegen

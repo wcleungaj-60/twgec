@@ -109,6 +109,7 @@ void CodeGenerator::codegenTypedInstrSet(
 
 void CodeGenerator::codegenAction(std::ofstream &of,
                                   std::unique_ptr<InstructionNode> &action) {
+  // Standard Module
   CODEGEN_ACTION("actorAttributes", ActorAttributes);
   CODEGEN_ACTION("actorDisappear", ActorDisappear);
   CODEGEN_ACTION("actorFollow", ActorFollow);
@@ -130,6 +131,8 @@ void CodeGenerator::codegenAction(std::ofstream &of,
   CODEGEN_ACTION("setUserState", SetUserState);
   CODEGEN_ACTION("setWeaponAbility", SetWeaponAbility);
   CODEGEN_ACTION("wait", Wait);
+  // EnhFF Module
+  CODEGEN_ACTION("EnhFF::playerMousePosition", EnhFFPlayerMousePosition);
   std::cerr << "Codegen error: Cannot found the corresponding action name \""
             << action->identifier << "\" at " << action.get()->loc << "\n";
 }
