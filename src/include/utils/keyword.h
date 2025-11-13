@@ -812,6 +812,66 @@ static KeywordEnum keywordEnum("map warp kind",
                                });
 } // namespace MapWarpKind
 
+namespace DropItemKind {
+const string keywordCoin = "coin";
+const string keywordCoin2 = "coin2";
+const string keywordPaper = "paper";
+const string keywordSpellPaper = "spellPaper";
+const string keywordBook = "book";
+const string keywordRedStone = "redStone";
+const string keywordIceStone = "iceStone";
+const string keywordFlagRed = "flagRed";
+const string keywordFlagBlue = "flagBlue";
+const string keywordGoldenKey = "goldenKey";
+const string keywordSilverKey = "silverKey";
+const string keywordMedicalBox = "medicalBox";
+const string keywordWine = "wine";
+const string keywordSandbag = "sandbag";
+const string keywordBox = "box";
+const string keywordSoldierSet = "soldierSet";
+const string keywordMap = "map";
+const string keywordMirror = "mirror";
+const string keywordMeatLeg = "meatLeg";
+const string keywordMeatLegPoison = "meatLegPoison";
+const string keywordMeatLegZombie = "meatLegZombie";
+const string keywordSerumBlue = "serumBlue";
+const string keywordSariraFire = "sariraFire";
+const string keywordSariraIce = "sariraIce";
+const string keywordSariraElec = "sariraElec";
+const string keywordSariraDark = "sariraDark";
+const string keywordSariraTree = "sariraTree";
+static KeywordEnum keywordEnum("map warp kind",
+                               {
+                                   {keywordCoin, keywordCoin},
+                                   {keywordCoin2, keywordCoin2},
+                                   {keywordPaper, keywordPaper},
+                                   {keywordSpellPaper, keywordSpellPaper},
+                                   {keywordBook, keywordBook},
+                                   {keywordRedStone, keywordRedStone},
+                                   {keywordIceStone, keywordIceStone},
+                                   {keywordFlagRed, keywordFlagRed},
+                                   {keywordFlagBlue, keywordFlagBlue},
+                                   {keywordGoldenKey, keywordGoldenKey},
+                                   {keywordSilverKey, keywordSilverKey},
+                                   {keywordMedicalBox, keywordMedicalBox},
+                                   {keywordWine, keywordWine},
+                                   {keywordSandbag, keywordSandbag},
+                                   {keywordBox, keywordBox},
+                                   {keywordSoldierSet, keywordSoldierSet},
+                                   {keywordMap, keywordMap},
+                                   {keywordMirror, keywordMirror},
+                                   {keywordMeatLeg, keywordMeatLeg},
+                                   {keywordMeatLegPoison, keywordMeatLegPoison},
+                                   {keywordMeatLegZombie, keywordMeatLegZombie},
+                                   {keywordSerumBlue, keywordSerumBlue},
+                                   {keywordSariraFire, keywordSariraFire},
+                                   {keywordSariraIce, keywordSariraIce},
+                                   {keywordSariraElec, keywordSariraElec},
+                                   {keywordSariraDark, keywordSariraDark},
+                                   {keywordSariraTree, keywordSariraTree},
+                               });
+} // namespace DropItemKind
+
 } // namespace keyword
 
 #endif

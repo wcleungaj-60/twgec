@@ -1,0 +1,5 @@
+block init {
+    actions {
+        addDropItem(itemCode = "exp_dear", x = 10, y = 10, type = "redStone");
+    }
+}

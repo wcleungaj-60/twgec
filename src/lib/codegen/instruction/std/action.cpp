@@ -65,6 +65,18 @@ DefaultMap action::ActionAddActor::defaultMap = DefaultMap(
     },
     "addActor");
 
+DefaultMap action::ActionAddDropItem::defaultMap = DefaultMap(
+    {
+        {"itemCode", {AST_STRING, CODEGEN_STRING, ""}},
+        {"x", {AST_INT, CODEGEN_STRING, "0"}},
+        {"y", {AST_INT, CODEGEN_STRING, "0"}},
+        {"range", {AST_INT, CODEGEN_STRING, "0"}},
+        {"scale", {AST_INT, CODEGEN_STRING, "1"}},
+        {"type", {AST_STRING, CODEGEN_STRING, "paper"}},
+        {"localVarname", {AST_STRING, CODEGEN_STRING, ""}},
+    },
+    "addDropItem");
+
 DefaultMap action::ActionAddMapSign::defaultMap = DefaultMap(
     {
         {"text", {AST_STRING, CODEGEN_STRING, ""}},
@@ -353,6 +365,33 @@ void action::ActionAddActor::method(std::ofstream &of,
   });
   JsonObjectNode rootNode = JsonObjectNode({
       {"type", "\"AddActor\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
+
+void action::ActionAddDropItem::method(std::ofstream &of,
+                                      std::unique_ptr<ParamAppsNode> &action,
+                                      UserDefinedMetadata userDefinedMeta) {
+  defaultMap.addInputMap(action->named_args);
+  JsonObjectNode locNode = JsonObjectNode({
+      {"x", defaultMap.get("x")},
+      {"y", defaultMap.get("y")},
+      {"range", defaultMap.get("range")},
+  });
+  JsonArrayNode locsNode =
+      JsonArrayNode(std::make_shared<JsonObjectNode>(locNode));
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"location", locsNode.to_string(24)},
+      {"shiftX", "0"},
+      {"shiftY", "0"},
+      {"itemCode", defaultMap.get("itemCode")},
+      {"itemType", defaultMap.get("type", DropItemKind::keywordEnum)},
+      {"itemScale", defaultMap.get("scale")},
+      {"localVarname", defaultMap.get("localVarname")},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"AddDropItem\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);

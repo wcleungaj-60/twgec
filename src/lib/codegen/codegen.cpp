@@ -115,6 +115,7 @@ void CodeGenerator::codegenAction(std::ofstream &of,
   CODEGEN_ACTION("actorFollow", ActorFollow);
   CODEGEN_ACTION("actorTalk", ActorTalk);
   CODEGEN_ACTION("addActor", AddActor);
+  CODEGEN_ACTION("addDropItem", AddDropItem);
   CODEGEN_ACTION("addMapSign", AddMapSign);
   CODEGEN_ACTION("addStuff", AddStuff);
   CODEGEN_ACTION("deltaHp", DeltaHp);

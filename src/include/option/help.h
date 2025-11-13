@@ -109,6 +109,7 @@ std::string getActions() {
   ret += getDefaultMapItem(ActionActorFollow::defaultMap, "跟隨人物");
   ret += getDefaultMapItem(ActionActorTalk::defaultMap, "角色說話");
   ret += getDefaultMapItem(ActionAddActor::defaultMap, "+角色");
+  ret += getDefaultMapItem(ActionAddDropItem::defaultMap, "+放置可拾取道具");
   ret += getDefaultMapItem(ActionAddMapSign::defaultMap, "+告示牌");
   ret += getDefaultMapItem(ActionAddStuff::defaultMap, "+武器道具");
   ret += getDefaultMapItem(ActionDeltaHp::defaultMap, "角色加減血");
