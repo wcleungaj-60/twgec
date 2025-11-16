@@ -1,0 +1,9 @@
+const x = 10;
+
+block init {
+    actions {
+        for(x in -2...2) {
+            addActor(x = x);
+        }
+    }
+}

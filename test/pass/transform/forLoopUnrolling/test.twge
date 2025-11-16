@@ -1,0 +1,31 @@
+// OPTION: --print-ast-after-only=forLoopUnrolling
+
+const a = 10;
+
+block b1 {
+    actions {
+        for(x in -2...2) {
+            for(y in -2...2) {
+                addActor(x = x, y = y);
+            }
+        }
+    }
+}
+
+block b2 {
+    actions {
+        for(x in 10...15) {
+            for(y in x...15) {
+                addActor(x = x, y = y);
+            }
+        }
+    }
+}
+
+block b3 {
+    actions {
+        for(x in a*a...a*9) {
+            addActor(x = x);
+        }
+    }
+}

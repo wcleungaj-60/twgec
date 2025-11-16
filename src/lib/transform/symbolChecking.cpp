@@ -57,21 +57,25 @@ bool hasUnitializedFun(std::unique_ptr<InstrSetNode> &instrSet,
                        std::set<std::string> uninitializedFunDef) {
   bool ret = false;
   for (auto &compositeInstr : instrSet->instructions) {
-    if (compositeInstr->instruction)
-      if (uninitializedFunDef.count(compositeInstr->instruction->identifier)) {
-        std::cerr << "Compilation Error: function `"
-                  << compositeInstr->instruction->identifier
-                  << "` is defined before used at "
-                  << compositeInstr->instruction->loc << ".\n";
+    if (!compositeInstr->instruction)
+      continue;
+    if (uninitializedFunDef.count(compositeInstr->instruction->identifier)) {
+      std::cerr << "Compilation Error: function `"
+                << compositeInstr->instruction->identifier
+                << "` is defined before used at "
+                << compositeInstr->instruction->loc << ".\n";
+      ret = true;
+    } else if (auto &branchNode = compositeInstr->branchNode) {
+      for (auto &ifRegion : branchNode->ifRegions)
+        if (hasUnitializedFun(ifRegion->region, uninitializedFunDef))
+          ret = true;
+      if (branchNode->elseRegion)
+        if (hasUnitializedFun(branchNode->elseRegion, uninitializedFunDef))
+          ret = true;
+    } else if (auto &forNode = compositeInstr->forNode) {
+      if (hasUnitializedFun(forNode->region, uninitializedFunDef))
         ret = true;
-      } else if (auto &branchNode = compositeInstr->branchNode) {
-        for (auto &ifRegion : branchNode->ifRegions)
-          if (hasUnitializedFun(ifRegion->region, uninitializedFunDef))
-            ret = true;
-        if (branchNode->elseRegion)
-          if (hasUnitializedFun(branchNode->elseRegion, uninitializedFunDef))
-            ret = true;
-      }
+    }
   }
   return ret;
 }

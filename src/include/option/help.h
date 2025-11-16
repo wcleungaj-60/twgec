@@ -66,6 +66,7 @@ Passes:
     blockLegalization
     functionInling
     constantFolding
+    forLoopUnrolling
     ifStatementPropagation
     implicitListPromotion)";
 

@@ -1,0 +1,84 @@
+//----------------------------------//
+//--- AST After forLoopUnrolling ---//
+//----------------------------------//
+block b1 {
+    actions {
+        addActor(x = -2, y = -2);
+        addActor(x = -2, y = -1);
+        addActor(x = -2, y = 0);
+        addActor(x = -2, y = 1);
+        addActor(x = -2, y = 2);
+        addActor(x = -1, y = -2);
+        addActor(x = -1, y = -1);
+        addActor(x = -1, y = 0);
+        addActor(x = -1, y = 1);
+        addActor(x = -1, y = 2);
+        addActor(x = 0, y = -2);
+        addActor(x = 0, y = -1);
+        addActor(x = 0, y = 0);
+        addActor(x = 0, y = 1);
+        addActor(x = 0, y = 2);
+        addActor(x = 1, y = -2);
+        addActor(x = 1, y = -1);
+        addActor(x = 1, y = 0);
+        addActor(x = 1, y = 1);
+        addActor(x = 1, y = 2);
+        addActor(x = 2, y = -2);
+        addActor(x = 2, y = -1);
+        addActor(x = 2, y = 0);
+        addActor(x = 2, y = 1);
+        addActor(x = 2, y = 2);
+    }
+    checks {
+    }
+    triggers {
+    }
+}
+block b2 {
+    actions {
+        addActor(x = 10, y = 10);
+        addActor(x = 10, y = 11);
+        addActor(x = 10, y = 12);
+        addActor(x = 10, y = 13);
+        addActor(x = 10, y = 14);
+        addActor(x = 10, y = 15);
+        addActor(x = 11, y = 11);
+        addActor(x = 11, y = 12);
+        addActor(x = 11, y = 13);
+        addActor(x = 11, y = 14);
+        addActor(x = 11, y = 15);
+        addActor(x = 12, y = 12);
+        addActor(x = 12, y = 13);
+        addActor(x = 12, y = 14);
+        addActor(x = 12, y = 15);
+        addActor(x = 13, y = 13);
+        addActor(x = 13, y = 14);
+        addActor(x = 13, y = 15);
+        addActor(x = 14, y = 14);
+        addActor(x = 14, y = 15);
+        addActor(x = 15, y = 15);
+    }
+    checks {
+    }
+    triggers {
+    }
+}
+block b3 {
+    actions {
+        addActor(x = 100);
+        addActor(x = 99);
+        addActor(x = 98);
+        addActor(x = 97);
+        addActor(x = 96);
+        addActor(x = 95);
+        addActor(x = 94);
+        addActor(x = 93);
+        addActor(x = 92);
+        addActor(x = 91);
+        addActor(x = 90);
+    }
+    checks {
+    }
+    triggers {
+    }
+}

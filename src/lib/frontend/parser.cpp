@@ -269,8 +269,13 @@ std::unique_ptr<CompositeInstrNode> Parser::parseCompositeInstr() {
     compositeInstrNode->branchNode = std::move(parseBranch());
     if (!compositeInstrNode->branchNode)
       return nullptr;
+  } else if (tokens.front().type == TokenType::FOR) {
+    compositeInstrNode->forNode = std::move(parseFor());
+    if (!compositeInstrNode->forNode)
+      return nullptr;
   } else {
-    std::cerr << "SyntaxError: Expecting an instruction or if-statement at "
+    std::cerr << "SyntaxError: Expecting an instruction, if-statement, or "
+                 "for-statement at "
               << tokens.front().location << ". Found \'" << tokens.front().value
               << "\'\n";
     return nullptr;
@@ -281,13 +286,13 @@ std::unique_ptr<CompositeInstrNode> Parser::parseCompositeInstr() {
 std::unique_ptr<BranchNode> Parser::parseBranch() {
   Location loc = tokens.front().location;
   auto branchNode = std::make_unique<BranchNode>(loc);
-  auto ifRegion = parseIfRegionNode();
+  auto ifRegion = parseIfRegion();
   if (!ifRegion)
     return nullptr;
   branchNode->ifRegions.push_back(std::move(ifRegion));
   while (consume(TokenType::ELSE, /*errorThrowing*/ false)) {
     if (tokens.front().type == TokenType::IF) {
-      auto elifRegion = parseIfRegionNode();
+      auto elifRegion = parseIfRegion();
       branchNode->ifRegions.push_back(std::move(elifRegion));
     } else {
       auto elseRegion = parseInstrSet();
@@ -297,7 +302,7 @@ std::unique_ptr<BranchNode> Parser::parseBranch() {
   return branchNode;
 }
 
-std::unique_ptr<IfRegionNode> Parser::parseIfRegionNode() {
+std::unique_ptr<IfRegionNode> Parser::parseIfRegion() {
   Location loc = tokens.front().location;
   if (!consume(TokenType::IF) || !consume(TokenType::OPENPAR))
     return nullptr;
@@ -311,6 +316,30 @@ std::unique_ptr<IfRegionNode> Parser::parseIfRegionNode() {
     return nullptr;
   return std::make_unique<IfRegionNode>(std::move(condition), std::move(region),
                                         loc);
+}
+
+std::unique_ptr<ForNode> Parser::parseFor() {
+  Location loc = tokens.front().location;
+  if (!consume(TokenType::FOR) || !consume(TokenType::OPENPAR))
+    return nullptr;
+  std::string iterArg = tokens.front().value;
+  if (!consume(TokenType::IDENTIFIER) || !consume(TokenType::IN))
+    return nullptr;
+  auto fromExp = parseExp();
+  if (!fromExp)
+    return nullptr;
+  if (!consume(TokenType::ELLIPSIS))
+    return nullptr;
+  auto toExp = parseExp();
+  if (!toExp)
+    return nullptr;
+  if (!consume(TokenType::CLOSEPAR))
+    return nullptr;
+  auto region = parseInstrSet();
+  if (!region)
+    return nullptr;
+  return std::make_unique<ForNode>(iterArg, std::move(fromExp),
+                                   std::move(toExp), std::move(region), loc);
 }
 
 /**
@@ -327,6 +356,7 @@ std::unique_ptr<InstructionNode> Parser::parseInstruction() {
   if (!consume(TokenType::IDENTIFIER))
     return nullptr;
   while (tokens.front().type != TokenType::OPENPAR) {
+    // TODO: A better language design for `.`
     if (!consume(TokenType::DOT))
       return nullptr;
     identifier += "." + tokens.front().value;

@@ -40,7 +40,7 @@ TypedInstrSetNode = [ActionsDefNode | ChecksDefNode | TriggersDefNode] InstrSetN
   - CompositeInstrNode := BranchNode | ForLoopNode | InstructionNode
     - BranchNode := IfRegionNode [ElseToken IfRegionNode]* [ElseToken InstrSetNode]?
       - IfRegionNode := IfToken OpenParToken ExpNode CloseParToken InstrSetNode
-    - ForLoopNode := ForToken IdentifierToken InToken ExpNode EllipsisToken ExpNode InstrSetNode
+    - ForLoopNode := ForToken OpenParToken IdentifierToken InToken ExpNode EllipsisToken ExpNode CloseParToken InstrSetNode
 // Instruction Scope
 InstructionNode := IdentifierToken [DotToken IdentifierToken]* ParamAppsNode
 - ParamAppsNode = OpenParToken PositionalParamAppsNode? CloseParToken

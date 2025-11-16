@@ -64,6 +64,9 @@ bool functionInling(
       if (branchNode->elseRegion)
         if (!functionInling(funDefMap, branchNode->elseRegion, expectedType))
           return false;
+    } else if (auto &forNode = compositeInstrs[idx]->forNode) {
+      if (!functionInling(funDefMap, forNode->region, expectedType))
+        return false;
     }
   }
   std::reverse(funCallerIdxes.begin(), funCallerIdxes.end());

@@ -5,6 +5,7 @@
 #include <cassert>
 #include <map>
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -21,6 +22,7 @@ class InstrSetNode;
 class CompositeInstrNode;
 class BranchNode;
 class IfRegionNode;
+class ForNode;
 // Instruction level
 class InstructionNode;
 class ParamAppsNode;
@@ -80,7 +82,7 @@ public:
   void print(std::string title, int indent = 0);
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
-  bool hasUnresolvedValue();
+  bool hasUnresolvedValue(std::set<std::string> except = {});
 };
 
 class MetadataNode {
@@ -100,7 +102,7 @@ public:
   std::unique_ptr<MetadataNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
-  bool hasUnresolvedValue();
+  bool hasUnresolvedValue(std::set<std::string> except = {});
 };
 
 class FunDefNode {
@@ -142,7 +144,7 @@ public:
   std::unique_ptr<BlockNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
-  bool hasUnresolvedValue();
+  bool hasUnresolvedValue(std::set<std::string> except = {});
 };
 
 class BlockBodyNode {
@@ -160,7 +162,7 @@ public:
   std::unique_ptr<BlockBodyNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
-  bool hasUnresolvedValue();
+  bool hasUnresolvedValue(std::set<std::string> except = {});
   void setActionsIdx(int idx) { actionsIdx = idx; };
   void setChecksIdx(int idx) { checksIdx = idx; };
   void setTriggersIdx(int idx) { triggersIdx = idx; };
@@ -217,7 +219,7 @@ public:
   std::unique_ptr<TypedInstrSetNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
-  bool hasUnresolvedValue();
+  bool hasUnresolvedValue(std::set<std::string> except = {});
 };
 
 class InstrSetNode {
@@ -234,7 +236,7 @@ public:
   std::unique_ptr<InstrSetNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
-  bool hasUnresolvedValue();
+  bool hasUnresolvedValue(std::set<std::string> except = {});
 };
 
 class CompositeInstrNode {
@@ -243,6 +245,7 @@ public:
   Location loc;
   std::unique_ptr<InstructionNode> instruction;
   std::unique_ptr<BranchNode> branchNode;
+  std::unique_ptr<ForNode> forNode;
 
   // Constructor
   CompositeInstrNode(Location loc) : loc(loc) {}
@@ -250,13 +253,15 @@ public:
       : loc(loc), instruction(std::move(instruction)) {}
   CompositeInstrNode(Location loc, std::unique_ptr<BranchNode> branchNode)
       : loc(loc), branchNode(std::move(branchNode)) {}
+  CompositeInstrNode(Location loc, std::unique_ptr<ForNode> forNode)
+      : loc(loc), forNode(std::move(forNode)) {}
 
   // Function
   void print(int indent = 0);
   std::unique_ptr<CompositeInstrNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
-  bool hasUnresolvedValue();
+  bool hasUnresolvedValue(std::set<std::string> except = {});
 };
 
 class BranchNode {
@@ -274,7 +279,31 @@ public:
   std::unique_ptr<BranchNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
-  bool hasUnresolvedValue();
+  bool hasUnresolvedValue(std::set<std::string> except = {});
+};
+
+class ForNode {
+public:
+  // Variable
+  Location loc;
+  std::string iterArg;
+  std::unique_ptr<ExpressionNode> fromExp;
+  std::unique_ptr<ExpressionNode> toExp;
+  std::unique_ptr<InstrSetNode> region;
+
+  // Constructor
+  ForNode(std::string iterArg, std::unique_ptr<ExpressionNode> fromExp,
+          std::unique_ptr<ExpressionNode> toExp,
+          std::unique_ptr<InstrSetNode> region, Location loc)
+      : loc(loc), iterArg(iterArg), fromExp(std::move(fromExp)),
+        toExp(std::move(toExp)), region(std::move(region)) {}
+
+  // Function
+  void print(int indent = 0);
+  std::unique_ptr<ForNode> clone();
+  bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
+  bool foldValue();
+  bool hasUnresolvedValue(std::set<std::string> except = {});
 };
 
 class IfRegionNode {
@@ -294,7 +323,7 @@ public:
   std::unique_ptr<IfRegionNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
-  bool hasUnresolvedValue();
+  bool hasUnresolvedValue(std::set<std::string> except = {});
 };
 
 //------------ Instruction level definition ------------//
@@ -315,7 +344,7 @@ public:
   std::unique_ptr<InstructionNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
-  bool hasUnresolvedValue();
+  bool hasUnresolvedValue(std::set<std::string> except = {});
 };
 
 class ParamAppsNode {
@@ -333,7 +362,7 @@ public:
   std::unique_ptr<ParamAppsNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
-  bool hasUnresolvedValue();
+  bool hasUnresolvedValue(std::set<std::string> except = {});
 };
 
 class NamedParamAppsNode {
@@ -352,7 +381,7 @@ public:
   std::unique_ptr<NamedParamAppsNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
-  bool hasUnresolvedValue();
+  bool hasUnresolvedValue(std::set<std::string> except = {});
 };
 
 class PositionalParamAppsNode {
@@ -370,7 +399,7 @@ public:
   std::unique_ptr<PositionalParamAppsNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
-  bool hasUnresolvedValue();
+  bool hasUnresolvedValue(std::set<std::string> except = {});
 };
 
 //------------ Expression level definition ------------//
@@ -512,7 +541,7 @@ public:
   std::unique_ptr<ExpressionNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
-  bool hasUnresolvedValue();
+  bool hasUnresolvedValue(std::set<std::string> except = {});
 };
 
 //------------ operator<< ------------//

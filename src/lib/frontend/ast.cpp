@@ -79,6 +79,8 @@ void CompositeInstrNode::print(int indent) {
     instruction->print(indent);
   if (branchNode)
     branchNode->print(indent);
+  if (forNode)
+    forNode->print(indent);
 }
 
 void BranchNode::print(int indent) {
@@ -104,6 +106,13 @@ void IfRegionNode::print(int indent) {
   std::cout << "if(" << *condition << ") {\n";
   region->print(indent + 4);
   std::cout << inden(indent) << "}";
+}
+
+void ForNode::print(int indent) {
+  std::cout << inden(indent) << "for(" << iterArg << " in " << *fromExp << "..."
+            << *toExp << ") {\n";
+  region->print(indent + 4);
+  std::cout << inden(indent) << "}\n";
 }
 
 void InstructionNode::print(int indent) {
@@ -187,6 +196,8 @@ std::unique_ptr<CompositeInstrNode> CompositeInstrNode::clone() {
     return std::make_unique<CompositeInstrNode>(loc, instruction->clone());
   else if (branchNode)
     return std::make_unique<CompositeInstrNode>(loc, branchNode->clone());
+  else if (forNode)
+    return std::make_unique<CompositeInstrNode>(loc, forNode->clone());
   return nullptr;
 }
 
@@ -202,6 +213,11 @@ std::unique_ptr<BranchNode> BranchNode::clone() {
 std::unique_ptr<IfRegionNode> IfRegionNode::clone() {
   return std::make_unique<IfRegionNode>(condition->clone(), region->clone(),
                                         loc);
+}
+
+std::unique_ptr<ForNode> ForNode::clone() {
+  return std::make_unique<ForNode>(iterArg, fromExp->clone(), toExp->clone(),
+                                   region->clone(), loc);
 }
 
 std::unique_ptr<InstructionNode> InstructionNode::clone() {
@@ -325,6 +341,8 @@ bool CompositeInstrNode::propagateExp(
     return instruction->propagateExp(varExpMap);
   if (branchNode)
     return branchNode->propagateExp(varExpMap);
+  if (forNode)
+    return forNode->propagateExp(varExpMap);
   return true;
 }
 
@@ -343,6 +361,20 @@ bool IfRegionNode::propagateExp(
   bool ret = true;
   ret &= region->propagateExp(varExpMap);
   ret &= condition->propagateExp(varExpMap);
+  return ret;
+}
+
+bool ForNode::propagateExp(
+    std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
+  bool ret = true;
+  if (varExpMap.find(iterArg) != varExpMap.end()) {
+    std::cerr << "Compilation Error: iteration variable \'" << iterArg
+              << "\' is redefined at " << loc << ".\n";
+    return false;
+  }
+  ret &= fromExp->propagateExp(varExpMap);
+  ret &= toExp->propagateExp(varExpMap);
+  ret &= region->propagateExp(varExpMap);
   return ret;
 }
 
@@ -442,6 +474,8 @@ bool CompositeInstrNode::foldValue() {
     return instruction->foldValue();
   if (branchNode)
     return branchNode->foldValue();
+  if (forNode)
+    return forNode->foldValue();
   return true;
 }
 
@@ -458,6 +492,14 @@ bool IfRegionNode::foldValue() {
   bool ret = true;
   ret &= region->foldValue();
   ret &= condition->foldValue();
+  return ret;
+}
+
+bool ForNode::foldValue() {
+  bool ret = true;
+  ret &= fromExp->foldValue();
+  ret &= toExp->foldValue();
+  ret &= region->foldValue();
   return ret;
 }
 
@@ -662,89 +704,105 @@ bool ExpressionNode::foldValue() {
 }
 
 //------------ hasUnresolvedValue ------------//
-bool ModuleNode::hasUnresolvedValue() {
+bool ModuleNode::hasUnresolvedValue(std::set<std::string> except) {
   bool ret = false;
   for (auto &metadata : metadatas)
-    ret |= metadata->hasUnresolvedValue();
+    ret |= metadata->hasUnresolvedValue(except);
   for (auto &block : blocks)
-    ret |= block->hasUnresolvedValue();
+    ret |= block->hasUnresolvedValue(except);
   return ret;
 }
 
-bool MetadataNode::hasUnresolvedValue() {
-  return expNode->hasUnresolvedValue();
+bool MetadataNode::hasUnresolvedValue(std::set<std::string> except) {
+  return expNode->hasUnresolvedValue(except);
 }
 
-bool BlockNode::hasUnresolvedValue() { return blockBody->hasUnresolvedValue(); }
+bool BlockNode::hasUnresolvedValue(std::set<std::string> except) {
+  return blockBody->hasUnresolvedValue(except);
+}
 
-bool BlockBodyNode::hasUnresolvedValue() {
+bool BlockBodyNode::hasUnresolvedValue(std::set<std::string> except) {
   bool ret = false;
   for (auto &metadata : metadatas)
-    ret |= metadata->hasUnresolvedValue();
+    ret |= metadata->hasUnresolvedValue(except);
   for (auto &typedInstr : typedInstrSets)
-    ret |= typedInstr->hasUnresolvedValue();
+    ret |= typedInstr->hasUnresolvedValue(except);
   return ret;
 }
 
-bool TypedInstrSetNode::hasUnresolvedValue() {
-  return instrSet->hasUnresolvedValue();
+bool TypedInstrSetNode::hasUnresolvedValue(std::set<std::string> except) {
+  return instrSet->hasUnresolvedValue(except);
 }
 
-bool InstrSetNode::hasUnresolvedValue() {
+bool InstrSetNode::hasUnresolvedValue(std::set<std::string> except) {
   bool ret = false;
   for (auto &compositeInstr : instructions)
-    ret |= compositeInstr->hasUnresolvedValue();
+    ret |= compositeInstr->hasUnresolvedValue(except);
   return ret;
 }
 
-bool CompositeInstrNode::hasUnresolvedValue() {
+bool CompositeInstrNode::hasUnresolvedValue(std::set<std::string> except) {
   if (instruction)
-    return instruction->hasUnresolvedValue();
+    return instruction->hasUnresolvedValue(except);
   if (branchNode)
-    return branchNode->hasUnresolvedValue();
+    return branchNode->hasUnresolvedValue(except);
+  if (forNode)
+    return forNode->hasUnresolvedValue(except);
   return true;
 }
 
-bool BranchNode::hasUnresolvedValue() {
+bool BranchNode::hasUnresolvedValue(std::set<std::string> except) {
   bool ret = false;
   for (auto &ifRegion : ifRegions)
-    ret |= ifRegion->hasUnresolvedValue();
+    ret |= ifRegion->hasUnresolvedValue(except);
   if (elseRegion)
-    ret |= elseRegion->hasUnresolvedValue();
+    ret |= elseRegion->hasUnresolvedValue(except);
   return ret;
 }
 
-bool IfRegionNode::hasUnresolvedValue() {
+bool IfRegionNode::hasUnresolvedValue(std::set<std::string> except) {
   bool ret = false;
-  ret |= region->hasUnresolvedValue();
-  ret |= condition->hasUnresolvedValue();
+  ret |= region->hasUnresolvedValue(except);
+  ret |= condition->hasUnresolvedValue(except);
   return ret;
 }
 
-bool InstructionNode::hasUnresolvedValue() {
-  return paramApps->hasUnresolvedValue();
+bool ForNode::hasUnresolvedValue(std::set<std::string> except) {
+  bool ret = false;
+  except.insert(iterArg);
+  ret |= fromExp->hasUnresolvedValue(except);
+  ret |= toExp->hasUnresolvedValue(except);
+  ret |= region->hasUnresolvedValue(except);
+  return ret;
 }
 
-bool ParamAppsNode::hasUnresolvedValue() {
+bool InstructionNode::hasUnresolvedValue(std::set<std::string> except) {
+  return paramApps->hasUnresolvedValue(except);
+}
+
+bool ParamAppsNode::hasUnresolvedValue(std::set<std::string> except) {
   bool ret = false;
   for (auto &namedArg : named_args)
-    ret |= namedArg->hasUnresolvedValue();
+    ret |= namedArg->hasUnresolvedValue(except);
   for (auto &positionalArg : positional_args)
-    ret |= positionalArg->hasUnresolvedValue();
+    ret |= positionalArg->hasUnresolvedValue(except);
   return ret;
 }
 
-bool NamedParamAppsNode::hasUnresolvedValue() {
-  return expNode->hasUnresolvedValue();
+bool NamedParamAppsNode::hasUnresolvedValue(std::set<std::string> except) {
+  return expNode->hasUnresolvedValue(except);
 }
 
-bool PositionalParamAppsNode::hasUnresolvedValue() {
-  return expNode->hasUnresolvedValue();
+bool PositionalParamAppsNode::hasUnresolvedValue(
+    std::set<std::string> except) {
+  return expNode->hasUnresolvedValue(except);
 }
 
-bool ExpressionNode::hasUnresolvedValue() {
+bool ExpressionNode::hasUnresolvedValue(std::set<std::string> except) {
   if (isValue) {
     if (auto varNode = dynamic_cast<VariableValueNode *>(value.get())) {
+      if(except.count(varNode->value) > 0)
+        return false;
       std::cerr << "Compilation Error: Found unresolvable variable `"
                 << varNode->value << "` at " << varNode->loc << "\n";
       return true;

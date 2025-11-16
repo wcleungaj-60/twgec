@@ -8,6 +8,7 @@ namespace {
   if (!runPass(passFunc, passName, moduleNode, opt))                           \
     return false;
 
+// TODO: Support running single pass
 bool runPass(bool (*passFunc)(const std::unique_ptr<ModuleNode> &),
              std::string passName,
              const std::unique_ptr<ModuleNode> &moduleNode, Option opt) {
@@ -44,6 +45,8 @@ bool blockLegalization(const std::unique_ptr<ModuleNode> &moduleNode);
 bool functionInling(const std::unique_ptr<ModuleNode> &moduleNode);
 // Propagate the constant and fold the constant
 bool constantFolding(const std::unique_ptr<ModuleNode> &moduleNode);
+// Unroll for loop
+bool forLoopUnrolling(const std::unique_ptr<ModuleNode> &moduleNode);
 // Flatten the if-statement and remove the dead condition branch
 bool ifStatementPropagation(const std::unique_ptr<ModuleNode> &moduleNode);
 // Promote type `A` to `list[A]` implicitly
@@ -56,6 +59,7 @@ inline bool loweringPipeline(const std::unique_ptr<ModuleNode> &moduleNode,
   RUN_PASS(blockInling, "blockInling");
   RUN_PASS(blockLegalization, "blockLegalization");
   RUN_PASS(functionInling, "functionInling");
+  RUN_PASS(forLoopUnrolling, "forLoopUnrolling");
   RUN_PASS(constantFolding, "constantFolding");
   RUN_PASS(ifStatementPropagation, "ifStatementPropagation");
   RUN_PASS(implicitListPromotion, "implicitListPromotion");

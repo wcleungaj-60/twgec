@@ -26,6 +26,8 @@ enum class TokenType {
   CONST,    // const
   IF,       // if
   ELSE,     // else
+  FOR,      // for
+  IN,       // in
   /* Builtin Struct */
   POINT,         // Point
   ACTOR_MATCH,   // ActorMatch
@@ -55,6 +57,7 @@ enum class TokenType {
   MUL,                // *
   DIV,                // /
   MOD,                // %
+  ELLIPSIS,           // ...
   /* Others */
   INT,
   STRING,
@@ -78,6 +81,8 @@ inline std::ostream &operator<<(std::ostream &os, const TokenType &type) {
     LEXER_TOKEN_TYPE_PRINT(TokenType::CONST, "\'const\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::IF, "\'if\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::ELSE, "\'else\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::FOR, "\'for\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::IN, "\'in\'");
     // Builtin Struct
     LEXER_TOKEN_TYPE_PRINT(TokenType::POINT, "\'Point\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::ACTOR_MATCH, "\'ActorMatch\'");
@@ -107,6 +112,7 @@ inline std::ostream &operator<<(std::ostream &os, const TokenType &type) {
     LEXER_TOKEN_TYPE_PRINT(TokenType::MUL, "\'*\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::DIV, "\'/\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::MOD, "\'%\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::ELLIPSIS, "\'...\'");
     // Otherwise
     LEXER_TOKEN_TYPE_PRINT(TokenType::INT, "int");
     LEXER_TOKEN_TYPE_PRINT(TokenType::STRING, "string");
@@ -140,6 +146,9 @@ struct Token {
       LEXER_TOKEN_PRINT(TokenType::DEF, "def");
       LEXER_TOKEN_PRINT(TokenType::CONST, "const");
       LEXER_TOKEN_PRINT(TokenType::IF, "if");
+      LEXER_TOKEN_PRINT(TokenType::ELSE, "else");
+      LEXER_TOKEN_PRINT(TokenType::FOR, "for");
+      LEXER_TOKEN_PRINT(TokenType::IN, "in");
       // Builtin Struct
       LEXER_TOKEN_TYPE_PRINT(TokenType::POINT, "Point");
       LEXER_TOKEN_TYPE_PRINT(TokenType::ACTOR_MATCH, "ActorMatch");
@@ -169,6 +178,7 @@ struct Token {
       LEXER_TOKEN_TYPE_PRINT(TokenType::MUL, "*");
       LEXER_TOKEN_TYPE_PRINT(TokenType::DIV, "/");
       LEXER_TOKEN_TYPE_PRINT(TokenType::MOD, "%");
+      LEXER_TOKEN_TYPE_PRINT(TokenType::ELLIPSIS, "...");
       // Otherwise
       LEXER_TOKEN_PRINT(TokenType::INT, "int@" + token.value);
       LEXER_TOKEN_PRINT(TokenType::STRING, "string@" + token.value);

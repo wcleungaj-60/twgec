@@ -8,6 +8,7 @@ add_executable(twgec
     lib/transform/blockInlining.cpp
     lib/transform/blockLegalization.cpp
     lib/transform/constantFolding.cpp
+    lib/transform/forLoopUnrolling.cpp
     lib/transform/functionInlining.cpp
     lib/transform/ifStatementPropagation.cpp
     lib/transform/implicitListPromotion.cpp

@@ -12,6 +12,8 @@ std::string def = "def";
 std::string _const = "const";
 std::string _if = "if";
 std::string _else = "else";
+std::string _for = "for";
+std::string in = "in";
 std::string Point = "Point";
 std::string ActorMatch = "ActorMatch";
 std::string CustomWeapon = "CustomWeapon";
@@ -160,9 +162,16 @@ Token Lexer::nextToken() {
       pos++;
       return Token(TokenType::CLOSESQR, Lexer::line, Lexer::column - 1, "]");
     case '.':
-      Lexer::column++;
-      pos++;
-      return Token(TokenType::DOT, Lexer::line, Lexer::column - 1, ".");
+      if (input[pos + 1] == '.' && input[pos + 2] == '.') {
+        Lexer::column += 3;
+        pos += 3;
+        return Token(TokenType::ELLIPSIS, Lexer::line, Lexer::column - 3,
+                     "...");
+      } else {
+        Lexer::column++;
+        pos++;
+        return Token(TokenType::DOT, Lexer::line, Lexer::column - 1, ".");
+      }
     case ',':
       Lexer::column++;
       pos++;
@@ -225,6 +234,8 @@ Token Lexer::nextToken() {
       LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_if, TokenType::IF);
       LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_else,
                                      TokenType::ELSE);
+      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_for, TokenType::FOR);
+      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::in, TokenType::IN);
       LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::Point,
                                      TokenType::POINT);
       LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::ActorMatch,
