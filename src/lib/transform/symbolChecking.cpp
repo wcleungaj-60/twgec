@@ -64,11 +64,14 @@ bool hasUnitializedFun(std::unique_ptr<InstrSetNode> &instrSet,
                   << "` is defined before used at "
                   << compositeInstr->instruction->loc << ".\n";
         ret = true;
+      } else if (auto &branchNode = compositeInstr->branchNode) {
+        for (auto &ifRegion : branchNode->ifRegions)
+          if (hasUnitializedFun(ifRegion->region, uninitializedFunDef))
+            ret = true;
+        if (branchNode->elseRegion)
+          if (hasUnitializedFun(branchNode->elseRegion, uninitializedFunDef))
+            ret = true;
       }
-    if (compositeInstr->ifStatement)
-      if (hasUnitializedFun(compositeInstr->ifStatement->trueBlock,
-                            uninitializedFunDef))
-        ret = true;
   }
   return ret;
 }

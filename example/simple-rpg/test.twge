@@ -52,23 +52,18 @@ def biMapWarp(x1, y1, x2, y2): actions {
     if (x1 == x2 && y1 < y2) {
         mapWarp(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "下");
         mapWarp(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "上");
-    }
-    if (x1 == x2 && y1 > y2) {
+    } else if (x1 == x2 && y1 > y2) {
         mapWarp(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "上");
         mapWarp(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "下");
-    }
-    if (x1 > x2 && y1 == y2) {
+    } else if (x1 > x2 && y1 == y2) {
         mapWarp(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "左");
         mapWarp(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "右");
-    }
-    if (x1 < x2 && y1 == y2) {
+    } else if (x1 < x2 && y1 == y2) {
         mapWarp(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "右");
         mapWarp(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "左");
-    }
-    if (x1 == x2 && y1 == y2) {
+    } else if (x1 == x2 && y1 == y2) {
         print(type = "error", text = "Cannot set the same point as the mapWarp src and dst");
-    }
-    if (x1 != x2 && y1 != y2) {
+    } else {
         print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
     }
 }

@@ -25,9 +25,10 @@ enum class TokenType {
   DEF,      // def
   CONST,    // const
   IF,       // if
+  ELSE,     // else
   /* Builtin Struct */
-  POINT,       // Point
-  ACTOR_MATCH, // ActorMatch
+  POINT,         // Point
+  ACTOR_MATCH,   // ActorMatch
   CUSTOM_WEAPON, // CustomWeapon
   /* Speical Character */
   OPENCUR,            // {
@@ -76,6 +77,7 @@ inline std::ostream &operator<<(std::ostream &os, const TokenType &type) {
     LEXER_TOKEN_TYPE_PRINT(TokenType::DEF, "\'def\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::CONST, "\'const\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::IF, "\'if\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::ELSE, "\'else\'");
     // Builtin Struct
     LEXER_TOKEN_TYPE_PRINT(TokenType::POINT, "\'Point\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::ACTOR_MATCH, "\'ActorMatch\'");

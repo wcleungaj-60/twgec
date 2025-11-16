@@ -13,38 +13,44 @@ enum PropagationResult { ERROR = 0, PROPAGATED = 1, UNCHANGED = 2 };
 
 PropagationResult
 ifStatementPropagation(std::unique_ptr<InstrSetNode> &instrSet) {
-  std::vector<int> ifStatementIdxes;
+  std::vector<int> branchIdxes;
   auto &compositeInstrs = instrSet->instructions;
-  // Step 1: Get the if-statement index
-  for (int idx = 0; idx < compositeInstrs.size(); idx++) {
-    if (!compositeInstrs[idx]->ifStatement)
-      continue;
-    auto &condition = compositeInstrs[idx]->ifStatement->condition;
-    if (!condition->isValue ||
-        !dynamic_cast<BoolValueNode *>(condition->value.get())) {
-      std::cerr << "Syntax Error: Boolean value is expected in the if statment "
-                   "condition. Found at "
-                << compositeInstrs[idx]->loc << ".\n";
-      return PropagationResult::ERROR;
-    }
-    ifStatementIdxes.push_back(idx);
-  }
-  if (ifStatementIdxes.empty())
+  // Step 1: Get the branch node index
+  for (int idx = 0; idx < compositeInstrs.size(); idx++)
+    if (compositeInstrs[idx]->branchNode)
+      branchIdxes.push_back(idx);
+  if (branchIdxes.empty())
     return PropagationResult::UNCHANGED;
-  std::reverse(ifStatementIdxes.begin(), ifStatementIdxes.end());
-  // Step 2: Flatten the if-statement
-  for (int idx : ifStatementIdxes) {
-    auto &ifStatement = compositeInstrs[idx]->ifStatement;
+  std::reverse(branchIdxes.begin(), branchIdxes.end());
+  for (int idx : branchIdxes) {
+    auto &branchNode = compositeInstrs[idx]->branchNode;
     auto pos = compositeInstrs.begin() + idx;
-    auto ifTrue =
-        dynamic_cast<BoolValueNode *>(ifStatement->condition->value.get())
-            ->value;
-    auto clonedTrueBlock = ifStatement->trueBlock->clone();
+    // Step 2: Get the region to be inserted
+    std::unique_ptr<InstrSetNode> regionToInsert = nullptr;
+    for (auto &ifRegion : branchNode->ifRegions) {
+      if (!ifRegion->condition->isValue ||
+          !dynamic_cast<BoolValueNode *>(ifRegion->condition->value.get())) {
+        std::cerr << "Syntax Error: Boolean value is expected in the if "
+                     "statment condition. Found at "
+                  << ifRegion->loc << ".\n";
+        return PropagationResult::ERROR;
+      }
+      bool ifTrue =
+          dynamic_cast<BoolValueNode *>(ifRegion->condition->value.get())
+              ->value;
+      if (ifTrue) {
+        regionToInsert = ifRegion->region->clone();
+        break;
+      }
+    }
+    if (!regionToInsert && branchNode->elseRegion)
+      regionToInsert = branchNode->elseRegion->clone();
+    // Step 3: Flatten the branch node
     compositeInstrs.erase(pos);
-    if (ifTrue)
+    if (regionToInsert)
       compositeInstrs.insert(
-          pos, std::make_move_iterator(clonedTrueBlock->instructions.begin()),
-          std::make_move_iterator(clonedTrueBlock->instructions.end()));
+          pos, std::make_move_iterator(regionToInsert->instructions.begin()),
+          std::make_move_iterator(regionToInsert->instructions.end()));
   }
   return PropagationResult::PROPAGATED;
 }

@@ -20,6 +20,7 @@ class TypedInstrSetNode;
 class InstrSetNode;
 class CompositeInstrNode;
 class BranchNode;
+class IfRegionNode;
 // Instruction level
 class InstructionNode;
 class ParamAppsNode;
@@ -241,14 +242,14 @@ public:
   // Variable
   Location loc;
   std::unique_ptr<InstructionNode> instruction;
-  std::unique_ptr<BranchNode> ifStatement;
+  std::unique_ptr<BranchNode> branchNode;
 
   // Constructor
   CompositeInstrNode(Location loc) : loc(loc) {}
   CompositeInstrNode(Location loc, std::unique_ptr<InstructionNode> instruction)
       : loc(loc), instruction(std::move(instruction)) {}
-  CompositeInstrNode(Location loc, std::unique_ptr<BranchNode> ifStatement)
-      : loc(loc), ifStatement(std::move(ifStatement)) {}
+  CompositeInstrNode(Location loc, std::unique_ptr<BranchNode> branchNode)
+      : loc(loc), branchNode(std::move(branchNode)) {}
 
   // Function
   void print(int indent = 0);
@@ -262,18 +263,35 @@ class BranchNode {
 public:
   // Variable
   Location loc;
-  std::unique_ptr<ExpressionNode> condition;
-  std::unique_ptr<InstrSetNode> trueBlock;
+  std::vector<std::unique_ptr<IfRegionNode>> ifRegions;
+  std::unique_ptr<InstrSetNode> elseRegion;
 
   // Constructor
-  BranchNode(std::unique_ptr<ExpressionNode> condition,
-             std::unique_ptr<InstrSetNode> trueBlock, Location loc)
-      : condition(std::move(condition)), trueBlock(std::move(trueBlock)),
-        loc(loc) {}
+  BranchNode(Location loc) : loc(loc) {}
 
   // Function
   void print(int indent = 0);
   std::unique_ptr<BranchNode> clone();
+  bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
+  bool foldValue();
+  bool hasUnresolvedValue();
+};
+
+class IfRegionNode {
+public:
+  // Variable
+  Location loc;
+  std::unique_ptr<ExpressionNode> condition;
+  std::unique_ptr<InstrSetNode> region;
+
+  // Constructor
+  IfRegionNode(std::unique_ptr<ExpressionNode> condition,
+               std::unique_ptr<InstrSetNode> region, Location loc)
+      : condition(std::move(condition)), region(std::move(region)), loc(loc) {}
+
+  // Function
+  void print(int indent = 0);
+  std::unique_ptr<IfRegionNode> clone();
   bool propagateExp(std::map<std::string, std::unique_ptr<ExpressionNode>> &);
   bool foldValue();
   bool hasUnresolvedValue();

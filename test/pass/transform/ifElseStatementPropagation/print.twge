@@ -1,0 +1,33 @@
+//----------------------------------------//
+//--- AST After ifStatementPropagation ---//
+//----------------------------------------//
+block testFirst {
+    actions {
+        print(text = "A-outter");
+        print(text = "A-inner");
+    }
+    checks {
+    }
+    triggers {
+    }
+}
+block testSecond {
+    actions {
+        print(text = "B-outter");
+        print(text = "B-inner");
+    }
+    checks {
+    }
+    triggers {
+    }
+}
+block testLast {
+    actions {
+        print(text = "C-outter");
+        print(text = "C-inner");
+    }
+    checks {
+    }
+    triggers {
+    }
+}

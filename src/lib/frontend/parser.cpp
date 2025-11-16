@@ -266,8 +266,8 @@ std::unique_ptr<CompositeInstrNode> Parser::parseCompositeInstr() {
     if (!compositeInstrNode->instruction)
       return nullptr;
   } else if (tokens.front().type == TokenType::IF) {
-    compositeInstrNode->ifStatement = std::move(parseBranch());
-    if (!compositeInstrNode->ifStatement)
+    compositeInstrNode->branchNode = std::move(parseBranch());
+    if (!compositeInstrNode->branchNode)
       return nullptr;
   } else {
     std::cerr << "SyntaxError: Expecting an instruction or if-statement at "
@@ -280,6 +280,25 @@ std::unique_ptr<CompositeInstrNode> Parser::parseCompositeInstr() {
 
 std::unique_ptr<BranchNode> Parser::parseBranch() {
   Location loc = tokens.front().location;
+  auto branchNode = std::make_unique<BranchNode>(loc);
+  auto ifRegion = parseIfRegionNode();
+  if (!ifRegion)
+    return nullptr;
+  branchNode->ifRegions.push_back(std::move(ifRegion));
+  while (consume(TokenType::ELSE, /*errorThrowing*/ false)) {
+    if (tokens.front().type == TokenType::IF) {
+      auto elifRegion = parseIfRegionNode();
+      branchNode->ifRegions.push_back(std::move(elifRegion));
+    } else {
+      auto elseRegion = parseInstrSet();
+      branchNode->elseRegion = std::move(elseRegion);
+    }
+  }
+  return branchNode;
+}
+
+std::unique_ptr<IfRegionNode> Parser::parseIfRegionNode() {
+  Location loc = tokens.front().location;
   if (!consume(TokenType::IF) || !consume(TokenType::OPENPAR))
     return nullptr;
   auto condition = parseExp();
@@ -287,11 +306,11 @@ std::unique_ptr<BranchNode> Parser::parseBranch() {
     return nullptr;
   if (!consume(TokenType::CLOSEPAR))
     return nullptr;
-  auto trueBlock = parseInstrSet();
-  if (!trueBlock)
+  auto region = parseInstrSet();
+  if (!region)
     return nullptr;
-  return std::make_unique<BranchNode>(std::move(condition),
-                                      std::move(trueBlock), loc);
+  return std::make_unique<IfRegionNode>(std::move(condition), std::move(region),
+                                        loc);
 }
 
 /**

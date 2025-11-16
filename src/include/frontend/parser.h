@@ -21,6 +21,7 @@ private:
   std::unique_ptr<InstrSetNode> parseInstrSet();
   std::unique_ptr<CompositeInstrNode> parseCompositeInstr();
   std::unique_ptr<BranchNode> parseBranch();
+  std::unique_ptr<IfRegionNode> parseIfRegionNode();
   std::unique_ptr<InstructionNode> parseInstruction();
   std::unique_ptr<ParamAppsNode> parseParamAppsNode();
   std::unique_ptr<ExpressionNode> parseExp();

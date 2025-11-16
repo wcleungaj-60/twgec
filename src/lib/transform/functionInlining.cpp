@@ -57,9 +57,13 @@ bool functionInling(
       if (!isValidFuncCaller(primitiveInstr, funDefMap, expectedType))
         return false;
       funCallerIdxes.push_back(idx);
-    } else if (auto &ifStatement = compositeInstrs[idx]->ifStatement) {
-      if (!functionInling(funDefMap, ifStatement->trueBlock, expectedType))
-        return false;
+    } else if (auto &branchNode = compositeInstrs[idx]->branchNode) {
+      for (auto &ifRegion : branchNode->ifRegions)
+        if (!functionInling(funDefMap, ifRegion->region, expectedType))
+          return false;
+      if (branchNode->elseRegion)
+        if (!functionInling(funDefMap, branchNode->elseRegion, expectedType))
+          return false;
     }
   }
   std::reverse(funCallerIdxes.begin(), funCallerIdxes.end());

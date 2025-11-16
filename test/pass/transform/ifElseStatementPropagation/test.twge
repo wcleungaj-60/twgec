@@ -1,0 +1,55 @@
+// OPTION: --print-ast-after-only=ifStatementPropagation
+block testFirst {
+    actions {
+        if(true) {
+            print(text = "A-outter");    
+            if(true) {
+                print(text = "A-inner");
+            } else if(true) {
+                print(text = "B-inner");
+            } else {
+                print(text = "C-inner");
+            }
+        } else if(true) {
+            print(text = "B-outter");
+        } else {
+            print(text = "C-outter");
+        }
+    }
+}
+block testSecond {
+    actions {
+        if(false) {
+            print(text = "A-outter");
+        } else if(true) {
+            print(text = "B-outter");
+            if(false) {
+                print(text = "A-inner");
+            } else if(true) {
+                print(text = "B-inner");
+            } else {
+                print(text = "C-inner");
+            }
+        } else {
+            print(text = "C-outter");
+        }
+    }
+}
+block testLast {
+    actions {
+        if(false) {
+            print(text = "A-outter");
+        } else if(false) {
+            print(text = "B-outter");
+        } else {
+            print(text = "C-outter");
+            if(false) {
+                print(text = "A-inner");
+            } else if(false) {
+                print(text = "B-inner");
+            } else {
+                print(text = "C-inner");
+            }
+        }
+    }
+}

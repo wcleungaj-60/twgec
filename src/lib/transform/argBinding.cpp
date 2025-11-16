@@ -46,9 +46,13 @@ bool argBinding(std::map<std::string, std::unique_ptr<FunDefNode>> &funDefs,
     if (compositeInstr->instruction) {
       if (!argBinding(funDefs, compositeInstr->instruction))
         return false;
-    } else if (compositeInstr->ifStatement) {
-      if (!argBinding(funDefs, compositeInstr->ifStatement->trueBlock))
-        return false;
+    } else if (auto &branchNode = compositeInstr->branchNode) {
+      for (auto &ifRegion : branchNode->ifRegions)
+        if (!argBinding(funDefs, ifRegion->region))
+          return false;
+      if (branchNode->elseRegion)
+        if (!argBinding(funDefs, branchNode->elseRegion))
+          return false;
     }
   }
   return true;

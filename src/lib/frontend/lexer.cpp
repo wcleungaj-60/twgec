@@ -11,6 +11,7 @@ std::string checks = "checks";
 std::string def = "def";
 std::string _const = "const";
 std::string _if = "if";
+std::string _else = "else";
 std::string Point = "Point";
 std::string ActorMatch = "ActorMatch";
 std::string CustomWeapon = "CustomWeapon";
@@ -222,6 +223,8 @@ Token Lexer::nextToken() {
       LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_const,
                                      TokenType::CONST);
       LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_if, TokenType::IF);
+      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_else,
+                                     TokenType::ELSE);
       LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::Point,
                                      TokenType::POINT);
       LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::ActorMatch,

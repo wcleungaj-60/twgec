@@ -77,14 +77,33 @@ void InstrSetNode::print(int indent) {
 void CompositeInstrNode::print(int indent) {
   if (instruction)
     instruction->print(indent);
-  if (ifStatement)
-    ifStatement->print(indent);
+  if (branchNode)
+    branchNode->print(indent);
 }
 
 void BranchNode::print(int indent) {
-  std::cout << inden(indent) << "if(" << *condition << ") {\n";
-  trueBlock->print(indent + 4);
+  bool elif = false;
+  for (auto &ifRegion : ifRegions) {
+    if (elif)
+      std::cout << " else ";
+    else
+      std::cout << inden(indent);
+    ifRegion->print(indent);
+    elif = true;
+  }
+  if (!elseRegion) {
+    std::cout << "\n";
+    return;
+  }
+  std::cout << " else {\n";
+  elseRegion->print(indent + 4);
   std::cout << inden(indent) << "}\n";
+}
+
+void IfRegionNode::print(int indent) {
+  std::cout << "if(" << *condition << ") {\n";
+  region->print(indent + 4);
+  std::cout << inden(indent) << "}";
 }
 
 void InstructionNode::print(int indent) {
@@ -166,14 +185,23 @@ std::unique_ptr<InstrSetNode> InstrSetNode::clone() {
 std::unique_ptr<CompositeInstrNode> CompositeInstrNode::clone() {
   if (instruction)
     return std::make_unique<CompositeInstrNode>(loc, instruction->clone());
-  else if (ifStatement)
-    return std::make_unique<CompositeInstrNode>(loc, ifStatement->clone());
+  else if (branchNode)
+    return std::make_unique<CompositeInstrNode>(loc, branchNode->clone());
   return nullptr;
 }
 
 std::unique_ptr<BranchNode> BranchNode::clone() {
-  return std::make_unique<BranchNode>(condition->clone(), trueBlock->clone(),
-                                      loc);
+  auto newNode = std::make_unique<BranchNode>(loc);
+  for (auto &ifRegion : ifRegions)
+    newNode->ifRegions.push_back(ifRegion->clone());
+  if (elseRegion)
+    newNode->elseRegion = elseRegion->clone();
+  return newNode;
+}
+
+std::unique_ptr<IfRegionNode> IfRegionNode::clone() {
+  return std::make_unique<IfRegionNode>(condition->clone(), region->clone(),
+                                        loc);
 }
 
 std::unique_ptr<InstructionNode> InstructionNode::clone() {
@@ -295,15 +323,25 @@ bool CompositeInstrNode::propagateExp(
     std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
   if (instruction)
     return instruction->propagateExp(varExpMap);
-  if (ifStatement)
-    return ifStatement->propagateExp(varExpMap);
+  if (branchNode)
+    return branchNode->propagateExp(varExpMap);
   return true;
 }
 
 bool BranchNode::propagateExp(
     std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
   bool ret = true;
-  ret &= trueBlock->propagateExp(varExpMap);
+  for (auto &ifRegion : ifRegions)
+    ret &= ifRegion->propagateExp(varExpMap);
+  if (elseRegion)
+    ret &= elseRegion->propagateExp(varExpMap);
+  return ret;
+}
+
+bool IfRegionNode::propagateExp(
+    std::map<std::string, std::unique_ptr<ExpressionNode>> &varExpMap) {
+  bool ret = true;
+  ret &= region->propagateExp(varExpMap);
   ret &= condition->propagateExp(varExpMap);
   return ret;
 }
@@ -402,14 +440,23 @@ bool InstrSetNode::foldValue() {
 bool CompositeInstrNode::foldValue() {
   if (instruction)
     return instruction->foldValue();
-  if (ifStatement)
-    return ifStatement->foldValue();
+  if (branchNode)
+    return branchNode->foldValue();
   return true;
 }
 
 bool BranchNode::foldValue() {
   bool ret = true;
-  ret &= trueBlock->foldValue();
+  for (auto &ifRegion : ifRegions)
+    ret &= ifRegion->foldValue();
+  if (elseRegion)
+    ret &= elseRegion->foldValue();
+  return ret;
+}
+
+bool IfRegionNode::foldValue() {
+  bool ret = true;
+  ret &= region->foldValue();
   ret &= condition->foldValue();
   return ret;
 }
@@ -653,14 +700,23 @@ bool InstrSetNode::hasUnresolvedValue() {
 bool CompositeInstrNode::hasUnresolvedValue() {
   if (instruction)
     return instruction->hasUnresolvedValue();
-  if (ifStatement)
-    return ifStatement->hasUnresolvedValue();
+  if (branchNode)
+    return branchNode->hasUnresolvedValue();
   return true;
 }
 
 bool BranchNode::hasUnresolvedValue() {
   bool ret = false;
-  ret |= trueBlock->hasUnresolvedValue();
+  for (auto &ifRegion : ifRegions)
+    ret |= ifRegion->hasUnresolvedValue();
+  if (elseRegion)
+    ret |= elseRegion->hasUnresolvedValue();
+  return ret;
+}
+
+bool IfRegionNode::hasUnresolvedValue() {
+  bool ret = false;
+  ret |= region->hasUnresolvedValue();
   ret |= condition->hasUnresolvedValue();
   return ret;
 }
