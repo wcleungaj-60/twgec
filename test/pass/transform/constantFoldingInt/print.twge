@@ -1,22 +1,21 @@
 //---------------------------------//
 //--- AST After constantFolding ---//
 //---------------------------------//
+def testInt(v) : actions {
+    actorTalk(duration = v);
+}
 block init {
     actions {
-        actorTalk(duration = 17);
-        actorTalk(duration = 40);
-        actorTalk(duration = 24);
-        actorTalk(duration = 107);
-        actorTalk(duration = 18);
-        actorTalk(duration = 41);
-        actorTalk(duration = 37);
-        actorTalk(duration = 210);
-        actorTalk(duration = 38);
-        actorTalk(duration = 32);
-        actorTalk(duration = 60);
-    }
-    checks {
-    }
-    triggers {
+        testInt(17);
+        testInt(40);
+        testInt(24);
+        testInt(107);
+        testInt(18);
+        testInt(41);
+        testInt(37);
+        testInt(210);
+        testInt(38);
+        testInt(32);
+        testInt(60);
     }
 }

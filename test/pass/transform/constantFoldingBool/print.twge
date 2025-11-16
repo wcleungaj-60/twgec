@@ -1,15 +1,14 @@
 //---------------------------------//
 //--- AST After constantFolding ---//
 //---------------------------------//
+def testBool(v) : actions {
+    actorTalk(cleanTalk = v);
+}
 block init {
     actions {
-        actorTalk(cleanTalk = false);
-        actorTalk(cleanTalk = true);
-        actorTalk(cleanTalk = true);
-        actorTalk(cleanTalk = false);
-    }
-    checks {
-    }
-    triggers {
+        testBool(false);
+        testBool(true);
+        testBool(true);
+        testBool(false);
     }
 }

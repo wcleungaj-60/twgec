@@ -1,4 +1,4 @@
-// OPTION: --print-ast-after-only=ifStatementPropagation
+// OPTION: --print-ast-after --run-only=ifStatementPropagation
 block init {
     actions {
         if(true) {

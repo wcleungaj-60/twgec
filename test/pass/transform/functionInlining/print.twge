@@ -19,8 +19,4 @@ block init {
         print(text = "B");
         print(text = "A");
     }
-    checks {
-    }
-    triggers {
-    }
 }

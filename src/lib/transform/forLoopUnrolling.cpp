@@ -73,13 +73,6 @@ PropagationResult forLoopUnrolling(std::unique_ptr<InstrSetNode> &instrSet) {
 }
 
 bool forLoopUnrolling(const unique_ptr<ModuleNode> &moduleNode) {
-  // TODO: Remove duplicated logic
-  std::map<std::string, std::unique_ptr<ExpressionNode>> constDefMap;
-  for (auto &constDef : moduleNode->constDefs)
-    constDefMap.insert({constDef->key, constDef->expNode->clone()});
-  moduleNode->propagateExp(constDefMap);
-  moduleNode->foldValue();
-  moduleNode->constDefs.clear();
   PropagationResult result = PropagationResult::PROPAGATED;
   while (result == PropagationResult::PROPAGATED) {
     result = PropagationResult::UNCHANGED;

@@ -13,8 +13,4 @@ block init {
         print(text = "print true-true 2");
         print(text = "print true-true 3");
     }
-    checks {
-    }
-    triggers {
-    }
 }

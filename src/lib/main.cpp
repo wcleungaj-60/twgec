@@ -34,8 +34,11 @@ int main(int argc, char *argv[]) {
     return 1;
   }
   // Lowering
-  if (!transform::loweringPipeline(moduleNode, option))
+  transform::PassManager passManager(moduleNode, option);
+  if (!passManager.execute())
     return 1;
+  if(!option.runOnly.empty())
+    return 0;
   // Codegen
   codegen::CodeGenerator generator(moduleNode);
   generator.codegen(option.outputFile);

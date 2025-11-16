@@ -1,3 +1,31 @@
+//---------------------------------//
+//--- AST After constantFolding ---//
+//---------------------------------//
+block b1 {
+    actions {
+        for(x in -2...2) {
+            for(y in -2...2) {
+                addActor(x = x, y = y);
+            }
+        }
+    }
+}
+block b2 {
+    actions {
+        for(x in 10...15) {
+            for(y in x...15) {
+                addActor(x = x, y = y);
+            }
+        }
+    }
+}
+block b3 {
+    actions {
+        for(x in 100...90) {
+            addActor(x = x);
+        }
+    }
+}
 //----------------------------------//
 //--- AST After forLoopUnrolling ---//
 //----------------------------------//
@@ -29,10 +57,6 @@ block b1 {
         addActor(x = 2, y = 1);
         addActor(x = 2, y = 2);
     }
-    checks {
-    }
-    triggers {
-    }
 }
 block b2 {
     actions {
@@ -58,10 +82,6 @@ block b2 {
         addActor(x = 14, y = 15);
         addActor(x = 15, y = 15);
     }
-    checks {
-    }
-    triggers {
-    }
 }
 block b3 {
     actions {
@@ -76,9 +96,5 @@ block b3 {
         addActor(x = 92);
         addActor(x = 91);
         addActor(x = 90);
-    }
-    checks {
-    }
-    triggers {
     }
 }

@@ -1,4 +1,4 @@
-// OPTION: --print-ast-after-only=functionInling
+// OPTION: --print-ast-after --run-only=functionInling
 def actionA() : actions {
     print(text = "A");
 }
