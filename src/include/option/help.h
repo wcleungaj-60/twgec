@@ -144,6 +144,7 @@ std::string getTriggers() {
   ret += getDefaultMapItem(TriggerActorHit::defaultMap, "角色受傷");
   ret += getDefaultMapItem(TriggerClickButton::defaultMap, "告示牌按鈕");
   ret += getDefaultMapItem(TriggerKeyboardPressed::defaultMap, "鍵盤按鍵");
+  ret += getDefaultMapItem(TriggerItemPickup::defaultMap, "拾取武器道具");
   ret += getDefaultMapItem(TriggerReleasePower::defaultMap, "發動技能");
   return ret;
 }

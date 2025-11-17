@@ -60,6 +60,16 @@ DefaultMap trigger::TriggerKeyboardPressed::defaultMap = DefaultMap(
     },
     "keyboardPressed");
 
+DefaultMap trigger::TriggerItemPickup::defaultMap = DefaultMap(
+    {
+        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
+        {"actorVarname", {AST_STRING, CODEGEN_STRING, ""}},
+        {"itemVarname", {AST_STRING, CODEGEN_STRING, ""}},
+        {"matchKind", {AST_STRING, CODEGEN_STRING, "contain"}},
+        {"itemMatchCode", {AST_STRING, CODEGEN_STRING, ""}},
+    },
+    "itemPickup");
+
 DefaultMap trigger::TriggerReleasePower::defaultMap = DefaultMap(
     {
         {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
@@ -188,6 +198,28 @@ void trigger::TriggerKeyboardPressed::method(
   });
   JsonObjectNode rootNode = JsonObjectNode({
       {"type", "\"KeyboardPressed\""},
+      {"data", dataNode.to_string(20)},
+  });
+  of << inden(16) << rootNode.to_string(16);
+}
+
+void trigger::TriggerItemPickup::method(std::ofstream &of,
+                                        std::unique_ptr<ParamAppsNode> &trigger,
+                                        UserDefinedMetadata userDefinedMeta) {
+  defaultMap.addInputMap(trigger->named_args);
+  JsonObjectNode itemMatchNode = JsonObjectNode({
+      {"method", defaultMap.get("matchKind", matchKind::keywordEnum)},
+      {"itemCode", defaultMap.get("itemMatchCode")},
+      {"itemType", "\"\""},
+  });
+  JsonObjectNode dataNode = JsonObjectNode({
+      {"actorMatches", defaultMap.get("actor")},
+      {"varname", defaultMap.get("actorVarname")},
+      {"itemMatch", itemMatchNode.to_string(24)},
+      {"itemVarname", defaultMap.get("itemVarname")},
+  });
+  JsonObjectNode rootNode = JsonObjectNode({
+      {"type", "\"ItemPickup\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);

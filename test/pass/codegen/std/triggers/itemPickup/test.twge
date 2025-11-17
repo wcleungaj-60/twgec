@@ -1,0 +1,6 @@
+block init {
+    triggers {
+        itemPickup(actor = ActorMatch(controller = "player"), actorVarname = "instance",
+            matchKind = "equal", itemMatchCode = "test");
+    }
+}
