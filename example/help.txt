@@ -1,0 +1,153 @@
+twgec (Twilight game.events compiler) is a transpiler that can generate `game.events` file from `*.twge` file.
+
+Usage: twgec <option>* file
+Options:
+    --help                                    Display this information.
+    -o=<file>                                 Set the output file path.
+    --run-only=<pass>(,<pass>)*               Run specific pass(es).
+                                              Please refer to the pass in the next section.
+    --print-ast-before                        Print the AST before each transformation.
+    --print-ast-after                         Print the AST after each transformation.
+    --print-token                             Print the Token of the language.
+    
+Passes:
+    symbolChecking
+    argBinding
+    blockInling
+    blockLegalization
+    functionInling
+    constantFolding
+    forLoopUnrolling
+    ifStatementPropagation
+    implicitListPromotion
+
+Builtin Struct:
+    Point
+        x: int, y: int
+    ActorMatch
+        controller: string, id: string, matchKind: string
+    CustomWeapon
+        reference: string, code: string, scaleOnGround: int, scaleOnIcon: int, weight: int, damage: int, swapTime: int, fireTime: int, fireType: int, pivotOnHandX: int, pivotOnHandXScale: int, pivotOnHandY: int, pivotOnHandYScale: int, pivotOnHandDegree: int, pivotOnIconX: int, pivotOnIconXScale: int, pivotOnIconY: int, pivotOnIconYScale: int, pivotOnIconDegree
+
+Supported Global Metadata:
+    __allowGuest__ : bool
+    __bornDuration__ : int|string
+    __bornLockDuration__ : int|string
+    __campOpRoyal__ : bool
+    __campOpSkydow__ : bool
+    __campOpThird__ : bool
+    __carryItemCodes__ : list[string]
+    __customWeapons__ : CustomWeapon
+    __defCarryItems__ : bool
+    __disableNextGameOnMissionComplete__ : bool
+    __gamezoneCode__ : string
+    __lives__ : int|string
+    __map__ : string
+    __maxAbilityLevel__ : int|string
+    __minPlayers__ : int|string
+    __mustLogin__ : bool
+    __nextGameEnabled__ : bool
+    __playDefaultMusic__ : bool
+    __preloadResourcesExclude__ : list[string]
+    __preloadSources__ : list[string]
+    __roomSize__ : int|string
+    __royalLocs__ : list[Point]
+    __runGame__ : bool
+    __schema__ : string
+    __setBornDuration__ : bool
+    __setInitFocus__ : bool
+    __skydowLocs__ : list[Point]
+    __stageBackgroundColor__ : string
+    __stageHeight__ : int|string
+    __stageWidth__ : int|string
+    __supportMsgServer__ : bool
+    __supportSignin__ : bool
+    __thirdLocs__ : list[Point]
+    __title__ : string
+    __useCustomFarWeapons__ : bool
+    __useCustomItems__ : bool
+    __useCustomWeapons__ : bool
+    __useDefaultCampLocs__ : bool
+    __useDefaultItems__ : bool
+
+Supported Block Metadata:
+    __delay__ : int|string
+    __repeat__ : int|string
+    __repeatInterval__ : int|string
+
+Supported Actions:
+    actorAttributes             設定角色屬性
+        actorId: string, attr: string, value: int|string
+    actorDisappear              -角色消失
+        actorId: string, delay: int|string, duration: int|string
+    actorFollow                 跟隨人物
+        actorId: string, targetId: string, type: string
+    actorTalk                   角色說話
+        actorId: string, cleanTalk: bool, duration: int|string, text: string, wait: bool
+    addActor                    +角色
+        camp: string, externRole: string, hp: int|string, id: string, localVarname: string, name: string, patrol: list[Point], range: int|string, role: string, strength: int|string, teamId: int|string, weapon1: string, weapon2: string, x: int|string, y: int|string
+    addDropItem                 +放置可拾取道具
+        itemCode: string, localVarname: string, range: int|string, scale: int|string, type: string, x: int|string, y: int|string
+    addMapSign                  +告示牌
+        buttonCode: string, buttonLabel: string, range: int|string, rotation: int|string, showButtons: bool, text: string, x: int|string, y: int|string
+    addStuff                    +武器道具
+        code: string, item: string, range: int|string, refill: bool, refillInterval: int|string, rotation: int|string, x: int|string, y: int|string
+    deltaHp                     角色加減血
+        actorCode: string, casterCode: string, type: string, value: int|string
+    enblastEffect               光彈特效
+        damage: int|string, fromActor: string, fromType: string, scale: int|string, speed: int|string, toAngle: int|string, toType: string
+    getCookie                   取得Cookies
+        cookies: string, varName: string
+    getUserState                取得玩家狀態
+        category: string, key: string, playerId: string, varName: string
+    mapWarp                     設定地圖傳送點
+        direction: string, fromX: int|string, fromY: int|string, toX: int|string, toY: int|string
+    missionComplete             任務完成
+        camp: string
+    longBo                      +龍波
+        actorCode: string
+    print                       控制台輸出
+        text: string, type: string
+    setCookie                   儲存Cookies
+        cookies: string, playerId: string, type: string, value: string
+    setGlobal                   儲存全域變數
+        key: string, type: string, value: int|string
+    setObjectVar                儲存物件變數
+        key: string, object: string, type: string, value: int|string
+    setWeaponAbility            設定武器技能
+        ability: string, level: int|string, operation: string, weapon: string
+    setUserState                儲存玩家狀態
+        category: string, key: string, playerId: string, type: string, value: string
+    wait                        等待
+        duration: int|string
+    EnhFF::playerMousePosition  玩家滑鼠座標
+        actorId: string, varX: string, varY: string
+
+Supported Checks:
+    actorCount                  計算人數
+        actor: ActorMatch, op: string, value: int|string, varname: string
+    checkNumber                 比較數字
+        lhs: int|string, op: string, rhs: int|string
+    checkString                 比對字串
+        matchKind: string, str: string, value: string
+    forEachActor                找出所有角色
+        actor: ActorMatch, varname: string
+
+Supported Triggers:
+    actorAdded                  角色進入戰場
+        actor: ActorMatch, varName: string
+    actorDead                   角色死亡
+        actor: ActorMatch, hitterVarName: string, varName: string
+    actorFire                   角色發動攻擊
+        actor: ActorMatch, varName: string, weapon: string
+    actorHit                    角色受傷
+        actor: ActorMatch, actorVarName: string, damageValueVarName: string, hitter: ActorMatch, hitterVarName: string, weapon: string
+    clickButton                 告示牌按鈕
+        actor: ActorMatch, buttonId: string, varName: string
+    keyboardPressed             鍵盤按鍵
+        actorId: string, key: string, timing: string, varName: string
+    itemPickup                  拾取武器道具
+        actor: ActorMatch, actorVarname: string, itemMatchCode: string, itemVarname: string, matchKind: string
+    releasePower                發動技能
+        ability: string, actor: ActorMatch, manaUsage: int|string, preventDefault: bool, varName: string, weapon: string
+

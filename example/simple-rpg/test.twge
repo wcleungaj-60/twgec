@@ -198,17 +198,26 @@ block clickResetPoint {
     }
 }
 
-block monsterDead {
+block getExp {
     __repeat__ = -1;
     triggers {
-        actorDead(actor = ActorMatch(id = "monster"), hitterVarName = "instance");
+        itemPickup(actorVarname = "instance", matchKind = "equal", itemVarname = "deer_exp");
     }
     actions {
         setInstanceInt("Exp", "{instance.Exp}"+1);
-        saveUserState();
-        // TODO: Add item
         // TODO: Popup text
         // TODO: Call event
+        saveUserState();
+    }
+}
+
+block monsterDead {
+    __repeat__ = -1;
+    triggers {
+        actorDead(actor = ActorMatch(id = "monster"), varName = "instance");
+    }
+    actions {
+        addDropItem(itemCode = "deer_exp", x = "({instance.gamePosition.x}-16)/32", y = "({instance.gamePosition.y}-16)/32", type = "sariraFire");
     }
 }
 

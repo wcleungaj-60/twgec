@@ -35,3 +35,10 @@ In the leaf directory, there must be
 - If that is under the `fail` directory, `error.log` is expected to be there.
 - If that is under the `pass/codegen` directory, `output.events` is expected to be there.
 - If that is under the `pass/transform` directory, `print.twge` is expected to be there.
+
+## Future Plan
+- Support Chinese Instruction
+- Support guideline markdown generation
+- Fix incorrect Chinese position calculation
+- Support `$var` syntax for runtime variable
+- Support `let` syntax for mutable local variable

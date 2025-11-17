@@ -2193,7 +2193,7 @@
             ]
         },
         {
-            "id": "monsterDead",
+            "id": "getExp",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -2325,6 +2325,50 @@
             "checks": [],
             "triggers": [
                 {
+                    "type": "ItemPickup",
+                    "data": {
+                        "actorMatches": [],
+                        "varname": "instance",
+                        "itemMatch": {
+                            "method": "equal",
+                            "itemCode": "",
+                            "itemType": ""
+                        },
+                        "itemVarname": "deer_exp"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "monsterDead",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "AddDropItem",
+                    "data": {
+                        "location": {
+                            "x": "({instance.gamePosition.x}-16)/32",
+                            "y": "({instance.gamePosition.y}-16)/32",
+                            "range": "0"
+                        },
+                        "shiftX": 0,
+                        "shiftY": 0,
+                        "itemCode": "deer_exp",
+                        "itemType": "sariraFire",
+                        "itemScale": "1",
+                        "localVarname": ""
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
                     "type": "ActorDead",
                     "data": {
                         "actorMatches": [
@@ -2342,11 +2386,11 @@
                                 "excludeActorCodes": []
                             }
                         ],
-                        "varname": "",
+                        "varname": "instance",
                         "timing": "preDead",
                         "deathsVarname": "deaths",
                         "hitterMatches": [],
-                        "hitterVarname": "instance"
+                        "hitterVarname": ""
                     }
                 }
             ]

@@ -374,15 +374,13 @@ void action::ActionAddDropItem::method(std::ofstream &of,
                                       std::unique_ptr<ParamAppsNode> &action,
                                       UserDefinedMetadata userDefinedMeta) {
   defaultMap.addInputMap(action->named_args);
-  JsonObjectNode locNode = JsonObjectNode({
+  JsonObjectNode locationNode = JsonObjectNode({
       {"x", defaultMap.get("x")},
       {"y", defaultMap.get("y")},
       {"range", defaultMap.get("range")},
   });
-  JsonArrayNode locsNode =
-      JsonArrayNode(std::make_shared<JsonObjectNode>(locNode));
   JsonObjectNode dataNode = JsonObjectNode({
-      {"location", locsNode.to_string(24)},
+      {"location", locationNode.to_string(24)},
       {"shiftX", "0"},
       {"shiftY", "0"},
       {"itemCode", defaultMap.get("itemCode")},

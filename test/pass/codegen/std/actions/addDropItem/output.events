@@ -75,13 +75,11 @@
                 {
                     "type": "AddDropItem",
                     "data": {
-                        "location": [
-                            {
-                                "x": "10",
-                                "y": "10",
-                                "range": "0"
-                            }
-                        ],
+                        "location": {
+                            "x": "10",
+                            "y": "10",
+                            "range": "0"
+                        },
                         "shiftX": 0,
                         "shiftY": 0,
                         "itemCode": "exp_dear",
