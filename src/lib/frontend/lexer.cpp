@@ -339,7 +339,8 @@ Token Lexer::commentToken() {
   column += 2;
   while (pos < input.length() && input[pos++] != '\n')
     column++;
-  return Token(TokenType::COMMENT, Lexer::line, startColumn,
+  column = 1;
+  return Token(TokenType::COMMENT, Lexer::line++, startColumn,
                input.substr(start, pos - start));
 }
 

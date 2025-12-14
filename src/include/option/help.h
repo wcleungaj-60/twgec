@@ -16,9 +16,6 @@ using namespace codegen::check;
 using namespace codegen::metadata;
 using namespace codegen::trigger;
 
-#define CONCATENATE_IMPL(a, b) a##b
-#define CONCATENATE(a, b) CONCATENATE_IMPL(a, b)
-
 std::string getDefaultMapItem(codegen::DefaultMap defaultMap,
                               std::string nameZh) {
   int padding = 28;

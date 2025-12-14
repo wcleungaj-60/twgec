@@ -54,6 +54,7 @@ unit_test() {
 }
 
 smoke_test() {
+    # TODO: Support `ast-after.twge` and `output.events` generation
     local input_file="$1"
     $BUILD_DIR/twgec "$input_file" 2> error.log
     if [[ ! -s error.log ]]; then

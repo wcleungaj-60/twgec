@@ -4,14 +4,67 @@
 #include "utils/location.h"
 #include <iostream>
 
-#define LEXER_TOKEN_TYPE_PRINT(type, output)                                   \
+#define LEXER_PRINT_SWITCH_LIST                                                \
+  /* keyword */                                                                \
+  LEXER_PRINT_SWTICH_CASE(TokenType::TRUE, "true");                            \
+  LEXER_PRINT_SWTICH_CASE(TokenType::FALSE, "false");                          \
+  LEXER_PRINT_SWTICH_CASE(TokenType::BLOCK, "block");                          \
+  LEXER_PRINT_SWTICH_CASE(TokenType::ACTIONS, "actions");                      \
+  LEXER_PRINT_SWTICH_CASE(TokenType::TRIGGERS, "triggers");                    \
+  LEXER_PRINT_SWTICH_CASE(TokenType::CHECKS, "checks");                        \
+  LEXER_PRINT_SWTICH_CASE(TokenType::DEF, "def");                              \
+  LEXER_PRINT_SWTICH_CASE(TokenType::CONST, "const");                          \
+  LEXER_PRINT_SWTICH_CASE(TokenType::IF, "if");                                \
+  LEXER_PRINT_SWTICH_CASE(TokenType::ELSE, "else");                            \
+  LEXER_PRINT_SWTICH_CASE(TokenType::FOR, "for");                              \
+  LEXER_PRINT_SWTICH_CASE(TokenType::IN, "in");                                \
+  LEXER_PRINT_SWTICH_CASE(TokenType::END, "end");                              \
+  LEXER_PRINT_SWTICH_CASE(TokenType::POINT, "Point");                          \
+  LEXER_PRINT_SWTICH_CASE(TokenType::ACTOR_MATCH, "ActorMatch");               \
+  LEXER_PRINT_SWTICH_CASE(TokenType::CUSTOM_WEAPON, "CustomWeapon");           \
+  /* operation */                                                              \
+  LEXER_PRINT_SWTICH_CASE(TokenType::OPENCUR, "{");                            \
+  LEXER_PRINT_SWTICH_CASE(TokenType::CLOSECUR, "}");                           \
+  LEXER_PRINT_SWTICH_CASE(TokenType::OPENPAR, "(");                            \
+  LEXER_PRINT_SWTICH_CASE(TokenType::CLOSEPAR, ")");                           \
+  LEXER_PRINT_SWTICH_CASE(TokenType::OPENSQR, "[");                            \
+  LEXER_PRINT_SWTICH_CASE(TokenType::CLOSESQR, "]");                           \
+  LEXER_PRINT_SWTICH_CASE(TokenType::ASSIGN, "=");                             \
+  LEXER_PRINT_SWTICH_CASE(TokenType::SEMICOLON, ";");                          \
+  LEXER_PRINT_SWTICH_CASE(TokenType::COLON, ":");                              \
+  LEXER_PRINT_SWTICH_CASE(TokenType::DOT, ".");                                \
+  LEXER_PRINT_SWTICH_CASE(TokenType::COMMA, ",");                              \
+  LEXER_PRINT_SWTICH_CASE(TokenType::AND, "&&");                               \
+  LEXER_PRINT_SWTICH_CASE(TokenType::OR, "||");                                \
+  LEXER_PRINT_SWTICH_CASE(TokenType::EQUAL, "==");                             \
+  LEXER_PRINT_SWTICH_CASE(TokenType::NOT_EQUAL, "!=");                         \
+  LEXER_PRINT_SWTICH_CASE(TokenType::LESS_THAN, "<");                          \
+  LEXER_PRINT_SWTICH_CASE(TokenType::LESS_THAN_EQUAL, "<=");                   \
+  LEXER_PRINT_SWTICH_CASE(TokenType::GREATER_THAN, ">");                       \
+  LEXER_PRINT_SWTICH_CASE(TokenType::GREATER_THAN_EQUAL, ">=");                \
+  LEXER_PRINT_SWTICH_CASE(TokenType::ADD, "+");                                \
+  LEXER_PRINT_SWTICH_CASE(TokenType::SUB, "-");                                \
+  LEXER_PRINT_SWTICH_CASE(TokenType::MUL, "*");                                \
+  LEXER_PRINT_SWTICH_CASE(TokenType::DIV, "/");                                \
+  LEXER_PRINT_SWTICH_CASE(TokenType::MOD, "%");                                \
+  LEXER_PRINT_SWTICH_CASE(TokenType::ELLIPSIS, "...");                         \
+  LEXER_PRINT_SWTICH_CASE(TokenType::SCOPE, "::");                             \
+  /* value */                                                                  \
+  LEXER_PRINT_SWTICH_CASE_WITH_VALUE(TokenType::INT, "int");                   \
+  LEXER_PRINT_SWTICH_CASE_WITH_VALUE(TokenType::STRING, "string");             \
+  LEXER_PRINT_SWTICH_CASE_WITH_VALUE(TokenType::COMMENT, "comment");           \
+  LEXER_PRINT_SWTICH_CASE_WITH_VALUE(TokenType::IDENTIFIER, "identifier");     \
+  LEXER_PRINT_SWTICH_CASE_WITH_VALUE(TokenType::METADATA, "metadata");         \
+  LEXER_PRINT_SWTICH_CASE_WITH_VALUE(TokenType::UNKNOWN, "unknown")
+
+#define LEXER_PRINT_SWTICH_CASE(type, output)                                  \
   case (type):                                                                 \
-    os << output;                                                              \
+    LEXER_PRINTER(output);                                                     \
     break
 
-#define LEXER_TOKEN_PRINT(type, output)                                        \
+#define LEXER_PRINT_SWTICH_CASE_WITH_VALUE(type, output)                       \
   case (type):                                                                 \
-    os << token.location << " " << output;                                     \
+    LEXER_PRINTER_WITH_VALUE(output);                                          \
     break
 
 enum class TokenType {
@@ -70,61 +123,14 @@ enum class TokenType {
 };
 
 inline std::ostream &operator<<(std::ostream &os, const TokenType &type) {
-  switch (type) {
-    // Keyword
-    LEXER_TOKEN_TYPE_PRINT(TokenType::TRUE, "\'true\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::FALSE, "\'false\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::BLOCK, "\'block\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::ACTIONS, "\'actions\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::TRIGGERS, "\'triggers\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::CHECKS, "\'checks\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::DEF, "\'def\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::CONST, "\'const\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::IF, "\'if\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::ELSE, "\'else\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::FOR, "\'for\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::IN, "\'in\'");
-    // Builtin Struct
-    LEXER_TOKEN_TYPE_PRINT(TokenType::POINT, "\'Point\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::ACTOR_MATCH, "\'ActorMatch\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::CUSTOM_WEAPON, "\'CustomWeapon\'");
-    // Speical Character
-    LEXER_TOKEN_TYPE_PRINT(TokenType::OPENCUR, "\'{\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::CLOSECUR, "\'}\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::OPENPAR, "\'(\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::CLOSEPAR, "\')\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::OPENSQR, "\'[\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::CLOSESQR, "\']\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::ASSIGN, "\'=\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::SEMICOLON, "\';\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::COLON, "\':\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::DOT, "\'.\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::COMMA, "\',\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::AND, "\'&&\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::OR, "\'||\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::EQUAL, "\'==\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::NOT_EQUAL, "\'!=\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::LESS_THAN, "\'<\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::LESS_THAN_EQUAL, "\'<=\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::GREATER_THAN, "\'>\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::GREATER_THAN_EQUAL, "\'>=\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::ADD, "\'+\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::SUB, "\'-\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::MUL, "\'*\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::DIV, "\'/\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::MOD, "\'%\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::ELLIPSIS, "\'...\'");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::SCOPE, "\'::\'");
-    // Otherwise
-    LEXER_TOKEN_TYPE_PRINT(TokenType::INT, "int");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::STRING, "string");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::COMMENT, "comment");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::IDENTIFIER, "identifier");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::METADATA, "metadata");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::UNKNOWN, "unknown");
-    LEXER_TOKEN_TYPE_PRINT(TokenType::END, "end");
-  }
+#define LEXER_PRINTER(output) os << "\'" << output << "\'"
+#define LEXER_PRINTER_WITH_VALUE(output) os << "\'" << output << "\'"
+
+  switch (type) { LEXER_PRINT_SWITCH_LIST; }
   return os;
+
+#undef LEXER_PRINTER
+#undef LEXER_PRINTER_WITH_VALUE
 }
 
 struct Token {
@@ -136,63 +142,19 @@ struct Token {
       : type(t), value(v), location(line, column) {}
 
   friend std::ostream &operator<<(std::ostream &os, const Token &token) {
-    os << "twge.";
-    switch (token.type) {
-      // Keywords
-      LEXER_TOKEN_PRINT(TokenType::TRUE, "bool@true");
-      LEXER_TOKEN_PRINT(TokenType::FALSE, "bool@false");
-      LEXER_TOKEN_PRINT(TokenType::BLOCK, "block");
-      LEXER_TOKEN_PRINT(TokenType::ACTIONS, "actions");
-      LEXER_TOKEN_PRINT(TokenType::TRIGGERS, "triggers");
-      LEXER_TOKEN_PRINT(TokenType::CHECKS, "checks");
-      LEXER_TOKEN_PRINT(TokenType::DEF, "def");
-      LEXER_TOKEN_PRINT(TokenType::CONST, "const");
-      LEXER_TOKEN_PRINT(TokenType::IF, "if");
-      LEXER_TOKEN_PRINT(TokenType::ELSE, "else");
-      LEXER_TOKEN_PRINT(TokenType::FOR, "for");
-      LEXER_TOKEN_PRINT(TokenType::IN, "in");
-      // Builtin Struct
-      LEXER_TOKEN_TYPE_PRINT(TokenType::POINT, "Point");
-      LEXER_TOKEN_TYPE_PRINT(TokenType::ACTOR_MATCH, "ActorMatch");
-      LEXER_TOKEN_TYPE_PRINT(TokenType::CUSTOM_WEAPON, "CustomWeapon");
-      // Speical Character
-      LEXER_TOKEN_PRINT(TokenType::OPENCUR, "{");
-      LEXER_TOKEN_PRINT(TokenType::CLOSECUR, "}");
-      LEXER_TOKEN_PRINT(TokenType::OPENPAR, "(");
-      LEXER_TOKEN_PRINT(TokenType::CLOSEPAR, ")");
-      LEXER_TOKEN_PRINT(TokenType::OPENSQR, "[");
-      LEXER_TOKEN_PRINT(TokenType::CLOSESQR, "]");
-      LEXER_TOKEN_PRINT(TokenType::ASSIGN, "=");
-      LEXER_TOKEN_PRINT(TokenType::SEMICOLON, ";");
-      LEXER_TOKEN_PRINT(TokenType::COLON, ":");
-      LEXER_TOKEN_PRINT(TokenType::DOT, ".");
-      LEXER_TOKEN_PRINT(TokenType::COMMA, ",");
-      LEXER_TOKEN_TYPE_PRINT(TokenType::AND, "&&");
-      LEXER_TOKEN_TYPE_PRINT(TokenType::OR, "||");
-      LEXER_TOKEN_TYPE_PRINT(TokenType::EQUAL, "==");
-      LEXER_TOKEN_TYPE_PRINT(TokenType::NOT_EQUAL, "!=");
-      LEXER_TOKEN_TYPE_PRINT(TokenType::LESS_THAN, "<");
-      LEXER_TOKEN_TYPE_PRINT(TokenType::LESS_THAN_EQUAL, "<=");
-      LEXER_TOKEN_TYPE_PRINT(TokenType::GREATER_THAN, ">");
-      LEXER_TOKEN_TYPE_PRINT(TokenType::GREATER_THAN_EQUAL, ">=");
-      LEXER_TOKEN_TYPE_PRINT(TokenType::ADD, "+");
-      LEXER_TOKEN_TYPE_PRINT(TokenType::SUB, "-");
-      LEXER_TOKEN_TYPE_PRINT(TokenType::MUL, "*");
-      LEXER_TOKEN_TYPE_PRINT(TokenType::DIV, "/");
-      LEXER_TOKEN_TYPE_PRINT(TokenType::MOD, "%");
-      LEXER_TOKEN_TYPE_PRINT(TokenType::ELLIPSIS, "...");
-      LEXER_TOKEN_TYPE_PRINT(TokenType::SCOPE, "::");
-      // Otherwise
-      LEXER_TOKEN_PRINT(TokenType::INT, "int@" + token.value);
-      LEXER_TOKEN_PRINT(TokenType::STRING, "string@" + token.value);
-      LEXER_TOKEN_PRINT(TokenType::COMMENT, "comment@" + token.value);
-      LEXER_TOKEN_PRINT(TokenType::IDENTIFIER, "identifier@" + token.value);
-      LEXER_TOKEN_PRINT(TokenType::METADATA, "metadata@" + token.value);
-      LEXER_TOKEN_PRINT(TokenType::UNKNOWN, "unknown@" + token.value);
-      LEXER_TOKEN_PRINT(TokenType::END, "end");
-    }
+#define LEXER_PRINTER(output) os << token.location << " " << output
+#define LEXER_PRINTER_WITH_VALUE(output)                                       \
+  os << token.location << " " << output << "@" << token.value
+
+    switch (token.type) { LEXER_PRINT_SWITCH_LIST; }
     return os;
+
+#undef LEXER_PRINTER
+#undef LEXER_PRINTER_WITH_VALUE
   }
 };
 
+#undef LEXER_PRINT_SWITCH_LIST
+#undef LEXER_PRINT_SWTICH_CASE
+#undef LEXER_PRINT_SWTICH_CASE_WITH_VALUE
 #endif

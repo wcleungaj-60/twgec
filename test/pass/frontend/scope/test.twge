@@ -1,0 +1,2 @@
+// OPTION: --print-token
+def namespace::definiton() : actions {}

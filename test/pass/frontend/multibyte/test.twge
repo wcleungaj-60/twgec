@@ -1,0 +1,2 @@
+// OPTION: --print-token
+def 測試() : actions {}
