@@ -101,27 +101,27 @@ std::string getBlockMetadata() {
 std::string getActions() {
   std::string ret = "Supported Actions:\n";
   ret += getDefaultMapItem(ActionActorAttributes::defaultMap, "設定角色屬性");
-  ret += getDefaultMapItem(ActionActorDisappear::defaultMap, "-角色消失");
+  ret += getDefaultMapItem(ActionActorDisappear::defaultMap, "角色消失");
   ret += getDefaultMapItem(ActionActorFollow::defaultMap, "跟隨人物");
   ret += getDefaultMapItem(ActionActorTalk::defaultMap, "角色說話");
-  ret += getDefaultMapItem(ActionAddActor::defaultMap, "+角色");
-  ret += getDefaultMapItem(ActionAddDropItem::defaultMap, "+放置可拾取道具");
-  ret += getDefaultMapItem(ActionAddMapSign::defaultMap, "+告示牌");
-  ret += getDefaultMapItem(ActionAddStuff::defaultMap, "+武器道具");
+  ret += getDefaultMapItem(ActionAddActor::defaultMap, "新增角色");
+  ret += getDefaultMapItem(ActionAddDropItem::defaultMap, "新增放置可拾取道具");
+  ret += getDefaultMapItem(ActionAddMapSign::defaultMap, "新增告示牌");
+  ret += getDefaultMapItem(ActionAddStuff::defaultMap, "新增武器道具");
   ret += getDefaultMapItem(ActionDeltaHp::defaultMap, "角色加減血");
   ret += getDefaultMapItem(ActionEnblastEffect::defaultMap, "光彈特效");
-  ret += getDefaultMapItem(ActionGetCookie::defaultMap, "取得Cookies");
+  ret += getDefaultMapItem(ActionGetCookie::defaultMap, "取得數位存根");
   ret += getDefaultMapItem(ActionGetUserState::defaultMap, "取得玩家狀態");
   ret += getDefaultMapItem(ActionMapWarp::defaultMap, "設定地圖傳送點");
   ret += getDefaultMapItem(ActionMissionComplete::defaultMap, "任務完成");
-  ret += getDefaultMapItem(ActionLongBo::defaultMap, "+龍波");
+  ret += getDefaultMapItem(ActionLongBo::defaultMap, "龍波");
   // `print` is used in the front-end instead of `console`
   ret += getDefaultMapItem(ActionConsole::defaultMap, "控制台輸出");
-  ret += getDefaultMapItem(ActionSetCookie::defaultMap, "儲存Cookies");
+  ret += getDefaultMapItem(ActionSetCookie::defaultMap, "儲存數位存根");
   ret += getDefaultMapItem(ActionSetGlobal::defaultMap, "儲存全域變數");
   ret += getDefaultMapItem(ActionSetObjectVar::defaultMap, "儲存物件變數");
-  ret += getDefaultMapItem(ActionSetWeaponAbility::defaultMap, "設定武器技能");
   ret += getDefaultMapItem(ActionSetUserState::defaultMap, "儲存玩家狀態");
+  ret += getDefaultMapItem(ActionSetWeaponAbility::defaultMap, "設定武器技能");
   ret += getDefaultMapItem(ActionWait::defaultMap, "等待");
   ret += getDefaultMapItem(ActionEnhFFPlayerMousePosition::defaultMap, "玩家滑鼠座標");
   return ret;

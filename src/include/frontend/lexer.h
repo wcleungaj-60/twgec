@@ -30,10 +30,13 @@ private:
 
   Token nextToken();
   Token metadataToken();
+  Token chineseToken();
   Token commentToken();
   Token integerToken();
   Token stringToken();
   Token identifierToken();
+
+  inline bool next(char character, unsigned offset = 1);
 };
 
 #endif

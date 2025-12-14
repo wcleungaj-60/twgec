@@ -78,25 +78,25 @@ Supported Block Metadata:
 Supported Actions:
     actorAttributes             設定角色屬性
         actorId: string, attr: string, value: int|string
-    actorDisappear              -角色消失
+    actorDisappear              角色消失
         actorId: string, delay: int|string, duration: int|string
     actorFollow                 跟隨人物
         actorId: string, targetId: string, type: string
     actorTalk                   角色說話
         actorId: string, cleanTalk: bool, duration: int|string, text: string, wait: bool
-    addActor                    +角色
+    addActor                    新增角色
         camp: string, externRole: string, hp: int|string, id: string, localVarname: string, name: string, patrol: list[Point], range: int|string, role: string, strength: int|string, teamId: int|string, weapon1: string, weapon2: string, x: int|string, y: int|string
-    addDropItem                 +放置可拾取道具
+    addDropItem                 新增放置可拾取道具
         itemCode: string, localVarname: string, range: int|string, scale: int|string, type: string, x: int|string, y: int|string
-    addMapSign                  +告示牌
+    addMapSign                  新增告示牌
         buttonCode: string, buttonLabel: string, range: int|string, rotation: int|string, showButtons: bool, text: string, x: int|string, y: int|string
-    addStuff                    +武器道具
+    addStuff                    新增武器道具
         code: string, item: string, range: int|string, refill: bool, refillInterval: int|string, rotation: int|string, x: int|string, y: int|string
     deltaHp                     角色加減血
         actorCode: string, casterCode: string, type: string, value: int|string
     enblastEffect               光彈特效
         damage: int|string, fromActor: string, fromType: string, scale: int|string, speed: int|string, toAngle: int|string, toType: string
-    getCookie                   取得Cookies
+    getCookie                   取得數位存根
         cookies: string, varName: string
     getUserState                取得玩家狀態
         category: string, key: string, playerId: string, varName: string
@@ -104,20 +104,20 @@ Supported Actions:
         direction: string, fromX: int|string, fromY: int|string, toX: int|string, toY: int|string
     missionComplete             任務完成
         camp: string
-    longBo                      +龍波
+    longBo                      龍波
         actorCode: string
     print                       控制台輸出
         text: string, type: string
-    setCookie                   儲存Cookies
+    setCookie                   儲存數位存根
         cookies: string, playerId: string, type: string, value: string
     setGlobal                   儲存全域變數
         key: string, type: string, value: int|string
     setObjectVar                儲存物件變數
         key: string, object: string, type: string, value: int|string
-    setWeaponAbility            設定武器技能
-        ability: string, level: int|string, operation: string, weapon: string
     setUserState                儲存玩家狀態
         category: string, key: string, playerId: string, type: string, value: string
+    setWeaponAbility            設定武器技能
+        ability: string, level: int|string, operation: string, weapon: string
     wait                        等待
         duration: int|string
     EnhFF::playerMousePosition  玩家滑鼠座標

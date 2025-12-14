@@ -35,32 +35,32 @@ __customWeapons__ = [
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 
-//-------------------debug-------------------//
-def debug(text): actions {
+//------------------- 除錯 -------------------//
+def 除錯(text): actions {
     if(DEBUG_MODE) {
         print(type = "error", text = text);
     }
 }
 
-//-------------------setInstanceInt-------------------//
-def setInstanceInt(key, value): actions {
-    setObjectVar(key = key, object = "instance", type = "integer", value = value);
+//------------------- 儲存物件整數 -------------------//
+def 儲存物件整數(key, value): actions {
+    儲存物件變數(key = key, object = "instance", type = "integer", value = value);
 }
 
-//-------------------biMapWarp-------------------//
-def biMapWarp(x1, y1, x2, y2): actions {
+//------------------- 設定雙向地圖傳送點 -------------------//
+def 設定雙向地圖傳送點(x1, y1, x2, y2): actions {
     if (x1 == x2 && y1 < y2) {
-        mapWarp(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "下");
-        mapWarp(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "上");
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "下");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "上");
     } else if (x1 == x2 && y1 > y2) {
-        mapWarp(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "上");
-        mapWarp(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "下");
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "上");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "下");
     } else if (x1 > x2 && y1 == y2) {
-        mapWarp(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "左");
-        mapWarp(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "右");
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "左");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "右");
     } else if (x1 < x2 && y1 == y2) {
-        mapWarp(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "右");
-        mapWarp(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "左");
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "右");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "左");
     } else if (x1 == x2 && y1 == y2) {
         print(type = "error", text = "Cannot set the same point as the mapWarp src and dst");
     } else {
@@ -68,37 +68,38 @@ def biMapWarp(x1, y1, x2, y2): actions {
     }
 }
 
-//-------------------UpdatePlayerAttributes-------------------//
-def updatePlayerAttributes(actorId): actions {
-    setObjectVar(key = "HP", object = actorId, type = "integer", value = "98 + 10*{"+actorId+".CON} + 2*{"+actorId+".Level}");
-    actorAttributes(actorId = actorId, attr = "maxHp", value = "{"+actorId+".HP}");
-    actorAttributes(actorId = actorId, attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{"+actorId+".AGI})");
-    actorAttributes(actorId = actorId, attr = "weight", value = "3*pow(0.97,{"+actorId+".AGI})");
+//------------------- 更新玩家屬性 -------------------//
+def 更新玩家屬性(actorId): actions {
+    儲存物件變數(key = "HP", object = actorId, type = "integer", value = "98 + 10*{"+actorId+".CON} + 2*{"+actorId+".Level}");
+    設定角色屬性(actorId = actorId, attr = "maxHp", value = "{"+actorId+".HP}");
+    設定角色屬性(actorId = actorId, attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{"+actorId+".AGI})");
+    設定角色屬性(actorId = actorId, attr = "weight", value = "3*pow(0.97,{"+actorId+".AGI})");
 }
 
-//-------------------Load Store Handling-----------------//
+//------------------- 遊戲數據存儲 -----------------//
 def setObjectVarFromUserState(key) : actions {
-    getUserState(category = USER_STATE_CATEGORY, key = key, playerId = "{instance}", varName = "{instance}_"+key);
-    setInstanceInt(key, "{{instance}_"+key+"}");
+    取得玩家狀態(category = USER_STATE_CATEGORY, key = key, playerId = "{instance}", varName = "{instance}_"+key);
+    儲存物件整數(key, "{{instance}_"+key+"}");
 }
+
 def setUserStateFromObjectVar(key) : actions {
-    setUserState(category = USER_STATE_CATEGORY, key = key, playerId = "{instance}", type = "string", value = "{{instance}."+key+"}");
+    儲存玩家狀態(category = USER_STATE_CATEGORY, key = key, playerId = "{instance}", type = "string", value = "{{instance}."+key+"}");
 }
 
 def loadStateDef(hasSavedBefore) : block {
     __repeat__ = -1;
     checks {
-        forEachActor(actor = ActorMatch(controller = "player"), varname = "instance");
-        checkNumber(lhs = "{instance.completedInit}", op = "==", rhs = 1);
+        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
+        比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(hasSavedBefore) {
-            checkString(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
+            比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
         }
         if(hasSavedBefore == false) {
-            checkString(str = "{{instance}_savedBefore}", matchKind = "equal", value = "undefined");
+            比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "undefined");
         } 
     }
     actions {
-        setObjectVar(key = "completedInit", object = "instance", type = "string", value = 2);
+        儲存物件變數(key = "completedInit", object = "instance", type = "string", value = 2);
         if(hasSavedBefore) {
             setObjectVarFromUserState("Point");
             setObjectVarFromUserState("ExpNeeded");
@@ -110,11 +111,12 @@ def loadStateDef(hasSavedBefore) : block {
             setObjectVarFromUserState("PSY");
             setObjectVarFromUserState("Exp");
             setObjectVarFromUserState("HP");
-            updatePlayerAttributes("instance");
-            deltaHp(actorCode = "instance", type = "heal", value = 9999);
+            更新玩家屬性("instance");
+            角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
     }
 }
+
 block loadStateSaved = loadStateDef(hasSavedBefore = true);
 block loadStateNew = loadStateDef(hasSavedBefore = false);
 
@@ -129,71 +131,71 @@ def saveUserState() : actions {
     setUserStateFromObjectVar("PSY");
     setUserStateFromObjectVar("Exp");
     setUserStateFromObjectVar("HP");
-    setUserState(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    儲存玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
 }
 
 // Block Function Definition
-def clickIncreaseDef(type, typeZh) : block {
+def 點擊提升能力泛型(type, typeZh) : block {
     __repeat__ = -1;
     triggers {
-        clickButton(varName = "instance", buttonId = "increase" + type);
+        告示牌按鈕(varName = "instance", buttonId = "increase" + type);
     }
     checks {
-        checkNumber(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
     }
     actions {
-        setInstanceInt("Point", "{instance.Point}-1");
-        setInstanceInt(type, "{instance."+type+"}+1");
-        actorTalk(actorId = "instance", text = "成功提升一點" + typeZh + "，尚餘{instance.Point}點能力點");
-        updatePlayerAttributes("instance");
+        儲存物件整數("Point", "{instance.Point}-1");
+        儲存物件整數(type, "{instance."+type+"}+1");
+        角色說話(actorId = "instance", text = "成功提升一點" + typeZh + "，尚餘{instance.Point}點能力點");
+        更新玩家屬性("instance");
         saveUserState();
     }
 }
 
-def releasePowerDef(weapon) : block {
+def 釋放技能泛型(weapon) : block {
     __repeat__ = -1;
     triggers {
-        releasePower(varName = "instance", weapon = weapon);
+        發動技能(varName = "instance", weapon = weapon);
     }
     actions {
         if(weapon == "custom_wind_staff") {
-        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE + 32);
-        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE + 16);
-        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE);
-        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE - 16);
-        enblastEffect(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE - 32);
+        光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE + 32);
+        光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE + 16);
+        光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE);
+        光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE - 16);
+        光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE - 32);
         }
         if(weapon == "custom_iron_sword") {
-            deltaHp(actorCode = "instance", value = "{instance.HP}/4");
+            角色加減血(actorCode = "instance", value = "{instance.HP}/4");
         }
     }
 }
 
-block clickIncreaseSTR = clickIncreaseDef("STR", "力量");
-block clickIncreaseCON = clickIncreaseDef("CON", "體質");
-block clickIncreaseAGI = clickIncreaseDef("AGI", "敏捷");
-block clickIncreaseINT = clickIncreaseDef("INT", "智慧");
-block clickIncreasePSY = clickIncreaseDef("PSY", "精神");
+block clickIncreaseSTR = 點擊提升能力泛型("STR", "力量");
+block clickIncreaseCON = 點擊提升能力泛型("CON", "體質");
+block clickIncreaseAGI = 點擊提升能力泛型("AGI", "敏捷");
+block clickIncreaseINT = 點擊提升能力泛型("INT", "智慧");
+block clickIncreasePSY = 點擊提升能力泛型("PSY", "精神");
 
-block releasePowerWindStaff = releasePowerDef("custom_wind_staff");
-block releasePowerIronSword = releasePowerDef("custom_iron_sword");
+block releasePowerWindStaff = 釋放技能泛型("custom_wind_staff");
+block releasePowerIronSword = 釋放技能泛型("custom_iron_sword");
 
 // Block Implementation
 
 block clickResetPoint {
     __repeat__ = -1;
     triggers {
-        clickButton(varName = "instance", buttonId = "ResetPoint");
+        告示牌按鈕(varName = "instance", buttonId = "ResetPoint");
     }
     actions {
-        setInstanceInt("Point", "{instance.Level}*2+3");
-        setInstanceInt("STR", 0);
-        setInstanceInt("CON", 0);
-        setInstanceInt("AGI", 0);
-        setInstanceInt("INT", 0);
-        setInstanceInt("PSY", 0);
-        actorTalk(actorId = "instance", text = "成功重設能力點，目前有{instance.Point}點能力點");
-        updatePlayerAttributes("instance");
+        儲存物件整數("Point", "{instance.Level}*2+3");
+        儲存物件整數("STR", 0);
+        儲存物件整數("CON", 0);
+        儲存物件整數("AGI", 0);
+        儲存物件整數("INT", 0);
+        儲存物件整數("PSY", 0);
+        角色說話(actorId = "instance", text = "成功重設能力點，目前有{instance.Point}點能力點");
+        更新玩家屬性("instance");
         saveUserState();
     }
 }
@@ -201,10 +203,10 @@ block clickResetPoint {
 block getExp {
     __repeat__ = -1;
     triggers {
-        itemPickup(actorVarname = "instance", matchKind = "equal", itemVarname = "deer_exp");
+        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemVarname = "deer_exp");
     }
     actions {
-        setInstanceInt("Exp", "{instance.Exp}"+1);
+        儲存物件整數("Exp", "{instance.Exp}"+1);
         // TODO: Popup text
         // TODO: Call event
         saveUserState();
@@ -214,10 +216,10 @@ block getExp {
 block monsterDead {
     __repeat__ = -1;
     triggers {
-        actorDead(actor = ActorMatch(id = "monster"), varName = "instance");
+        角色死亡(actor = ActorMatch(id = "monster"), varName = "instance");
     }
     actions {
-        addDropItem(itemCode = "deer_exp", x = "({instance.gamePosition.x}-16)/32", y = "({instance.gamePosition.y}-16)/32", type = "sariraFire");
+        新增放置可拾取道具(itemCode = "deer_exp", x = "({instance.gamePosition.x}-16)/32", y = "({instance.gamePosition.y}-16)/32", type = "sariraFire");
     }
 }
 
@@ -225,29 +227,29 @@ block monsterSpawn {
     __repeat__ = -1;
     __repeatInterval__ = 8000;
     checks {
-        actorCount(actor = ActorMatch(id = "monster_deer", matchKind = "contain"), op = "<", value = "5");
+        計算人數(actor = ActorMatch(id = "monster_deer", matchKind = "contain"), op = "<", value = "5");
     }
     actions {
-        addActor(name = "鹿(60)", id = "monster_deer*", camp = "第三", 
+        新增角色(name = "鹿(60)", id = "monster_deer*", camp = "第三", 
                 hp = 60, x = "random(21,40)", y = "random(0,19)", localVarname = "actor", 
                 weapon1 = "fist", weapon2 = "fist", strength = "10", role = "鹿");
-        actorFollow(actorId = "actor", type = "跟隨自己");
+        跟隨人物(actorId = "actor", type = "跟隨自己");
     }
 }
 
 block levelUp {
     __repeat__ = -1;
     checks {
-        forEachActor(actor = ActorMatch(controller = "玩家"), varname = "instance");
-        checkNumber(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
+        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
-        setInstanceInt("Exp", "{instance.Exp}-{instance.ExpNeeded}");
-        setInstanceInt("Level", "{instance.Level}"+1);
-        setInstanceInt("Point", "{instance.Point}"+2);
-        setInstanceInt("ExpNeeded", "{instance.Level}*2+4");
-        setInstanceInt("HP", HP_FORMULA);
-        actorAttributes(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
+        儲存物件整數("Exp", "{instance.Exp}-{instance.ExpNeeded}");
+        儲存物件整數("Level", "{instance.Level}"+1);
+        儲存物件整數("Point", "{instance.Point}"+2);
+        儲存物件整數("ExpNeeded", "{instance.Level}*2+4");
+        儲存物件整數("HP", HP_FORMULA);
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
         saveUserState();
     }
 }
@@ -256,89 +258,89 @@ block recover {
     __repeat__ = -1;
     __repeatInterval__ = 10000;
     checks {
-        forEachActor(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
     }
     actions {
-        deltaHp(actorCode = "instance", value = RECOVERY_FORMULA);
+        角色加減血(actorCode = "instance", value = RECOVERY_FORMULA);
     }
 }
 
 block pressZ {
     __repeat__ = -1;
     triggers {
-        keyboardPressed(varName = "instance", key = "Z");
+        鍵盤按鍵(varName = "instance", key = "Z");
     }
     actions {
-        actorTalk(actorId = "{instance.id}", text = STATUS_TEXT);
+        角色說話(actorId = "{instance.id}", text = STATUS_TEXT);
     }
 }
 
 block staffAttack {
     __repeat__ = -1;
     triggers {
-        actorFire(weapon = "custom_wind_staff", varName = "instance");
+        角色發動攻擊(weapon = "custom_wind_staff", varName = "instance");
     }
     actions {
-        enblastEffect(fromActor = "instance", toAngle = INSTANCE_ANGLE, scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE);
+        光彈特效(fromActor = "instance", toAngle = INSTANCE_ANGLE, scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE);
     }
 }
 
 block swordAttack {
     __repeat__ = -1;
     triggers {
-        actorHit(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
     }
     actions {
-        deltaHp(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "{attacker.STR}*3");
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "{attacker.STR}*3");
     }
 }
 
 block newPlayer {
     __repeat__ = -1;
     triggers {
-        actorAdded(actor = ActorMatch(controller = "player"), varName = "instance");
+        角色進入戰場(actor = ActorMatch(controller = "player"), varName = "instance");
     }
     actions {
-        setInstanceInt("STR", 0);
-        setInstanceInt("CON", 0);
-        setInstanceInt("AGI", 0);
-        setInstanceInt("INT", 0);
-        setInstanceInt("PSY", 0);
-        setInstanceInt("Level", 1);
-        setInstanceInt("Point", 5);
-        setInstanceInt("Exp", 0);
-        setInstanceInt("ExpNeeded", 6);
-        setInstanceInt("HP", 100);
-        getUserState(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
-        setInstanceInt("completedInit", 1);
+        儲存物件整數("STR", 0);
+        儲存物件整數("CON", 0);
+        儲存物件整數("AGI", 0);
+        儲存物件整數("INT", 0);
+        儲存物件整數("PSY", 0);
+        儲存物件整數("Level", 1);
+        儲存物件整數("Point", 5);
+        儲存物件整數("Exp", 0);
+        儲存物件整數("ExpNeeded", 6);
+        儲存物件整數("HP", 100);
+        取得玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
+        儲存物件整數("completedInit", 1);
     }
 }
 
 block init {
     actions {
-        setWeaponAbility(weapon = "小刀", operation = "無技能", level = 1);
-        setWeaponAbility(weapon = "小刀", operation = "無技能", level = 2);
-        setWeaponAbility(weapon = "custom_wind_staff");
-        setWeaponAbility(weapon = "custom_iron_sword");
-        addStuff(x = 4, y = 8, item = "custom_wind_staff");
-        addStuff(x = 4, y = 8, item = "custom_wind_staff");
-        addStuff(x = 4, y = 8, item = "custom_wind_staff");
-        addStuff(x = 4, y = 8, item = "custom_wind_staff");
-        addStuff(x = 4, y = 8, item = "custom_wind_staff");
-        addMapSign(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        addMapSign(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：恢復四分之一的血量", showButtons = false);
-        biMapWarp(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
-        biMapWarp(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
-        addStuff(x = 6, y = 8, item = "custom_iron_sword");
-        addStuff(x = 6, y = 8, item = "custom_iron_sword");
-        addStuff(x = 6, y = 8, item = "custom_iron_sword");
-        addStuff(x = 6, y = 8, item = "custom_iron_sword");
-        addStuff(x = 6, y = 8, item = "custom_iron_sword");
-        addMapSign(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttonCode = "increaseSTR", buttonLabel = "確認");
-        addMapSign(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttonCode = "increaseCON", buttonLabel = "確認");
-        addMapSign(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttonCode = "increaseAGI", buttonLabel = "確認");
-        addMapSign(x = 9, y = 17, rotation = 270, text = "【智慧】\n消耗一點能力點，提升杖類傷害", buttonCode = "increaseINT", buttonLabel = "確認");
-        addMapSign(x = 11, y = 17, rotation = 270, text = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力", buttonCode = "increasePSY", buttonLabel = "確認");
-        addMapSign(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttonCode = "ResetPoint", buttonLabel = "確認");
+        設定武器技能(weapon = "小刀", operation = "無技能", level = 1);
+        設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
+        設定武器技能(weapon = "custom_wind_staff");
+        設定武器技能(weapon = "custom_iron_sword");
+        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
+        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
+        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
+        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
+        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
+        新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：恢復四分之一的血量", showButtons = false);
+        設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
+        設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
+        新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttonCode = "increaseSTR", buttonLabel = "確認");
+        新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttonCode = "increaseCON", buttonLabel = "確認");
+        新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttonCode = "increaseAGI", buttonLabel = "確認");
+        新增告示牌(x = 9, y = 17, rotation = 270, text = "【智慧】\n消耗一點能力點，提升杖類傷害", buttonCode = "increaseINT", buttonLabel = "確認");
+        新增告示牌(x = 11, y = 17, rotation = 270, text = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力", buttonCode = "increasePSY", buttonLabel = "確認");
+        新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttonCode = "ResetPoint", buttonLabel = "確認");
     }
 }
