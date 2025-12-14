@@ -163,7 +163,7 @@
     },
     "events": [
         {
-            "id": "loadStateSaved",
+            "id": "下載老玩家數據",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -496,7 +496,7 @@
             "triggers": []
         },
         {
-            "id": "loadStateNew",
+            "id": "下載新玩家數據",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -574,7 +574,7 @@
             "triggers": []
         },
         {
-            "id": "clickIncreaseSTR",
+            "id": "點擊提升力量",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -817,7 +817,7 @@
             ]
         },
         {
-            "id": "clickIncreaseCON",
+            "id": "點擊提升體質",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -1060,7 +1060,7 @@
             ]
         },
         {
-            "id": "clickIncreaseAGI",
+            "id": "點擊提升敏捷",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -1303,7 +1303,7 @@
             ]
         },
         {
-            "id": "clickIncreaseINT",
+            "id": "點擊提升智慧",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -1546,7 +1546,7 @@
             ]
         },
         {
-            "id": "clickIncreasePSY",
+            "id": "點擊提升精神",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -1789,7 +1789,7 @@
             ]
         },
         {
-            "id": "releasePowerWindStaff",
+            "id": "釋放技能風杖",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -1891,7 +1891,7 @@
             ]
         },
         {
-            "id": "releasePowerIronSword",
+            "id": "釋放技能鐵劍",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -1927,7 +1927,7 @@
             ]
         },
         {
-            "id": "clickResetPoint",
+            "id": "點擊重置能力",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -2193,7 +2193,7 @@
             ]
         },
         {
-            "id": "getExp",
+            "id": "提升經驗",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -2340,7 +2340,7 @@
             ]
         },
         {
-            "id": "monsterDead",
+            "id": "野獸死亡",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -2396,7 +2396,7 @@
             ]
         },
         {
-            "id": "monsterSpawn",
+            "id": "野獸重生",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -2500,7 +2500,7 @@
             "triggers": []
         },
         {
-            "id": "levelUp",
+            "id": "等級提升",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -2730,7 +2730,7 @@
             "triggers": []
         },
         {
-            "id": "recover",
+            "id": "回血",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -2783,7 +2783,7 @@
             "triggers": []
         },
         {
-            "id": "pressZ",
+            "id": "查看面板",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -2821,7 +2821,7 @@
             ]
         },
         {
-            "id": "staffAttack",
+            "id": "法杖攻擊",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -2863,7 +2863,7 @@
             ]
         },
         {
-            "id": "swordAttack",
+            "id": "鐵劍攻擊",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -2932,7 +2932,7 @@
             ]
         },
         {
-            "id": "newPlayer",
+            "id": "玩家初始化",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -3076,7 +3076,7 @@
             ]
         },
         {
-            "id": "init",
+            "id": "遊戲初始化",
             "disabled": false,
             "folder": "",
             "startTime": 0,

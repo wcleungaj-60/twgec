@@ -1,14 +1,14 @@
-def console.log(text) : actions {
+def console::log(text) : actions {
     print(type = "log", text = text);
 }
 
-def console.error(text) : actions {
+def console::error(text) : actions {
     print(type = "error", text = text);
 }
 
 block init {
     actions {
-        console.log("123");
-        console.error("456");
+        console::log("123");
+        console::error("456");
     }
 }

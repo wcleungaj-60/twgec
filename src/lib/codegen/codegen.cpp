@@ -156,7 +156,7 @@ void CodeGenerator::codegenAction(std::ofstream &of,
   CODEGEN_ACTION("等待", Wait);
   // EnhFF Module
   CODEGEN_ACTION("EnhFF::playerMousePosition", EnhFFPlayerMousePosition);
-  // TODO: Support Chinese character in module
+  CODEGEN_ACTION("EnhFF::玩家滑鼠座標", EnhFFPlayerMousePosition);
   std::cerr << "Codegen error: Cannot found the corresponding action name \""
             << action->identifier << "\" at " << action.get()->loc << "\n";
 }

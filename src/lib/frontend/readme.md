@@ -30,8 +30,8 @@
 ModuleNode := [ MetadataNode | BlockNode | ConstDefNode | FunDefNode]*
 - MetadataNode := MetadataToken AssignToken ExpNode
 - BlockNode := BlockToken IdentifierToken [BlockBodyNode | [AssignToken InstructionNode]]
-- ConstDefNode := ConstToken IdentifierToken AssignToken ExpNode
-- FunDefNode := DefToken IdentifierToken ParamDefsNode ColonToken [TypedInstrSetNode | [BlockToken BlockBodyNode]]
+- ConstDefNode := ConstToken ScopedIdentifierToken AssignToken ExpNode
+- FunDefNode := DefToken ScopedIdentifierToken ParamDefsNode ColonToken [TypedInstrSetNode | [BlockToken BlockBodyNode]]
   - ParamDefsNode = OpenParToken [IdentifierToken [CommaToken IdentifierToken]*]? CloseParToken
   - BlockBodyNode = OpenCurToken [ MetadataNode | TypedInstrSetNode ]* CloseCurToken
 // Instruction Set Scope
@@ -42,7 +42,7 @@ TypedInstrSetNode = [ActionsDefNode | ChecksDefNode | TriggersDefNode] InstrSetN
       - IfRegionNode := IfToken OpenParToken ExpNode CloseParToken InstrSetNode
     - ForLoopNode := ForToken OpenParToken IdentifierToken InToken ExpNode EllipsisToken ExpNode CloseParToken InstrSetNode
 // Instruction Scope
-InstructionNode := IdentifierToken [DotToken IdentifierToken]* ParamAppsNode
+InstructionNode := ScopedIdentifierToken ParamAppsNode
 - ParamAppsNode = OpenParToken PositionalParamAppsNode? CloseParToken
   - PositionalParamAppsNode = [IdentifierToken AssignToken ExpNode [CommaToken NamedParamAppsNode]?] | 
                   [ExpNode [CommaToken PositionalParamAppsNode]?]
@@ -65,4 +65,6 @@ ValueNode := StringValueNode | IntValueNode | BoolValueNode | VariableValueNode 
 - ActorMatchValueNode := ActorMatchToken ParamAppsNode
 - CustomWeaponValueNode := CustomWeaponToken ParamAppsNode
 - ListValueNode := OpenSqrToken [ExpNode [CommaToken ExpNode]*]? CloseSqrToken
+// Other
+- ScopedIdentifierToken = IdentifierToken [ScopeToken IdentifierToken]*
 ```

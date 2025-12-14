@@ -34,6 +34,8 @@ private:
   std::unique_ptr<ExpressionNode> parseExpMultiplicative();
   std::unique_ptr<ExpressionNode> parseExpPrimivite();
   std::unique_ptr<ValueNode> parseValue();
+  // Helper function
+  std::string parseScopedIdentifier();
 
 public:
   Parser(const std::vector<Token> &inputTokens);

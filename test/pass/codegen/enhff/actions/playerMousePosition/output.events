@@ -80,6 +80,15 @@
                         "varY": "myY",
                         "wait": true
                     }
+                },
+                {
+                    "type": "PlayerMousePositionEnh",
+                    "data": {
+                        "actorCode": "instance2",
+                        "varX": "myX",
+                        "varY": "myY",
+                        "wait": true
+                    }
                 }
             ],
             "checks": [],

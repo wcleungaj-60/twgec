@@ -1,5 +1,6 @@
 block init {
     actions {
         EnhFF::playerMousePosition(actorId = "instance", varX = "myX", varY = "myY");
+        EnhFF::玩家滑鼠座標(actorId = "instance2", varX = "myX", varY = "myY");
     }
 }

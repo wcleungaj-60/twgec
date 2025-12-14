@@ -159,6 +159,10 @@ Token Lexer::nextToken() {
       Lexer::column++;
       pos++;
       return Token(TokenType::SEMICOLON, Lexer::line, Lexer::column - 1, ";");
+    } else if (current == ':' && next(':')) {
+      Lexer::column += 2;
+      pos += 2;
+      return Token(TokenType::SCOPE, Lexer::line, Lexer::column - 2, "::");
     } else if (current == ':') {
       Lexer::column++;
       pos++;
@@ -186,6 +190,7 @@ Token Lexer::nextToken() {
       pos++;
       return Token(TokenType::MOD, Lexer::line, Lexer::column - 1, "%");
     } else if (current == '_') {
+      // TODO: Support `_` leading identifier
       return metadataToken();
     } else if (current & 0x80) {
       // leading one means multibyte character
@@ -292,9 +297,7 @@ Token Lexer::stringToken() {
 Token Lexer::identifierToken() {
   size_t start = pos;
   int startColumn = column;
-  // TODO: A better checking for `::` namespace
-  while (pos < input.length() &&
-         (isalnum(input[pos]) || input[pos] == '_' || input[pos] == ':')) {
+  while (pos < input.length() && (isalnum(input[pos]) || input[pos] == '_')) {
     column++;
     pos++;
   }

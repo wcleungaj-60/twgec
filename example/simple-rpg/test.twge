@@ -35,20 +35,18 @@ __customWeapons__ = [
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 
-//------------------- 除錯 -------------------//
-def 除錯(text): actions {
+//------------------- 自定義功能 -------------------//
+def 自定義::除錯(text): actions {
     if(DEBUG_MODE) {
         print(type = "error", text = text);
     }
 }
 
-//------------------- 儲存物件整數 -------------------//
-def 儲存物件整數(key, value): actions {
+def 自定義::儲存物件整數(key, value): actions {
     儲存物件變數(key = key, object = "instance", type = "integer", value = value);
 }
 
-//------------------- 設定雙向地圖傳送點 -------------------//
-def 設定雙向地圖傳送點(x1, y1, x2, y2): actions {
+def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2): actions {
     if (x1 == x2 && y1 < y2) {
         設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "下");
         設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "上");
@@ -68,25 +66,39 @@ def 設定雙向地圖傳送點(x1, y1, x2, y2): actions {
     }
 }
 
-//------------------- 更新玩家屬性 -------------------//
-def 更新玩家屬性(actorId): actions {
+def 自定義::更新玩家屬性(actorId): actions {
     儲存物件變數(key = "HP", object = actorId, type = "integer", value = "98 + 10*{"+actorId+".CON} + 2*{"+actorId+".Level}");
     設定角色屬性(actorId = actorId, attr = "maxHp", value = "{"+actorId+".HP}");
     設定角色屬性(actorId = actorId, attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{"+actorId+".AGI})");
     設定角色屬性(actorId = actorId, attr = "weight", value = "3*pow(0.97,{"+actorId+".AGI})");
 }
 
-//------------------- 遊戲數據存儲 -----------------//
-def setObjectVarFromUserState(key) : actions {
+def 自定義::輔助::下載玩家數據(key) : actions {
     取得玩家狀態(category = USER_STATE_CATEGORY, key = key, playerId = "{instance}", varName = "{instance}_"+key);
-    儲存物件整數(key, "{{instance}_"+key+"}");
+    自定義::儲存物件整數(key, "{{instance}_"+key+"}");
 }
 
-def setUserStateFromObjectVar(key) : actions {
+def 自定義::輔助::上載玩家數據(key) : actions {
     儲存玩家狀態(category = USER_STATE_CATEGORY, key = key, playerId = "{instance}", type = "string", value = "{{instance}."+key+"}");
 }
 
-def loadStateDef(hasSavedBefore) : block {
+def 自定義::上載玩家數據() : actions {
+    自定義::輔助::上載玩家數據("Point");
+    自定義::輔助::上載玩家數據("ExpNeeded");
+    自定義::輔助::上載玩家數據("Level");
+    自定義::輔助::上載玩家數據("STR");
+    自定義::輔助::上載玩家數據("CON");
+    自定義::輔助::上載玩家數據("AGI");
+    自定義::輔助::上載玩家數據("INT");
+    自定義::輔助::上載玩家數據("PSY");
+    自定義::輔助::上載玩家數據("Exp");
+    自定義::輔助::上載玩家數據("HP");
+    儲存玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+}
+
+//------------------- 自定義事件泛型 -------------------//
+
+def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     __repeat__ = -1;
     checks {
         找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
@@ -101,41 +113,26 @@ def loadStateDef(hasSavedBefore) : block {
     actions {
         儲存物件變數(key = "completedInit", object = "instance", type = "string", value = 2);
         if(hasSavedBefore) {
-            setObjectVarFromUserState("Point");
-            setObjectVarFromUserState("ExpNeeded");
-            setObjectVarFromUserState("Level");
-            setObjectVarFromUserState("STR");
-            setObjectVarFromUserState("CON");
-            setObjectVarFromUserState("AGI");
-            setObjectVarFromUserState("INT");
-            setObjectVarFromUserState("PSY");
-            setObjectVarFromUserState("Exp");
-            setObjectVarFromUserState("HP");
-            更新玩家屬性("instance");
+            自定義::輔助::下載玩家數據("Point");
+            自定義::輔助::下載玩家數據("ExpNeeded");
+            自定義::輔助::下載玩家數據("Level");
+            自定義::輔助::下載玩家數據("STR");
+            自定義::輔助::下載玩家數據("CON");
+            自定義::輔助::下載玩家數據("AGI");
+            自定義::輔助::下載玩家數據("INT");
+            自定義::輔助::下載玩家數據("PSY");
+            自定義::輔助::下載玩家數據("Exp");
+            自定義::輔助::下載玩家數據("HP");
+            自定義::更新玩家屬性("instance");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
     }
 }
 
-block loadStateSaved = loadStateDef(hasSavedBefore = true);
-block loadStateNew = loadStateDef(hasSavedBefore = false);
+block 下載老玩家數據 = 自定義::下載玩家數據泛型(hasSavedBefore = true);
+block 下載新玩家數據 = 自定義::下載玩家數據泛型(hasSavedBefore = false);
 
-def saveUserState() : actions {
-    setUserStateFromObjectVar("Point");
-    setUserStateFromObjectVar("ExpNeeded");
-    setUserStateFromObjectVar("Level");
-    setUserStateFromObjectVar("STR");
-    setUserStateFromObjectVar("CON");
-    setUserStateFromObjectVar("AGI");
-    setUserStateFromObjectVar("INT");
-    setUserStateFromObjectVar("PSY");
-    setUserStateFromObjectVar("Exp");
-    setUserStateFromObjectVar("HP");
-    儲存玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
-}
-
-// Block Function Definition
-def 點擊提升能力泛型(type, typeZh) : block {
+def 自定義::點擊提升能力泛型(type, typeZh) : block {
     __repeat__ = -1;
     triggers {
         告示牌按鈕(varName = "instance", buttonId = "increase" + type);
@@ -144,15 +141,21 @@ def 點擊提升能力泛型(type, typeZh) : block {
         比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
     }
     actions {
-        儲存物件整數("Point", "{instance.Point}-1");
-        儲存物件整數(type, "{instance."+type+"}+1");
+        自定義::儲存物件整數("Point", "{instance.Point}-1");
+        自定義::儲存物件整數(type, "{instance."+type+"}+1");
         角色說話(actorId = "instance", text = "成功提升一點" + typeZh + "，尚餘{instance.Point}點能力點");
-        更新玩家屬性("instance");
-        saveUserState();
+        自定義::更新玩家屬性("instance");
+        自定義::上載玩家數據();
     }
 }
 
-def 釋放技能泛型(weapon) : block {
+block 點擊提升力量 = 自定義::點擊提升能力泛型("STR", "力量");
+block 點擊提升體質 = 自定義::點擊提升能力泛型("CON", "體質");
+block 點擊提升敏捷 = 自定義::點擊提升能力泛型("AGI", "敏捷");
+block 點擊提升智慧 = 自定義::點擊提升能力泛型("INT", "智慧");
+block 點擊提升精神 = 自定義::點擊提升能力泛型("PSY", "精神");
+
+def 自定義::釋放技能泛型(weapon) : block {
     __repeat__ = -1;
     triggers {
         發動技能(varName = "instance", weapon = weapon);
@@ -171,49 +174,43 @@ def 釋放技能泛型(weapon) : block {
     }
 }
 
-block clickIncreaseSTR = 點擊提升能力泛型("STR", "力量");
-block clickIncreaseCON = 點擊提升能力泛型("CON", "體質");
-block clickIncreaseAGI = 點擊提升能力泛型("AGI", "敏捷");
-block clickIncreaseINT = 點擊提升能力泛型("INT", "智慧");
-block clickIncreasePSY = 點擊提升能力泛型("PSY", "精神");
+block 釋放技能風杖 = 自定義::釋放技能泛型("custom_wind_staff");
+block 釋放技能鐵劍 = 自定義::釋放技能泛型("custom_iron_sword");
 
-block releasePowerWindStaff = 釋放技能泛型("custom_wind_staff");
-block releasePowerIronSword = 釋放技能泛型("custom_iron_sword");
+//------------------- 遊戲事件 -------------------//
 
-// Block Implementation
-
-block clickResetPoint {
+block 點擊重置能力 {
     __repeat__ = -1;
     triggers {
         告示牌按鈕(varName = "instance", buttonId = "ResetPoint");
     }
     actions {
-        儲存物件整數("Point", "{instance.Level}*2+3");
-        儲存物件整數("STR", 0);
-        儲存物件整數("CON", 0);
-        儲存物件整數("AGI", 0);
-        儲存物件整數("INT", 0);
-        儲存物件整數("PSY", 0);
+        自定義::儲存物件整數("Point", "{instance.Level}*2+3");
+        自定義::儲存物件整數("STR", 0);
+        自定義::儲存物件整數("CON", 0);
+        自定義::儲存物件整數("AGI", 0);
+        自定義::儲存物件整數("INT", 0);
+        自定義::儲存物件整數("PSY", 0);
         角色說話(actorId = "instance", text = "成功重設能力點，目前有{instance.Point}點能力點");
-        更新玩家屬性("instance");
-        saveUserState();
+        自定義::更新玩家屬性("instance");
+        自定義::上載玩家數據();
     }
 }
 
-block getExp {
+block 提升經驗 {
     __repeat__ = -1;
     triggers {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemVarname = "deer_exp");
     }
     actions {
-        儲存物件整數("Exp", "{instance.Exp}"+1);
+        自定義::儲存物件整數("Exp", "{instance.Exp}"+1);
         // TODO: Popup text
         // TODO: Call event
-        saveUserState();
+        自定義::上載玩家數據();
     }
 }
 
-block monsterDead {
+block 野獸死亡 {
     __repeat__ = -1;
     triggers {
         角色死亡(actor = ActorMatch(id = "monster"), varName = "instance");
@@ -223,7 +220,7 @@ block monsterDead {
     }
 }
 
-block monsterSpawn {
+block 野獸重生 {
     __repeat__ = -1;
     __repeatInterval__ = 8000;
     checks {
@@ -237,24 +234,24 @@ block monsterSpawn {
     }
 }
 
-block levelUp {
+block 等級提升 {
     __repeat__ = -1;
     checks {
         找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
-        儲存物件整數("Exp", "{instance.Exp}-{instance.ExpNeeded}");
-        儲存物件整數("Level", "{instance.Level}"+1);
-        儲存物件整數("Point", "{instance.Point}"+2);
-        儲存物件整數("ExpNeeded", "{instance.Level}*2+4");
-        儲存物件整數("HP", HP_FORMULA);
+        自定義::儲存物件整數("Exp", "{instance.Exp}-{instance.ExpNeeded}");
+        自定義::儲存物件整數("Level", "{instance.Level}"+1);
+        自定義::儲存物件整數("Point", "{instance.Point}"+2);
+        自定義::儲存物件整數("ExpNeeded", "{instance.Level}*2+4");
+        自定義::儲存物件整數("HP", HP_FORMULA);
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        saveUserState();
+        自定義::上載玩家數據();
     }
 }
 
-block recover {
+block 回血 {
     __repeat__ = -1;
     __repeatInterval__ = 10000;
     checks {
@@ -265,7 +262,7 @@ block recover {
     }
 }
 
-block pressZ {
+block 查看面板 {
     __repeat__ = -1;
     triggers {
         鍵盤按鍵(varName = "instance", key = "Z");
@@ -275,7 +272,7 @@ block pressZ {
     }
 }
 
-block staffAttack {
+block 法杖攻擊 {
     __repeat__ = -1;
     triggers {
         角色發動攻擊(weapon = "custom_wind_staff", varName = "instance");
@@ -285,7 +282,7 @@ block staffAttack {
     }
 }
 
-block swordAttack {
+block 鐵劍攻擊 {
     __repeat__ = -1;
     triggers {
         角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
@@ -295,28 +292,28 @@ block swordAttack {
     }
 }
 
-block newPlayer {
+block 玩家初始化 {
     __repeat__ = -1;
     triggers {
         角色進入戰場(actor = ActorMatch(controller = "player"), varName = "instance");
     }
     actions {
-        儲存物件整數("STR", 0);
-        儲存物件整數("CON", 0);
-        儲存物件整數("AGI", 0);
-        儲存物件整數("INT", 0);
-        儲存物件整數("PSY", 0);
-        儲存物件整數("Level", 1);
-        儲存物件整數("Point", 5);
-        儲存物件整數("Exp", 0);
-        儲存物件整數("ExpNeeded", 6);
-        儲存物件整數("HP", 100);
+        自定義::儲存物件整數("STR", 0);
+        自定義::儲存物件整數("CON", 0);
+        自定義::儲存物件整數("AGI", 0);
+        自定義::儲存物件整數("INT", 0);
+        自定義::儲存物件整數("PSY", 0);
+        自定義::儲存物件整數("Level", 1);
+        自定義::儲存物件整數("Point", 5);
+        自定義::儲存物件整數("Exp", 0);
+        自定義::儲存物件整數("ExpNeeded", 6);
+        自定義::儲存物件整數("HP", 100);
         取得玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
-        儲存物件整數("completedInit", 1);
+        自定義::儲存物件整數("completedInit", 1);
     }
 }
 
-block init {
+block 遊戲初始化 {
     actions {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 1);
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
@@ -329,8 +326,8 @@ block init {
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
         新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：恢復四分之一的血量", showButtons = false);
-        設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
-        設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
+        自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
+        自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
         新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         新增武器道具(x = 6, y = 8, item = "custom_iron_sword");

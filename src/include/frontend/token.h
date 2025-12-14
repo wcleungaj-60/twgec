@@ -58,6 +58,7 @@ enum class TokenType {
   DIV,                // /
   MOD,                // %
   ELLIPSIS,           // ...
+  SCOPE,              // ::
   /* Others */
   INT,
   STRING,
@@ -113,6 +114,7 @@ inline std::ostream &operator<<(std::ostream &os, const TokenType &type) {
     LEXER_TOKEN_TYPE_PRINT(TokenType::DIV, "\'/\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::MOD, "\'%\'");
     LEXER_TOKEN_TYPE_PRINT(TokenType::ELLIPSIS, "\'...\'");
+    LEXER_TOKEN_TYPE_PRINT(TokenType::SCOPE, "\'::\'");
     // Otherwise
     LEXER_TOKEN_TYPE_PRINT(TokenType::INT, "int");
     LEXER_TOKEN_TYPE_PRINT(TokenType::STRING, "string");
@@ -179,6 +181,7 @@ struct Token {
       LEXER_TOKEN_TYPE_PRINT(TokenType::DIV, "/");
       LEXER_TOKEN_TYPE_PRINT(TokenType::MOD, "%");
       LEXER_TOKEN_TYPE_PRINT(TokenType::ELLIPSIS, "...");
+      LEXER_TOKEN_TYPE_PRINT(TokenType::SCOPE, "::");
       // Otherwise
       LEXER_TOKEN_PRINT(TokenType::INT, "int@" + token.value);
       LEXER_TOKEN_PRINT(TokenType::STRING, "string@" + token.value);

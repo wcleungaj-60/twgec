@@ -94,9 +94,11 @@ std::unique_ptr<MetadataNode> Parser::parseMetadata() {
 std::unique_ptr<ConstDefNode> Parser::parseConstDef() {
   if (!consume(TokenType::CONST))
     return nullptr;
-  std::string key = tokens.front().value;
   Location loc = tokens.front().location;
-  if (!consume(TokenType::IDENTIFIER) || !consume(TokenType::ASSIGN))
+  std::string key = parseScopedIdentifier();
+  if (key == "")
+    return nullptr;
+  if (!consume(TokenType::ASSIGN))
     return nullptr;
   std::unique_ptr<ExpressionNode> exp = parseExp();
   if (!exp)
@@ -110,17 +112,10 @@ std::unique_ptr<ConstDefNode> Parser::parseConstDef() {
 
 std::unique_ptr<FunDefNode> Parser::parseFunDef() {
   consume(TokenType::DEF);
-  std::string identifier = tokens.front().value;
   Location loc = tokens.front().location;
-  if (!consume(TokenType::IDENTIFIER))
+  std::string identifier = parseScopedIdentifier();
+  if (identifier == "")
     return nullptr;
-  while (tokens.front().type != TokenType::OPENPAR) {
-    if (!consume(TokenType::DOT))
-      return nullptr;
-    identifier += "." + tokens.front().value;
-    if (!consume(TokenType::IDENTIFIER))
-      return nullptr;
-  }
   consume(TokenType::OPENPAR);
   std::unique_ptr<FunDefNode> funDefNode =
       std::make_unique<FunDefNode>(identifier, loc);
@@ -351,18 +346,10 @@ std::unique_ptr<ForNode> Parser::parseFor() {
  */
 
 std::unique_ptr<InstructionNode> Parser::parseInstruction() {
-  std::string identifier = tokens.front().value;
   Location loc = tokens.front().location;
-  if (!consume(TokenType::IDENTIFIER))
+  std::string identifier = parseScopedIdentifier();
+  if (identifier == "")
     return nullptr;
-  while (tokens.front().type != TokenType::OPENPAR) {
-    // TODO: A better language design for `.`
-    if (!consume(TokenType::DOT))
-      return nullptr;
-    identifier += "." + tokens.front().value;
-    if (!consume(TokenType::IDENTIFIER))
-      return nullptr;
-  }
   std::unique_ptr<InstructionNode> instructionNode =
       std::make_unique<InstructionNode>(identifier,
                                         std::move(parseParamAppsNode()), loc);
@@ -606,4 +593,17 @@ std::unique_ptr<ValueNode> Parser::parseValue() {
             << tokens.front().location << ". Found \'" << tokens.front().value
             << "\'\n";
   return nullptr;
+}
+
+std::string Parser::parseScopedIdentifier() {
+  std::string id = tokens.front().value;
+  if (!consume(TokenType::IDENTIFIER))
+    return "";
+  while (tokens.front().type == TokenType::SCOPE) {
+    consume(TokenType::SCOPE);
+    id = id + "::" + tokens.front().value;
+    if (!consume(TokenType::IDENTIFIER))
+      return "";
+  }
+  return id;
 }
