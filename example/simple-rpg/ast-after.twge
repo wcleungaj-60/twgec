@@ -1,17 +1,17 @@
 //--------------------------------//
 //--- AST After symbolChecking ---//
 //--------------------------------//
-const INSTANCE_ANGLE = "{instance.bodyRotation}*180/3.14";
-const WIND_STAFF_ENBLAST_DAMAGE = "{instance.INT} + {instance.PSY}/2 + 10";
-const HP_FORMULA = "98 + 10*{instance.CON} + 2*{instance.Level}";
-const RECOVERY_FORMULA = "1 + {instance.PSY} + {instance.CON}/2";
-const STATUS_TEXT = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
-const SPAWN_POINT = Point(10,10);
-const DEBUG_MODE = false;
-const USER_STATE_CATEGORY = "simple-rpg-test";
-__skydowLocs__ = SPAWN_POINT;
-__royalLocs__ = SPAWN_POINT;
-__thirdLocs__ = SPAWN_POINT;
+const 公式::Instance角度 = "{instance.bodyRotation}*180/3.14";
+const 公式::Instance血量 = "98 + 10*{instance.CON} + 2*{instance.Level}";
+const 公式::Instance恢復量 = "1 + {instance.PSY} + {instance.CON}/2";
+const 公式::風杖傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
+const 出生點 = Point(10,10);
+const 除錯模式 = false;
+const 狀態讀寫密鑰 = "simple-rpg-test";
+__skydowLocs__ = 出生點;
+__royalLocs__ = 出生點;
+__thirdLocs__ = 出生點;
 __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
@@ -20,11 +20,11 @@ __customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 def 自定義::除錯(text) : actions {
-    if(DEBUG_MODE) {
+    if(除錯模式) {
         print(type = "error", text = text);
     }
 }
-def 自定義::儲存物件整數(key, value) : actions {
+def 自定義::儲存Instance整數(key, value) : actions {
     儲存物件變數(key = key, object = "instance", type = "integer", value = value);
 }
 def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
@@ -46,31 +46,31 @@ def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
         print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
     }
 }
-def 自定義::更新玩家屬性(actorId) : actions {
+def 自定義::更新角色屬性(actorId) : actions {
     儲存物件變數(key = "HP", object = actorId, type = "integer", value = ("98 + 10*{" + (actorId + (".CON} + 2*{" + (actorId + ".Level}")))));
     設定角色屬性(actorId = actorId, attr = "maxHp", value = ("{" + (actorId + ".HP}")));
     設定角色屬性(actorId = actorId, attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + (actorId + ".AGI})")));
     設定角色屬性(actorId = actorId, attr = "weight", value = ("3*pow(0.97,{" + (actorId + ".AGI})")));
 }
-def 自定義::輔助::下載玩家數據(key) : actions {
-    取得玩家狀態(category = USER_STATE_CATEGORY, key = key, playerId = "{instance}", varName = ("{instance}_" + key));
-    自定義::儲存物件整數(key, ("{{instance}_" + (key + "}")));
+def 自定義::輔助::下載Instance數據(key) : actions {
+    取得玩家狀態(category = 狀態讀寫密鑰, key = key, playerId = "{instance}", varName = ("{instance}_" + key));
+    自定義::儲存Instance整數(key, ("{{instance}_" + (key + "}")));
 }
-def 自定義::輔助::上載玩家數據(key) : actions {
-    儲存玩家狀態(category = USER_STATE_CATEGORY, key = key, playerId = "{instance}", type = "string", value = ("{{instance}." + (key + "}")));
+def 自定義::輔助::上載Instance數據(key) : actions {
+    儲存玩家狀態(category = 狀態讀寫密鑰, key = key, playerId = "{instance}", type = "string", value = ("{{instance}." + (key + "}")));
 }
-def 自定義::上載玩家數據() : actions {
-    自定義::輔助::上載玩家數據("Point");
-    自定義::輔助::上載玩家數據("ExpNeeded");
-    自定義::輔助::上載玩家數據("Level");
-    自定義::輔助::上載玩家數據("STR");
-    自定義::輔助::上載玩家數據("CON");
-    自定義::輔助::上載玩家數據("AGI");
-    自定義::輔助::上載玩家數據("INT");
-    自定義::輔助::上載玩家數據("PSY");
-    自定義::輔助::上載玩家數據("Exp");
-    自定義::輔助::上載玩家數據("HP");
-    儲存玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+def 自定義::上載Instance數據() : actions {
+    自定義::輔助::上載Instance數據("Point");
+    自定義::輔助::上載Instance數據("ExpNeeded");
+    自定義::輔助::上載Instance數據("Level");
+    自定義::輔助::上載Instance數據("STR");
+    自定義::輔助::上載Instance數據("CON");
+    自定義::輔助::上載Instance數據("AGI");
+    自定義::輔助::上載Instance數據("INT");
+    自定義::輔助::上載Instance數據("PSY");
+    自定義::輔助::上載Instance數據("Exp");
+    自定義::輔助::上載Instance數據("HP");
+    儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
 }
 def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     __repeat__ = -1;
@@ -87,17 +87,17 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     actions {
         儲存物件變數(key = "completedInit", object = "instance", type = "string", value = 2);
         if(hasSavedBefore) {
-            自定義::輔助::下載玩家數據("Point");
-            自定義::輔助::下載玩家數據("ExpNeeded");
-            自定義::輔助::下載玩家數據("Level");
-            自定義::輔助::下載玩家數據("STR");
-            自定義::輔助::下載玩家數據("CON");
-            自定義::輔助::下載玩家數據("AGI");
-            自定義::輔助::下載玩家數據("INT");
-            自定義::輔助::下載玩家數據("PSY");
-            自定義::輔助::下載玩家數據("Exp");
-            自定義::輔助::下載玩家數據("HP");
-            自定義::更新玩家屬性("instance");
+            自定義::輔助::下載Instance數據("Point");
+            自定義::輔助::下載Instance數據("ExpNeeded");
+            自定義::輔助::下載Instance數據("Level");
+            自定義::輔助::下載Instance數據("STR");
+            自定義::輔助::下載Instance數據("CON");
+            自定義::輔助::下載Instance數據("AGI");
+            自定義::輔助::下載Instance數據("INT");
+            自定義::輔助::下載Instance數據("PSY");
+            自定義::輔助::下載Instance數據("Exp");
+            自定義::輔助::下載Instance數據("HP");
+            自定義::更新角色屬性("instance");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
     }
@@ -111,11 +111,11 @@ def 自定義::點擊提升能力泛型(type, typeZh) : block {
         比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
     }
     actions {
-        自定義::儲存物件整數("Point", "{instance.Point}-1");
-        自定義::儲存物件整數(type, ("{instance." + (type + "}+1")));
+        自定義::儲存Instance整數("Point", "{instance.Point}-1");
+        自定義::儲存Instance整數(type, ("{instance." + (type + "}+1")));
         角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
-        自定義::更新玩家屬性("instance");
-        自定義::上載玩家數據();
+        自定義::更新角色屬性("instance");
+        自定義::上載Instance數據();
     }
 }
 def 自定義::釋放技能泛型(weapon) : block {
@@ -125,11 +125,11 @@ def 自定義::釋放技能泛型(weapon) : block {
     }
     actions {
         if((weapon == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if((weapon == "custom_iron_sword")) {
             角色加減血(actorCode = "instance", value = "{instance.HP}/4");
@@ -151,15 +151,15 @@ block 點擊重置能力 {
         告示牌按鈕(varName = "instance", buttonId = "ResetPoint");
     }
     actions {
-        自定義::儲存物件整數("Point", "{instance.Level}*2+3");
-        自定義::儲存物件整數("STR", 0);
-        自定義::儲存物件整數("CON", 0);
-        自定義::儲存物件整數("AGI", 0);
-        自定義::儲存物件整數("INT", 0);
-        自定義::儲存物件整數("PSY", 0);
+        自定義::儲存Instance整數("Point", "{instance.Level}*2+3");
+        自定義::儲存Instance整數("STR", 0);
+        自定義::儲存Instance整數("CON", 0);
+        自定義::儲存Instance整數("AGI", 0);
+        自定義::儲存Instance整數("INT", 0);
+        自定義::儲存Instance整數("PSY", 0);
         角色說話(actorId = "instance", text = "成功重設能力點，目前有{instance.Point}點能力點");
-        自定義::更新玩家屬性("instance");
-        自定義::上載玩家數據();
+        自定義::更新角色屬性("instance");
+        自定義::上載Instance數據();
     }
 }
 block 提升經驗 {
@@ -168,8 +168,8 @@ block 提升經驗 {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemVarname = "deer_exp");
     }
     actions {
-        自定義::儲存物件整數("Exp", ("{instance.Exp}" + 1));
-        自定義::上載玩家數據();
+        自定義::儲存Instance整數("Exp", ("{instance.Exp}" + 1));
+        自定義::上載Instance數據();
     }
 }
 block 野獸死亡 {
@@ -199,13 +199,13 @@ block 等級提升 {
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
-        自定義::儲存物件整數("Exp", "{instance.Exp}-{instance.ExpNeeded}");
-        自定義::儲存物件整數("Level", ("{instance.Level}" + 1));
-        自定義::儲存物件整數("Point", ("{instance.Point}" + 2));
-        自定義::儲存物件整數("ExpNeeded", "{instance.Level}*2+4");
-        自定義::儲存物件整數("HP", HP_FORMULA);
+        自定義::儲存Instance整數("Exp", "{instance.Exp}-{instance.ExpNeeded}");
+        自定義::儲存Instance整數("Level", ("{instance.Level}" + 1));
+        自定義::儲存Instance整數("Point", ("{instance.Point}" + 2));
+        自定義::儲存Instance整數("ExpNeeded", "{instance.Level}*2+4");
+        自定義::儲存Instance整數("HP", 公式::Instance血量);
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        自定義::上載玩家數據();
+        自定義::上載Instance數據();
     }
 }
 block 回血 {
@@ -215,7 +215,7 @@ block 回血 {
         找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
     }
     actions {
-        角色加減血(actorCode = "instance", value = RECOVERY_FORMULA);
+        角色加減血(actorCode = "instance", value = 公式::Instance恢復量);
     }
 }
 block 查看面板 {
@@ -224,7 +224,7 @@ block 查看面板 {
         鍵盤按鍵(varName = "instance", key = "Z");
     }
     actions {
-        角色說話(actorId = "{instance.id}", text = STATUS_TEXT);
+        角色說話(actorId = "{instance.id}", text = 文字::Instance訊息);
     }
 }
 block 法杖攻擊 {
@@ -233,7 +233,7 @@ block 法杖攻擊 {
         角色發動攻擊(weapon = "custom_wind_staff", varName = "instance");
     }
     actions {
-        光彈特效(fromActor = "instance", toAngle = INSTANCE_ANGLE, scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE);
+        光彈特效(fromActor = "instance", toAngle = 公式::Instance角度, scale = "0.5", damage = 公式::風杖傷害);
     }
 }
 block 鐵劍攻擊 {
@@ -251,18 +251,18 @@ block 玩家初始化 {
         角色進入戰場(actor = ActorMatch(controller = "player"), varName = "instance");
     }
     actions {
-        自定義::儲存物件整數("STR", 0);
-        自定義::儲存物件整數("CON", 0);
-        自定義::儲存物件整數("AGI", 0);
-        自定義::儲存物件整數("INT", 0);
-        自定義::儲存物件整數("PSY", 0);
-        自定義::儲存物件整數("Level", 1);
-        自定義::儲存物件整數("Point", 5);
-        自定義::儲存物件整數("Exp", 0);
-        自定義::儲存物件整數("ExpNeeded", 6);
-        自定義::儲存物件整數("HP", 100);
-        取得玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
-        自定義::儲存物件整數("completedInit", 1);
+        自定義::儲存Instance整數("STR", 0);
+        自定義::儲存Instance整數("CON", 0);
+        自定義::儲存Instance整數("AGI", 0);
+        自定義::儲存Instance整數("INT", 0);
+        自定義::儲存Instance整數("PSY", 0);
+        自定義::儲存Instance整數("Level", 1);
+        自定義::儲存Instance整數("Point", 5);
+        自定義::儲存Instance整數("Exp", 0);
+        自定義::儲存Instance整數("ExpNeeded", 6);
+        自定義::儲存Instance整數("HP", 100);
+        取得玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
+        自定義::儲存Instance整數("completedInit", 1);
     }
 }
 block 遊戲初始化 {
@@ -296,17 +296,17 @@ block 遊戲初始化 {
 //----------------------------//
 //--- AST After argBinding ---//
 //----------------------------//
-const INSTANCE_ANGLE = "{instance.bodyRotation}*180/3.14";
-const WIND_STAFF_ENBLAST_DAMAGE = "{instance.INT} + {instance.PSY}/2 + 10";
-const HP_FORMULA = "98 + 10*{instance.CON} + 2*{instance.Level}";
-const RECOVERY_FORMULA = "1 + {instance.PSY} + {instance.CON}/2";
-const STATUS_TEXT = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
-const SPAWN_POINT = Point(10,10);
-const DEBUG_MODE = false;
-const USER_STATE_CATEGORY = "simple-rpg-test";
-__skydowLocs__ = SPAWN_POINT;
-__royalLocs__ = SPAWN_POINT;
-__thirdLocs__ = SPAWN_POINT;
+const 公式::Instance角度 = "{instance.bodyRotation}*180/3.14";
+const 公式::Instance血量 = "98 + 10*{instance.CON} + 2*{instance.Level}";
+const 公式::Instance恢復量 = "1 + {instance.PSY} + {instance.CON}/2";
+const 公式::風杖傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
+const 出生點 = Point(10,10);
+const 除錯模式 = false;
+const 狀態讀寫密鑰 = "simple-rpg-test";
+__skydowLocs__ = 出生點;
+__royalLocs__ = 出生點;
+__thirdLocs__ = 出生點;
 __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
@@ -315,11 +315,11 @@ __customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 def 自定義::除錯(text) : actions {
-    if(DEBUG_MODE) {
+    if(除錯模式) {
         print(type = "error", text = text);
     }
 }
-def 自定義::儲存物件整數(key, value) : actions {
+def 自定義::儲存Instance整數(key, value) : actions {
     儲存物件變數(key = key, object = "instance", type = "integer", value = value);
 }
 def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
@@ -341,31 +341,31 @@ def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
         print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
     }
 }
-def 自定義::更新玩家屬性(actorId) : actions {
+def 自定義::更新角色屬性(actorId) : actions {
     儲存物件變數(key = "HP", object = actorId, type = "integer", value = ("98 + 10*{" + (actorId + (".CON} + 2*{" + (actorId + ".Level}")))));
     設定角色屬性(actorId = actorId, attr = "maxHp", value = ("{" + (actorId + ".HP}")));
     設定角色屬性(actorId = actorId, attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + (actorId + ".AGI})")));
     設定角色屬性(actorId = actorId, attr = "weight", value = ("3*pow(0.97,{" + (actorId + ".AGI})")));
 }
-def 自定義::輔助::下載玩家數據(key) : actions {
-    取得玩家狀態(category = USER_STATE_CATEGORY, key = key, playerId = "{instance}", varName = ("{instance}_" + key));
-    自定義::儲存物件整數(key = key, value = ("{{instance}_" + (key + "}")));
+def 自定義::輔助::下載Instance數據(key) : actions {
+    取得玩家狀態(category = 狀態讀寫密鑰, key = key, playerId = "{instance}", varName = ("{instance}_" + key));
+    自定義::儲存Instance整數(key = key, value = ("{{instance}_" + (key + "}")));
 }
-def 自定義::輔助::上載玩家數據(key) : actions {
-    儲存玩家狀態(category = USER_STATE_CATEGORY, key = key, playerId = "{instance}", type = "string", value = ("{{instance}." + (key + "}")));
+def 自定義::輔助::上載Instance數據(key) : actions {
+    儲存玩家狀態(category = 狀態讀寫密鑰, key = key, playerId = "{instance}", type = "string", value = ("{{instance}." + (key + "}")));
 }
-def 自定義::上載玩家數據() : actions {
-    自定義::輔助::上載玩家數據(key = "Point");
-    自定義::輔助::上載玩家數據(key = "ExpNeeded");
-    自定義::輔助::上載玩家數據(key = "Level");
-    自定義::輔助::上載玩家數據(key = "STR");
-    自定義::輔助::上載玩家數據(key = "CON");
-    自定義::輔助::上載玩家數據(key = "AGI");
-    自定義::輔助::上載玩家數據(key = "INT");
-    自定義::輔助::上載玩家數據(key = "PSY");
-    自定義::輔助::上載玩家數據(key = "Exp");
-    自定義::輔助::上載玩家數據(key = "HP");
-    儲存玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+def 自定義::上載Instance數據() : actions {
+    自定義::輔助::上載Instance數據(key = "Point");
+    自定義::輔助::上載Instance數據(key = "ExpNeeded");
+    自定義::輔助::上載Instance數據(key = "Level");
+    自定義::輔助::上載Instance數據(key = "STR");
+    自定義::輔助::上載Instance數據(key = "CON");
+    自定義::輔助::上載Instance數據(key = "AGI");
+    自定義::輔助::上載Instance數據(key = "INT");
+    自定義::輔助::上載Instance數據(key = "PSY");
+    自定義::輔助::上載Instance數據(key = "Exp");
+    自定義::輔助::上載Instance數據(key = "HP");
+    儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
 }
 def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     __repeat__ = -1;
@@ -382,17 +382,17 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     actions {
         儲存物件變數(key = "completedInit", object = "instance", type = "string", value = 2);
         if(hasSavedBefore) {
-            自定義::輔助::下載玩家數據(key = "Point");
-            自定義::輔助::下載玩家數據(key = "ExpNeeded");
-            自定義::輔助::下載玩家數據(key = "Level");
-            自定義::輔助::下載玩家數據(key = "STR");
-            自定義::輔助::下載玩家數據(key = "CON");
-            自定義::輔助::下載玩家數據(key = "AGI");
-            自定義::輔助::下載玩家數據(key = "INT");
-            自定義::輔助::下載玩家數據(key = "PSY");
-            自定義::輔助::下載玩家數據(key = "Exp");
-            自定義::輔助::下載玩家數據(key = "HP");
-            自定義::更新玩家屬性(actorId = "instance");
+            自定義::輔助::下載Instance數據(key = "Point");
+            自定義::輔助::下載Instance數據(key = "ExpNeeded");
+            自定義::輔助::下載Instance數據(key = "Level");
+            自定義::輔助::下載Instance數據(key = "STR");
+            自定義::輔助::下載Instance數據(key = "CON");
+            自定義::輔助::下載Instance數據(key = "AGI");
+            自定義::輔助::下載Instance數據(key = "INT");
+            自定義::輔助::下載Instance數據(key = "PSY");
+            自定義::輔助::下載Instance數據(key = "Exp");
+            自定義::輔助::下載Instance數據(key = "HP");
+            自定義::更新角色屬性(actorId = "instance");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
     }
@@ -406,11 +406,11 @@ def 自定義::點擊提升能力泛型(type, typeZh) : block {
         比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
     }
     actions {
-        自定義::儲存物件整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存物件整數(key = type, value = ("{instance." + (type + "}+1")));
+        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
+        自定義::儲存Instance整數(key = type, value = ("{instance." + (type + "}+1")));
         角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
-        自定義::更新玩家屬性(actorId = "instance");
-        自定義::上載玩家數據();
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
     }
 }
 def 自定義::釋放技能泛型(weapon) : block {
@@ -420,11 +420,11 @@ def 自定義::釋放技能泛型(weapon) : block {
     }
     actions {
         if((weapon == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if((weapon == "custom_iron_sword")) {
             角色加減血(actorCode = "instance", value = "{instance.HP}/4");
@@ -446,15 +446,15 @@ block 點擊重置能力 {
         告示牌按鈕(varName = "instance", buttonId = "ResetPoint");
     }
     actions {
-        自定義::儲存物件整數(key = "Point", value = "{instance.Level}*2+3");
-        自定義::儲存物件整數(key = "STR", value = 0);
-        自定義::儲存物件整數(key = "CON", value = 0);
-        自定義::儲存物件整數(key = "AGI", value = 0);
-        自定義::儲存物件整數(key = "INT", value = 0);
-        自定義::儲存物件整數(key = "PSY", value = 0);
+        自定義::儲存Instance整數(key = "Point", value = "{instance.Level}*2+3");
+        自定義::儲存Instance整數(key = "STR", value = 0);
+        自定義::儲存Instance整數(key = "CON", value = 0);
+        自定義::儲存Instance整數(key = "AGI", value = 0);
+        自定義::儲存Instance整數(key = "INT", value = 0);
+        自定義::儲存Instance整數(key = "PSY", value = 0);
         角色說話(actorId = "instance", text = "成功重設能力點，目前有{instance.Point}點能力點");
-        自定義::更新玩家屬性(actorId = "instance");
-        自定義::上載玩家數據();
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
     }
 }
 block 提升經驗 {
@@ -463,8 +463,8 @@ block 提升經驗 {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemVarname = "deer_exp");
     }
     actions {
-        自定義::儲存物件整數(key = "Exp", value = ("{instance.Exp}" + 1));
-        自定義::上載玩家數據();
+        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}" + 1));
+        自定義::上載Instance數據();
     }
 }
 block 野獸死亡 {
@@ -494,13 +494,13 @@ block 等級提升 {
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
-        自定義::儲存物件整數(key = "Exp", value = "{instance.Exp}-{instance.ExpNeeded}");
-        自定義::儲存物件整數(key = "Level", value = ("{instance.Level}" + 1));
-        自定義::儲存物件整數(key = "Point", value = ("{instance.Point}" + 2));
-        自定義::儲存物件整數(key = "ExpNeeded", value = "{instance.Level}*2+4");
-        自定義::儲存物件整數(key = "HP", value = HP_FORMULA);
+        自定義::儲存Instance整數(key = "Exp", value = "{instance.Exp}-{instance.ExpNeeded}");
+        自定義::儲存Instance整數(key = "Level", value = ("{instance.Level}" + 1));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" + 2));
+        自定義::儲存Instance整數(key = "ExpNeeded", value = "{instance.Level}*2+4");
+        自定義::儲存Instance整數(key = "HP", value = 公式::Instance血量);
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        自定義::上載玩家數據();
+        自定義::上載Instance數據();
     }
 }
 block 回血 {
@@ -510,7 +510,7 @@ block 回血 {
         找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
     }
     actions {
-        角色加減血(actorCode = "instance", value = RECOVERY_FORMULA);
+        角色加減血(actorCode = "instance", value = 公式::Instance恢復量);
     }
 }
 block 查看面板 {
@@ -519,7 +519,7 @@ block 查看面板 {
         鍵盤按鍵(varName = "instance", key = "Z");
     }
     actions {
-        角色說話(actorId = "{instance.id}", text = STATUS_TEXT);
+        角色說話(actorId = "{instance.id}", text = 文字::Instance訊息);
     }
 }
 block 法杖攻擊 {
@@ -528,7 +528,7 @@ block 法杖攻擊 {
         角色發動攻擊(weapon = "custom_wind_staff", varName = "instance");
     }
     actions {
-        光彈特效(fromActor = "instance", toAngle = INSTANCE_ANGLE, scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE);
+        光彈特效(fromActor = "instance", toAngle = 公式::Instance角度, scale = "0.5", damage = 公式::風杖傷害);
     }
 }
 block 鐵劍攻擊 {
@@ -546,18 +546,18 @@ block 玩家初始化 {
         角色進入戰場(actor = ActorMatch(controller = "player"), varName = "instance");
     }
     actions {
-        自定義::儲存物件整數(key = "STR", value = 0);
-        自定義::儲存物件整數(key = "CON", value = 0);
-        自定義::儲存物件整數(key = "AGI", value = 0);
-        自定義::儲存物件整數(key = "INT", value = 0);
-        自定義::儲存物件整數(key = "PSY", value = 0);
-        自定義::儲存物件整數(key = "Level", value = 1);
-        自定義::儲存物件整數(key = "Point", value = 5);
-        自定義::儲存物件整數(key = "Exp", value = 0);
-        自定義::儲存物件整數(key = "ExpNeeded", value = 6);
-        自定義::儲存物件整數(key = "HP", value = 100);
-        取得玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
-        自定義::儲存物件整數(key = "completedInit", value = 1);
+        自定義::儲存Instance整數(key = "STR", value = 0);
+        自定義::儲存Instance整數(key = "CON", value = 0);
+        自定義::儲存Instance整數(key = "AGI", value = 0);
+        自定義::儲存Instance整數(key = "INT", value = 0);
+        自定義::儲存Instance整數(key = "PSY", value = 0);
+        自定義::儲存Instance整數(key = "Level", value = 1);
+        自定義::儲存Instance整數(key = "Point", value = 5);
+        自定義::儲存Instance整數(key = "Exp", value = 0);
+        自定義::儲存Instance整數(key = "ExpNeeded", value = 6);
+        自定義::儲存Instance整數(key = "HP", value = 100);
+        取得玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
+        自定義::儲存Instance整數(key = "completedInit", value = 1);
     }
 }
 block 遊戲初始化 {
@@ -591,17 +591,17 @@ block 遊戲初始化 {
 //-----------------------------//
 //--- AST After blockInling ---//
 //-----------------------------//
-const INSTANCE_ANGLE = "{instance.bodyRotation}*180/3.14";
-const WIND_STAFF_ENBLAST_DAMAGE = "{instance.INT} + {instance.PSY}/2 + 10";
-const HP_FORMULA = "98 + 10*{instance.CON} + 2*{instance.Level}";
-const RECOVERY_FORMULA = "1 + {instance.PSY} + {instance.CON}/2";
-const STATUS_TEXT = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
-const SPAWN_POINT = Point(10,10);
-const DEBUG_MODE = false;
-const USER_STATE_CATEGORY = "simple-rpg-test";
-__skydowLocs__ = SPAWN_POINT;
-__royalLocs__ = SPAWN_POINT;
-__thirdLocs__ = SPAWN_POINT;
+const 公式::Instance角度 = "{instance.bodyRotation}*180/3.14";
+const 公式::Instance血量 = "98 + 10*{instance.CON} + 2*{instance.Level}";
+const 公式::Instance恢復量 = "1 + {instance.PSY} + {instance.CON}/2";
+const 公式::風杖傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
+const 出生點 = Point(10,10);
+const 除錯模式 = false;
+const 狀態讀寫密鑰 = "simple-rpg-test";
+__skydowLocs__ = 出生點;
+__royalLocs__ = 出生點;
+__thirdLocs__ = 出生點;
 __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
@@ -610,11 +610,11 @@ __customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 def 自定義::除錯(text) : actions {
-    if(DEBUG_MODE) {
+    if(除錯模式) {
         print(type = "error", text = text);
     }
 }
-def 自定義::儲存物件整數(key, value) : actions {
+def 自定義::儲存Instance整數(key, value) : actions {
     儲存物件變數(key = key, object = "instance", type = "integer", value = value);
 }
 def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
@@ -636,31 +636,31 @@ def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
         print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
     }
 }
-def 自定義::更新玩家屬性(actorId) : actions {
+def 自定義::更新角色屬性(actorId) : actions {
     儲存物件變數(key = "HP", object = actorId, type = "integer", value = ("98 + 10*{" + (actorId + (".CON} + 2*{" + (actorId + ".Level}")))));
     設定角色屬性(actorId = actorId, attr = "maxHp", value = ("{" + (actorId + ".HP}")));
     設定角色屬性(actorId = actorId, attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + (actorId + ".AGI})")));
     設定角色屬性(actorId = actorId, attr = "weight", value = ("3*pow(0.97,{" + (actorId + ".AGI})")));
 }
-def 自定義::輔助::下載玩家數據(key) : actions {
-    取得玩家狀態(category = USER_STATE_CATEGORY, key = key, playerId = "{instance}", varName = ("{instance}_" + key));
-    自定義::儲存物件整數(key = key, value = ("{{instance}_" + (key + "}")));
+def 自定義::輔助::下載Instance數據(key) : actions {
+    取得玩家狀態(category = 狀態讀寫密鑰, key = key, playerId = "{instance}", varName = ("{instance}_" + key));
+    自定義::儲存Instance整數(key = key, value = ("{{instance}_" + (key + "}")));
 }
-def 自定義::輔助::上載玩家數據(key) : actions {
-    儲存玩家狀態(category = USER_STATE_CATEGORY, key = key, playerId = "{instance}", type = "string", value = ("{{instance}." + (key + "}")));
+def 自定義::輔助::上載Instance數據(key) : actions {
+    儲存玩家狀態(category = 狀態讀寫密鑰, key = key, playerId = "{instance}", type = "string", value = ("{{instance}." + (key + "}")));
 }
-def 自定義::上載玩家數據() : actions {
-    自定義::輔助::上載玩家數據(key = "Point");
-    自定義::輔助::上載玩家數據(key = "ExpNeeded");
-    自定義::輔助::上載玩家數據(key = "Level");
-    自定義::輔助::上載玩家數據(key = "STR");
-    自定義::輔助::上載玩家數據(key = "CON");
-    自定義::輔助::上載玩家數據(key = "AGI");
-    自定義::輔助::上載玩家數據(key = "INT");
-    自定義::輔助::上載玩家數據(key = "PSY");
-    自定義::輔助::上載玩家數據(key = "Exp");
-    自定義::輔助::上載玩家數據(key = "HP");
-    儲存玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+def 自定義::上載Instance數據() : actions {
+    自定義::輔助::上載Instance數據(key = "Point");
+    自定義::輔助::上載Instance數據(key = "ExpNeeded");
+    自定義::輔助::上載Instance數據(key = "Level");
+    自定義::輔助::上載Instance數據(key = "STR");
+    自定義::輔助::上載Instance數據(key = "CON");
+    自定義::輔助::上載Instance數據(key = "AGI");
+    自定義::輔助::上載Instance數據(key = "INT");
+    自定義::輔助::上載Instance數據(key = "PSY");
+    自定義::輔助::上載Instance數據(key = "Exp");
+    自定義::輔助::上載Instance數據(key = "HP");
+    儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
 }
 def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     __repeat__ = -1;
@@ -677,17 +677,17 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     actions {
         儲存物件變數(key = "completedInit", object = "instance", type = "string", value = 2);
         if(hasSavedBefore) {
-            自定義::輔助::下載玩家數據(key = "Point");
-            自定義::輔助::下載玩家數據(key = "ExpNeeded");
-            自定義::輔助::下載玩家數據(key = "Level");
-            自定義::輔助::下載玩家數據(key = "STR");
-            自定義::輔助::下載玩家數據(key = "CON");
-            自定義::輔助::下載玩家數據(key = "AGI");
-            自定義::輔助::下載玩家數據(key = "INT");
-            自定義::輔助::下載玩家數據(key = "PSY");
-            自定義::輔助::下載玩家數據(key = "Exp");
-            自定義::輔助::下載玩家數據(key = "HP");
-            自定義::更新玩家屬性(actorId = "instance");
+            自定義::輔助::下載Instance數據(key = "Point");
+            自定義::輔助::下載Instance數據(key = "ExpNeeded");
+            自定義::輔助::下載Instance數據(key = "Level");
+            自定義::輔助::下載Instance數據(key = "STR");
+            自定義::輔助::下載Instance數據(key = "CON");
+            自定義::輔助::下載Instance數據(key = "AGI");
+            自定義::輔助::下載Instance數據(key = "INT");
+            自定義::輔助::下載Instance數據(key = "PSY");
+            自定義::輔助::下載Instance數據(key = "Exp");
+            自定義::輔助::下載Instance數據(key = "HP");
+            自定義::更新角色屬性(actorId = "instance");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
     }
@@ -701,11 +701,11 @@ def 自定義::點擊提升能力泛型(type, typeZh) : block {
         比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
     }
     actions {
-        自定義::儲存物件整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存物件整數(key = type, value = ("{instance." + (type + "}+1")));
+        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
+        自定義::儲存Instance整數(key = type, value = ("{instance." + (type + "}+1")));
         角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
-        自定義::更新玩家屬性(actorId = "instance");
-        自定義::上載玩家數據();
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
     }
 }
 def 自定義::釋放技能泛型(weapon) : block {
@@ -715,11 +715,11 @@ def 自定義::釋放技能泛型(weapon) : block {
     }
     actions {
         if((weapon == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if((weapon == "custom_iron_sword")) {
             角色加減血(actorCode = "instance", value = "{instance.HP}/4");
@@ -741,17 +741,17 @@ block 下載老玩家數據 {
     actions {
         儲存物件變數(key = "completedInit", object = "instance", type = "string", value = 2);
         if(true) {
-            自定義::輔助::下載玩家數據(key = "Point");
-            自定義::輔助::下載玩家數據(key = "ExpNeeded");
-            自定義::輔助::下載玩家數據(key = "Level");
-            自定義::輔助::下載玩家數據(key = "STR");
-            自定義::輔助::下載玩家數據(key = "CON");
-            自定義::輔助::下載玩家數據(key = "AGI");
-            自定義::輔助::下載玩家數據(key = "INT");
-            自定義::輔助::下載玩家數據(key = "PSY");
-            自定義::輔助::下載玩家數據(key = "Exp");
-            自定義::輔助::下載玩家數據(key = "HP");
-            自定義::更新玩家屬性(actorId = "instance");
+            自定義::輔助::下載Instance數據(key = "Point");
+            自定義::輔助::下載Instance數據(key = "ExpNeeded");
+            自定義::輔助::下載Instance數據(key = "Level");
+            自定義::輔助::下載Instance數據(key = "STR");
+            自定義::輔助::下載Instance數據(key = "CON");
+            自定義::輔助::下載Instance數據(key = "AGI");
+            自定義::輔助::下載Instance數據(key = "INT");
+            自定義::輔助::下載Instance數據(key = "PSY");
+            自定義::輔助::下載Instance數據(key = "Exp");
+            自定義::輔助::下載Instance數據(key = "HP");
+            自定義::更新角色屬性(actorId = "instance");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
     }
@@ -771,17 +771,17 @@ block 下載新玩家數據 {
     actions {
         儲存物件變數(key = "completedInit", object = "instance", type = "string", value = 2);
         if(false) {
-            自定義::輔助::下載玩家數據(key = "Point");
-            自定義::輔助::下載玩家數據(key = "ExpNeeded");
-            自定義::輔助::下載玩家數據(key = "Level");
-            自定義::輔助::下載玩家數據(key = "STR");
-            自定義::輔助::下載玩家數據(key = "CON");
-            自定義::輔助::下載玩家數據(key = "AGI");
-            自定義::輔助::下載玩家數據(key = "INT");
-            自定義::輔助::下載玩家數據(key = "PSY");
-            自定義::輔助::下載玩家數據(key = "Exp");
-            自定義::輔助::下載玩家數據(key = "HP");
-            自定義::更新玩家屬性(actorId = "instance");
+            自定義::輔助::下載Instance數據(key = "Point");
+            自定義::輔助::下載Instance數據(key = "ExpNeeded");
+            自定義::輔助::下載Instance數據(key = "Level");
+            自定義::輔助::下載Instance數據(key = "STR");
+            自定義::輔助::下載Instance數據(key = "CON");
+            自定義::輔助::下載Instance數據(key = "AGI");
+            自定義::輔助::下載Instance數據(key = "INT");
+            自定義::輔助::下載Instance數據(key = "PSY");
+            自定義::輔助::下載Instance數據(key = "Exp");
+            自定義::輔助::下載Instance數據(key = "HP");
+            自定義::更新角色屬性(actorId = "instance");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
     }
@@ -795,11 +795,11 @@ block 點擊提升力量 {
         比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
     }
     actions {
-        自定義::儲存物件整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存物件整數(key = "STR", value = ("{instance." + ("STR" + "}+1")));
+        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
+        自定義::儲存Instance整數(key = "STR", value = ("{instance." + ("STR" + "}+1")));
         角色說話(actorId = "instance", text = ("成功提升一點" + ("力量" + "，尚餘{instance.Point}點能力點")));
-        自定義::更新玩家屬性(actorId = "instance");
-        自定義::上載玩家數據();
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
     }
 }
 block 點擊提升體質 {
@@ -811,11 +811,11 @@ block 點擊提升體質 {
         比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
     }
     actions {
-        自定義::儲存物件整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存物件整數(key = "CON", value = ("{instance." + ("CON" + "}+1")));
+        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
+        自定義::儲存Instance整數(key = "CON", value = ("{instance." + ("CON" + "}+1")));
         角色說話(actorId = "instance", text = ("成功提升一點" + ("體質" + "，尚餘{instance.Point}點能力點")));
-        自定義::更新玩家屬性(actorId = "instance");
-        自定義::上載玩家數據();
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
     }
 }
 block 點擊提升敏捷 {
@@ -827,11 +827,11 @@ block 點擊提升敏捷 {
         比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
     }
     actions {
-        自定義::儲存物件整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存物件整數(key = "AGI", value = ("{instance." + ("AGI" + "}+1")));
+        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
+        自定義::儲存Instance整數(key = "AGI", value = ("{instance." + ("AGI" + "}+1")));
         角色說話(actorId = "instance", text = ("成功提升一點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
-        自定義::更新玩家屬性(actorId = "instance");
-        自定義::上載玩家數據();
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
     }
 }
 block 點擊提升智慧 {
@@ -843,11 +843,11 @@ block 點擊提升智慧 {
         比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
     }
     actions {
-        自定義::儲存物件整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存物件整數(key = "INT", value = ("{instance." + ("INT" + "}+1")));
+        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
+        自定義::儲存Instance整數(key = "INT", value = ("{instance." + ("INT" + "}+1")));
         角色說話(actorId = "instance", text = ("成功提升一點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
-        自定義::更新玩家屬性(actorId = "instance");
-        自定義::上載玩家數據();
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
     }
 }
 block 點擊提升精神 {
@@ -859,11 +859,11 @@ block 點擊提升精神 {
         比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
     }
     actions {
-        自定義::儲存物件整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存物件整數(key = "PSY", value = ("{instance." + ("PSY" + "}+1")));
+        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
+        自定義::儲存Instance整數(key = "PSY", value = ("{instance." + ("PSY" + "}+1")));
         角色說話(actorId = "instance", text = ("成功提升一點" + ("精神" + "，尚餘{instance.Point}點能力點")));
-        自定義::更新玩家屬性(actorId = "instance");
-        自定義::上載玩家數據();
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
     }
 }
 block 釋放技能風杖 {
@@ -873,11 +873,11 @@ block 釋放技能風杖 {
     }
     actions {
         if(("custom_wind_staff" == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if(("custom_wind_staff" == "custom_iron_sword")) {
             角色加減血(actorCode = "instance", value = "{instance.HP}/4");
@@ -891,11 +891,11 @@ block 釋放技能鐵劍 {
     }
     actions {
         if(("custom_iron_sword" == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if(("custom_iron_sword" == "custom_iron_sword")) {
             角色加減血(actorCode = "instance", value = "{instance.HP}/4");
@@ -908,15 +908,15 @@ block 點擊重置能力 {
         告示牌按鈕(varName = "instance", buttonId = "ResetPoint");
     }
     actions {
-        自定義::儲存物件整數(key = "Point", value = "{instance.Level}*2+3");
-        自定義::儲存物件整數(key = "STR", value = 0);
-        自定義::儲存物件整數(key = "CON", value = 0);
-        自定義::儲存物件整數(key = "AGI", value = 0);
-        自定義::儲存物件整數(key = "INT", value = 0);
-        自定義::儲存物件整數(key = "PSY", value = 0);
+        自定義::儲存Instance整數(key = "Point", value = "{instance.Level}*2+3");
+        自定義::儲存Instance整數(key = "STR", value = 0);
+        自定義::儲存Instance整數(key = "CON", value = 0);
+        自定義::儲存Instance整數(key = "AGI", value = 0);
+        自定義::儲存Instance整數(key = "INT", value = 0);
+        自定義::儲存Instance整數(key = "PSY", value = 0);
         角色說話(actorId = "instance", text = "成功重設能力點，目前有{instance.Point}點能力點");
-        自定義::更新玩家屬性(actorId = "instance");
-        自定義::上載玩家數據();
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
     }
 }
 block 提升經驗 {
@@ -925,8 +925,8 @@ block 提升經驗 {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemVarname = "deer_exp");
     }
     actions {
-        自定義::儲存物件整數(key = "Exp", value = ("{instance.Exp}" + 1));
-        自定義::上載玩家數據();
+        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}" + 1));
+        自定義::上載Instance數據();
     }
 }
 block 野獸死亡 {
@@ -956,13 +956,13 @@ block 等級提升 {
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
-        自定義::儲存物件整數(key = "Exp", value = "{instance.Exp}-{instance.ExpNeeded}");
-        自定義::儲存物件整數(key = "Level", value = ("{instance.Level}" + 1));
-        自定義::儲存物件整數(key = "Point", value = ("{instance.Point}" + 2));
-        自定義::儲存物件整數(key = "ExpNeeded", value = "{instance.Level}*2+4");
-        自定義::儲存物件整數(key = "HP", value = HP_FORMULA);
+        自定義::儲存Instance整數(key = "Exp", value = "{instance.Exp}-{instance.ExpNeeded}");
+        自定義::儲存Instance整數(key = "Level", value = ("{instance.Level}" + 1));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" + 2));
+        自定義::儲存Instance整數(key = "ExpNeeded", value = "{instance.Level}*2+4");
+        自定義::儲存Instance整數(key = "HP", value = 公式::Instance血量);
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        自定義::上載玩家數據();
+        自定義::上載Instance數據();
     }
 }
 block 回血 {
@@ -972,7 +972,7 @@ block 回血 {
         找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
     }
     actions {
-        角色加減血(actorCode = "instance", value = RECOVERY_FORMULA);
+        角色加減血(actorCode = "instance", value = 公式::Instance恢復量);
     }
 }
 block 查看面板 {
@@ -981,7 +981,7 @@ block 查看面板 {
         鍵盤按鍵(varName = "instance", key = "Z");
     }
     actions {
-        角色說話(actorId = "{instance.id}", text = STATUS_TEXT);
+        角色說話(actorId = "{instance.id}", text = 文字::Instance訊息);
     }
 }
 block 法杖攻擊 {
@@ -990,7 +990,7 @@ block 法杖攻擊 {
         角色發動攻擊(weapon = "custom_wind_staff", varName = "instance");
     }
     actions {
-        光彈特效(fromActor = "instance", toAngle = INSTANCE_ANGLE, scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE);
+        光彈特效(fromActor = "instance", toAngle = 公式::Instance角度, scale = "0.5", damage = 公式::風杖傷害);
     }
 }
 block 鐵劍攻擊 {
@@ -1008,18 +1008,18 @@ block 玩家初始化 {
         角色進入戰場(actor = ActorMatch(controller = "player"), varName = "instance");
     }
     actions {
-        自定義::儲存物件整數(key = "STR", value = 0);
-        自定義::儲存物件整數(key = "CON", value = 0);
-        自定義::儲存物件整數(key = "AGI", value = 0);
-        自定義::儲存物件整數(key = "INT", value = 0);
-        自定義::儲存物件整數(key = "PSY", value = 0);
-        自定義::儲存物件整數(key = "Level", value = 1);
-        自定義::儲存物件整數(key = "Point", value = 5);
-        自定義::儲存物件整數(key = "Exp", value = 0);
-        自定義::儲存物件整數(key = "ExpNeeded", value = 6);
-        自定義::儲存物件整數(key = "HP", value = 100);
-        取得玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
-        自定義::儲存物件整數(key = "completedInit", value = 1);
+        自定義::儲存Instance整數(key = "STR", value = 0);
+        自定義::儲存Instance整數(key = "CON", value = 0);
+        自定義::儲存Instance整數(key = "AGI", value = 0);
+        自定義::儲存Instance整數(key = "INT", value = 0);
+        自定義::儲存Instance整數(key = "PSY", value = 0);
+        自定義::儲存Instance整數(key = "Level", value = 1);
+        自定義::儲存Instance整數(key = "Point", value = 5);
+        自定義::儲存Instance整數(key = "Exp", value = 0);
+        自定義::儲存Instance整數(key = "ExpNeeded", value = 6);
+        自定義::儲存Instance整數(key = "HP", value = 100);
+        取得玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
+        自定義::儲存Instance整數(key = "completedInit", value = 1);
     }
 }
 block 遊戲初始化 {
@@ -1053,17 +1053,17 @@ block 遊戲初始化 {
 //-----------------------------------//
 //--- AST After blockLegalization ---//
 //-----------------------------------//
-const INSTANCE_ANGLE = "{instance.bodyRotation}*180/3.14";
-const WIND_STAFF_ENBLAST_DAMAGE = "{instance.INT} + {instance.PSY}/2 + 10";
-const HP_FORMULA = "98 + 10*{instance.CON} + 2*{instance.Level}";
-const RECOVERY_FORMULA = "1 + {instance.PSY} + {instance.CON}/2";
-const STATUS_TEXT = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
-const SPAWN_POINT = Point(10,10);
-const DEBUG_MODE = false;
-const USER_STATE_CATEGORY = "simple-rpg-test";
-__skydowLocs__ = SPAWN_POINT;
-__royalLocs__ = SPAWN_POINT;
-__thirdLocs__ = SPAWN_POINT;
+const 公式::Instance角度 = "{instance.bodyRotation}*180/3.14";
+const 公式::Instance血量 = "98 + 10*{instance.CON} + 2*{instance.Level}";
+const 公式::Instance恢復量 = "1 + {instance.PSY} + {instance.CON}/2";
+const 公式::風杖傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
+const 出生點 = Point(10,10);
+const 除錯模式 = false;
+const 狀態讀寫密鑰 = "simple-rpg-test";
+__skydowLocs__ = 出生點;
+__royalLocs__ = 出生點;
+__thirdLocs__ = 出生點;
 __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
@@ -1072,11 +1072,11 @@ __customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 def 自定義::除錯(text) : actions {
-    if(DEBUG_MODE) {
+    if(除錯模式) {
         print(type = "error", text = text);
     }
 }
-def 自定義::儲存物件整數(key, value) : actions {
+def 自定義::儲存Instance整數(key, value) : actions {
     儲存物件變數(key = key, object = "instance", type = "integer", value = value);
 }
 def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
@@ -1098,31 +1098,31 @@ def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
         print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
     }
 }
-def 自定義::更新玩家屬性(actorId) : actions {
+def 自定義::更新角色屬性(actorId) : actions {
     儲存物件變數(key = "HP", object = actorId, type = "integer", value = ("98 + 10*{" + (actorId + (".CON} + 2*{" + (actorId + ".Level}")))));
     設定角色屬性(actorId = actorId, attr = "maxHp", value = ("{" + (actorId + ".HP}")));
     設定角色屬性(actorId = actorId, attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + (actorId + ".AGI})")));
     設定角色屬性(actorId = actorId, attr = "weight", value = ("3*pow(0.97,{" + (actorId + ".AGI})")));
 }
-def 自定義::輔助::下載玩家數據(key) : actions {
-    取得玩家狀態(category = USER_STATE_CATEGORY, key = key, playerId = "{instance}", varName = ("{instance}_" + key));
-    自定義::儲存物件整數(key = key, value = ("{{instance}_" + (key + "}")));
+def 自定義::輔助::下載Instance數據(key) : actions {
+    取得玩家狀態(category = 狀態讀寫密鑰, key = key, playerId = "{instance}", varName = ("{instance}_" + key));
+    自定義::儲存Instance整數(key = key, value = ("{{instance}_" + (key + "}")));
 }
-def 自定義::輔助::上載玩家數據(key) : actions {
-    儲存玩家狀態(category = USER_STATE_CATEGORY, key = key, playerId = "{instance}", type = "string", value = ("{{instance}." + (key + "}")));
+def 自定義::輔助::上載Instance數據(key) : actions {
+    儲存玩家狀態(category = 狀態讀寫密鑰, key = key, playerId = "{instance}", type = "string", value = ("{{instance}." + (key + "}")));
 }
-def 自定義::上載玩家數據() : actions {
-    自定義::輔助::上載玩家數據(key = "Point");
-    自定義::輔助::上載玩家數據(key = "ExpNeeded");
-    自定義::輔助::上載玩家數據(key = "Level");
-    自定義::輔助::上載玩家數據(key = "STR");
-    自定義::輔助::上載玩家數據(key = "CON");
-    自定義::輔助::上載玩家數據(key = "AGI");
-    自定義::輔助::上載玩家數據(key = "INT");
-    自定義::輔助::上載玩家數據(key = "PSY");
-    自定義::輔助::上載玩家數據(key = "Exp");
-    自定義::輔助::上載玩家數據(key = "HP");
-    儲存玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+def 自定義::上載Instance數據() : actions {
+    自定義::輔助::上載Instance數據(key = "Point");
+    自定義::輔助::上載Instance數據(key = "ExpNeeded");
+    自定義::輔助::上載Instance數據(key = "Level");
+    自定義::輔助::上載Instance數據(key = "STR");
+    自定義::輔助::上載Instance數據(key = "CON");
+    自定義::輔助::上載Instance數據(key = "AGI");
+    自定義::輔助::上載Instance數據(key = "INT");
+    自定義::輔助::上載Instance數據(key = "PSY");
+    自定義::輔助::上載Instance數據(key = "Exp");
+    自定義::輔助::上載Instance數據(key = "HP");
+    儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
 }
 def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     __repeat__ = -1;
@@ -1139,17 +1139,17 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     actions {
         儲存物件變數(key = "completedInit", object = "instance", type = "string", value = 2);
         if(hasSavedBefore) {
-            自定義::輔助::下載玩家數據(key = "Point");
-            自定義::輔助::下載玩家數據(key = "ExpNeeded");
-            自定義::輔助::下載玩家數據(key = "Level");
-            自定義::輔助::下載玩家數據(key = "STR");
-            自定義::輔助::下載玩家數據(key = "CON");
-            自定義::輔助::下載玩家數據(key = "AGI");
-            自定義::輔助::下載玩家數據(key = "INT");
-            自定義::輔助::下載玩家數據(key = "PSY");
-            自定義::輔助::下載玩家數據(key = "Exp");
-            自定義::輔助::下載玩家數據(key = "HP");
-            自定義::更新玩家屬性(actorId = "instance");
+            自定義::輔助::下載Instance數據(key = "Point");
+            自定義::輔助::下載Instance數據(key = "ExpNeeded");
+            自定義::輔助::下載Instance數據(key = "Level");
+            自定義::輔助::下載Instance數據(key = "STR");
+            自定義::輔助::下載Instance數據(key = "CON");
+            自定義::輔助::下載Instance數據(key = "AGI");
+            自定義::輔助::下載Instance數據(key = "INT");
+            自定義::輔助::下載Instance數據(key = "PSY");
+            自定義::輔助::下載Instance數據(key = "Exp");
+            自定義::輔助::下載Instance數據(key = "HP");
+            自定義::更新角色屬性(actorId = "instance");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
     }
@@ -1163,11 +1163,11 @@ def 自定義::點擊提升能力泛型(type, typeZh) : block {
         比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
     }
     actions {
-        自定義::儲存物件整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存物件整數(key = type, value = ("{instance." + (type + "}+1")));
+        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
+        自定義::儲存Instance整數(key = type, value = ("{instance." + (type + "}+1")));
         角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
-        自定義::更新玩家屬性(actorId = "instance");
-        自定義::上載玩家數據();
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
     }
 }
 def 自定義::釋放技能泛型(weapon) : block {
@@ -1177,11 +1177,11 @@ def 自定義::釋放技能泛型(weapon) : block {
     }
     actions {
         if((weapon == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if((weapon == "custom_iron_sword")) {
             角色加減血(actorCode = "instance", value = "{instance.HP}/4");
@@ -1203,17 +1203,17 @@ block 下載老玩家數據 {
     actions {
         儲存物件變數(key = "completedInit", object = "instance", type = "string", value = 2);
         if(true) {
-            自定義::輔助::下載玩家數據(key = "Point");
-            自定義::輔助::下載玩家數據(key = "ExpNeeded");
-            自定義::輔助::下載玩家數據(key = "Level");
-            自定義::輔助::下載玩家數據(key = "STR");
-            自定義::輔助::下載玩家數據(key = "CON");
-            自定義::輔助::下載玩家數據(key = "AGI");
-            自定義::輔助::下載玩家數據(key = "INT");
-            自定義::輔助::下載玩家數據(key = "PSY");
-            自定義::輔助::下載玩家數據(key = "Exp");
-            自定義::輔助::下載玩家數據(key = "HP");
-            自定義::更新玩家屬性(actorId = "instance");
+            自定義::輔助::下載Instance數據(key = "Point");
+            自定義::輔助::下載Instance數據(key = "ExpNeeded");
+            自定義::輔助::下載Instance數據(key = "Level");
+            自定義::輔助::下載Instance數據(key = "STR");
+            自定義::輔助::下載Instance數據(key = "CON");
+            自定義::輔助::下載Instance數據(key = "AGI");
+            自定義::輔助::下載Instance數據(key = "INT");
+            自定義::輔助::下載Instance數據(key = "PSY");
+            自定義::輔助::下載Instance數據(key = "Exp");
+            自定義::輔助::下載Instance數據(key = "HP");
+            自定義::更新角色屬性(actorId = "instance");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
     }
@@ -1235,17 +1235,17 @@ block 下載新玩家數據 {
     actions {
         儲存物件變數(key = "completedInit", object = "instance", type = "string", value = 2);
         if(false) {
-            自定義::輔助::下載玩家數據(key = "Point");
-            自定義::輔助::下載玩家數據(key = "ExpNeeded");
-            自定義::輔助::下載玩家數據(key = "Level");
-            自定義::輔助::下載玩家數據(key = "STR");
-            自定義::輔助::下載玩家數據(key = "CON");
-            自定義::輔助::下載玩家數據(key = "AGI");
-            自定義::輔助::下載玩家數據(key = "INT");
-            自定義::輔助::下載玩家數據(key = "PSY");
-            自定義::輔助::下載玩家數據(key = "Exp");
-            自定義::輔助::下載玩家數據(key = "HP");
-            自定義::更新玩家屬性(actorId = "instance");
+            自定義::輔助::下載Instance數據(key = "Point");
+            自定義::輔助::下載Instance數據(key = "ExpNeeded");
+            自定義::輔助::下載Instance數據(key = "Level");
+            自定義::輔助::下載Instance數據(key = "STR");
+            自定義::輔助::下載Instance數據(key = "CON");
+            自定義::輔助::下載Instance數據(key = "AGI");
+            自定義::輔助::下載Instance數據(key = "INT");
+            自定義::輔助::下載Instance數據(key = "PSY");
+            自定義::輔助::下載Instance數據(key = "Exp");
+            自定義::輔助::下載Instance數據(key = "HP");
+            自定義::更新角色屬性(actorId = "instance");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
     }
@@ -1261,11 +1261,11 @@ block 點擊提升力量 {
         比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
     }
     actions {
-        自定義::儲存物件整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存物件整數(key = "STR", value = ("{instance." + ("STR" + "}+1")));
+        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
+        自定義::儲存Instance整數(key = "STR", value = ("{instance." + ("STR" + "}+1")));
         角色說話(actorId = "instance", text = ("成功提升一點" + ("力量" + "，尚餘{instance.Point}點能力點")));
-        自定義::更新玩家屬性(actorId = "instance");
-        自定義::上載玩家數據();
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
     }
 }
 block 點擊提升體質 {
@@ -1277,11 +1277,11 @@ block 點擊提升體質 {
         比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
     }
     actions {
-        自定義::儲存物件整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存物件整數(key = "CON", value = ("{instance." + ("CON" + "}+1")));
+        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
+        自定義::儲存Instance整數(key = "CON", value = ("{instance." + ("CON" + "}+1")));
         角色說話(actorId = "instance", text = ("成功提升一點" + ("體質" + "，尚餘{instance.Point}點能力點")));
-        自定義::更新玩家屬性(actorId = "instance");
-        自定義::上載玩家數據();
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
     }
 }
 block 點擊提升敏捷 {
@@ -1293,11 +1293,11 @@ block 點擊提升敏捷 {
         比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
     }
     actions {
-        自定義::儲存物件整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存物件整數(key = "AGI", value = ("{instance." + ("AGI" + "}+1")));
+        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
+        自定義::儲存Instance整數(key = "AGI", value = ("{instance." + ("AGI" + "}+1")));
         角色說話(actorId = "instance", text = ("成功提升一點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
-        自定義::更新玩家屬性(actorId = "instance");
-        自定義::上載玩家數據();
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
     }
 }
 block 點擊提升智慧 {
@@ -1309,11 +1309,11 @@ block 點擊提升智慧 {
         比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
     }
     actions {
-        自定義::儲存物件整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存物件整數(key = "INT", value = ("{instance." + ("INT" + "}+1")));
+        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
+        自定義::儲存Instance整數(key = "INT", value = ("{instance." + ("INT" + "}+1")));
         角色說話(actorId = "instance", text = ("成功提升一點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
-        自定義::更新玩家屬性(actorId = "instance");
-        自定義::上載玩家數據();
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
     }
 }
 block 點擊提升精神 {
@@ -1325,11 +1325,11 @@ block 點擊提升精神 {
         比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
     }
     actions {
-        自定義::儲存物件整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存物件整數(key = "PSY", value = ("{instance." + ("PSY" + "}+1")));
+        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
+        自定義::儲存Instance整數(key = "PSY", value = ("{instance." + ("PSY" + "}+1")));
         角色說話(actorId = "instance", text = ("成功提升一點" + ("精神" + "，尚餘{instance.Point}點能力點")));
-        自定義::更新玩家屬性(actorId = "instance");
-        自定義::上載玩家數據();
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
     }
 }
 block 釋放技能風杖 {
@@ -1339,11 +1339,11 @@ block 釋放技能風杖 {
     }
     actions {
         if(("custom_wind_staff" == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if(("custom_wind_staff" == "custom_iron_sword")) {
             角色加減血(actorCode = "instance", value = "{instance.HP}/4");
@@ -1359,11 +1359,11 @@ block 釋放技能鐵劍 {
     }
     actions {
         if(("custom_iron_sword" == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if(("custom_iron_sword" == "custom_iron_sword")) {
             角色加減血(actorCode = "instance", value = "{instance.HP}/4");
@@ -1378,15 +1378,15 @@ block 點擊重置能力 {
         告示牌按鈕(varName = "instance", buttonId = "ResetPoint");
     }
     actions {
-        自定義::儲存物件整數(key = "Point", value = "{instance.Level}*2+3");
-        自定義::儲存物件整數(key = "STR", value = 0);
-        自定義::儲存物件整數(key = "CON", value = 0);
-        自定義::儲存物件整數(key = "AGI", value = 0);
-        自定義::儲存物件整數(key = "INT", value = 0);
-        自定義::儲存物件整數(key = "PSY", value = 0);
+        自定義::儲存Instance整數(key = "Point", value = "{instance.Level}*2+3");
+        自定義::儲存Instance整數(key = "STR", value = 0);
+        自定義::儲存Instance整數(key = "CON", value = 0);
+        自定義::儲存Instance整數(key = "AGI", value = 0);
+        自定義::儲存Instance整數(key = "INT", value = 0);
+        自定義::儲存Instance整數(key = "PSY", value = 0);
         角色說話(actorId = "instance", text = "成功重設能力點，目前有{instance.Point}點能力點");
-        自定義::更新玩家屬性(actorId = "instance");
-        自定義::上載玩家數據();
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
     }
     checks {
     }
@@ -1397,8 +1397,8 @@ block 提升經驗 {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemVarname = "deer_exp");
     }
     actions {
-        自定義::儲存物件整數(key = "Exp", value = ("{instance.Exp}" + 1));
-        自定義::上載玩家數據();
+        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}" + 1));
+        自定義::上載Instance數據();
     }
     checks {
     }
@@ -1434,13 +1434,13 @@ block 等級提升 {
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
-        自定義::儲存物件整數(key = "Exp", value = "{instance.Exp}-{instance.ExpNeeded}");
-        自定義::儲存物件整數(key = "Level", value = ("{instance.Level}" + 1));
-        自定義::儲存物件整數(key = "Point", value = ("{instance.Point}" + 2));
-        自定義::儲存物件整數(key = "ExpNeeded", value = "{instance.Level}*2+4");
-        自定義::儲存物件整數(key = "HP", value = HP_FORMULA);
+        自定義::儲存Instance整數(key = "Exp", value = "{instance.Exp}-{instance.ExpNeeded}");
+        自定義::儲存Instance整數(key = "Level", value = ("{instance.Level}" + 1));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" + 2));
+        自定義::儲存Instance整數(key = "ExpNeeded", value = "{instance.Level}*2+4");
+        自定義::儲存Instance整數(key = "HP", value = 公式::Instance血量);
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        自定義::上載玩家數據();
+        自定義::上載Instance數據();
     }
     triggers {
     }
@@ -1452,7 +1452,7 @@ block 回血 {
         找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
     }
     actions {
-        角色加減血(actorCode = "instance", value = RECOVERY_FORMULA);
+        角色加減血(actorCode = "instance", value = 公式::Instance恢復量);
     }
     triggers {
     }
@@ -1463,7 +1463,7 @@ block 查看面板 {
         鍵盤按鍵(varName = "instance", key = "Z");
     }
     actions {
-        角色說話(actorId = "{instance.id}", text = STATUS_TEXT);
+        角色說話(actorId = "{instance.id}", text = 文字::Instance訊息);
     }
     checks {
     }
@@ -1474,7 +1474,7 @@ block 法杖攻擊 {
         角色發動攻擊(weapon = "custom_wind_staff", varName = "instance");
     }
     actions {
-        光彈特效(fromActor = "instance", toAngle = INSTANCE_ANGLE, scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE);
+        光彈特效(fromActor = "instance", toAngle = 公式::Instance角度, scale = "0.5", damage = 公式::風杖傷害);
     }
     checks {
     }
@@ -1496,18 +1496,18 @@ block 玩家初始化 {
         角色進入戰場(actor = ActorMatch(controller = "player"), varName = "instance");
     }
     actions {
-        自定義::儲存物件整數(key = "STR", value = 0);
-        自定義::儲存物件整數(key = "CON", value = 0);
-        自定義::儲存物件整數(key = "AGI", value = 0);
-        自定義::儲存物件整數(key = "INT", value = 0);
-        自定義::儲存物件整數(key = "PSY", value = 0);
-        自定義::儲存物件整數(key = "Level", value = 1);
-        自定義::儲存物件整數(key = "Point", value = 5);
-        自定義::儲存物件整數(key = "Exp", value = 0);
-        自定義::儲存物件整數(key = "ExpNeeded", value = 6);
-        自定義::儲存物件整數(key = "HP", value = 100);
-        取得玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
-        自定義::儲存物件整數(key = "completedInit", value = 1);
+        自定義::儲存Instance整數(key = "STR", value = 0);
+        自定義::儲存Instance整數(key = "CON", value = 0);
+        自定義::儲存Instance整數(key = "AGI", value = 0);
+        自定義::儲存Instance整數(key = "INT", value = 0);
+        自定義::儲存Instance整數(key = "PSY", value = 0);
+        自定義::儲存Instance整數(key = "Level", value = 1);
+        自定義::儲存Instance整數(key = "Point", value = 5);
+        自定義::儲存Instance整數(key = "Exp", value = 0);
+        自定義::儲存Instance整數(key = "ExpNeeded", value = 6);
+        自定義::儲存Instance整數(key = "HP", value = 100);
+        取得玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
+        自定義::儲存Instance整數(key = "completedInit", value = 1);
     }
     checks {
     }
@@ -1547,17 +1547,17 @@ block 遊戲初始化 {
 //--------------------------------//
 //--- AST After functionInling ---//
 //--------------------------------//
-const INSTANCE_ANGLE = "{instance.bodyRotation}*180/3.14";
-const WIND_STAFF_ENBLAST_DAMAGE = "{instance.INT} + {instance.PSY}/2 + 10";
-const HP_FORMULA = "98 + 10*{instance.CON} + 2*{instance.Level}";
-const RECOVERY_FORMULA = "1 + {instance.PSY} + {instance.CON}/2";
-const STATUS_TEXT = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
-const SPAWN_POINT = Point(10,10);
-const DEBUG_MODE = false;
-const USER_STATE_CATEGORY = "simple-rpg-test";
-__skydowLocs__ = SPAWN_POINT;
-__royalLocs__ = SPAWN_POINT;
-__thirdLocs__ = SPAWN_POINT;
+const 公式::Instance角度 = "{instance.bodyRotation}*180/3.14";
+const 公式::Instance血量 = "98 + 10*{instance.CON} + 2*{instance.Level}";
+const 公式::Instance恢復量 = "1 + {instance.PSY} + {instance.CON}/2";
+const 公式::風杖傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
+const 出生點 = Point(10,10);
+const 除錯模式 = false;
+const 狀態讀寫密鑰 = "simple-rpg-test";
+__skydowLocs__ = 出生點;
+__royalLocs__ = 出生點;
+__thirdLocs__ = 出生點;
 __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
@@ -1580,25 +1580,25 @@ block 下載老玩家數據 {
     actions {
         儲存物件變數(key = "completedInit", object = "instance", type = "string", value = 2);
         if(true) {
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "Point", playerId = "{instance}", varName = ("{instance}_" + "Point"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", varName = ("{instance}_" + "Point"));
             儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{{instance}_" + ("Point" + "}")));
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "ExpNeeded", playerId = "{instance}", varName = ("{instance}_" + "ExpNeeded"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", varName = ("{instance}_" + "ExpNeeded"));
             儲存物件變數(key = "ExpNeeded", object = "instance", type = "integer", value = ("{{instance}_" + ("ExpNeeded" + "}")));
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "Level", playerId = "{instance}", varName = ("{instance}_" + "Level"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", varName = ("{instance}_" + "Level"));
             儲存物件變數(key = "Level", object = "instance", type = "integer", value = ("{{instance}_" + ("Level" + "}")));
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "STR", playerId = "{instance}", varName = ("{instance}_" + "STR"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "STR", playerId = "{instance}", varName = ("{instance}_" + "STR"));
             儲存物件變數(key = "STR", object = "instance", type = "integer", value = ("{{instance}_" + ("STR" + "}")));
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "CON", playerId = "{instance}", varName = ("{instance}_" + "CON"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "CON", playerId = "{instance}", varName = ("{instance}_" + "CON"));
             儲存物件變數(key = "CON", object = "instance", type = "integer", value = ("{{instance}_" + ("CON" + "}")));
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "AGI", playerId = "{instance}", varName = ("{instance}_" + "AGI"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "AGI", playerId = "{instance}", varName = ("{instance}_" + "AGI"));
             儲存物件變數(key = "AGI", object = "instance", type = "integer", value = ("{{instance}_" + ("AGI" + "}")));
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "INT", playerId = "{instance}", varName = ("{instance}_" + "INT"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "INT", playerId = "{instance}", varName = ("{instance}_" + "INT"));
             儲存物件變數(key = "INT", object = "instance", type = "integer", value = ("{{instance}_" + ("INT" + "}")));
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "PSY", playerId = "{instance}", varName = ("{instance}_" + "PSY"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "PSY", playerId = "{instance}", varName = ("{instance}_" + "PSY"));
             儲存物件變數(key = "PSY", object = "instance", type = "integer", value = ("{{instance}_" + ("PSY" + "}")));
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "Exp", playerId = "{instance}", varName = ("{instance}_" + "Exp"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "Exp", playerId = "{instance}", varName = ("{instance}_" + "Exp"));
             儲存物件變數(key = "Exp", object = "instance", type = "integer", value = ("{{instance}_" + ("Exp" + "}")));
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "HP", playerId = "{instance}", varName = ("{instance}_" + "HP"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "HP", playerId = "{instance}", varName = ("{instance}_" + "HP"));
             儲存物件變數(key = "HP", object = "instance", type = "integer", value = ("{{instance}_" + ("HP" + "}")));
             儲存物件變數(key = "HP", object = "instance", type = "integer", value = ("98 + 10*{" + ("instance" + (".CON} + 2*{" + ("instance" + ".Level}")))));
             設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
@@ -1625,25 +1625,25 @@ block 下載新玩家數據 {
     actions {
         儲存物件變數(key = "completedInit", object = "instance", type = "string", value = 2);
         if(false) {
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "Point", playerId = "{instance}", varName = ("{instance}_" + "Point"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", varName = ("{instance}_" + "Point"));
             儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{{instance}_" + ("Point" + "}")));
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "ExpNeeded", playerId = "{instance}", varName = ("{instance}_" + "ExpNeeded"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", varName = ("{instance}_" + "ExpNeeded"));
             儲存物件變數(key = "ExpNeeded", object = "instance", type = "integer", value = ("{{instance}_" + ("ExpNeeded" + "}")));
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "Level", playerId = "{instance}", varName = ("{instance}_" + "Level"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", varName = ("{instance}_" + "Level"));
             儲存物件變數(key = "Level", object = "instance", type = "integer", value = ("{{instance}_" + ("Level" + "}")));
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "STR", playerId = "{instance}", varName = ("{instance}_" + "STR"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "STR", playerId = "{instance}", varName = ("{instance}_" + "STR"));
             儲存物件變數(key = "STR", object = "instance", type = "integer", value = ("{{instance}_" + ("STR" + "}")));
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "CON", playerId = "{instance}", varName = ("{instance}_" + "CON"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "CON", playerId = "{instance}", varName = ("{instance}_" + "CON"));
             儲存物件變數(key = "CON", object = "instance", type = "integer", value = ("{{instance}_" + ("CON" + "}")));
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "AGI", playerId = "{instance}", varName = ("{instance}_" + "AGI"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "AGI", playerId = "{instance}", varName = ("{instance}_" + "AGI"));
             儲存物件變數(key = "AGI", object = "instance", type = "integer", value = ("{{instance}_" + ("AGI" + "}")));
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "INT", playerId = "{instance}", varName = ("{instance}_" + "INT"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "INT", playerId = "{instance}", varName = ("{instance}_" + "INT"));
             儲存物件變數(key = "INT", object = "instance", type = "integer", value = ("{{instance}_" + ("INT" + "}")));
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "PSY", playerId = "{instance}", varName = ("{instance}_" + "PSY"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "PSY", playerId = "{instance}", varName = ("{instance}_" + "PSY"));
             儲存物件變數(key = "PSY", object = "instance", type = "integer", value = ("{{instance}_" + ("PSY" + "}")));
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "Exp", playerId = "{instance}", varName = ("{instance}_" + "Exp"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "Exp", playerId = "{instance}", varName = ("{instance}_" + "Exp"));
             儲存物件變數(key = "Exp", object = "instance", type = "integer", value = ("{{instance}_" + ("Exp" + "}")));
-            取得玩家狀態(category = USER_STATE_CATEGORY, key = "HP", playerId = "{instance}", varName = ("{instance}_" + "HP"));
+            取得玩家狀態(category = 狀態讀寫密鑰, key = "HP", playerId = "{instance}", varName = ("{instance}_" + "HP"));
             儲存物件變數(key = "HP", object = "instance", type = "integer", value = ("{{instance}_" + ("HP" + "}")));
             儲存物件變數(key = "HP", object = "instance", type = "integer", value = ("98 + 10*{" + ("instance" + (".CON} + 2*{" + ("instance" + ".Level}")))));
             設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
@@ -1671,17 +1671,17 @@ block 點擊提升力量 {
         設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
         設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + ("instance" + ".AGI})")));
         設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
 block 點擊提升體質 {
@@ -1700,17 +1700,17 @@ block 點擊提升體質 {
         設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
         設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + ("instance" + ".AGI})")));
         設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
 block 點擊提升敏捷 {
@@ -1729,17 +1729,17 @@ block 點擊提升敏捷 {
         設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
         設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + ("instance" + ".AGI})")));
         設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
 block 點擊提升智慧 {
@@ -1758,17 +1758,17 @@ block 點擊提升智慧 {
         設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
         設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + ("instance" + ".AGI})")));
         設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
 block 點擊提升精神 {
@@ -1787,17 +1787,17 @@ block 點擊提升精神 {
         設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
         設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + ("instance" + ".AGI})")));
         設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
 block 釋放技能風杖 {
@@ -1807,11 +1807,11 @@ block 釋放技能風杖 {
     }
     actions {
         if(("custom_wind_staff" == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if(("custom_wind_staff" == "custom_iron_sword")) {
             角色加減血(actorCode = "instance", value = "{instance.HP}/4");
@@ -1827,11 +1827,11 @@ block 釋放技能鐵劍 {
     }
     actions {
         if(("custom_iron_sword" == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = INSTANCE_ANGLE);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE, toAngle = (INSTANCE_ANGLE - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if(("custom_iron_sword" == "custom_iron_sword")) {
             角色加減血(actorCode = "instance", value = "{instance.HP}/4");
@@ -1857,17 +1857,17 @@ block 點擊重置能力 {
         設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
         設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + ("instance" + ".AGI})")));
         設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
     checks {
     }
@@ -1879,17 +1879,17 @@ block 提升經驗 {
     }
     actions {
         儲存物件變數(key = "Exp", object = "instance", type = "integer", value = ("{instance.Exp}" + 1));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
     checks {
     }
@@ -1929,19 +1929,19 @@ block 等級提升 {
         儲存物件變數(key = "Level", object = "instance", type = "integer", value = ("{instance.Level}" + 1));
         儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" + 2));
         儲存物件變數(key = "ExpNeeded", object = "instance", type = "integer", value = "{instance.Level}*2+4");
-        儲存物件變數(key = "HP", object = "instance", type = "integer", value = HP_FORMULA);
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = 公式::Instance血量);
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
-        儲存玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
     triggers {
     }
@@ -1953,7 +1953,7 @@ block 回血 {
         找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
     }
     actions {
-        角色加減血(actorCode = "instance", value = RECOVERY_FORMULA);
+        角色加減血(actorCode = "instance", value = 公式::Instance恢復量);
     }
     triggers {
     }
@@ -1964,7 +1964,7 @@ block 查看面板 {
         鍵盤按鍵(varName = "instance", key = "Z");
     }
     actions {
-        角色說話(actorId = "{instance.id}", text = STATUS_TEXT);
+        角色說話(actorId = "{instance.id}", text = 文字::Instance訊息);
     }
     checks {
     }
@@ -1975,7 +1975,7 @@ block 法杖攻擊 {
         角色發動攻擊(weapon = "custom_wind_staff", varName = "instance");
     }
     actions {
-        光彈特效(fromActor = "instance", toAngle = INSTANCE_ANGLE, scale = "0.5", damage = WIND_STAFF_ENBLAST_DAMAGE);
+        光彈特效(fromActor = "instance", toAngle = 公式::Instance角度, scale = "0.5", damage = 公式::風杖傷害);
     }
     checks {
     }
@@ -2007,7 +2007,7 @@ block 玩家初始化 {
         儲存物件變數(key = "Exp", object = "instance", type = "integer", value = 0);
         儲存物件變數(key = "ExpNeeded", object = "instance", type = "integer", value = 6);
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = 100);
-        取得玩家狀態(category = USER_STATE_CATEGORY, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
+        取得玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
         儲存物件變數(key = "completedInit", object = "instance", type = "integer", value = 1);
     }
     checks {

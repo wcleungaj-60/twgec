@@ -78,6 +78,13 @@
                         "ckey": "{instance.id}.AGI",
                         "key": "temp"
                     }
+                },
+                {
+                    "type": "GetCookie",
+                    "data": {
+                        "ckey": "{instance.id}.STR",
+                        "key": "temp"
+                    }
                 }
             ],
             "checks": [],

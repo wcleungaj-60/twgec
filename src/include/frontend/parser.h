@@ -11,7 +11,7 @@ class Parser {
 private:
   std::queue<Token> tokens;
   Token getTokenWithIndex(int index);
-  bool consume(TokenType type, bool errorThrowing);
+  bool consume(TokenType type, bool errorThrowing = true);
   std::unique_ptr<BlockNode> parseBlock();
   std::unique_ptr<BlockBodyNode> parseBlockBody();
   std::unique_ptr<MetadataNode> parseMetadata();
@@ -35,7 +35,7 @@ private:
   std::unique_ptr<ExpressionNode> parseExpPrimivite();
   std::unique_ptr<ValueNode> parseValue();
   // Helper function
-  std::string parseScopedIdentifier();
+  std::string parseScopedIdentifier(bool errorThrowing = true);
 
 public:
   Parser(const std::vector<Token> &inputTokens);

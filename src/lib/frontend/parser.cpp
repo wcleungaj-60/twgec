@@ -4,7 +4,7 @@
 #include <queue>
 #include <vector>
 
-bool Parser::consume(TokenType type, bool errorThrowing = true) {
+bool Parser::consume(TokenType type, bool errorThrowing) {
   if (!tokens.empty() && tokens.front().type == type) {
     tokens.pop();
     return true;
@@ -535,8 +535,9 @@ std::unique_ptr<ValueNode> Parser::parseValue() {
         value.substr(1, value.length() - 2), loc);
   if (consume(TokenType::INT, false))
     return std::make_unique<IntValueNode>(std::stoi(value), loc);
-  if (consume(TokenType::IDENTIFIER, false))
-    return std::make_unique<VariableValueNode>(value, loc);
+  std::string variableName = parseScopedIdentifier(false);
+  if (variableName != "")
+    return std::make_unique<VariableValueNode>(variableName, loc);
   if (consume(TokenType::TRUE, false))
     return std::make_unique<BoolValueNode>(true, loc);
   if (consume(TokenType::FALSE, false))
@@ -595,9 +596,9 @@ std::unique_ptr<ValueNode> Parser::parseValue() {
   return nullptr;
 }
 
-std::string Parser::parseScopedIdentifier() {
+std::string Parser::parseScopedIdentifier(bool errorThrowing) {
   std::string id = tokens.front().value;
-  if (!consume(TokenType::IDENTIFIER))
+  if (!consume(TokenType::IDENTIFIER, errorThrowing))
     return "";
   while (tokens.front().type == TokenType::SCOPE) {
     consume(TokenType::SCOPE);

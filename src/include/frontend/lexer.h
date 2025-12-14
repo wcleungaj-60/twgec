@@ -6,15 +6,6 @@
 #include <string>
 #include <vector>
 
-#define LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword, type)              \
-  if ((input).substr((pos), (keyword).length()) == (keyword) &&                \
-      !isalpha((input)[(pos) + (keyword).length()])) {                         \
-    int startColumn = Lexer::column;                                           \
-    Lexer::column += (keyword).length();                                       \
-    (pos) += (keyword).length();                                               \
-    return Token(type, Lexer::line, startColumn, keyword);                     \
-  }
-
 class Lexer {
 public:
   Lexer(const std::string &input) : input(input), pos(0) {}
@@ -30,12 +21,13 @@ private:
 
   Token nextToken();
   Token metadataToken();
-  Token chineseToken();
   Token commentToken();
   Token integerToken();
   Token stringToken();
   Token identifierToken();
+  Token keywordToken(std::string keyword);
 
+  inline bool matchKeyword(std::string keyword);
   inline bool next(char character, unsigned offset = 1);
 };
 

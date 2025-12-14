@@ -27,7 +27,8 @@ std::string getDefaultMapItem(codegen::DefaultMap defaultMap,
   std::string instrName = defaultMap.functionName;
   std::string ret;
   assert(instrName.size() <= padding);
-  ret += inden(4) + instrName + inden(padding - instrName.size()) + nameZh + "\n";
+  ret +=
+      inden(4) + instrName + inden(padding - instrName.size()) + nameZh + "\n";
   ret += inden(7);
   for (auto param : defaultMapParam) {
     std::ostringstream oss;
@@ -98,6 +99,7 @@ std::string getBlockMetadata() {
   return ret;
 }
 
+// TODO: Sync up codegen.h and help.h
 std::string getActions() {
   std::string ret = "Supported Actions:\n";
   ret += getDefaultMapItem(ActionActorAttributes::defaultMap, "設定角色屬性");
@@ -110,20 +112,21 @@ std::string getActions() {
   ret += getDefaultMapItem(ActionAddStuff::defaultMap, "新增武器道具");
   ret += getDefaultMapItem(ActionDeltaHp::defaultMap, "角色加減血");
   ret += getDefaultMapItem(ActionEnblastEffect::defaultMap, "光彈特效");
-  ret += getDefaultMapItem(ActionGetCookie::defaultMap, "取得數位存根");
+  ret += getDefaultMapItem(ActionGetCookie::defaultMap, "取得Cookies");
   ret += getDefaultMapItem(ActionGetUserState::defaultMap, "取得玩家狀態");
   ret += getDefaultMapItem(ActionMapWarp::defaultMap, "設定地圖傳送點");
   ret += getDefaultMapItem(ActionMissionComplete::defaultMap, "任務完成");
   ret += getDefaultMapItem(ActionLongBo::defaultMap, "龍波");
   // `print` is used in the front-end instead of `console`
   ret += getDefaultMapItem(ActionConsole::defaultMap, "控制台輸出");
-  ret += getDefaultMapItem(ActionSetCookie::defaultMap, "儲存數位存根");
+  ret += getDefaultMapItem(ActionSetCookie::defaultMap, "儲存Cookies");
   ret += getDefaultMapItem(ActionSetGlobal::defaultMap, "儲存全域變數");
   ret += getDefaultMapItem(ActionSetObjectVar::defaultMap, "儲存物件變數");
   ret += getDefaultMapItem(ActionSetUserState::defaultMap, "儲存玩家狀態");
   ret += getDefaultMapItem(ActionSetWeaponAbility::defaultMap, "設定武器技能");
   ret += getDefaultMapItem(ActionWait::defaultMap, "等待");
-  ret += getDefaultMapItem(ActionEnhFFPlayerMousePosition::defaultMap, "玩家滑鼠座標");
+  ret += getDefaultMapItem(ActionEnhFFPlayerMousePosition::defaultMap,
+                           "玩家滑鼠座標");
   return ret;
 }
 

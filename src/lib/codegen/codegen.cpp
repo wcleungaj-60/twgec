@@ -131,7 +131,7 @@ void CodeGenerator::codegenAction(std::ofstream &of,
   CODEGEN_ACTION("enblastEffect", EnblastEffect);
   CODEGEN_ACTION("光彈特效", EnblastEffect);
   CODEGEN_ACTION("getCookie", GetCookie);
-  CODEGEN_ACTION("取得數位存根", GetCookie);
+  CODEGEN_ACTION("取得Cookies", GetCookie);
   CODEGEN_ACTION("getUserState", GetUserState);
   CODEGEN_ACTION("取得玩家狀態", GetUserState);
   CODEGEN_ACTION("mapWarp", MapWarp);
@@ -143,7 +143,7 @@ void CodeGenerator::codegenAction(std::ofstream &of,
   CODEGEN_ACTION("print", Console);
   CODEGEN_ACTION("控制台輸出", Console);
   CODEGEN_ACTION("setCookie", SetCookie);
-  CODEGEN_ACTION("儲存數位存根", SetCookie);
+  CODEGEN_ACTION("儲存Cookies", SetCookie);
   CODEGEN_ACTION("setGlobal", SetGlobal);
   CODEGEN_ACTION("儲存全域變數", SetGlobal);
   CODEGEN_ACTION("setObjectVar", SetObjectVar);

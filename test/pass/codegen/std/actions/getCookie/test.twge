@@ -1,5 +1,6 @@
 block init {
     actions {
         getCookie(cookies = "{instance.id}.AGI", varName = "temp");
+        取得Cookies(cookies = "{instance.id}.STR", varName = "temp");
     }
 }

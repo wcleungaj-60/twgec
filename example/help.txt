@@ -96,7 +96,7 @@ Supported Actions:
         actorCode: string, casterCode: string, type: string, value: int|string
     enblastEffect               光彈特效
         damage: int|string, fromActor: string, fromType: string, scale: int|string, speed: int|string, toAngle: int|string, toType: string
-    getCookie                   取得數位存根
+    getCookie                   取得Cookies
         cookies: string, varName: string
     getUserState                取得玩家狀態
         category: string, key: string, playerId: string, varName: string
@@ -108,7 +108,7 @@ Supported Actions:
         actorCode: string
     print                       控制台輸出
         text: string, type: string
-    setCookie                   儲存數位存根
+    setCookie                   儲存Cookies
         cookies: string, playerId: string, type: string, value: string
     setGlobal                   儲存全域變數
         key: string, type: string, value: int|string

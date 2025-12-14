@@ -1,5 +1,11 @@
 #include "frontend/lexer.h"
 #include <algorithm>
+#include <map>
+
+#define LEXER_MATCH_KEYWORD_AND_RETURN(keyword)                                \
+  else if (matchKeyword(keyword)) {                                            \
+    return keywordToken(keyword);                                              \
+  }
 
 namespace keyword {
 std::string _true = "true";
@@ -17,7 +23,34 @@ std::string in = "in";
 std::string Point = "Point";
 std::string ActorMatch = "ActorMatch";
 std::string CustomWeapon = "CustomWeapon";
+
+const std::map<std::string, TokenType> initMap = {
+    {_true, TokenType::TRUE},
+    {_false, TokenType::FALSE},
+    {block, TokenType::BLOCK},
+    {actions, TokenType::ACTIONS},
+    {triggers, TokenType::TRIGGERS},
+    {checks, TokenType::CHECKS},
+    {def, TokenType::DEF},
+    {_const, TokenType::CONST},
+    {_if, TokenType::IF},
+    {_else, TokenType::ELSE},
+    {_for, TokenType::FOR},
+    {in, TokenType::IN},
+    {Point, TokenType::POINT},
+    {ActorMatch, TokenType::ACTOR_MATCH},
+    {CustomWeapon, TokenType::CUSTOM_WEAPON},
+};
 } // namespace keyword
+
+// Helper Function
+inline bool isValidIdentifierLeadingCharacter(char c) {
+  return isalpha(c) || c == '_' || (c & 0x80);
+}
+
+inline bool isValidIdentifierCharacter(char c) {
+  return isalnum(c) || c == '_' || (c & 0x80);
+}
 
 int Lexer::line = 1;
 int Lexer::column = 1;
@@ -189,69 +222,36 @@ Token Lexer::nextToken() {
       Lexer::column++;
       pos++;
       return Token(TokenType::MOD, Lexer::line, Lexer::column - 1, "%");
-    } else if (current == '_') {
-      // TODO: Support `_` leading identifier
+    } else if (current == '_' && next('_')) {
       return metadataToken();
-    } else if (current & 0x80) {
-      // leading one means multibyte character
-      return chineseToken();
     } else if (std::isdigit(current)) {
+      // TODO: Support Float
       return integerToken();
-    } else if (std::isalpha(current)) {
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_true,
-                                     TokenType::TRUE);
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_false,
-                                     TokenType::FALSE);
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::actions,
-                                     TokenType::ACTIONS);
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::block,
-                                     TokenType::BLOCK);
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::checks,
-                                     TokenType::CHECKS);
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::triggers,
-                                     TokenType::TRIGGERS);
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::def, TokenType::DEF);
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_const,
-                                     TokenType::CONST);
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_if, TokenType::IF);
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_else,
-                                     TokenType::ELSE);
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::_for, TokenType::FOR);
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::in, TokenType::IN);
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::Point,
-                                     TokenType::POINT);
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::ActorMatch,
-                                     TokenType::ACTOR_MATCH);
-      LEXER_MATCH_KEYWORD_AND_RETURN(input, pos, keyword::CustomWeapon,
-                                     TokenType::CUSTOM_WEAPON);
+    }
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::_true)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::_false)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::actions)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::block)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::checks)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::triggers)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::def)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::_const)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::_if)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::_else)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::_for)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::in)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::Point)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::ActorMatch)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::CustomWeapon)
+    else if (isValidIdentifierLeadingCharacter(current)) {
       return identifierToken();
-    } else {
+    }
+    else {
       return Token(TokenType::UNKNOWN, Lexer::line, Lexer::column++,
                    std::string(1, input[pos++]));
     }
   }
   return Token(TokenType::END, Lexer::line, Lexer::column - 1);
-}
-
-Token Lexer::chineseToken() {
-  int startColumn = column;
-  size_t start = pos;
-  while (input[pos] & 0x80) {
-    Lexer::column++;
-    if ((input[pos] & 0xE0) == 0xC0)
-      pos += 2; // leading bits are 110
-    else if ((input[pos] & 0xF0) == 0xE0)
-      pos += 3; // leading bits are 1110
-    else if ((input[pos] & 0xF8) == 0xF0)
-      pos += 4; // leading bits are 11110
-    else
-      // TODO: Support multi-byte and single-byte mixed case
-      // for example: "讀取Cookies"
-      return Token(TokenType::UNKNOWN, Lexer::line, Lexer::column++,
-                   std::string(1, input[pos++]));
-  }
-  return Token(TokenType::IDENTIFIER, Lexer::line, startColumn,
-               input.substr(start, pos - start));
 }
 
 Token Lexer::metadataToken() {
@@ -260,7 +260,7 @@ Token Lexer::metadataToken() {
   if (pos + 1 >= input.length() || input[pos++] != '_' || input[pos++] != '_') {
     column += 3;
     return Token(TokenType::UNKNOWN, Lexer::line, startColumn,
-                 std::string(1, input[pos++]));
+                 input.substr(start, (pos++) - start));
   }
   column += 2;
   while (pos < input.length() && (isalnum(input[pos]) && input[pos] != '_')) {
@@ -270,7 +270,7 @@ Token Lexer::metadataToken() {
   if (pos + 1 >= input.length() || input[pos++] != '_' || input[pos++] != '_') {
     column += 3;
     return Token(TokenType::UNKNOWN, Lexer::line, startColumn,
-                 std::string(1, input[pos++]));
+                 input.substr(start, (pos++) - start));
   }
   column += 2;
   return Token(TokenType::METADATA, Lexer::line, startColumn,
@@ -297,9 +297,26 @@ Token Lexer::stringToken() {
 Token Lexer::identifierToken() {
   size_t start = pos;
   int startColumn = column;
-  while (pos < input.length() && (isalnum(input[pos]) || input[pos] == '_')) {
+  while (pos < input.length() && isValidIdentifierCharacter(input[pos])) {
     column++;
-    pos++;
+    bool isValid = true;
+    if ((isalnum(input[pos]) || input[pos] == '_')) {
+      pos++;
+    } else if (input[pos] & 0x80) {
+      if ((input[pos] & 0xE0) == 0xC0)
+        pos += 2; // leading bits are 110
+      else if ((input[pos] & 0xF0) == 0xE0)
+        pos += 3; // leading bits are 1110
+      else if ((input[pos] & 0xF8) == 0xF0)
+        pos += 4; // leading bits are 11110
+      else
+        isValid = false;
+    } else {
+      isValid = false;
+    }
+    if (!isValid)
+      return Token(TokenType::UNKNOWN, Lexer::line, Lexer::column++,
+                   input.substr(start, (pos++) - start));
   }
   return Token(TokenType::IDENTIFIER, Lexer::line, startColumn,
                input.substr(start, pos - start));
@@ -324,6 +341,19 @@ Token Lexer::commentToken() {
     column++;
   return Token(TokenType::COMMENT, Lexer::line, startColumn,
                input.substr(start, pos - start));
+}
+
+Token Lexer::keywordToken(std::string keyword) {
+  int startColumn = Lexer::column;
+  Lexer::column += (keyword).length();
+  (pos) += (keyword).length();
+  return Token(keyword::initMap.at(keyword), Lexer::line, startColumn, keyword);
+}
+
+inline bool Lexer::matchKeyword(std::string keyword) {
+  unsigned len = keyword.length();
+  return pos + len < input.length() && input.substr(pos, len) == keyword &&
+         !isValidIdentifierCharacter(input[pos + len]);
 }
 
 inline bool Lexer::next(char character, unsigned offset) {
