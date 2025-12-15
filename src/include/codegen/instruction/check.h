@@ -2,24 +2,35 @@
 #define CODEGEN_CHECK_H
 
 #include "codegen.h"
-#include "utils/defaultMap.h"
+#include "instruction.h"
 
 namespace codegen {
 namespace check {
 
-#define REGISTER_CODE_GEN_CHECK(name)                                          \
-  class Check##name {                                                          \
-  public:                                                                      \
-    static DefaultMap defaultMap;                                              \
-    static void method(std::ofstream &of,                                      \
-                       std::unique_ptr<ParamAppsNode> &check,                  \
-                       UserDefinedMetadata userDefinedMeta);                   \
-  };
-
-REGISTER_CODE_GEN_CHECK(ActorCount);
-REGISTER_CODE_GEN_CHECK(ForEachActor);
-REGISTER_CODE_GEN_CHECK(String);
-REGISTER_CODE_GEN_CHECK(Number);
+class CheckActorCount {
+public:
+  static void method(std ::ofstream &of, std ::unique_ptr<ParamAppsNode> &check,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+class CheckForEachActor {
+public:
+  static void method(std ::ofstream &of, std ::unique_ptr<ParamAppsNode> &check,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+class CheckString {
+public:
+  static void method(std ::ofstream &of, std ::unique_ptr<ParamAppsNode> &check,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+class CheckNumber {
+public:
+  static void method(std ::ofstream &of, std ::unique_ptr<ParamAppsNode> &check,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
 
 } // namespace check
 } // namespace codegen

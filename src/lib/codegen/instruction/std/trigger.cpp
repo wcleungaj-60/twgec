@@ -1,96 +1,26 @@
 #include "codegen/instruction/trigger.h"
 #include "keyword.h"
+#include "utils/defaultMap.h"
 #include "utils/formatter.h"
 #include <fstream>
-#include <map>
 #include <memory>
 
 using namespace codegen;
 using namespace formatter;
 using namespace keyword;
 
-DefaultMap trigger::TriggerActorAdded::defaultMap = DefaultMap(
-    {
-        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
-        {"varName", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "actorAdded");
-
-DefaultMap trigger::TriggerActorDead::defaultMap = DefaultMap(
-    {
-        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
-        {"varName", {AST_STRING, CODEGEN_STRING, ""}},
-        {"hitterVarName", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "actorDead");
-
-DefaultMap trigger::TriggerActorFire::defaultMap = DefaultMap(
-    {
-        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
-        {"varName", {AST_STRING, CODEGEN_STRING, ""}},
-        {"weapon", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "actorFire");
-
-DefaultMap trigger::TriggerActorHit::defaultMap = DefaultMap(
-    {
-        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
-        {"hitter", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
-        {"actorVarName", {AST_STRING, CODEGEN_STRING, ""}},
-        {"hitterVarName", {AST_STRING, CODEGEN_STRING, ""}},
-        {"damageValueVarName", {AST_STRING, CODEGEN_STRING, ""}},
-        {"weapon", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "actorHit");
-
-DefaultMap trigger::TriggerClickButton::defaultMap = DefaultMap(
-    {
-        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
-        {"varName", {AST_STRING, CODEGEN_STRING, ""}},
-        {"buttonId", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "clickButton");
-
-DefaultMap trigger::TriggerKeyboardPressed::defaultMap = DefaultMap(
-    {
-        {"actorId", {AST_STRING, CODEGEN_STRING, "*"}},
-        {"varName", {AST_STRING, CODEGEN_STRING, ""}},
-        {"timing", {AST_STRING, CODEGEN_STRING, ""}},
-        {"key", {AST_STRING, CODEGEN_INT, "65"}},
-    },
-    "keyboardPressed");
-
-DefaultMap trigger::TriggerItemPickup::defaultMap = DefaultMap(
-    {
-        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
-        {"actorVarname", {AST_STRING, CODEGEN_STRING, ""}},
-        {"itemVarname", {AST_STRING, CODEGEN_STRING, ""}},
-        {"matchKind", {AST_STRING, CODEGEN_STRING, "contain"}},
-        {"itemMatchCode", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "itemPickup");
-
-DefaultMap trigger::TriggerReleasePower::defaultMap = DefaultMap(
-    {
-        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
-        {"varName", {AST_STRING, CODEGEN_STRING, ""}},
-        {"ability", {AST_STRING, CODEGEN_STRING, ""}},
-        {"preventDefault", {AST_BOOL, CODEGEN_STRING, "false"}},
-        {"manaUsage", {AST_INT, CODEGEN_STRING, "0"}},
-        {"weapon", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "releasePower");
-
 void trigger::TriggerActorAdded::method(std::ofstream &of,
                                         std::unique_ptr<ParamAppsNode> &trigger,
+                                        const config::InstructionConfig config,
                                         UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", defaultMap.get("actor")},
       {"varname", defaultMap.get("varName")},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"ActorAdded\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -98,7 +28,9 @@ void trigger::TriggerActorAdded::method(std::ofstream &of,
 
 void trigger::TriggerActorDead::method(std::ofstream &of,
                                        std::unique_ptr<ParamAppsNode> &trigger,
+                                       const config::InstructionConfig config,
                                        UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", defaultMap.get("actor")},
@@ -109,7 +41,7 @@ void trigger::TriggerActorDead::method(std::ofstream &of,
       {"hitterVarname", defaultMap.get("hitterVarName")},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"ActorDead\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -117,7 +49,9 @@ void trigger::TriggerActorDead::method(std::ofstream &of,
 
 void trigger::TriggerActorFire::method(std::ofstream &of,
                                        std::unique_ptr<ParamAppsNode> &trigger,
+                                       const config::InstructionConfig config,
                                        UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", defaultMap.get("actor")},
@@ -131,7 +65,7 @@ void trigger::TriggerActorFire::method(std::ofstream &of,
         .addNode("weaponType", defaultMap.get("weapon"));
   }
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"ActorFire\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -139,7 +73,9 @@ void trigger::TriggerActorFire::method(std::ofstream &of,
 
 void trigger::TriggerActorHit::method(std::ofstream &of,
                                       std::unique_ptr<ParamAppsNode> &trigger,
+                                      const config::InstructionConfig config,
                                       UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", defaultMap.get("actor")},
@@ -158,7 +94,7 @@ void trigger::TriggerActorHit::method(std::ofstream &of,
         .addNode("weaponType", defaultMap.get("weapon"));
   }
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"ActorHit\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -166,7 +102,9 @@ void trigger::TriggerActorHit::method(std::ofstream &of,
 
 void trigger::TriggerClickButton::method(
     std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger,
+    const config::InstructionConfig config,
     UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", defaultMap.get("actor")},
@@ -176,7 +114,7 @@ void trigger::TriggerClickButton::method(
       {"varnameDevice", "\"\""},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"TalkButton\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -184,7 +122,9 @@ void trigger::TriggerClickButton::method(
 
 void trigger::TriggerKeyboardPressed::method(
     std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger,
+    const config::InstructionConfig config,
     UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"playerId", defaultMap.get("actorId")},
@@ -197,7 +137,7 @@ void trigger::TriggerKeyboardPressed::method(
       {"shift", "\"\""},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"KeyboardPressed\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -205,7 +145,9 @@ void trigger::TriggerKeyboardPressed::method(
 
 void trigger::TriggerItemPickup::method(std::ofstream &of,
                                         std::unique_ptr<ParamAppsNode> &trigger,
+                                        const config::InstructionConfig config,
                                         UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(trigger->named_args);
   JsonObjectNode itemMatchNode = JsonObjectNode({
       {"method", defaultMap.get("matchKind", matchKind::keywordEnum)},
@@ -219,7 +161,7 @@ void trigger::TriggerItemPickup::method(std::ofstream &of,
       {"itemVarname", defaultMap.get("itemVarname")},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"ItemPickup\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -227,7 +169,9 @@ void trigger::TriggerItemPickup::method(std::ofstream &of,
 
 void trigger::TriggerReleasePower::method(
     std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger,
+    const config::InstructionConfig config,
     UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(trigger->named_args);
   std::string ability = defaultMap.get("ability", abilityKind::keywordEnum);
   std::string weaponType =
@@ -252,7 +196,7 @@ void trigger::TriggerReleasePower::method(
         .addNode("weaponType", weaponType);
 
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"ReleasePower\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);

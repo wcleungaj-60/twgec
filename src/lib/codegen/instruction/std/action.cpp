@@ -11,218 +11,11 @@ using namespace codegen;
 using namespace formatter;
 using namespace keyword;
 
-DefaultMap action::ActionActorAttributes::defaultMap = DefaultMap(
-    {
-        {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
-        {"attr", {AST_STRING, CODEGEN_STRING, ""}},
-        {"value", {AST_INT, CODEGEN_STRING, "0"}},
-    },
-    "actorAttributes");
-
-DefaultMap action::ActionActorDisappear::defaultMap = DefaultMap(
-    {
-        {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
-        {"duration", {AST_INT, CODEGEN_STRING, "600"}},
-        {"delay", {AST_INT, CODEGEN_STRING, "0"}},
-    },
-    "actorDisappear");
-
-DefaultMap action::ActionActorFollow::defaultMap = DefaultMap(
-    {
-        {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
-        {"type", {AST_STRING, CODEGEN_STRING, "actor"}},
-        {"targetId", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "actorFollow");
-
-DefaultMap action::ActionActorTalk::defaultMap = DefaultMap(
-    {
-        {"cleanTalk", {AST_BOOL, CODEGEN_BOOL, "true"}},
-        {"text", {AST_STRING, CODEGEN_STRING, ""}},
-        {"duration", {AST_INT, CODEGEN_STRING, "3000"}},
-        {"wait", {AST_BOOL, CODEGEN_BOOL, "false"}},
-        {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "actorTalk");
-
-DefaultMap action::ActionAddActor::defaultMap = DefaultMap(
-    {
-        {"id", {AST_STRING, CODEGEN_STRING, "ai*"}},
-        {"name", {AST_STRING, CODEGEN_STRING, ""}},
-        {"camp", {AST_STRING, CODEGEN_STRING, "skydow"}},
-        {"teamId", {AST_INT, CODEGEN_STRING, "0"}},
-        {"weapon1", {AST_STRING, CODEGEN_STRING, "default"}},
-        {"weapon2", {AST_STRING, CODEGEN_STRING, "default"}},
-        {"localVarname", {AST_STRING, CODEGEN_STRING, "actor"}},
-        {"x", {AST_INT, CODEGEN_STRING, "0"}},
-        {"y", {AST_INT, CODEGEN_STRING, "0"}},
-        {"hp", {AST_INT, CODEGEN_STRING, "100"}},
-        {"range", {AST_INT, CODEGEN_STRING, "10000"}},
-        {"role", {AST_STRING, CODEGEN_INT, "0"}},
-        {"externRole", {AST_STRING, CODEGEN_STRING, ""}},
-        {"strength", {AST_INT, CODEGEN_STRING, "1"}},
-        {"patrol", {AST_LIST_POINT, CODEGEN_LIST_PATROL_POINT, "[]"}},
-    },
-    "addActor");
-
-DefaultMap action::ActionAddDropItem::defaultMap = DefaultMap(
-    {
-        {"itemCode", {AST_STRING, CODEGEN_STRING, ""}},
-        {"x", {AST_INT, CODEGEN_STRING, "0"}},
-        {"y", {AST_INT, CODEGEN_STRING, "0"}},
-        {"range", {AST_INT, CODEGEN_STRING, "0"}},
-        {"scale", {AST_INT, CODEGEN_STRING, "1"}},
-        {"type", {AST_STRING, CODEGEN_STRING, "paper"}},
-        {"localVarname", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "addDropItem");
-
-DefaultMap action::ActionAddMapSign::defaultMap = DefaultMap(
-    {
-        {"text", {AST_STRING, CODEGEN_STRING, ""}},
-        {"buttonCode", {AST_STRING, CODEGEN_STRING, ""}},
-        {"buttonLabel", {AST_STRING, CODEGEN_STRING, ""}},
-        {"x", {AST_INT, CODEGEN_STRING, "0"}},
-        {"y", {AST_INT, CODEGEN_STRING, "0"}},
-        {"range", {AST_INT, CODEGEN_STRING, "0"}},
-        {"rotation", {AST_INT, CODEGEN_STRING, "0"}},
-        {"showButtons", {AST_BOOL, CODEGEN_BOOL, "true"}},
-    },
-    "addMapSign");
-
-DefaultMap action::ActionAddStuff::defaultMap = DefaultMap(
-    {
-        {"code", {AST_STRING, CODEGEN_STRING, "item*"}},
-        {"item", {AST_STRING, CODEGEN_STRING, "magazine"}},
-        {"refill", {AST_BOOL, CODEGEN_BOOL, "true"}},
-        {"refillInterval", {AST_INT, CODEGEN_STRING, "10000"}},
-        {"x", {AST_INT, CODEGEN_STRING, "0"}},
-        {"y", {AST_INT, CODEGEN_STRING, "0"}},
-        {"range", {AST_INT, CODEGEN_STRING, "0"}},
-        {"rotation", {AST_INT, CODEGEN_STRING, "0"}},
-    },
-    "addStuff");
-
-DefaultMap action::ActionConsole::defaultMap = DefaultMap(
-    {
-        {"type", {AST_STRING, CODEGEN_STRING, "log"}},
-        {"text", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "print");
-
-DefaultMap action::ActionDeltaHp::defaultMap = DefaultMap(
-    {
-        {"actorCode", {AST_STRING, CODEGEN_STRING, ""}},
-        {"type", {AST_STRING, CODEGEN_STRING, "heal"}},
-        {"value", {AST_INT, CODEGEN_STRING, ""}},
-        {"casterCode", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "deltaHp");
-
-DefaultMap action::ActionEnblastEffect::defaultMap = DefaultMap(
-    {
-        {"fromType", {AST_STRING, CODEGEN_STRING, "actor"}},
-        {"fromActor", {AST_STRING, CODEGEN_STRING, "instance"}},
-        {"toType", {AST_STRING, CODEGEN_STRING, "angle"}},
-        {"toAngle", {AST_INT, CODEGEN_STRING, "0"}},
-        {"damage", {AST_INT, CODEGEN_STRING, "30"}},
-        {"scale", {AST_INT, CODEGEN_STRING, "1"}},
-        {"speed", {AST_INT, CODEGEN_STRING, "0.7"}},
-    },
-    "enblastEffect");
-
-DefaultMap action::ActionGetCookie::defaultMap = DefaultMap(
-    {
-        {"cookies", {AST_STRING, CODEGEN_STRING, ""}},
-        {"varName", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "getCookie");
-
-DefaultMap action::ActionGetUserState::defaultMap = DefaultMap(
-    {
-        {"playerId", {AST_STRING, CODEGEN_STRING, ""}},
-        {"category", {AST_STRING, CODEGEN_STRING, ""}},
-        {"key", {AST_STRING, CODEGEN_STRING, ""}},
-        {"varName", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "getUserState");
-
-DefaultMap action::ActionMapWarp::defaultMap = DefaultMap(
-    {
-        {"fromX", {AST_INT, CODEGEN_STRING, "0"}},
-        {"fromY", {AST_INT, CODEGEN_STRING, "0"}},
-        {"toX", {AST_INT, CODEGEN_STRING, "0"}},
-        {"toY", {AST_INT, CODEGEN_STRING, "0"}},
-        {"direction", {AST_STRING, CODEGEN_STRING, "right"}},
-    },
-    "mapWarp");
-
-DefaultMap action::ActionMissionComplete::defaultMap = DefaultMap(
-    {
-        {"camp", {AST_STRING, CODEGEN_STRING, "all"}},
-    },
-    "missionComplete");
-
-DefaultMap action::ActionLongBo::defaultMap = DefaultMap(
-    {
-        {"actorCode", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "longBo");
-
-DefaultMap action::ActionSetCookie::defaultMap = DefaultMap(
-    {
-        {"playerId", {AST_STRING, CODEGEN_STRING, ""}},
-        {"cookies", {AST_STRING, CODEGEN_STRING, ""}},
-        {"type", {AST_STRING, CODEGEN_STRING, "string"}},
-        {"value", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "setCookie");
-
-DefaultMap action::ActionSetGlobal::defaultMap = DefaultMap(
-    {
-        {"key", {AST_STRING, CODEGEN_STRING, ""}},
-        {"type", {AST_STRING, CODEGEN_STRING, "string"}},
-        {"value", {AST_INT, CODEGEN_STRING, ""}},
-    },
-    "setGlobal");
-
-DefaultMap action::ActionSetObjectVar::defaultMap = DefaultMap(
-    {
-        {"object", {AST_STRING, CODEGEN_STRING, ""}},
-        {"key", {AST_STRING, CODEGEN_STRING, ""}},
-        {"type", {AST_STRING, CODEGEN_STRING, "string"}},
-        {"value", {AST_INT, CODEGEN_STRING, ""}},
-    },
-    "setObjectVar");
-
-DefaultMap action::ActionSetUserState::defaultMap = DefaultMap(
-    {
-        {"playerId", {AST_STRING, CODEGEN_STRING, ""}},
-        {"category", {AST_STRING, CODEGEN_STRING, ""}},
-        {"key", {AST_STRING, CODEGEN_STRING, ""}},
-        {"type", {AST_STRING, CODEGEN_STRING, ""}},
-        {"value", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "setUserState");
-
-DefaultMap action::ActionSetWeaponAbility::defaultMap = DefaultMap(
-    {
-        {"weapon", {AST_STRING, CODEGEN_STRING, ""}},
-        {"level", {AST_INT, CODEGEN_INT, "1"}},
-        {"operation", {AST_STRING, CODEGEN_STRING, "set"}},
-        {"ability", {AST_STRING, CODEGEN_STRING, "sounded"}},
-    },
-    "setWeaponAbility");
-
-DefaultMap action::ActionWait::defaultMap = DefaultMap(
-    {
-        {"duration", {AST_INT, CODEGEN_STRING, "0"}},
-    },
-    "wait");
-
 void action::ActionActorAttributes::method(
     std::ofstream &of, std::unique_ptr<ParamAppsNode> &action,
+    const config::InstructionConfig config,
     UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode opNode = JsonObjectNode({
       {"attr", defaultMap.get("attr", actorAttrKind::keywordEnum)},
@@ -242,7 +35,7 @@ void action::ActionActorAttributes::method(
       {"bloodType", "\"u\""},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"ActorAttributes\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -250,7 +43,9 @@ void action::ActionActorAttributes::method(
 
 void action::ActionActorDisappear::method(
     std::ofstream &of, std::unique_ptr<ParamAppsNode> &action,
+    const config::InstructionConfig config,
     UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorCode", defaultMap.get("actorId")},
@@ -258,7 +53,7 @@ void action::ActionActorDisappear::method(
       {"delay", defaultMap.get("delay")},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"ActorDisappear\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -266,7 +61,9 @@ void action::ActionActorDisappear::method(
 
 void action::ActionActorFollow::method(std::ofstream &of,
                                        std::unique_ptr<ParamAppsNode> &action,
+                                       const config::InstructionConfig config,
                                        UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorCode", defaultMap.get("actorId")},
@@ -274,7 +71,7 @@ void action::ActionActorFollow::method(std::ofstream &of,
       {"targetCode", defaultMap.get("targetId")},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"ActorFollow\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -282,7 +79,9 @@ void action::ActionActorFollow::method(std::ofstream &of,
 
 void action::ActionActorTalk::method(std::ofstream &of,
                                      std::unique_ptr<ParamAppsNode> &action,
+                                     const config::InstructionConfig config,
                                      UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"cleanTalk", defaultMap.get("cleanTalk")},
@@ -293,7 +92,7 @@ void action::ActionActorTalk::method(std::ofstream &of,
       {"actorCode", defaultMap.get("actorId")},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"ActorTalk\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -301,7 +100,9 @@ void action::ActionActorTalk::method(std::ofstream &of,
 
 void action::ActionAddActor::method(std::ofstream &of,
                                     std::unique_ptr<ParamAppsNode> &action,
+                                    const config::InstructionConfig config,
                                     UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   std::string externRole = defaultMap.get("externRole");
   bool hasExternRole = externRole != "\"\"";
@@ -364,15 +165,17 @@ void action::ActionAddActor::method(std::ofstream &of,
       {"globalVarname", "\"\""},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"AddActor\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
 }
 
 void action::ActionAddDropItem::method(std::ofstream &of,
-                                      std::unique_ptr<ParamAppsNode> &action,
-                                      UserDefinedMetadata userDefinedMeta) {
+                                       std::unique_ptr<ParamAppsNode> &action,
+                                       const config::InstructionConfig config,
+                                       UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode locationNode = JsonObjectNode({
       {"x", defaultMap.get("x")},
@@ -389,7 +192,7 @@ void action::ActionAddDropItem::method(std::ofstream &of,
       {"localVarname", defaultMap.get("localVarname")},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"AddDropItem\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -397,7 +200,9 @@ void action::ActionAddDropItem::method(std::ofstream &of,
 
 void action::ActionAddMapSign::method(std::ofstream &of,
                                       std::unique_ptr<ParamAppsNode> &action,
+                                      const config::InstructionConfig config,
                                       UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode btnNode = JsonObjectNode({
       {"buttonCode", defaultMap.get("buttonCode")},
@@ -432,7 +237,7 @@ void action::ActionAddMapSign::method(std::ofstream &of,
       {"btnsGroup", btnsGroupNode.to_string(24)},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"AddMapSIgn\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -440,7 +245,9 @@ void action::ActionAddMapSign::method(std::ofstream &of,
 
 void action::ActionAddStuff::method(std::ofstream &of,
                                     std::unique_ptr<ParamAppsNode> &action,
+                                    const config::InstructionConfig config,
                                     UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode locationNode = JsonObjectNode({
       {"x", defaultMap.get("x")},
@@ -458,7 +265,7 @@ void action::ActionAddStuff::method(std::ofstream &of,
       {"localVarname", "\"item\""},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"AddStuff\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -466,7 +273,9 @@ void action::ActionAddStuff::method(std::ofstream &of,
 
 void action::ActionConsole::method(std::ofstream &of,
                                    std::unique_ptr<ParamAppsNode> &action,
+                                   const config::InstructionConfig config,
                                    UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"logType", defaultMap.get("type")},
@@ -474,7 +283,7 @@ void action::ActionConsole::method(std::ofstream &of,
       {"value", "\"\""},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"Console\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -482,7 +291,9 @@ void action::ActionConsole::method(std::ofstream &of,
 
 void action::ActionDeltaHp::method(std::ofstream &of,
                                    std::unique_ptr<ParamAppsNode> &action,
+                                   const config::InstructionConfig config,
                                    UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorCode", defaultMap.get("actorCode")},
@@ -491,7 +302,7 @@ void action::ActionDeltaHp::method(std::ofstream &of,
       {"casterCode", defaultMap.get("casterCode")},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"DeltaHp\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -499,7 +310,9 @@ void action::ActionDeltaHp::method(std::ofstream &of,
 
 void action::ActionEnblastEffect::method(std::ofstream &of,
                                          std::unique_ptr<ParamAppsNode> &action,
+                                         const config::InstructionConfig config,
                                          UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode fromPosNode = JsonObjectNode({
       {"posType", defaultMap.get("fromType")},
@@ -515,7 +328,7 @@ void action::ActionEnblastEffect::method(std::ofstream &of,
       {"speed", defaultMap.get("speed")},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"EnblastEffect\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -523,14 +336,16 @@ void action::ActionEnblastEffect::method(std::ofstream &of,
 
 void action::ActionGetCookie::method(std::ofstream &of,
                                      std::unique_ptr<ParamAppsNode> &action,
+                                     const config::InstructionConfig config,
                                      UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"ckey", defaultMap.get("cookies")},
       {"key", defaultMap.get("varName")},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"GetCookie\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -538,7 +353,9 @@ void action::ActionGetCookie::method(std::ofstream &of,
 
 void action::ActionGetUserState::method(std::ofstream &of,
                                         std::unique_ptr<ParamAppsNode> &action,
+                                        const config::InstructionConfig config,
                                         UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"playerId", defaultMap.get("playerId")},
@@ -547,7 +364,7 @@ void action::ActionGetUserState::method(std::ofstream &of,
       {"varname", defaultMap.get("varName")},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"GetUserState\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -555,7 +372,9 @@ void action::ActionGetUserState::method(std::ofstream &of,
 
 void action::ActionMapWarp::method(std::ofstream &of,
                                    std::unique_ptr<ParamAppsNode> &action,
+                                   const config::InstructionConfig config,
                                    UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode locationNode = JsonObjectNode({
       {"x", defaultMap.get("fromX")},
@@ -575,7 +394,7 @@ void action::ActionMapWarp::method(std::ofstream &of,
       {"target", targetNode.to_string(24)},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"MapWarp\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -583,14 +402,16 @@ void action::ActionMapWarp::method(std::ofstream &of,
 
 void action::ActionMissionComplete::method(
     std::ofstream &of, std::unique_ptr<ParamAppsNode> &action,
+    const config::InstructionConfig config,
     UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"targetGroup",
        defaultMap.get("camp", campMissionCompleteKind::keywordEnum)},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"MissionComplete\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -598,7 +419,9 @@ void action::ActionMissionComplete::method(
 
 void action::ActionLongBo::method(std::ofstream &of,
                                   std::unique_ptr<ParamAppsNode> &action,
+                                  const config::InstructionConfig config,
                                   UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"posType", "\"actor\""},
@@ -614,7 +437,7 @@ void action::ActionLongBo::method(std::ofstream &of,
       {"speed", "\"1\""},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"Longbo\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -622,7 +445,9 @@ void action::ActionLongBo::method(std::ofstream &of,
 
 void action::ActionSetCookie::method(std::ofstream &of,
                                      std::unique_ptr<ParamAppsNode> &action,
+                                     const config::InstructionConfig config,
                                      UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   string playerId = defaultMap.get("playerId");
   JsonObjectNode dataNode = (playerId == "\"\"")
@@ -635,7 +460,7 @@ void action::ActionSetCookie::method(std::ofstream &of,
       .addNode("value", defaultMap.get("value"));
 
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"SetCookie\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -643,7 +468,9 @@ void action::ActionSetCookie::method(std::ofstream &of,
 
 void action::ActionSetGlobal::method(std::ofstream &of,
                                      std::unique_ptr<ParamAppsNode> &action,
+                                     const config::InstructionConfig config,
                                      UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"key", defaultMap.get("key")},
@@ -651,7 +478,7 @@ void action::ActionSetGlobal::method(std::ofstream &of,
       {"value", defaultMap.get("value")},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"SetGlobal\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -659,7 +486,9 @@ void action::ActionSetGlobal::method(std::ofstream &of,
 
 void action::ActionSetObjectVar::method(std::ofstream &of,
                                         std::unique_ptr<ParamAppsNode> &action,
+                                        const config::InstructionConfig config,
                                         UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"objectId", defaultMap.get("object")},
@@ -668,7 +497,7 @@ void action::ActionSetObjectVar::method(std::ofstream &of,
       {"value", defaultMap.get("value")},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"SetObjectVar\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -676,7 +505,9 @@ void action::ActionSetObjectVar::method(std::ofstream &of,
 
 void action::ActionSetUserState::method(std::ofstream &of,
                                         std::unique_ptr<ParamAppsNode> &action,
+                                        const config::InstructionConfig config,
                                         UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"playerId", defaultMap.get("playerId")},
@@ -686,7 +517,7 @@ void action::ActionSetUserState::method(std::ofstream &of,
       {"value", defaultMap.get("value")},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"SetUserState\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -694,7 +525,9 @@ void action::ActionSetUserState::method(std::ofstream &of,
 
 void action::ActionSetWeaponAbility::method(
     std::ofstream &of, std::unique_ptr<ParamAppsNode> &action,
+    const config::InstructionConfig config,
     UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode campNode = JsonObjectNode("campAll", "true");
   JsonObjectNode abilityNode = JsonObjectNode(
@@ -709,7 +542,7 @@ void action::ActionSetWeaponAbility::method(
       {"ability", abilityNode.to_string(24)},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"SetWeaponAbility\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -717,13 +550,15 @@ void action::ActionSetWeaponAbility::method(
 
 void action::ActionWait::method(std::ofstream &of,
                                 std::unique_ptr<ParamAppsNode> &action,
+                                const config::InstructionConfig config,
                                 UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"duration", defaultMap.get("duration")},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"Wait\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);

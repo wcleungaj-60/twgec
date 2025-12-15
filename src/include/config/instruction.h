@@ -6,6 +6,7 @@
 #include <cassert>
 #include <cctype>
 #include <cstring>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -69,7 +70,8 @@ struct InstructionParam {
 };
 
 class InstructionConfig {
-private:
+public:
+  // Variable
   static constexpr const char *defaultScope = "std";
   std::string scope;
   std::string name;
@@ -77,7 +79,6 @@ private:
   std::string codegenName;
   std::vector<InstructionParam> params;
 
-public:
   // Constructor
   InstructionConfig(std::string _scope, std::string _name, std::string _alias)
       : scope(_scope), name(_name), alias(_alias) {
@@ -87,7 +88,8 @@ public:
   }
   InstructionConfig(std::string _name, std::string _alias)
       : InstructionConfig(defaultScope, _name, _alias) {}
-  // Mutator
+
+  // Function
   InstructionConfig setCodegenName(std::string name) {
     codegenName = name;
     return *this;
@@ -124,26 +126,42 @@ public:
   }
 };
 
-const std::vector<InstructionConfig> actionList = {
-    // Standard Module
+inline std::map<std::string, InstructionConfig>
+configVecToMap(const std::vector<InstructionConfig> vec) {
+  std::map<std::string, InstructionConfig> map;
+  for (auto config : vec) {
+    std::string scope = config.scope == "std"?"":config.scope + "::";
+    assert(map.find(scope + config.name) == map.end() &&
+           map.find(scope + config.alias) == map.end());
+    map.insert({scope + config.name, config});
+    map.insert({scope + config.alias, config});
+  }
+  return map;
+}
+
+const InstructionConfig actorAttributesConfig =
     InstructionConfig("actorAttributes", "設定角色屬性")
         .addParam("actorId", AST_STRING, CODEGEN_STRING, "")
         .addParam("attr", AST_STRING, CODEGEN_STRING, "")
-        .addParam("value", AST_INT, CODEGEN_STRING, ""),
+        .addParam("value", AST_INT, CODEGEN_STRING, "");
+const InstructionConfig actorDisappearConfig =
     InstructionConfig("actorDisappear", "角色消失")
         .addParam("actorId", AST_STRING, CODEGEN_STRING, "")
         .addParam("duration", AST_INT, CODEGEN_STRING, "600")
-        .addParam("delay", AST_INT, CODEGEN_STRING, "0"),
+        .addParam("delay", AST_INT, CODEGEN_STRING, "0");
+const InstructionConfig actorFollowConfig =
     InstructionConfig("actorFollow", "跟隨人物")
         .addParam("actorId", AST_STRING, CODEGEN_STRING, "")
         .addParam("type", AST_STRING, CODEGEN_STRING, "actor")
-        .addParam("targetId", AST_STRING, CODEGEN_STRING, ""),
+        .addParam("targetId", AST_STRING, CODEGEN_STRING, "");
+const InstructionConfig actorTalkConfig =
     InstructionConfig("actorTalk", "角色說話")
         .addParam("cleanTalk", AST_BOOL, CODEGEN_BOOL, "true")
         .addParam("text", AST_STRING, CODEGEN_STRING, "")
         .addParam("duration", AST_INT, CODEGEN_STRING, "3000")
         .addParam("wait", AST_BOOL, CODEGEN_BOOL, "false")
-        .addParam("actorId", AST_STRING, CODEGEN_STRING, ""),
+        .addParam("actorId", AST_STRING, CODEGEN_STRING, "");
+const InstructionConfig addActorConfig =
     InstructionConfig("addActor", "新增角色")
         .addParam("id", AST_STRING, CODEGEN_STRING, "ai*")
         .addParam("name", AST_STRING, CODEGEN_STRING, "")
@@ -159,7 +177,8 @@ const std::vector<InstructionConfig> actionList = {
         .addParam("role", AST_STRING, CODEGEN_INT, "0")
         .addParam("externRole", AST_STRING, CODEGEN_STRING, "")
         .addParam("strength", AST_INT, CODEGEN_STRING, "1")
-        .addParam("patrol", AST_LIST_POINT, CODEGEN_LIST_PATROL_POINT, "[]"),
+        .addParam("patrol", AST_LIST_POINT, CODEGEN_LIST_PATROL_POINT, "[]");
+const InstructionConfig addDropItemConfig =
     InstructionConfig("addDropItem", "新增放置可拾取道具")
         .addParam("itemCode", AST_STRING, CODEGEN_STRING, "")
         .addParam("x", AST_INT, CODEGEN_STRING, "0")
@@ -167,7 +186,8 @@ const std::vector<InstructionConfig> actionList = {
         .addParam("range", AST_INT, CODEGEN_STRING, "0")
         .addParam("scale", AST_INT, CODEGEN_STRING, "1")
         .addParam("type", AST_STRING, CODEGEN_STRING, "paper")
-        .addParam("localVarname", AST_STRING, CODEGEN_STRING, ""),
+        .addParam("localVarname", AST_STRING, CODEGEN_STRING, "");
+const InstructionConfig addMapSignConfig =
     InstructionConfig("addMapSign", "新增告示牌")
         .addParam("text", AST_STRING, CODEGEN_STRING, "")
         .addParam("buttonCode", AST_STRING, CODEGEN_STRING, "")
@@ -176,7 +196,9 @@ const std::vector<InstructionConfig> actionList = {
         .addParam("y", AST_INT, CODEGEN_STRING, "0")
         .addParam("range", AST_INT, CODEGEN_STRING, "0")
         .addParam("rotation", AST_INT, CODEGEN_STRING, "0")
-        .addParam("showButtons", AST_BOOL, CODEGEN_BOOL, "true"),
+        .addParam("showButtons", AST_BOOL, CODEGEN_BOOL, "true")
+        .setCodegenName("AddMapSIgn");
+const InstructionConfig addStuffConfig =
     InstructionConfig("addStuff", "新增武器道具")
         .addParam("code", AST_STRING, CODEGEN_STRING, "item*")
         .addParam("item", AST_STRING, CODEGEN_STRING, "magazine")
@@ -185,12 +207,14 @@ const std::vector<InstructionConfig> actionList = {
         .addParam("x", AST_INT, CODEGEN_STRING, "0")
         .addParam("y", AST_INT, CODEGEN_STRING, "0")
         .addParam("range", AST_INT, CODEGEN_STRING, "0")
-        .addParam("rotation", AST_INT, CODEGEN_STRING, "0"),
+        .addParam("rotation", AST_INT, CODEGEN_STRING, "0");
+const InstructionConfig deltaHpConfig =
     InstructionConfig("deltaHp", "角色加減血")
         .addParam("actorCode", AST_STRING, CODEGEN_STRING, "")
         .addParam("type", AST_STRING, CODEGEN_STRING, "heal")
         .addParam("value", AST_INT, CODEGEN_STRING, "")
-        .addParam("casterCode", AST_STRING, CODEGEN_STRING, ""),
+        .addParam("casterCode", AST_STRING, CODEGEN_STRING, "");
+const InstructionConfig enblastEffectConfig =
     InstructionConfig("enblastEffect", "光彈特效")
         .addParam("fromType", AST_STRING, CODEGEN_STRING, "actor")
         .addParam("fromActor", AST_STRING, CODEGEN_STRING, "instance")
@@ -198,123 +222,187 @@ const std::vector<InstructionConfig> actionList = {
         .addParam("toAngle", AST_INT, CODEGEN_STRING, "0")
         .addParam("damage", AST_INT, CODEGEN_STRING, "30")
         .addParam("scale", AST_INT, CODEGEN_STRING, "1")
-        .addParam("speed", AST_INT, CODEGEN_STRING, "0.7"),
+        .addParam("speed", AST_INT, CODEGEN_STRING, "0.7");
+const InstructionConfig getCookieConfig =
     InstructionConfig("getCookie", "取得Cookies")
         .addParam("cookies", AST_STRING, CODEGEN_STRING, "")
-        .addParam("varName", AST_STRING, CODEGEN_STRING, ""),
+        .addParam("varName", AST_STRING, CODEGEN_STRING, "");
+const InstructionConfig getUserStateConfig =
     InstructionConfig("getUserState", "取得玩家狀態")
         .addParam("playerId", AST_STRING, CODEGEN_STRING, "")
         .addParam("category", AST_STRING, CODEGEN_STRING, "")
         .addParam("key", AST_STRING, CODEGEN_STRING, "")
-        .addParam("varName", AST_STRING, CODEGEN_STRING, ""),
+        .addParam("varName", AST_STRING, CODEGEN_STRING, "");
+const InstructionConfig mapWarpConfig =
     InstructionConfig("mapWarp", "設定地圖傳送點")
         .addParam("fromX", AST_INT, CODEGEN_STRING, "0")
         .addParam("fromY", AST_INT, CODEGEN_STRING, "0")
         .addParam("toX", AST_INT, CODEGEN_STRING, "0")
         .addParam("toY", AST_INT, CODEGEN_STRING, "0")
-        .addParam("direction", AST_STRING, CODEGEN_STRING, "right"),
+        .addParam("direction", AST_STRING, CODEGEN_STRING, "right");
+const InstructionConfig missionCompleteConfig =
     InstructionConfig("missionComplete", "任務完成")
-        .addParam("camp", AST_STRING, CODEGEN_STRING, "all"),
+        .addParam("camp", AST_STRING, CODEGEN_STRING, "all");
+const InstructionConfig longBoConfig =
     InstructionConfig("longBo", "龍波")
-        .addParam("actorCode", AST_STRING, CODEGEN_STRING, ""),
+        .addParam("actorCode", AST_STRING, CODEGEN_STRING, "");
+const InstructionConfig printConfig =
     InstructionConfig("print", "控制台輸出")
         .addParam("type", AST_STRING, CODEGEN_STRING, "log")
         .addParam("text", AST_STRING, CODEGEN_STRING, "")
-        .setCodegenName("Console"),
+        .setCodegenName("Console");
+const InstructionConfig setCookieConfig =
     InstructionConfig("setCookie", "儲存Cookies")
         .addParam("playerId", AST_STRING, CODEGEN_STRING, "")
         .addParam("cookies", AST_STRING, CODEGEN_STRING, "")
         .addParam("type", AST_STRING, CODEGEN_STRING, "string")
-        .addParam("value", AST_STRING, CODEGEN_STRING, ""),
+        .addParam("value", AST_STRING, CODEGEN_STRING, "");
+const InstructionConfig setGlobalConfig =
     InstructionConfig("setGlobal", "儲存全域變數")
         .addParam("key", AST_STRING, CODEGEN_STRING, "")
         .addParam("type", AST_STRING, CODEGEN_STRING, "string")
-        .addParam("value", AST_INT, CODEGEN_STRING, ""),
+        .addParam("value", AST_INT, CODEGEN_STRING, "");
+const InstructionConfig setObjectVarConfig =
     InstructionConfig("setObjectVar", "儲存物件變數")
         .addParam("object", AST_STRING, CODEGEN_STRING, "")
         .addParam("key", AST_STRING, CODEGEN_STRING, "")
         .addParam("type", AST_STRING, CODEGEN_STRING, "string")
-        .addParam("value", AST_INT, CODEGEN_STRING, ""),
+        .addParam("value", AST_INT, CODEGEN_STRING, "");
+const InstructionConfig setUserStateConfig =
     InstructionConfig("setUserState", "儲存玩家狀態")
         .addParam("playerId", AST_STRING, CODEGEN_STRING, "")
         .addParam("category", AST_STRING, CODEGEN_STRING, "")
         .addParam("key", AST_STRING, CODEGEN_STRING, "")
         .addParam("type", AST_STRING, CODEGEN_STRING, "")
-        .addParam("value", AST_STRING, CODEGEN_STRING, ""),
+        .addParam("value", AST_STRING, CODEGEN_STRING, "");
+const InstructionConfig setWeaponAbilityConfig =
     InstructionConfig("setWeaponAbility", "設定武器技能")
         .addParam("weapon", AST_STRING, CODEGEN_STRING, "")
         .addParam("level", AST_INT, CODEGEN_INT, "1")
         .addParam("operation", AST_STRING, CODEGEN_STRING, "set")
-        .addParam("ability", AST_STRING, CODEGEN_STRING, "sounded"),
+        .addParam("ability", AST_STRING, CODEGEN_STRING, "sounded");
+const InstructionConfig waitConfig =
     InstructionConfig("wait", "等待")
-        .addParam("duration", AST_INT, CODEGEN_STRING, "0"),
-    // EnhFF Module
+        .addParam("duration", AST_INT, CODEGEN_STRING, "0");
+// EnhFF Module
+const InstructionConfig EnhFFPlayerMousePositionConfig =
     InstructionConfig("EnhFF", "playerMousePosition", "玩家滑鼠座標")
         .addParam("actorId", AST_STRING, CODEGEN_STRING, "")
         .addParam("varX", AST_STRING, CODEGEN_STRING, "x")
-        .addParam("varY", AST_STRING, CODEGEN_STRING, "y"),
+        .addParam("varY", AST_STRING, CODEGEN_STRING, "y")
+        .setCodegenName("PlayerMousePositionEnh");
+
+const std::vector<InstructionConfig> actionList = {
+    // Standard Module
+    actorAttributesConfig,
+    actorDisappearConfig,
+    actorFollowConfig,
+    actorTalkConfig,
+    addActorConfig,
+    addDropItemConfig,
+    addMapSignConfig,
+    addStuffConfig,
+    deltaHpConfig,
+    enblastEffectConfig,
+    getCookieConfig,
+    getUserStateConfig,
+    mapWarpConfig,
+    missionCompleteConfig,
+    longBoConfig,
+    printConfig,
+    setCookieConfig,
+    setGlobalConfig,
+    setObjectVarConfig,
+    setUserStateConfig,
+    setWeaponAbilityConfig,
+    waitConfig,
+    EnhFFPlayerMousePositionConfig,
 };
 
-const std::vector<InstructionConfig> checkList = {
+const InstructionConfig actorCountConfig =
     InstructionConfig("actorCount", "計算人數")
         .addParam("actor", AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]")
         .addParam("varname", AST_STRING, CODEGEN_STRING, "")
         .addParam("op", AST_STRING, CODEGEN_STRING, "==")
-        .addParam("value", AST_INT, CODEGEN_STRING, ""),
+        .addParam("value", AST_INT, CODEGEN_STRING, "");
+const InstructionConfig checkNumberConfig =
     InstructionConfig("checkNumber", "比較數字")
         .addParam("lhs", AST_INT, CODEGEN_STRING, "0")
         .addParam("rhs", AST_INT, CODEGEN_STRING, "0")
-        .addParam("op", AST_STRING, CODEGEN_STRING, "=="),
+        .addParam("op", AST_STRING, CODEGEN_STRING, "==")
+        .setCodegenName("NumberCheck");
+const InstructionConfig checkStringConfig =
     InstructionConfig("checkString", "比對字串")
         .addParam("value", AST_STRING, CODEGEN_STRING, "")
         .addParam("matchKind", AST_STRING, CODEGEN_STRING, "contain")
-        .addParam("str", AST_STRING, CODEGEN_STRING, ""),
+        .addParam("str", AST_STRING, CODEGEN_STRING, "")
+        .setCodegenName("String");
+const InstructionConfig forEachActorConfig =
     InstructionConfig("forEachActor", "找出所有角色")
         .addParam("actor", AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]")
-        .addParam("varname", AST_STRING, CODEGEN_STRING, ""),
+        .addParam("varname", AST_STRING, CODEGEN_STRING, "");
+
+const std::vector<InstructionConfig> checkList = {
+    actorCountConfig,
+    checkNumberConfig,
+    checkStringConfig,
+    forEachActorConfig,
 };
 
-const std::vector<InstructionConfig> triggerList = {
+const InstructionConfig actorAddedConfig =
     InstructionConfig("actorAdded", "角色進入戰場")
         .addParam("actor", AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]")
-        .addParam("varName", AST_STRING, CODEGEN_STRING, ""),
+        .addParam("varName", AST_STRING, CODEGEN_STRING, "");
+const InstructionConfig actorDeadConfig =
     InstructionConfig("actorDead", "角色死亡")
         .addParam("actor", AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]")
         .addParam("varName", AST_STRING, CODEGEN_STRING, "")
-        .addParam("hitterVarName", AST_STRING, CODEGEN_STRING, ""),
+        .addParam("hitterVarName", AST_STRING, CODEGEN_STRING, "");
+const InstructionConfig actorFireConfig =
     InstructionConfig("actorFire", "角色發動攻擊")
         .addParam("actor", AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]")
         .addParam("varName", AST_STRING, CODEGEN_STRING, "")
-        .addParam("weapon", AST_STRING, CODEGEN_STRING, ""),
+        .addParam("weapon", AST_STRING, CODEGEN_STRING, "");
+const InstructionConfig actorHitConfig =
     InstructionConfig("actorHit", "角色受傷")
         .addParam("actor", AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]")
         .addParam("hitter", AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]")
         .addParam("actorVarName", AST_STRING, CODEGEN_STRING, "")
         .addParam("hitterVarName", AST_STRING, CODEGEN_STRING, "")
         .addParam("damageValueVarName", AST_STRING, CODEGEN_STRING, "")
-        .addParam("weapon", AST_STRING, CODEGEN_STRING, ""),
+        .addParam("weapon", AST_STRING, CODEGEN_STRING, "");
+const InstructionConfig clickButtonConfig =
     InstructionConfig("clickButton", "告示牌按鈕")
         .addParam("actor", AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]")
         .addParam("varName", AST_STRING, CODEGEN_STRING, "")
-        .addParam("buttonId", AST_STRING, CODEGEN_STRING, ""),
+        .addParam("buttonId", AST_STRING, CODEGEN_STRING, "")
+        .setCodegenName("TalkButton");
+const InstructionConfig keyboardPressedConfig =
     InstructionConfig("keyboardPressed", "鍵盤按鍵")
         .addParam("actorId", AST_STRING, CODEGEN_STRING, "*")
         .addParam("varName", AST_STRING, CODEGEN_STRING, "")
         .addParam("timing", AST_STRING, CODEGEN_STRING, "")
-        .addParam("key", AST_STRING, CODEGEN_INT, "65"),
+        .addParam("key", AST_STRING, CODEGEN_INT, "65");
+const InstructionConfig itemPickupConfig =
     InstructionConfig("itemPickup", "拾取武器道具")
         .addParam("actor", AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]")
         .addParam("actorVarname", AST_STRING, CODEGEN_STRING, "")
         .addParam("itemVarname", AST_STRING, CODEGEN_STRING, "")
         .addParam("matchKind", AST_STRING, CODEGEN_STRING, "contain")
-        .addParam("itemMatchCode", AST_STRING, CODEGEN_STRING, ""),
+        .addParam("itemMatchCode", AST_STRING, CODEGEN_STRING, "");
+const InstructionConfig releasePowerConfig =
     InstructionConfig("releasePower", "發動技能")
         .addParam("actor", AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]")
         .addParam("varName", AST_STRING, CODEGEN_STRING, "")
         .addParam("ability", AST_STRING, CODEGEN_STRING, "")
         .addParam("preventDefault", AST_BOOL, CODEGEN_STRING, "false")
         .addParam("manaUsage", AST_INT, CODEGEN_STRING, "0")
-        .addParam("weapon", AST_STRING, CODEGEN_STRING, ""),
+        .addParam("weapon", AST_STRING, CODEGEN_STRING, "");
+
+const std::vector<InstructionConfig> triggerList = {
+    actorAddedConfig, actorDeadConfig,    actorFireConfig,
+    actorHitConfig,   clickButtonConfig,  keyboardPressedConfig,
+    itemPickupConfig, releasePowerConfig,
 };
 } // namespace config
 

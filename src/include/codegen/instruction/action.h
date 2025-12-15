@@ -2,46 +2,195 @@
 #define CODEGEN_ACTION_H
 
 #include "codegen.h"
-#include "utils/defaultMap.h"
+#include "instruction.h"
 
 namespace codegen {
 namespace action {
-
-#define REGISTER_CODE_GEN_ACTION(name)                                         \
-  class Action##name {                                                         \
-  public:                                                                      \
-    static DefaultMap defaultMap;                                              \
-    static void method(std::ofstream &of,                                      \
-                       std::unique_ptr<ParamAppsNode> &action,                 \
-                       UserDefinedMetadata userDefinedMeta);                   \
-  };
-
 // Standard Module
-REGISTER_CODE_GEN_ACTION(ActorAttributes);
-REGISTER_CODE_GEN_ACTION(ActorDisappear);
-REGISTER_CODE_GEN_ACTION(ActorFollow);
-REGISTER_CODE_GEN_ACTION(ActorTalk);
-REGISTER_CODE_GEN_ACTION(AddActor);
-REGISTER_CODE_GEN_ACTION(AddDropItem);
-REGISTER_CODE_GEN_ACTION(AddMapSign);
-REGISTER_CODE_GEN_ACTION(AddStuff);
-REGISTER_CODE_GEN_ACTION(Console);
-REGISTER_CODE_GEN_ACTION(DeltaHp);
-REGISTER_CODE_GEN_ACTION(EnblastEffect);
-REGISTER_CODE_GEN_ACTION(LongBo);
-REGISTER_CODE_GEN_ACTION(GetCookie);
-REGISTER_CODE_GEN_ACTION(GetUserState);
-REGISTER_CODE_GEN_ACTION(MapWarp);
-REGISTER_CODE_GEN_ACTION(MissionComplete);
-REGISTER_CODE_GEN_ACTION(SetCookie);
-REGISTER_CODE_GEN_ACTION(SetGlobal);
-REGISTER_CODE_GEN_ACTION(SetObjectVar);
-REGISTER_CODE_GEN_ACTION(SetUserState);
-REGISTER_CODE_GEN_ACTION(SetWeaponAbility);
-REGISTER_CODE_GEN_ACTION(Wait);
+class ActionActorAttributes {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionActorDisappear {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionActorFollow {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionActorTalk {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionAddActor {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionAddDropItem {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionAddMapSign {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionAddStuff {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionConsole {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionDeltaHp {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionEnblastEffect {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionLongBo {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionGetCookie {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionGetUserState {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionMapWarp {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionMissionComplete {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionSetCookie {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionSetGlobal {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionSetObjectVar {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionSetUserState {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionSetWeaponAbility {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
+
+class ActionWait {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
 
 // EnhFF module
-REGISTER_CODE_GEN_ACTION(EnhFFPlayerMousePosition);
+class ActionEnhFFPlayerMousePosition {
+public:
+  static void method(std ::ofstream &of,
+                     std ::unique_ptr<ParamAppsNode> &action,
+                     const config::InstructionConfig config,
+                     UserDefinedMetadata userDefinedMeta);
+};
 
 } // namespace action
 } // namespace codegen

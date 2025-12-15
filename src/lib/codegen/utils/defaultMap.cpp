@@ -9,17 +9,17 @@ using namespace codegen;
 using std::cerr;
 
 namespace {
-string getCodeGen(CodegenType codegenType, string text) {
+string getCodeGen(config::CodegenType codegenType, string text) {
   switch (codegenType) {
-  case CODEGEN_INT:
-  case CODEGEN_BOOL:
+  case config::CODEGEN_INT:
+  case config::CODEGEN_BOOL:
     return text;
-  case CODEGEN_STRING:
+  case config::CODEGEN_STRING:
     return "\"" + text + "\"";
-  case CODEGEN_ACTOR_MATCH:
-  case CODEGEN_LIST_CUSTOM_WEAPON:
-  case CODEGEN_LIST_SPAWN_POINT:
-  case CODEGEN_LIST_PATROL_POINT:
+  case config::CODEGEN_ACTOR_MATCH:
+  case config::CODEGEN_LIST_CUSTOM_WEAPON:
+  case config::CODEGEN_LIST_SPAWN_POINT:
+  case config::CODEGEN_LIST_PATROL_POINT:
     assert(text == "[]" && "`[]` is expected as a default value.\n");
     return text;
   default:
@@ -44,18 +44,17 @@ string DefaultMap::print() {
   string ret = functionName + "(\n";
   for (auto it = defaultMap.begin(); it != defaultMap.end(); ++it) {
     ret += inden(4);
-    std::ostringstream oss;
-    oss << it->second.astType;
-    ret += oss.str() + inden(16 - oss.str().size());
+    std::string astStr = config::toString(it->second.astType);
+    ret += astStr + inden(16 - astStr.size());
     string key = it->first;
     if (isMetadata)
       key = "__" + key + "__";
     ret += " " + key + " = ";
-    if (it->second.codegenType == CODEGEN_STRING)
+    if (it->second.codegenType == config::CODEGEN_STRING)
       ret += "\"" + it->second.defaultValue + "\"";
-    else if (it->second.codegenType == CODEGEN_ACTOR_MATCH)
+    else if (it->second.codegenType == config::CODEGEN_ACTOR_MATCH)
       ret += "NULL";
-    else if (it->second.codegenType == CODEGEN_LIST_CUSTOM_WEAPON)
+    else if (it->second.codegenType == config::CODEGEN_LIST_CUSTOM_WEAPON)
       ret += "NULL";
     else
       ret += it->second.defaultValue;
@@ -70,6 +69,7 @@ string DefaultMap::print() {
 string DefaultMap::get(string key, keyword::KeywordEnum keywordEnum,
                        std::map<string, string> extraEnum) {
   // Handle Unknown key or unknown value
+  assert(defaultMap.find(key) != defaultMap.end() && "Undefined key is passed");
   auto codegenType = defaultMap.at(key).codegenType;
   auto astType = defaultMap.at(key).astType;
   const std::shared_ptr<ValueNode> &input = inputMap[key];
@@ -88,20 +88,20 @@ string DefaultMap::get(string key, keyword::KeywordEnum keywordEnum,
 
   // Handle Built-in Type
   switch (codegenType) {
-  case CODEGEN_LIST_CUSTOM_WEAPON:
+  case config::CODEGEN_LIST_CUSTOM_WEAPON:
     return getCustomWeaponsListNode(input).to_string(16);
-  case CODEGEN_LIST_SPAWN_POINT:
+  case config::CODEGEN_LIST_SPAWN_POINT:
     return getSpawnPointListNode(input).to_string(16);
-  case CODEGEN_LIST_PATROL_POINT:
+  case config::CODEGEN_LIST_PATROL_POINT:
     return getPatrolPathListNode(input).to_string(24);
-  case CODEGEN_ACTOR_MATCH:
+  case config::CODEGEN_ACTOR_MATCH:
     return getActorMatchesNode(input).to_string(24);
   default:
     break;
   }
 
   // Handle Int Type
-  if (astType == AST_INT) {
+  if (astType == config::AST_INT) {
     if (auto intNode = dynamic_cast<IntValueNode *>(input.get()))
       return getCodeGen(codegenType, std::to_string(intNode->value));
     else if (auto stringNode = dynamic_cast<StringValueNode *>(input.get()))
@@ -113,7 +113,7 @@ string DefaultMap::get(string key, keyword::KeywordEnum keywordEnum,
   }
 
   // Handle Bool Type
-  if (astType == AST_BOOL) {
+  if (astType == config::AST_BOOL) {
     if (auto boolNode = dynamic_cast<BoolValueNode *>(input.get()))
       return getCodeGen(codegenType, boolNode->value ? "true" : "false");
     else
@@ -122,7 +122,7 @@ string DefaultMap::get(string key, keyword::KeywordEnum keywordEnum,
   }
 
   // Handle String Type (and Enum)
-  if (astType == AST_STRING) {
+  if (astType == config::AST_STRING) {
     auto stringNode = dynamic_cast<StringValueNode *>(input.get());
     if (!stringNode) {
       cerr << "string-typed value is expected at " << input->loc << "\n";
@@ -156,7 +156,8 @@ void DefaultMap::addInputMap(vector<unique_ptr<MetadataNode>> &metadatas) {
   verifyInputMap();
 }
 
-void DefaultMap::addInputMap(vector<unique_ptr<NamedParamAppsNode>> &namedArgs) {
+void DefaultMap::addInputMap(
+    vector<unique_ptr<NamedParamAppsNode>> &namedArgs) {
   clearInputMap();
   std::set<string> keySet;
   for (auto &namedArg : namedArgs) {

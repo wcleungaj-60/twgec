@@ -48,11 +48,9 @@ std::string getGlobalMetadata() {
   std::string ret = "Supported Global Metadata:\n";
   const std::map<std::string, codegen::DefaultMapValue> defaultMap =
       ConfigSetup::defaultMap.defaultMap;
-  for (auto metadata : defaultMap) {
-    std::ostringstream oss;
-    oss << metadata.second.astType;
-    ret += inden(4) + "__" + metadata.first + "__ : " + oss.str() + "\n";
-  }
+  for (auto metadata : defaultMap)
+    ret += inden(4) + "__" + metadata.first +
+           "__ : " + config::toString(metadata.second.astType) + "\n";
   return ret;
 }
 
@@ -60,11 +58,9 @@ std::string getBlockMetadata() {
   std::string ret = "Supported Block Metadata:\n";
   const std::map<std::string, codegen::DefaultMapValue> defaultMap =
       BlockSetup::defaultMap.defaultMap;
-  for (auto metadata : defaultMap) {
-    std::ostringstream oss;
-    oss << metadata.second.astType;
-    ret += inden(4) + "__" + metadata.first + "__ : " + oss.str() + "\n";
-  }
+  for (auto metadata : defaultMap)
+    ret += inden(4) + "__" + metadata.first +
+           "__ : " + config::toString(metadata.second.astType) + "\n";
   return ret;
 }
 

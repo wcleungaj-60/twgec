@@ -4,23 +4,16 @@
 #include "utils/formatter.h"
 #include "utils/utils.h"
 #include <fstream>
-#include <map>
 
 using namespace codegen;
 using namespace formatter;
 using namespace keyword;
 
-DefaultMap action::ActionEnhFFPlayerMousePosition::defaultMap = DefaultMap(
-    {
-        {"actorId", {AST_STRING, CODEGEN_STRING, ""}},
-        {"varX", {AST_STRING, CODEGEN_STRING, "x"}},
-        {"varY", {AST_STRING, CODEGEN_STRING, "y"}},
-    },
-    "EnhFF::playerMousePosition");
-
 void action::ActionEnhFFPlayerMousePosition::method(
     std::ofstream &of, std::unique_ptr<ParamAppsNode> &action,
-    UserDefinedMetadata userDefinedMeta) {
+                                const config::InstructionConfig config,
+                                UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(action->named_args);
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorCode", defaultMap.get("actorId")},
@@ -29,7 +22,7 @@ void action::ActionEnhFFPlayerMousePosition::method(
       {"wait", "true"},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"PlayerMousePositionEnh\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);

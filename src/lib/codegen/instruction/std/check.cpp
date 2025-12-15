@@ -1,50 +1,19 @@
 #include "codegen/instruction/check.h"
 #include "keyword.h"
+#include "utils/defaultMap.h"
 #include "utils/formatter.h"
 #include "utils/utils.h"
 #include <fstream>
-#include <map>
-#include <memory>
 
 using namespace codegen;
 using namespace formatter;
 using namespace keyword;
 
-DefaultMap check::CheckActorCount::defaultMap = DefaultMap(
-    {
-        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
-        {"varname", {AST_STRING, CODEGEN_STRING, ""}},
-        {"op", {AST_STRING, CODEGEN_STRING, "=="}},
-        {"value", {AST_INT, CODEGEN_STRING, ""}},
-    },
-    "actorCount");
-
-DefaultMap check::CheckForEachActor::defaultMap = DefaultMap(
-    {
-        {"actor", {AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]"}},
-        {"varname", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "forEachActor");
-
-DefaultMap check::CheckNumber::defaultMap = DefaultMap(
-    {
-        {"lhs", {AST_INT, CODEGEN_STRING, "0"}},
-        {"rhs", {AST_INT, CODEGEN_STRING, "0"}},
-        {"op", {AST_STRING, CODEGEN_STRING, "=="}},
-    },
-    "checkNumber");
-
-DefaultMap check::CheckString::defaultMap = DefaultMap(
-    {
-        {"value", {AST_STRING, CODEGEN_STRING, ""}},
-        {"matchKind", {AST_STRING, CODEGEN_STRING, "contain"}},
-        {"str", {AST_STRING, CODEGEN_STRING, ""}},
-    },
-    "checkString");
-
 void check::CheckActorCount::method(std::ofstream &of,
                                     std::unique_ptr<ParamAppsNode> &check,
+                                    const config::InstructionConfig config,
                                     UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(check->named_args);
   JsonObjectNode _logiNode = JsonObjectNode("_and_or", "\"\"");
   JsonObjectNode dataNode = JsonObjectNode({
@@ -56,7 +25,7 @@ void check::CheckActorCount::method(std::ofstream &of,
       {"_elseEventId", "\"\""},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"ActorCount\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -64,7 +33,9 @@ void check::CheckActorCount::method(std::ofstream &of,
 
 void check::CheckForEachActor::method(std::ofstream &of,
                                       std::unique_ptr<ParamAppsNode> &check,
+                                      const config::InstructionConfig config,
                                       UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(check->named_args);
   JsonObjectNode _logiNode = JsonObjectNode("_and_or", "\"\"");
   JsonObjectNode dataNode = JsonObjectNode({
@@ -78,7 +49,7 @@ void check::CheckForEachActor::method(std::ofstream &of,
       {"_elseEventId", "\"\""},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"ForEachActor\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -86,7 +57,9 @@ void check::CheckForEachActor::method(std::ofstream &of,
 
 void check::CheckNumber::method(std::ofstream &of,
                                 std::unique_ptr<ParamAppsNode> &check,
+                                const config::InstructionConfig config,
                                 UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(check->named_args);
   JsonObjectNode _logiNode = JsonObjectNode("_and_or", "\"\"");
   JsonObjectNode dataNode = JsonObjectNode({
@@ -97,7 +70,7 @@ void check::CheckNumber::method(std::ofstream &of,
       {"_elseEventId", "\"\""},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"NumberCheck\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);
@@ -105,7 +78,9 @@ void check::CheckNumber::method(std::ofstream &of,
 
 void check::CheckString::method(std::ofstream &of,
                                 std::unique_ptr<ParamAppsNode> &check,
+                                const config::InstructionConfig config,
                                 UserDefinedMetadata userDefinedMeta) {
+  DefaultMap defaultMap = toDefaultMap(config);
   defaultMap.addInputMap(check->named_args);
   JsonObjectNode _logiNode = JsonObjectNode("_and_or", "\"\"");
   JsonObjectNode dataNode = JsonObjectNode({
@@ -117,7 +92,7 @@ void check::CheckString::method(std::ofstream &of,
       {"_elseEventId", "\"\""},
   });
   JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"String\""},
+      {"type", "\"" + config.codegenName + "\""},
       {"data", dataNode.to_string(20)},
   });
   of << inden(16) << rootNode.to_string(16);

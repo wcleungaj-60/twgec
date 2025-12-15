@@ -4,21 +4,6 @@
 #include "ast.h"
 #include <string>
 
-#define CODEGEN_ACTION(inputName, outputClass)                                 \
-  if (action->identifier == inputName)                                         \
-  return action::Action##outputClass::method(of, action->paramApps,            \
-                                             userDefinedMeta)
-
-#define CODEGEN_CHECK(inputName, outputClass)                                  \
-  if (check->identifier == inputName)                                          \
-  return check::Check##outputClass::method(of, check->paramApps,               \
-                                           userDefinedMeta)
-
-#define CODEGEN_TRIGGER(inputName, outputClass)                                \
-  if (trigger->identifier == inputName)                                        \
-  return trigger::Trigger##outputClass::method(of, trigger->paramApps,         \
-                                               userDefinedMeta)
-
 namespace codegen {
 
 struct UserDefinedMetadata {
