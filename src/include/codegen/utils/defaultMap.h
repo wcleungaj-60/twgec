@@ -1,5 +1,5 @@
-#ifndef CODEGEN_defaultMap_H
-#define CODEGEN_defaultMap_H
+#ifndef CODEGEN_DEFAULTMAP_H
+#define CODEGEN_DEFAULTMAP_H
 
 #include "ast.h"
 #include "keyword.h"
@@ -104,4 +104,4 @@ public:
              std::map<string, string> extraEnum = {});
 };
 } // namespace codegen
-#endif
+#endif // CODEGEN_DEFAULTMAP_H

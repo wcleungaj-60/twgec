@@ -1,41 +1,13 @@
 #ifndef HELP_H
 #define HELP_H
 
-#include "codegen/instruction/action.h"
-#include "codegen/instruction/check.h"
 #include "codegen/instruction/metadata.h"
-#include "codegen/instruction/trigger.h"
-#include "utils.h"
+#include "instruction.h"
 #include <sstream>
-#include <string>
 
 namespace {
 
-using namespace codegen::action;
-using namespace codegen::check;
 using namespace codegen::metadata;
-using namespace codegen::trigger;
-
-std::string getDefaultMapItem(codegen::DefaultMap defaultMap,
-                              std::string nameZh) {
-  int padding = 28;
-  std::map<std::string, codegen::DefaultMapValue> defaultMapParam =
-      defaultMap.defaultMap;
-  std::string instrName = defaultMap.functionName;
-  std::string ret;
-  assert(instrName.size() <= padding);
-  ret +=
-      inden(4) + instrName + inden(padding - instrName.size()) + nameZh + "\n";
-  ret += inden(7);
-  for (auto param : defaultMapParam) {
-    std::ostringstream oss;
-    oss << param.second.astType;
-    ret += " " + param.first + ": " + oss.str() + ",";
-  }
-  ret.pop_back();
-  ret += "\n";
-  return ret;
-}
 
 const std::string introduction =
     "twgec (Twilight game.events compiler) is a transpiler that can generate "
@@ -96,63 +68,22 @@ std::string getBlockMetadata() {
   return ret;
 }
 
-// TODO: Sync up codegen.h and help.h
-std::string getActions() {
+std::string getInstructions() {
   std::string ret = "Supported Actions:\n";
-  ret += getDefaultMapItem(ActionActorAttributes::defaultMap, "設定角色屬性");
-  ret += getDefaultMapItem(ActionActorDisappear::defaultMap, "角色消失");
-  ret += getDefaultMapItem(ActionActorFollow::defaultMap, "跟隨人物");
-  ret += getDefaultMapItem(ActionActorTalk::defaultMap, "角色說話");
-  ret += getDefaultMapItem(ActionAddActor::defaultMap, "新增角色");
-  ret += getDefaultMapItem(ActionAddDropItem::defaultMap, "新增放置可拾取道具");
-  ret += getDefaultMapItem(ActionAddMapSign::defaultMap, "新增告示牌");
-  ret += getDefaultMapItem(ActionAddStuff::defaultMap, "新增武器道具");
-  ret += getDefaultMapItem(ActionDeltaHp::defaultMap, "角色加減血");
-  ret += getDefaultMapItem(ActionEnblastEffect::defaultMap, "光彈特效");
-  ret += getDefaultMapItem(ActionGetCookie::defaultMap, "取得Cookies");
-  ret += getDefaultMapItem(ActionGetUserState::defaultMap, "取得玩家狀態");
-  ret += getDefaultMapItem(ActionMapWarp::defaultMap, "設定地圖傳送點");
-  ret += getDefaultMapItem(ActionMissionComplete::defaultMap, "任務完成");
-  ret += getDefaultMapItem(ActionLongBo::defaultMap, "龍波");
-  // `print` is used in the front-end instead of `console`
-  ret += getDefaultMapItem(ActionConsole::defaultMap, "控制台輸出");
-  ret += getDefaultMapItem(ActionSetCookie::defaultMap, "儲存Cookies");
-  ret += getDefaultMapItem(ActionSetGlobal::defaultMap, "儲存全域變數");
-  ret += getDefaultMapItem(ActionSetObjectVar::defaultMap, "儲存物件變數");
-  ret += getDefaultMapItem(ActionSetUserState::defaultMap, "儲存玩家狀態");
-  ret += getDefaultMapItem(ActionSetWeaponAbility::defaultMap, "設定武器技能");
-  ret += getDefaultMapItem(ActionWait::defaultMap, "等待");
-  ret += getDefaultMapItem(ActionEnhFFPlayerMousePosition::defaultMap,
-                           "玩家滑鼠座標");
-  return ret;
-}
-
-std::string getChecks() {
-  std::string ret = "Supported Checks:\n";
-  ret += getDefaultMapItem(CheckActorCount::defaultMap, "計算人數");
-  ret += getDefaultMapItem(CheckNumber::defaultMap, "比較數字");
-  ret += getDefaultMapItem(CheckString::defaultMap, "比對字串");
-  ret += getDefaultMapItem(CheckForEachActor::defaultMap, "找出所有角色");
-  return ret;
-}
-
-std::string getTriggers() {
-  std::string ret = "Supported Triggers:\n";
-  ret += getDefaultMapItem(TriggerActorAdded::defaultMap, "角色進入戰場");
-  ret += getDefaultMapItem(TriggerActorDead::defaultMap, "角色死亡");
-  ret += getDefaultMapItem(TriggerActorFire::defaultMap, "角色發動攻擊");
-  ret += getDefaultMapItem(TriggerActorHit::defaultMap, "角色受傷");
-  ret += getDefaultMapItem(TriggerClickButton::defaultMap, "告示牌按鈕");
-  ret += getDefaultMapItem(TriggerKeyboardPressed::defaultMap, "鍵盤按鍵");
-  ret += getDefaultMapItem(TriggerItemPickup::defaultMap, "拾取武器道具");
-  ret += getDefaultMapItem(TriggerReleasePower::defaultMap, "發動技能");
+  for (auto config : config::actionList)
+    ret += config.toString() + "\n";
+  ret += "\nSupported Checks:\n";
+  for (auto config : config::checkList)
+    ret += config.toString() + "\n";
+  ret += "\nSupported Triggers:\n";
+  for (auto config : config::triggerList)
+    ret += config.toString() + "\n";
   return ret;
 }
 } // namespace
 
 static const std::string helpMessage =
     introduction + "\n" + sectionOption + "\n" + sectionBuiltinStruct + "\n\n" +
-    getGlobalMetadata() + "\n" + getBlockMetadata() + "\n" + getActions() +
-    "\n" + getChecks() + "\n" + getTriggers();
+    getGlobalMetadata() + "\n" + getBlockMetadata() + "\n" + getInstructions();
 
 #endif

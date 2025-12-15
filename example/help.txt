@@ -120,7 +120,7 @@ Supported Actions:
         ability: string, level: int|string, operation: string, weapon: string
     wait                        等待
         duration: int|string
-    EnhFF::playerMousePosition  玩家滑鼠座標
+    EnhFF::playerMousePosition  EnhFF::玩家滑鼠座標
         actorId: string, varX: string, varY: string
 
 Supported Checks:
