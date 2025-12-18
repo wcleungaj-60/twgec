@@ -2,37 +2,24 @@
 #include "keyword.h"
 #include "utils/defaultMap.h"
 #include "utils/formatter.h"
-#include <fstream>
-#include <memory>
 
 using namespace codegen;
 using namespace formatter;
 using namespace keyword;
 
-void trigger::TriggerActorAdded::method(std::ofstream &of,
-                                        std::unique_ptr<ParamAppsNode> &trigger,
-                                        const config::InstructionConfig config,
-                                        UserDefinedMetadata userDefinedMeta) {
-  DefaultMap defaultMap = toDefaultMap(config);
-  defaultMap.addInputMap(trigger->named_args);
-  JsonObjectNode dataNode = JsonObjectNode({
+JsonObjectNode
+trigger::TriggerActorAdded::method(DefaultMap defaultMap,
+                                   UserDefinedMetadata userDefinedMeta) {
+  return JsonObjectNode({
       {"actorMatches", defaultMap.get("actor")},
       {"varname", defaultMap.get("varName")},
   });
-  JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"" + config.codegenName + "\""},
-      {"data", dataNode.to_string(20)},
-  });
-  of << inden(16) << rootNode.to_string(16);
 }
 
-void trigger::TriggerActorDead::method(std::ofstream &of,
-                                       std::unique_ptr<ParamAppsNode> &trigger,
-                                       const config::InstructionConfig config,
-                                       UserDefinedMetadata userDefinedMeta) {
-  DefaultMap defaultMap = toDefaultMap(config);
-  defaultMap.addInputMap(trigger->named_args);
-  JsonObjectNode dataNode = JsonObjectNode({
+JsonObjectNode
+trigger::TriggerActorDead::method(DefaultMap defaultMap,
+                                  UserDefinedMetadata userDefinedMeta) {
+  return JsonObjectNode({
       {"actorMatches", defaultMap.get("actor")},
       {"varname", defaultMap.get("varName")},
       {"timing", "\"preDead\""},
@@ -40,19 +27,11 @@ void trigger::TriggerActorDead::method(std::ofstream &of,
       {"hitterMatches", "[]"},
       {"hitterVarname", defaultMap.get("hitterVarName")},
   });
-  JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"" + config.codegenName + "\""},
-      {"data", dataNode.to_string(20)},
-  });
-  of << inden(16) << rootNode.to_string(16);
 }
 
-void trigger::TriggerActorFire::method(std::ofstream &of,
-                                       std::unique_ptr<ParamAppsNode> &trigger,
-                                       const config::InstructionConfig config,
-                                       UserDefinedMetadata userDefinedMeta) {
-  DefaultMap defaultMap = toDefaultMap(config);
-  defaultMap.addInputMap(trigger->named_args);
+JsonObjectNode
+trigger::TriggerActorFire::method(DefaultMap defaultMap,
+                                  UserDefinedMetadata userDefinedMeta) {
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", defaultMap.get("actor")},
       {"varname", defaultMap.get("varName")},
@@ -64,19 +43,12 @@ void trigger::TriggerActorFire::method(std::ofstream &of,
         .addNode("weaponTypeCheck", "\"include\"")
         .addNode("weaponType", defaultMap.get("weapon"));
   }
-  JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"" + config.codegenName + "\""},
-      {"data", dataNode.to_string(20)},
-  });
-  of << inden(16) << rootNode.to_string(16);
+  return dataNode;
 }
 
-void trigger::TriggerActorHit::method(std::ofstream &of,
-                                      std::unique_ptr<ParamAppsNode> &trigger,
-                                      const config::InstructionConfig config,
-                                      UserDefinedMetadata userDefinedMeta) {
-  DefaultMap defaultMap = toDefaultMap(config);
-  defaultMap.addInputMap(trigger->named_args);
+JsonObjectNode
+trigger::TriggerActorHit::method(DefaultMap defaultMap,
+                                 UserDefinedMetadata userDefinedMeta) {
   JsonObjectNode dataNode = JsonObjectNode({
       {"actorMatches", defaultMap.get("actor")},
       {"varname", defaultMap.get("actorVarName")},
@@ -93,40 +65,25 @@ void trigger::TriggerActorHit::method(std::ofstream &of,
         .addNode("weaponTypeCheck", "\"include\"")
         .addNode("weaponType", defaultMap.get("weapon"));
   }
-  JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"" + config.codegenName + "\""},
-      {"data", dataNode.to_string(20)},
-  });
-  of << inden(16) << rootNode.to_string(16);
+  return dataNode;
 }
 
-void trigger::TriggerClickButton::method(
-    std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger,
-    const config::InstructionConfig config,
-    UserDefinedMetadata userDefinedMeta) {
-  DefaultMap defaultMap = toDefaultMap(config);
-  defaultMap.addInputMap(trigger->named_args);
-  JsonObjectNode dataNode = JsonObjectNode({
+JsonObjectNode
+trigger::TriggerClickButton::method(DefaultMap defaultMap,
+                                    UserDefinedMetadata userDefinedMeta) {
+  return JsonObjectNode({
       {"actorMatches", defaultMap.get("actor")},
       {"varname", defaultMap.get("varName")},
       {"checkButtoncode", "true"},
       {"buttonCode", defaultMap.get("buttonId")},
       {"varnameDevice", "\"\""},
   });
-  JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"" + config.codegenName + "\""},
-      {"data", dataNode.to_string(20)},
-  });
-  of << inden(16) << rootNode.to_string(16);
 }
 
-void trigger::TriggerKeyboardPressed::method(
-    std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger,
-    const config::InstructionConfig config,
-    UserDefinedMetadata userDefinedMeta) {
-  DefaultMap defaultMap = toDefaultMap(config);
-  defaultMap.addInputMap(trigger->named_args);
-  JsonObjectNode dataNode = JsonObjectNode({
+JsonObjectNode
+trigger::TriggerKeyboardPressed::method(DefaultMap defaultMap,
+                                        UserDefinedMetadata userDefinedMeta) {
+  return JsonObjectNode({
       {"playerId", defaultMap.get("actorId")},
       // `{instance.id}` is needed for parsing the playerLocal
       {"playerLocal", defaultMap.get("varName")},
@@ -136,43 +93,27 @@ void trigger::TriggerKeyboardPressed::method(
       {"ctrl", "\"\""},
       {"shift", "\"\""},
   });
-  JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"" + config.codegenName + "\""},
-      {"data", dataNode.to_string(20)},
-  });
-  of << inden(16) << rootNode.to_string(16);
 }
 
-void trigger::TriggerItemPickup::method(std::ofstream &of,
-                                        std::unique_ptr<ParamAppsNode> &trigger,
-                                        const config::InstructionConfig config,
-                                        UserDefinedMetadata userDefinedMeta) {
-  DefaultMap defaultMap = toDefaultMap(config);
-  defaultMap.addInputMap(trigger->named_args);
+JsonObjectNode
+trigger::TriggerItemPickup::method(DefaultMap defaultMap,
+                                   UserDefinedMetadata userDefinedMeta) {
   JsonObjectNode itemMatchNode = JsonObjectNode({
       {"method", defaultMap.get("matchKind", matchKind::keywordEnum)},
       {"itemCode", defaultMap.get("itemMatchCode")},
       {"itemType", "\"\""},
   });
-  JsonObjectNode dataNode = JsonObjectNode({
+  return JsonObjectNode({
       {"actorMatches", defaultMap.get("actor")},
       {"varname", defaultMap.get("actorVarname")},
       {"itemMatch", itemMatchNode.to_string(24)},
       {"itemVarname", defaultMap.get("itemVarname")},
   });
-  JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"" + config.codegenName + "\""},
-      {"data", dataNode.to_string(20)},
-  });
-  of << inden(16) << rootNode.to_string(16);
 }
 
-void trigger::TriggerReleasePower::method(
-    std::ofstream &of, std::unique_ptr<ParamAppsNode> &trigger,
-    const config::InstructionConfig config,
-    UserDefinedMetadata userDefinedMeta) {
-  DefaultMap defaultMap = toDefaultMap(config);
-  defaultMap.addInputMap(trigger->named_args);
+JsonObjectNode
+trigger::TriggerReleasePower::method(DefaultMap defaultMap,
+                                     UserDefinedMetadata userDefinedMeta) {
   std::string ability = defaultMap.get("ability", abilityKind::keywordEnum);
   std::string weaponType =
       defaultMap.get("weapon", weaponKind::keywordEnum,
@@ -194,10 +135,5 @@ void trigger::TriggerReleasePower::method(
   if (weaponType != "\"\"")
     dataNode.addNode("checkWeaponType", "true")
         .addNode("weaponType", weaponType);
-
-  JsonObjectNode rootNode = JsonObjectNode({
-      {"type", "\"" + config.codegenName + "\""},
-      {"data", dataNode.to_string(20)},
-  });
-  of << inden(16) << rootNode.to_string(16);
+  return dataNode;
 }

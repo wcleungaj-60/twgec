@@ -2,67 +2,28 @@
 #define CODEGEN_TRIGGER_H
 
 #include "codegen.h"
-#include "instruction.h"
+#include "utils/defaultMap.h"
+#include "utils/formatter.h"
 
 namespace codegen {
 namespace trigger {
 
-class TriggerActorAdded {
-public:
-  static void method(std ::ofstream &of, std ::unique_ptr<ParamAppsNode> &check,
-                     const config::InstructionConfig config,
-                     UserDefinedMetadata userDefinedMeta);
-};
+#define REGISTER_CODE_GEN(name)                                                \
+  namespace Trigger##name {                                                    \
+    formatter::JsonObjectNode method(DefaultMap defaultMap,                    \
+                                     UserDefinedMetadata userDefinedMeta);     \
+  }
 
-class TriggerActorDead {
-public:
-  static void method(std ::ofstream &of, std ::unique_ptr<ParamAppsNode> &check,
-                     const config::InstructionConfig config,
-                     UserDefinedMetadata userDefinedMeta);
-};
+REGISTER_CODE_GEN(ActorAdded);
+REGISTER_CODE_GEN(ActorDead);
+REGISTER_CODE_GEN(ActorFire);
+REGISTER_CODE_GEN(ActorHit);
+REGISTER_CODE_GEN(ClickButton);
+REGISTER_CODE_GEN(KeyboardPressed);
+REGISTER_CODE_GEN(ItemPickup);
+REGISTER_CODE_GEN(ReleasePower);
 
-class TriggerActorFire {
-public:
-  static void method(std ::ofstream &of, std ::unique_ptr<ParamAppsNode> &check,
-                     const config::InstructionConfig config,
-                     UserDefinedMetadata userDefinedMeta);
-};
-
-class TriggerActorHit {
-public:
-  static void method(std ::ofstream &of, std ::unique_ptr<ParamAppsNode> &check,
-                     const config::InstructionConfig config,
-                     UserDefinedMetadata userDefinedMeta);
-};
-
-class TriggerClickButton {
-public:
-  static void method(std ::ofstream &of, std ::unique_ptr<ParamAppsNode> &check,
-                     const config::InstructionConfig config,
-                     UserDefinedMetadata userDefinedMeta);
-};
-
-class TriggerKeyboardPressed {
-public:
-  static void method(std ::ofstream &of, std ::unique_ptr<ParamAppsNode> &check,
-                     const config::InstructionConfig config,
-                     UserDefinedMetadata userDefinedMeta);
-};
-
-class TriggerItemPickup {
-public:
-  static void method(std ::ofstream &of, std ::unique_ptr<ParamAppsNode> &check,
-                     const config::InstructionConfig config,
-                     UserDefinedMetadata userDefinedMeta);
-};
-
-class TriggerReleasePower {
-public:
-  static void method(std ::ofstream &of, std ::unique_ptr<ParamAppsNode> &check,
-                     const config::InstructionConfig config,
-                     UserDefinedMetadata userDefinedMeta);
-};
-
+#undef REGISTER_CODE_GEN_ACTION
 } // namespace trigger
 } // namespace codegen
 

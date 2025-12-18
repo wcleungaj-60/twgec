@@ -2,35 +2,24 @@
 #define CODEGEN_CHECK_H
 
 #include "codegen.h"
-#include "instruction.h"
+#include "utils/defaultMap.h"
+#include "utils/formatter.h"
 
 namespace codegen {
 namespace check {
 
-class CheckActorCount {
-public:
-  static void method(std ::ofstream &of, std ::unique_ptr<ParamAppsNode> &check,
-                     const config::InstructionConfig config,
-                     UserDefinedMetadata userDefinedMeta);
-};
-class CheckForEachActor {
-public:
-  static void method(std ::ofstream &of, std ::unique_ptr<ParamAppsNode> &check,
-                     const config::InstructionConfig config,
-                     UserDefinedMetadata userDefinedMeta);
-};
-class CheckString {
-public:
-  static void method(std ::ofstream &of, std ::unique_ptr<ParamAppsNode> &check,
-                     const config::InstructionConfig config,
-                     UserDefinedMetadata userDefinedMeta);
-};
-class CheckNumber {
-public:
-  static void method(std ::ofstream &of, std ::unique_ptr<ParamAppsNode> &check,
-                     const config::InstructionConfig config,
-                     UserDefinedMetadata userDefinedMeta);
-};
+#define REGISTER_CODE_GEN(name)                                                \
+  namespace Check##name {                                                      \
+    formatter::JsonObjectNode method(DefaultMap defaultMap,                    \
+                                     UserDefinedMetadata userDefinedMeta);     \
+  }
+
+REGISTER_CODE_GEN(ActorCount);
+REGISTER_CODE_GEN(ForEachActor);
+REGISTER_CODE_GEN(String);
+REGISTER_CODE_GEN(Number);
+
+#undef REGISTER_CODE_GEN
 
 } // namespace check
 } // namespace codegen

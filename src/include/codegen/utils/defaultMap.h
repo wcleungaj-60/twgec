@@ -31,7 +31,7 @@ private:
 
 public:
   // Variables
-  const std::map<string, DefaultMapValue> defaultMap;
+  std::map<string, DefaultMapValue> defaultMap;
   std::map<string, const std::shared_ptr<ValueNode>> inputMap;
   const string functionName;
   bool isMetadata;
@@ -40,6 +40,14 @@ public:
              string functionName = "", bool isMetadata = false)
       : functionName(functionName), defaultMap(defaultMap),
         isMetadata(isMetadata) {}
+  DefaultMap(config::InstructionConfig config,
+             vector<unique_ptr<NamedParamAppsNode>> &namedArgs)
+      : functionName(config.name), isMetadata(false) {
+    for (auto &param : config.params)
+      defaultMap.insert(
+          {param.key, {param.astType, param.codegenType, param.defaultValue}});
+    addInputMap(namedArgs);
+  }
   // Functions
   void clearInputMap() { inputMap = {}; }
   void addInputMap(vector<unique_ptr<MetadataNode>> &metadatas);
@@ -47,15 +55,5 @@ public:
   string get(string key, keyword::KeywordEnum keywordEnum = emptyKeywordEnum,
              std::map<string, string> extraEnum = {});
 };
-
-inline DefaultMap toDefaultMap(config::InstructionConfig config) {
-  std::map<string, DefaultMapValue> map;
-  for (auto &param : config.params) {
-    map.insert(
-        {param.key,
-         {param.astType, param.codegenType, param.defaultValue}});
-  }
-  return DefaultMap(map, config.name);
-}
 } // namespace codegen
 #endif // CODEGEN_DEFAULTMAP_H

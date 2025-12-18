@@ -88,6 +88,8 @@ void CodeGenerator::codegenTypedInstrSet(
   }
   of << std::endl;
   for (auto i = 0; i < instructions.size(); i++) {
+    of << inden(16) << "{\n";
+    of << inden(20) << "\"type\": ";
     switch (typedInstrSet->type) {
     case FUN_DEF_TYPE_ACTIONS:
       codegenAction(of, instructions[i]->instruction);
@@ -101,6 +103,7 @@ void CodeGenerator::codegenTypedInstrSet(
     default:
       break;
     }
+    of << "\n" << inden(16) << "}";
     if (i != instructions.size() - 1)
       of << ",";
     of << std::endl;
@@ -108,103 +111,126 @@ void CodeGenerator::codegenTypedInstrSet(
   of << inden(12) << endingStr;
 }
 
-#define CODEGEN_PARAM                                                          \
-  of, instrNode->paramApps, configMap.at(identifier), userDefinedMeta
+#define CODEGEN_FUNC method(defaultMap, userDefinedMeta).to_string(20)
 
 void CodeGenerator::codegenAction(std::ofstream &of,
                                   std::unique_ptr<InstructionNode> &instrNode) {
   auto configMap = configVecToMap(config::actionList);
   std::string identifier = instrNode->identifier;
+  if (configMap.find(identifier) == configMap.end()) {
+    std::cerr << "Codegen error: Cannot found the corresponding action name \""
+              << identifier << "\" at " << instrNode.get()->loc << "\n";
+    return;
+  }
+  auto config = configMap.at(identifier);
+  DefaultMap defaultMap = DefaultMap(config, instrNode->paramApps->named_args);
+  of << "\"" << config.codegenName << "\",\n";
+  of << inden(20) << "\"data\": ";
   // Standard Module
   if (identifier == "actorAttributes" || identifier == "設定角色屬性")
-    return action::ActionActorAttributes::method(CODEGEN_PARAM);
+    of << action::ActionActorAttributes::CODEGEN_FUNC;
   if (identifier == "actorDisappear" || identifier == "角色消失")
-    return action::ActionActorDisappear::method(CODEGEN_PARAM);
+    of << action::ActionActorDisappear::CODEGEN_FUNC;
   if (identifier == "actorFollow" || identifier == "跟隨人物")
-    return action::ActionActorFollow::method(CODEGEN_PARAM);
+    of << action::ActionActorFollow::CODEGEN_FUNC;
   if (identifier == "actorTalk" || identifier == "角色說話")
-    return action::ActionActorTalk::method(CODEGEN_PARAM);
+    of << action::ActionActorTalk::CODEGEN_FUNC;
   if (identifier == "addActor" || identifier == "新增角色")
-    return action::ActionAddActor::method(CODEGEN_PARAM);
+    of << action::ActionAddActor::CODEGEN_FUNC;
   if (identifier == "addDropItem" || identifier == "新增放置可拾取道具")
-    return action::ActionAddDropItem::method(CODEGEN_PARAM);
+    of << action::ActionAddDropItem::CODEGEN_FUNC;
   if (identifier == "addMapSign" || identifier == "新增告示牌")
-    return action::ActionAddMapSign::method(CODEGEN_PARAM);
+    of << action::ActionAddMapSign::CODEGEN_FUNC;
   if (identifier == "addStuff" || identifier == "新增武器道具")
-    return action::ActionAddStuff::method(CODEGEN_PARAM);
+    of << action::ActionAddStuff::CODEGEN_FUNC;
   if (identifier == "deltaHp" || identifier == "角色加減血")
-    return action::ActionDeltaHp::method(CODEGEN_PARAM);
+    of << action::ActionDeltaHp::CODEGEN_FUNC;
   if (identifier == "enblastEffect" || identifier == "光彈特效")
-    return action::ActionEnblastEffect::method(CODEGEN_PARAM);
+    of << action::ActionEnblastEffect::CODEGEN_FUNC;
   if (identifier == "getCookie" || identifier == "取得Cookies")
-    return action::ActionGetCookie::method(CODEGEN_PARAM);
+    of << action::ActionGetCookie::CODEGEN_FUNC;
   if (identifier == "getUserState" || identifier == "取得玩家狀態")
-    return action::ActionGetUserState::method(CODEGEN_PARAM);
+    of << action::ActionGetUserState::CODEGEN_FUNC;
   if (identifier == "mapWarp" || identifier == "設定地圖傳送點")
-    return action::ActionMapWarp::method(CODEGEN_PARAM);
+    of << action::ActionMapWarp::CODEGEN_FUNC;
   if (identifier == "missionComplete" || identifier == "任務完成")
-    return action::ActionMissionComplete::method(CODEGEN_PARAM);
+    of << action::ActionMissionComplete::CODEGEN_FUNC;
   if (identifier == "longBo" || identifier == "龍波")
-    return action::ActionLongBo::method(CODEGEN_PARAM);
+    of << action::ActionLongBo::CODEGEN_FUNC;
   if (identifier == "print" || identifier == "控制台輸出")
-    return action::ActionConsole::method(CODEGEN_PARAM);
+    of << action::ActionConsole::CODEGEN_FUNC;
   if (identifier == "setCookie" || identifier == "儲存Cookies")
-    return action::ActionSetCookie::method(CODEGEN_PARAM);
+    of << action::ActionSetCookie::CODEGEN_FUNC;
   if (identifier == "setGlobal" || identifier == "儲存全域變數")
-    return action::ActionSetGlobal::method(CODEGEN_PARAM);
+    of << action::ActionSetGlobal::CODEGEN_FUNC;
   if (identifier == "setObjectVar" || identifier == "儲存物件變數")
-    return action::ActionSetObjectVar::method(CODEGEN_PARAM);
+    of << action::ActionSetObjectVar::CODEGEN_FUNC;
   if (identifier == "setUserState" || identifier == "儲存玩家狀態")
-    return action::ActionSetUserState::method(CODEGEN_PARAM);
+    of << action::ActionSetUserState::CODEGEN_FUNC;
   if (identifier == "setWeaponAbility" || identifier == "設定武器技能")
-    return action::ActionSetWeaponAbility::method(CODEGEN_PARAM);
+    of << action::ActionSetWeaponAbility::CODEGEN_FUNC;
   if (identifier == "wait" || identifier == "等待")
-    return action::ActionWait::method(CODEGEN_PARAM);
+    of << action::ActionWait::CODEGEN_FUNC;
   // EnhFF Module
   if (identifier == "EnhFF::playerMousePosition" ||
       identifier == "EnhFF::玩家滑鼠座標")
-    return action::ActionEnhFFPlayerMousePosition::method(CODEGEN_PARAM);
-  std::cerr << "Codegen error: Cannot found the corresponding action name \""
-            << identifier << "\" at " << instrNode.get()->loc << "\n";
+    of << action::ActionEnhFFPlayerMousePosition::CODEGEN_FUNC;
+  return;
 }
 
 void CodeGenerator::codegenCheck(std::ofstream &of,
                                  std::unique_ptr<InstructionNode> &instrNode) {
   auto configMap = configVecToMap(config::checkList);
   std::string identifier = instrNode->identifier;
+  if (configMap.find(identifier) == configMap.end()) {
+    std::cerr << "Codegen error: Cannot found the corresponding check name \""
+              << identifier << "\" at " << instrNode.get()->loc << "\n";
+    return;
+  }
+  auto config = configMap.at(identifier);
+  DefaultMap defaultMap = DefaultMap(config, instrNode->paramApps->named_args);
+  of << "\"" << config.codegenName << "\",\n";
+  of << inden(20) << "\"data\": ";
   if (identifier == "actorCount" || identifier == "計算人數")
-    return check::CheckActorCount::method(CODEGEN_PARAM);
+    of << check::CheckActorCount::CODEGEN_FUNC;
   if (identifier == "forEachActor" || identifier == "找出所有角色")
-    return check::CheckForEachActor::method(CODEGEN_PARAM);
+    of << check::CheckForEachActor::CODEGEN_FUNC;
   if (identifier == "checkString" || identifier == "比對字串")
-    return check::CheckString::method(CODEGEN_PARAM);
+    of << check::CheckString::CODEGEN_FUNC;
   if (identifier == "checkNumber" || identifier == "比較數字")
-    return check::CheckNumber::method(CODEGEN_PARAM);
-  std::cerr << "Codegen error: Cannot found the corresponding check name \""
-            << identifier << "\" at " << instrNode.get()->loc << "\n";
+    of << check::CheckNumber::CODEGEN_FUNC;
+  return;
 }
 
 void CodeGenerator::codegenTrigger(
     std::ofstream &of, std::unique_ptr<InstructionNode> &instrNode) {
   auto configMap = configVecToMap(config::triggerList);
   std::string identifier = instrNode->identifier;
+  if (configMap.find(identifier) == configMap.end()) {
+    std::cerr << "Codegen error: Cannot found the corresponding trigger name \""
+              << identifier << "\" at " << instrNode.get()->loc << "\n";
+    return;
+  }
+  auto config = configMap.at(identifier);
+  DefaultMap defaultMap = DefaultMap(config, instrNode->paramApps->named_args);
+  of << "\"" << config.codegenName << "\",\n";
+  of << inden(20) << "\"data\": ";
   if (identifier == "actorAdded" || identifier == "角色進入戰場")
-    return trigger::TriggerActorAdded::method(CODEGEN_PARAM);
+    of << trigger::TriggerActorAdded::CODEGEN_FUNC;
   if (identifier == "actorDead" || identifier == "角色死亡")
-    return trigger::TriggerActorDead::method(CODEGEN_PARAM);
+    of << trigger::TriggerActorDead::CODEGEN_FUNC;
   if (identifier == "actorFire" || identifier == "角色發動攻擊")
-    return trigger::TriggerActorFire::method(CODEGEN_PARAM);
+    of << trigger::TriggerActorFire::CODEGEN_FUNC;
   if (identifier == "actorHit" || identifier == "角色受傷")
-    return trigger::TriggerActorHit::method(CODEGEN_PARAM);
+    of << trigger::TriggerActorHit::CODEGEN_FUNC;
   if (identifier == "clickButton" || identifier == "告示牌按鈕")
-    return trigger::TriggerClickButton::method(CODEGEN_PARAM);
+    of << trigger::TriggerClickButton::CODEGEN_FUNC;
   if (identifier == "keyboardPressed" || identifier == "鍵盤按鍵")
-    return trigger::TriggerKeyboardPressed::method(CODEGEN_PARAM);
+    of << trigger::TriggerKeyboardPressed::CODEGEN_FUNC;
   if (identifier == "itemPickup" || identifier == "拾取武器道具")
-    return trigger::TriggerItemPickup::method(CODEGEN_PARAM);
+    of << trigger::TriggerItemPickup::CODEGEN_FUNC;
   if (identifier == "releasePower" || identifier == "發動技能")
-    return trigger::TriggerReleasePower::method(CODEGEN_PARAM);
-  std::cerr << "Codegen error: Cannot found the corresponding trigger name \""
-            << identifier << "\" at " << instrNode.get()->loc << "\n";
+    of << trigger::TriggerReleasePower::CODEGEN_FUNC;
+  return;
 }
-#undef CODEGEN_PARAM
+#undef CODEGEN_FUNC
