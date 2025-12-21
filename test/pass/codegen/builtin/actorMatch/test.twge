@@ -1,5 +1,6 @@
 block init {
     triggers {
         actorDead(actor = ActorMatch(id = "sniper"));
+        actorDead(actor = ActorMatch(id = "sniper", group = 101));
     }
 }

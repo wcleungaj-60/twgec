@@ -98,6 +98,33 @@
                         "hitterMatches": [],
                         "hitterVarname": ""
                     }
+                },
+                {
+                    "type": "ActorDead",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": "sniper"
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": [],
+                                "checkGroup": true,
+                                "group": "101"
+                            }
+                        ],
+                        "varname": "",
+                        "timing": "preDead",
+                        "deathsVarname": "deaths",
+                        "hitterMatches": [],
+                        "hitterVarname": ""
+                    }
                 }
             ]
         }

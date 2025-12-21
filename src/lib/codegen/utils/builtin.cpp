@@ -137,6 +137,7 @@ DefaultMap actorMatchDefaultMap = DefaultMap(
         {"matchKind", {config::AST_STRING, config::CODEGEN_STRING, "contain"}},
         {"controller", {config::AST_STRING, config::CODEGEN_STRING, "all"}},
         {"id", {config::AST_STRING, config::CODEGEN_STRING, ""}},
+        {"group", {config::AST_INT, config::CODEGEN_STRING, ""}},
     },
     "actorMatch");
 
@@ -188,6 +189,10 @@ JsonArrayNode getActorMatchesNode(const std::shared_ptr<ValueNode> &valueNode) {
       {"camp", campNode.to_string(32)},
       {"excludeActorCodes", "[]"},
   });
+  if (actorMatchDefaultMap.get("group") != "\"\"") {
+    actorMatchNode.addNode("checkGroup", "true")
+        .addNode("group", actorMatchDefaultMap.get("group"));
+  }
   return JsonArrayNode(std::make_shared<JsonObjectNode>(actorMatchNode));
   return JsonArrayNode();
 }
