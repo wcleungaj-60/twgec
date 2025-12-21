@@ -1,0 +1,6 @@
+block init {
+    actions {
+        EnhFF::generalCircularRange(actorId = "instance", radius = 30, lineWidth = 2);
+        EnhFF::廣義圓形範圍(x = 20, y = 30, radius = 20, color = "#ff8888");
+    }
+}

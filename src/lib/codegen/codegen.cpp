@@ -175,6 +175,9 @@ void CodeGenerator::codegenAction(std::ofstream &of,
   if (identifier == "EnhFF::playerMousePosition" ||
       identifier == "EnhFF::玩家滑鼠座標")
     of << action::ActionEnhFFPlayerMousePosition::CODEGEN_FUNC;
+  if (identifier == "EnhFF::generalCircularRange" ||
+      identifier == "EnhFF::廣義圓形範圍")
+    of << action::ActionEnhFFGeneralCircularRange::CODEGEN_FUNC;
   return;
 }
 

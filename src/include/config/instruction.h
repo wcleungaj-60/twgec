@@ -291,6 +291,20 @@ const InstructionConfig EnhFFPlayerMousePositionConfig =
         .addParam("varX", AST_STRING, CODEGEN_STRING, "x")
         .addParam("varY", AST_STRING, CODEGEN_STRING, "y")
         .setCodegenName("PlayerMousePositionEnh");
+const InstructionConfig EnhFFGeneralCircularRangeConfig =
+    InstructionConfig("EnhFF", "generalCircularRange", "廣義圓形範圍")
+        .addParam("actorId", AST_STRING, CODEGEN_STRING, "")
+        // If actorId is filled. `actor` mode will be used
+        // Otherwise, `map` mode will be used
+        .addParam("x", AST_INT, CODEGEN_STRING, "0")
+        .addParam("y", AST_INT, CODEGEN_STRING, "0")
+        .addParam("radius", AST_INT, CODEGEN_STRING, "0")
+        .addParam("offsetX", AST_INT, CODEGEN_STRING, "0")
+        .addParam("offsetY", AST_INT, CODEGEN_STRING, "0")
+        .addParam("duration", AST_INT, CODEGEN_STRING, "10000")
+        .addParam("color", AST_STRING, CODEGEN_STRING, "#ffffff")
+        .addParam("lineWidth", AST_INT, CODEGEN_STRING, "1")
+        .setCodegenName("GeneralCircularRangeEnhFF");
 
 const std::vector<InstructionConfig> actionList = {
     // Standard Module
@@ -317,6 +331,7 @@ const std::vector<InstructionConfig> actionList = {
     setWeaponAbilityConfig,
     waitConfig,
     EnhFFPlayerMousePositionConfig,
+    EnhFFGeneralCircularRangeConfig,
 };
 
 const InstructionConfig actorCountConfig =
