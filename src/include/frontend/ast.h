@@ -663,6 +663,52 @@ inline std::ostream &operator<<(std::ostream &os,
   return os;
 }
 
+// TODO: Unify it with the unique_ptr
+inline std::ostream &operator<<(std::ostream &os,
+                                std::shared_ptr<ValueNode> valueNode) {
+  if (auto stringNode = dynamic_cast<StringValueNode *>(valueNode.get())) {
+    os << "\"" << stringNode->value << "\"";
+  } else if (auto intNode = dynamic_cast<IntValueNode *>(valueNode.get())) {
+    os << intNode->value;
+  } else if (auto boolNode = dynamic_cast<BoolValueNode *>(valueNode.get())) {
+    os << (boolNode->value ? "true" : "false");
+  } else if (auto varNode =
+                 dynamic_cast<VariableValueNode *>(valueNode.get())) {
+    os << varNode->value;
+  } else if (auto ptNode = dynamic_cast<PointValueNode *>(valueNode.get())) {
+    os << "Point(" << *(ptNode->x.get()) << "," << *(ptNode->y.get()) << ")";
+  } else if (auto actorMatchNode =
+                 dynamic_cast<ActorMatchValueNode *>(valueNode.get())) {
+    os << "ActorMatch(";
+    for (auto i = 0; i < actorMatchNode->paramApps->named_args.size(); i++) {
+      os << actorMatchNode->paramApps->named_args[i]->key << " = "
+         << *actorMatchNode->paramApps->named_args[i]->expNode.get();
+      if (i != actorMatchNode->paramApps->named_args.size() - 1)
+        os << ", ";
+    }
+    os << ")";
+  } else if (auto customWeaponNode =
+                 dynamic_cast<CustomWeaponValueNode *>(valueNode.get())) {
+    os << "CustomWeapon(";
+    for (auto i = 0; i < customWeaponNode->paramApps->named_args.size(); i++) {
+      os << customWeaponNode->paramApps->named_args[i]->key << " = "
+         << *customWeaponNode->paramApps->named_args[i]->expNode.get();
+      if (i != customWeaponNode->paramApps->named_args.size() - 1)
+        os << ", ";
+    }
+    os << ")";
+  } else if (auto listNode = dynamic_cast<ListValueNode *>(valueNode.get())) {
+    os << "[";
+    for (auto i = 0; i < listNode->items.size(); i++) {
+      os << *(listNode->items[i]->clone().get());
+      if (i != listNode->items.size() - 1)
+        os << ",";
+    }
+    os << "]";
+  }
+  return os;
+}
+
 inline std::ostream &operator<<(std::ostream &os,
                                 const ExpressionNode &expNode) {
   if (expNode.isValue) {

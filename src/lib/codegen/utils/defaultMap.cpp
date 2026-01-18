@@ -3,7 +3,6 @@
 #include "utils/builtin.h"
 #include <iostream>
 #include <set>
-#include <sstream>
 
 using namespace codegen;
 using std::cerr;
@@ -17,6 +16,7 @@ string getCodeGen(config::CodegenType codegenType, string text) {
   case config::CODEGEN_STRING:
     return "\"" + text + "\"";
   case config::CODEGEN_ACTOR_MATCH:
+  case config::CODEGEN_ENHFF_ACTOR_MATCH:
   case config::CODEGEN_LIST_CUSTOM_WEAPON:
   case config::CODEGEN_LIST_SPAWN_POINT:
   case config::CODEGEN_LIST_PATROL_POINT:
@@ -53,6 +53,8 @@ string DefaultMap::print() {
     if (it->second.codegenType == config::CODEGEN_STRING)
       ret += "\"" + it->second.defaultValue + "\"";
     else if (it->second.codegenType == config::CODEGEN_ACTOR_MATCH)
+      ret += "NULL";
+    else if (it->second.codegenType == config::CODEGEN_ENHFF_ACTOR_MATCH)
       ret += "NULL";
     else if (it->second.codegenType == config::CODEGEN_LIST_CUSTOM_WEAPON)
       ret += "NULL";
@@ -96,6 +98,8 @@ string DefaultMap::get(string key, keyword::KeywordEnum keywordEnum,
     return getPatrolPathListNode(input).to_string(24);
   case config::CODEGEN_ACTOR_MATCH:
     return getActorMatchesNode(input).to_string(24);
+  case config::CODEGEN_ENHFF_ACTOR_MATCH:
+    return getEnhFFActorMatchesNode(input).to_string(36);
   default:
     break;
   }

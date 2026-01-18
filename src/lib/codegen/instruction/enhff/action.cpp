@@ -37,8 +37,9 @@ JsonObjectNode action::ActionEnhFFGeneralCircularRange::method(
         .addNode("onActorLayer", "\"over\"");
   else
     dataNode.addNode("select", "\"map\"").addNode("pos", posNode.to_string(24));
+  std::string duration = defaultMap.get("duration");
   dataNode.addNode("region", regionNode.to_string(24))
-      .addNode("duration", defaultMap.get("duration"))
+      .addNode("duration", duration)
       .addNode("color", defaultMap.get("color"))
       .addNode("alpha", "\"1\"")
       .addNode("lineWidth", defaultMap.get("lineWidth"))
@@ -46,5 +47,39 @@ JsonObjectNode action::ActionEnhFFGeneralCircularRange::method(
       .addNode("angle", "\"0\"")
       .addNode("bornAnim", "\"none\"")
       .addNode("disAnim", "\"none\"");
+  std::string deltaHpValue = defaultMap.get("deltaHpValue");
+  std::string deltaHpTarget = defaultMap.get("deltaHpTarget");
+  if (deltaHpValue != "\"\"") {
+    JsonObjectNode damageTypeNode =
+        JsonObjectNode("damageTypeCode", "\"none\"");
+    JsonObjectNode dhSetNode = JsonObjectNode({
+        {"deltaType", defaultMap.get("deltaHpType", deltaHpKind::keywordEnum)},
+        {"hp", deltaHpValue},
+        {"casterCode", defaultMap.get("deltaHpCasterCode")},
+        {"damageType", damageTypeNode.to_string(28)},
+        {"dmgWTypeOpt", "\"default\""},
+        {"hitAngleOpt", "\"default\""},
+        {"drainPctOpt", "\"default\""},
+        {"flicker", "\"default\""},
+        {"noReact", "\"default\""},
+        {"hitSfx", "\"default\""},
+        {"sfxOpt", "\"default\""},
+        {"__env__", "\"range\""},
+    });
+    dataNode.addNode("deltaHp", "true")
+        .addNode("dhRepeat", "\"cd\"")
+        .addNode("dhCD", duration.substr(0, duration.length() - 1) + "*1.1\"")
+        .addNode("dhSet", dhSetNode.to_string(24));
+    if (deltaHpTarget != "[]") {
+      JsonObjectNode dhTgtItemNode =
+          JsonObjectNode({{"op", "\"in\""}, {"ma", deltaHpTarget}});
+      JsonArrayNode dhTgtNode =
+          JsonArrayNode(std::make_shared<JsonObjectNode>(dhTgtItemNode));
+      dataNode.addNode("dhAll", "false")
+          .addNode("dhTgt", dhTgtNode.to_string(28));
+    } else {
+      dataNode.addNode("dhAll", "true");
+    }
+  }
   return dataNode;
 }

@@ -15,5 +15,6 @@ JsonArrayNode getActorMatchesNode(const std::shared_ptr<ValueNode> &);
 JsonArrayNode getCustomWeaponsListNode(const std::shared_ptr<ValueNode> &);
 JsonArrayNode getPatrolPathListNode(const std::shared_ptr<ValueNode> &);
 JsonArrayNode getSpawnPointListNode(const std::shared_ptr<ValueNode> &);
+JsonObjectNode getEnhFFActorMatchesNode(const std::shared_ptr<ValueNode> &);
 
 #endif

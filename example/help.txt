@@ -25,7 +25,7 @@ Builtin Struct:
     Point
         x: int, y: int
     ActorMatch
-        controller: string, id: string, matchKind: string
+        controller: string, id: string, matchKind: string, group: int
     CustomWeapon
         reference: string, code: string, scaleOnGround: int, scaleOnIcon: int, weight: int, damage: int, swapTime: int, fireTime: int, fireType: int, pivotOnHandX: int, pivotOnHandXScale: int, pivotOnHandY: int, pivotOnHandYScale: int, pivotOnHandDegree: int, pivotOnIconX: int, pivotOnIconXScale: int, pivotOnIconY: int, pivotOnIconYScale: int, pivotOnIconDegree
 
@@ -123,7 +123,7 @@ Supported Actions:
     EnhFF::playerMousePosition  EnhFF::玩家滑鼠座標
         actorId: string, varX: string, varY: string
     EnhFF::generalCircularRange EnhFF::廣義圓形範圍
-        actorId: string, color: string, duration: int|string, lineWidth: int|string, offsetX: int|string, offsetY: int|string, radius: int|string, x: int|string, y: int|string
+        actorId: string, color: string, deltaHpCasterCode: string, deltaHpTarget: ActorMatch, deltaHpType: string, deltaHpValue: int|string, duration: int|string, lineWidth: int|string, offsetX: int|string, offsetY: int|string, radius: int|string, x: int|string, y: int|string
 
 Supported Checks:
     actorCount                  計算人數

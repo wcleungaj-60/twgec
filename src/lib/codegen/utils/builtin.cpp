@@ -194,7 +194,65 @@ JsonArrayNode getActorMatchesNode(const std::shared_ptr<ValueNode> &valueNode) {
         .addNode("group", actorMatchDefaultMap.get("group"));
   }
   return JsonArrayNode(std::make_shared<JsonObjectNode>(actorMatchNode));
-  return JsonArrayNode();
+}
+
+JsonObjectNode
+getEnhFFActorMatchesNode(const std::shared_ptr<ValueNode> &valueNode) {
+  actorMatchDefaultMap.clearInputMap();
+  auto actorMatchValueNode =
+      dynamic_cast<ActorMatchValueNode *>(valueNode.get());
+  if (!actorMatchValueNode) {
+    std::cerr << "ActorMatch-typed value is expected at " << valueNode->loc
+              << "\n";
+    return JsonObjectNode();
+  }
+  actorMatchDefaultMap.addInputMap(actorMatchValueNode->paramApps->named_args);
+  auto controllerMap = [](std::string s) -> std::string {
+    if (s.find(actorBrainKind::keywordAI))
+      return "\"1\"";
+    else if (s.find(actorBrainKind::keywordPlayer))
+      return "\"2\"";
+    return "\"0\"";
+  };
+  std::string controller = controllerMap(
+      actorMatchDefaultMap.get("controller", actorBrainKind::keywordEnum));
+
+  JsonObjectNode maNode = JsonObjectNode({
+      {"brain", controller},
+      {"relship", "\"0\""},
+      {"survival", "\"1\""},
+  });
+  if (actorMatchDefaultMap.get("id") != "\"\"") {
+    JsonObjectNode facSubNode = JsonObjectNode({
+        {"op", "\"in\""},
+        {"mac", JsonObjectNode(
+                    {
+                        {"method", actorMatchDefaultMap.get(
+                                       "matchKind", matchKind::keywordEnum)},
+                        {"actorCode", actorMatchDefaultMap.get("id")},
+                    })
+                    .to_string(48)},
+    });
+    JsonArrayNode facNode =
+        JsonArrayNode(std::make_shared<JsonObjectNode>(facSubNode));
+    maNode.addNode("cac", "true").addNode("fac", facNode.to_string(40));
+  }
+  if (actorMatchDefaultMap.get("id") != "\"\"") {
+    JsonObjectNode compSubNode = JsonObjectNode({
+        {"op", "\"==\""},
+        {"val", actorMatchDefaultMap.get("group")},
+    });
+    JsonArrayNode compNode =
+        JsonArrayNode(std::make_shared<JsonObjectNode>(compSubNode));
+    JsonObjectNode fgrSubNode = JsonObjectNode({
+        {"op", "\"in\""},
+        {"comp", compNode.to_string(48)},
+    });
+    JsonArrayNode fgrNode =
+        JsonArrayNode(std::make_shared<JsonObjectNode>(fgrSubNode));
+    maNode.addNode("cgr", "true").addNode("fgr", fgrNode.to_string(40));
+  }
+  return maNode;
 }
 
 JsonArrayNode

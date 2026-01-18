@@ -99,12 +99,12 @@
                     "data": {
                         "select": "map",
                         "pos": {
-                            "x": "20",
-                            "y": "30"
+                            "x": "160",
+                            "y": "160"
                         },
                         "region": {
                             "defType": "circle",
-                            "ciRad": "20",
+                            "ciRad": "128",
                             "offX": "0",
                             "offY": "0"
                         },
@@ -115,7 +115,59 @@
                         "lineAlign": "1",
                         "angle": "0",
                         "bornAnim": "none",
-                        "disAnim": "none"
+                        "disAnim": "none",
+                        "deltaHp": true,
+                        "dhRepeat": "cd",
+                        "dhCD": "10000*1.1",
+                        "dhSet": {
+                            "deltaType": "damage",
+                            "hp": "10",
+                            "casterCode": "",
+                            "damageType": {
+                                "damageTypeCode": "none"
+                            },
+                            "dmgWTypeOpt": "default",
+                            "hitAngleOpt": "default",
+                            "drainPctOpt": "default",
+                            "flicker": "default",
+                            "noReact": "default",
+                            "hitSfx": "default",
+                            "sfxOpt": "default",
+                            "__env__": "range"
+                        },
+                        "dhAll": false,
+                        "dhTgt": [
+                                {
+                                    "op": "in",
+                                    "ma": {
+                                        "brain": "1",
+                                        "relship": "0",
+                                        "survival": "1",
+                                        "cac": true,
+                                        "fac": [
+                                            {
+                                                "op": "in",
+                                                "mac": {
+                                                    "method": "contain",
+                                                    "actorCode": "deer"
+                                                }
+                                            }
+                                        ],
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
                     }
                 }
             ],

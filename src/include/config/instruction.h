@@ -56,6 +56,7 @@ enum CodegenType {
   CODEGEN_STRING, // two `\"` will be added
   CODEGEN_BOOL,
   CODEGEN_ACTOR_MATCH,
+  CODEGEN_ENHFF_ACTOR_MATCH,
   CODEGEN_LIST_CUSTOM_WEAPON,
   CODEGEN_LIST_STRING,
   CODEGEN_LIST_SPAWN_POINT,  // {x,y}
@@ -304,6 +305,10 @@ const InstructionConfig EnhFFGeneralCircularRangeConfig =
         .addParam("duration", AST_INT, CODEGEN_STRING, "10000")
         .addParam("color", AST_STRING, CODEGEN_STRING, "#ffffff")
         .addParam("lineWidth", AST_INT, CODEGEN_STRING, "1")
+        .addParam("deltaHpType", AST_STRING, CODEGEN_STRING, "heal")
+        .addParam("deltaHpValue", AST_INT, CODEGEN_STRING, "")
+        .addParam("deltaHpTarget", AST_ACTOR_MATCH, CODEGEN_ENHFF_ACTOR_MATCH, "[]")
+        .addParam("deltaHpCasterCode", AST_STRING, CODEGEN_STRING, "")
         .setCodegenName("GeneralCircularRangeEnhFF");
 
 const std::vector<InstructionConfig> actionList = {
