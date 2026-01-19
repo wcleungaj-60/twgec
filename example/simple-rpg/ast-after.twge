@@ -5,6 +5,8 @@ const 公式::Instance角度 = "{instance.bodyRotation}*180/3.14";
 const 公式::Instance血量 = "98 + 10*{instance.CON} + 2*{instance.Level}";
 const 公式::Instance恢復量 = "1 + {instance.PSY} + {instance.CON}/2";
 const 公式::風杖傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
+const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
 const 出生點 = Point(10,10);
 const 除錯模式 = false;
@@ -132,7 +134,8 @@ def 自定義::釋放技能泛型(weapon) : block {
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if((weapon == "custom_iron_sword")) {
-            角色加減血(actorCode = "instance", value = "{instance.HP}/4");
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
         }
     }
 }
@@ -277,7 +280,7 @@ block 遊戲初始化 {
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：恢復四分之一的血量", showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
         新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
@@ -300,6 +303,8 @@ const 公式::Instance角度 = "{instance.bodyRotation}*180/3.14";
 const 公式::Instance血量 = "98 + 10*{instance.CON} + 2*{instance.Level}";
 const 公式::Instance恢復量 = "1 + {instance.PSY} + {instance.CON}/2";
 const 公式::風杖傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
+const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
 const 出生點 = Point(10,10);
 const 除錯模式 = false;
@@ -427,7 +432,8 @@ def 自定義::釋放技能泛型(weapon) : block {
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if((weapon == "custom_iron_sword")) {
-            角色加減血(actorCode = "instance", value = "{instance.HP}/4");
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
         }
     }
 }
@@ -572,7 +578,7 @@ block 遊戲初始化 {
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：恢復四分之一的血量", showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
         新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
@@ -595,6 +601,8 @@ const 公式::Instance角度 = "{instance.bodyRotation}*180/3.14";
 const 公式::Instance血量 = "98 + 10*{instance.CON} + 2*{instance.Level}";
 const 公式::Instance恢復量 = "1 + {instance.PSY} + {instance.CON}/2";
 const 公式::風杖傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
+const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
 const 出生點 = Point(10,10);
 const 除錯模式 = false;
@@ -722,7 +730,8 @@ def 自定義::釋放技能泛型(weapon) : block {
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if((weapon == "custom_iron_sword")) {
-            角色加減血(actorCode = "instance", value = "{instance.HP}/4");
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
         }
     }
 }
@@ -880,7 +889,8 @@ block 釋放技能風杖 {
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if(("custom_wind_staff" == "custom_iron_sword")) {
-            角色加減血(actorCode = "instance", value = "{instance.HP}/4");
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
         }
     }
 }
@@ -898,7 +908,8 @@ block 釋放技能鐵劍 {
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if(("custom_iron_sword" == "custom_iron_sword")) {
-            角色加減血(actorCode = "instance", value = "{instance.HP}/4");
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
         }
     }
 }
@@ -1034,7 +1045,7 @@ block 遊戲初始化 {
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：恢復四分之一的血量", showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
         新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
@@ -1057,6 +1068,8 @@ const 公式::Instance角度 = "{instance.bodyRotation}*180/3.14";
 const 公式::Instance血量 = "98 + 10*{instance.CON} + 2*{instance.Level}";
 const 公式::Instance恢復量 = "1 + {instance.PSY} + {instance.CON}/2";
 const 公式::風杖傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
+const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
 const 出生點 = Point(10,10);
 const 除錯模式 = false;
@@ -1184,7 +1197,8 @@ def 自定義::釋放技能泛型(weapon) : block {
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if((weapon == "custom_iron_sword")) {
-            角色加減血(actorCode = "instance", value = "{instance.HP}/4");
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
         }
     }
 }
@@ -1346,7 +1360,8 @@ block 釋放技能風杖 {
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if(("custom_wind_staff" == "custom_iron_sword")) {
-            角色加減血(actorCode = "instance", value = "{instance.HP}/4");
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
         }
     }
     checks {
@@ -1366,7 +1381,8 @@ block 釋放技能鐵劍 {
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if(("custom_iron_sword" == "custom_iron_sword")) {
-            角色加減血(actorCode = "instance", value = "{instance.HP}/4");
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
         }
     }
     checks {
@@ -1524,7 +1540,7 @@ block 遊戲初始化 {
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：恢復四分之一的血量", showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
         新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
@@ -1551,6 +1567,8 @@ const 公式::Instance角度 = "{instance.bodyRotation}*180/3.14";
 const 公式::Instance血量 = "98 + 10*{instance.CON} + 2*{instance.Level}";
 const 公式::Instance恢復量 = "1 + {instance.PSY} + {instance.CON}/2";
 const 公式::風杖傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
+const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
 const 出生點 = Point(10,10);
 const 除錯模式 = false;
@@ -1814,7 +1832,8 @@ block 釋放技能風杖 {
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if(("custom_wind_staff" == "custom_iron_sword")) {
-            角色加減血(actorCode = "instance", value = "{instance.HP}/4");
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
         }
     }
     checks {
@@ -1834,7 +1853,8 @@ block 釋放技能鐵劍 {
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
         }
         if(("custom_iron_sword" == "custom_iron_sword")) {
-            角色加減血(actorCode = "instance", value = "{instance.HP}/4");
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
         }
     }
     checks {
@@ -2025,7 +2045,7 @@ block 遊戲初始化 {
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：恢復四分之一的血量", showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
         if(((19 == 21) && (9 < 9))) {
             設定地圖傳送點(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "下");
             設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "上");
@@ -2339,7 +2359,8 @@ block 釋放技能風杖 {
             光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-32)");
         }
         if(false) {
-            角色加減血(actorCode = "instance", value = "{instance.HP}/4");
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = 96, duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = "1 + {instance.CON}", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = 96, duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = "1 + {instance.STR}/2 + {instance.CON}/2", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
         }
     }
     checks {
@@ -2359,7 +2380,8 @@ block 釋放技能鐵劍 {
             光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-32)");
         }
         if(true) {
-            角色加減血(actorCode = "instance", value = "{instance.HP}/4");
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = 96, duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = "1 + {instance.CON}", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = 96, duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = "1 + {instance.STR}/2 + {instance.CON}/2", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
         }
     }
     checks {
@@ -2550,7 +2572,7 @@ block 遊戲初始化 {
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：恢復四分之一的血量", showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
         if(false) {
             設定地圖傳送點(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "下");
             設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "上");
@@ -2864,7 +2886,8 @@ block 釋放技能風杖 {
             光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-32)");
         }
         if(false) {
-            角色加減血(actorCode = "instance", value = "{instance.HP}/4");
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = 96, duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = "1 + {instance.CON}", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = 96, duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = "1 + {instance.STR}/2 + {instance.CON}/2", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
         }
     }
     checks {
@@ -2884,7 +2907,8 @@ block 釋放技能鐵劍 {
             光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-32)");
         }
         if(true) {
-            角色加減血(actorCode = "instance", value = "{instance.HP}/4");
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = 96, duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = "1 + {instance.CON}", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = 96, duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = "1 + {instance.STR}/2 + {instance.CON}/2", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
         }
     }
     checks {
@@ -3075,7 +3099,7 @@ block 遊戲初始化 {
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：恢復四分之一的血量", showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
         if(false) {
             設定地圖傳送點(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "下");
             設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "上");
@@ -3389,7 +3413,8 @@ block 釋放技能風杖 {
             光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-32)");
         }
         if(false) {
-            角色加減血(actorCode = "instance", value = "{instance.HP}/4");
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = 96, duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = "1 + {instance.CON}", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = 96, duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = "1 + {instance.STR}/2 + {instance.CON}/2", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
         }
     }
     checks {
@@ -3409,7 +3434,8 @@ block 釋放技能鐵劍 {
             光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-32)");
         }
         if(true) {
-            角色加減血(actorCode = "instance", value = "{instance.HP}/4");
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = 96, duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = "1 + {instance.CON}", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = 96, duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = "1 + {instance.STR}/2 + {instance.CON}/2", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
         }
     }
     checks {
@@ -3600,7 +3626,7 @@ block 遊戲初始化 {
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：恢復四分之一的血量", showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
         if(false) {
             設定地圖傳送點(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "下");
             設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "上");
@@ -3882,7 +3908,8 @@ block 釋放技能鐵劍 {
         發動技能(varName = "instance", weapon = "custom_iron_sword");
     }
     actions {
-        角色加減血(actorCode = "instance", value = "{instance.HP}/4");
+        EnhFF::廣義圓形範圍(actorId = "instance", radius = 96, duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = "1 + {instance.CON}", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+        EnhFF::廣義圓形範圍(actorId = "instance", radius = 96, duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = "1 + {instance.STR}/2 + {instance.CON}/2", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
     }
     checks {
     }
@@ -4072,7 +4099,7 @@ block 遊戲初始化 {
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：恢復四分之一的血量", showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
         設定地圖傳送點(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "右");
         設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "左");
         設定地圖傳送點(fromX = 19, fromY = 10, toX = 21, toY = 10, direction = "右");
@@ -4324,7 +4351,8 @@ block 釋放技能鐵劍 {
         發動技能(varName = "instance", weapon = "custom_iron_sword");
     }
     actions {
-        角色加減血(actorCode = "instance", value = "{instance.HP}/4");
+        EnhFF::廣義圓形範圍(actorId = "instance", radius = 96, duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = "1 + {instance.CON}", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+        EnhFF::廣義圓形範圍(actorId = "instance", radius = 96, duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = "1 + {instance.STR}/2 + {instance.CON}/2", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
     }
     checks {
     }
@@ -4514,7 +4542,7 @@ block 遊戲初始化 {
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：恢復四分之一的血量", showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
         設定地圖傳送點(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "右");
         設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "左");
         設定地圖傳送點(fromX = 19, fromY = 10, toX = 21, toY = 10, direction = "右");

@@ -1901,12 +1901,107 @@
             "devOnly": false,
             "actions": [
                 {
-                    "type": "DeltaHp",
+                    "type": "GeneralCircularRangeEnhFF",
                     "data": {
+                        "select": "actor",
                         "actorCode": "instance",
-                        "deltaType": "heal",
-                        "hp": "{instance.HP}/4",
-                        "casterCode": ""
+                        "onActorLayer": "over",
+                        "region": {
+                            "defType": "circle",
+                            "ciRad": "96",
+                            "offX": "0",
+                            "offY": "0"
+                        },
+                        "duration": "10000",
+                        "color": "#D16500",
+                        "alpha": "1",
+                        "lineWidth": "2",
+                        "lineAlign": "1",
+                        "angle": "0",
+                        "bornAnim": "none",
+                        "disAnim": "none",
+                        "deltaHp": true,
+                        "dhRepeat": "cd",
+                        "dhCD": "4000",
+                        "dhSet": {
+                            "deltaType": "heal",
+                            "hp": "1 + {instance.CON}",
+                            "casterCode": "",
+                            "damageType": {
+                                "damageTypeCode": "none"
+                            },
+                            "dmgWTypeOpt": "default",
+                            "hitAngleOpt": "default",
+                            "drainPctOpt": "default",
+                            "flicker": "default",
+                            "noReact": "default",
+                            "hitSfx": "default",
+                            "sfxOpt": "default",
+                            "__env__": "range"
+                        },
+                        "dhAll": false,
+                        "dhTgt": [
+                                {
+                                    "op": "in",
+                                    "ma": {
+                                        "brain": "2",
+                                        "relship": "0",
+                                        "survival": "1"
+                                    }
+                                }
+                            ]
+                    }
+                },
+                {
+                    "type": "GeneralCircularRangeEnhFF",
+                    "data": {
+                        "select": "actor",
+                        "actorCode": "instance",
+                        "onActorLayer": "over",
+                        "region": {
+                            "defType": "circle",
+                            "ciRad": "96",
+                            "offX": "0",
+                            "offY": "0"
+                        },
+                        "duration": "10000",
+                        "color": "#D16500",
+                        "alpha": "1",
+                        "lineWidth": "2",
+                        "lineAlign": "1",
+                        "angle": "0",
+                        "bornAnim": "none",
+                        "disAnim": "none",
+                        "deltaHp": true,
+                        "dhRepeat": "cd",
+                        "dhCD": "4000",
+                        "dhSet": {
+                            "deltaType": "damage",
+                            "hp": "1 + {instance.STR}/2 + {instance.CON}/2",
+                            "casterCode": "",
+                            "damageType": {
+                                "damageTypeCode": "none"
+                            },
+                            "dmgWTypeOpt": "default",
+                            "hitAngleOpt": "default",
+                            "drainPctOpt": "default",
+                            "flicker": "default",
+                            "noReact": "default",
+                            "hitSfx": "default",
+                            "sfxOpt": "default",
+                            "__env__": "range"
+                        },
+                        "dhAll": false,
+                        "dhTgt": [
+                                {
+                                    "op": "in",
+                                    "ma": {
+                                        "brain": "1",
+                                        "relship": "0",
+                                        "survival": "1"
+                                    }
+                                }
+                            ]
                     }
                 }
             ],
@@ -3271,7 +3366,7 @@
                         ],
                         "shape": "wood",
                         "rotation": "90",
-                        "speech": "【鐵劍】\n武器傷害：【30+力量*3】\n技能：恢復四分之一的血量",
+                        "speech": "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次",
                         "parsePolicy": "view",
                         "showButtons": false,
                         "btnsGroup": {

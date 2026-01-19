@@ -208,9 +208,9 @@ getEnhFFActorMatchesNode(const std::shared_ptr<ValueNode> &valueNode) {
   }
   actorMatchDefaultMap.addInputMap(actorMatchValueNode->paramApps->named_args);
   auto controllerMap = [](std::string s) -> std::string {
-    if (s.find(actorBrainKind::keywordAI))
+    if (s.find(actorBrainKind::keywordAI) != -1)
       return "\"1\"";
-    else if (s.find(actorBrainKind::keywordPlayer))
+    else if (s.find(actorBrainKind::keywordPlayer) != - 1)
       return "\"2\"";
     return "\"0\"";
   };
