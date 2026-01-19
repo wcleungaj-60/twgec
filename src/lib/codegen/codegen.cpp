@@ -232,6 +232,8 @@ void CodeGenerator::codegenTrigger(
     of << trigger::TriggerKeyboardPressed::CODEGEN_FUNC;
   if (identifier == "itemPickup" || identifier == "拾取武器道具")
     of << trigger::TriggerItemPickup::CODEGEN_FUNC;
+  if (identifier == "mouseEvent" || identifier == "滑鼠點擊")
+    of << trigger::TriggerMouseEvent::CODEGEN_FUNC;
   if (identifier == "releasePower" || identifier == "發動技能")
     of << trigger::TriggerReleasePower::CODEGEN_FUNC;
   return;

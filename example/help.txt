@@ -150,6 +150,8 @@ Supported Triggers:
         actorId: string, key: string, timing: string, varName: string
     itemPickup                  拾取武器道具
         actor: ActorMatch, actorVarname: string, itemMatchCode: string, itemVarname: string, matchKind: string
+    mouseEvent                  滑鼠點擊
+        XVarName: string, YVarName: string, actorId: string, actorVarName: string
     releasePower                發動技能
         ability: string, actor: ActorMatch, manaUsage: int|string, preventDefault: bool, varName: string, weapon: string
 

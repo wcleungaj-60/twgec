@@ -131,7 +131,7 @@ inline std::map<std::string, InstructionConfig>
 configVecToMap(const std::vector<InstructionConfig> vec) {
   std::map<std::string, InstructionConfig> map;
   for (auto config : vec) {
-    std::string scope = config.scope == "std"?"":config.scope + "::";
+    std::string scope = config.scope == "std" ? "" : config.scope + "::";
     assert(map.find(scope + config.name) == map.end() &&
            map.find(scope + config.alias) == map.end());
     map.insert({scope + config.name, config});
@@ -307,7 +307,8 @@ const InstructionConfig EnhFFGeneralCircularRangeConfig =
         .addParam("lineWidth", AST_INT, CODEGEN_STRING, "1")
         .addParam("deltaHpType", AST_STRING, CODEGEN_STRING, "heal")
         .addParam("deltaHpValue", AST_INT, CODEGEN_STRING, "")
-        .addParam("deltaHpTarget", AST_ACTOR_MATCH, CODEGEN_ENHFF_ACTOR_MATCH, "[]")
+        .addParam("deltaHpTarget", AST_ACTOR_MATCH, CODEGEN_ENHFF_ACTOR_MATCH,
+                  "[]")
         .addParam("deltaHpCasterCode", AST_STRING, CODEGEN_STRING, "")
         .setCodegenName("GeneralCircularRangeEnhFF");
 
@@ -410,6 +411,12 @@ const InstructionConfig itemPickupConfig =
         .addParam("itemVarname", AST_STRING, CODEGEN_STRING, "")
         .addParam("matchKind", AST_STRING, CODEGEN_STRING, "contain")
         .addParam("itemMatchCode", AST_STRING, CODEGEN_STRING, "");
+const InstructionConfig mouseEventConfig =
+    InstructionConfig("mouseEvent", "滑鼠點擊")
+        .addParam("actorId", AST_STRING, CODEGEN_STRING, "*")
+        .addParam("actorVarName", AST_STRING, CODEGEN_STRING, "")
+        .addParam("XVarName", AST_STRING, CODEGEN_STRING, "")
+        .addParam("YVarName", AST_STRING, CODEGEN_STRING, "");
 const InstructionConfig releasePowerConfig =
     InstructionConfig("releasePower", "發動技能")
         .addParam("actor", AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]")
@@ -420,9 +427,9 @@ const InstructionConfig releasePowerConfig =
         .addParam("weapon", AST_STRING, CODEGEN_STRING, "");
 
 const std::vector<InstructionConfig> triggerList = {
-    actorAddedConfig, actorDeadConfig,    actorFireConfig,
-    actorHitConfig,   clickButtonConfig,  keyboardPressedConfig,
-    itemPickupConfig, releasePowerConfig,
+    actorAddedConfig, actorDeadConfig,   actorFireConfig,
+    actorHitConfig,   clickButtonConfig, keyboardPressedConfig,
+    itemPickupConfig, mouseEventConfig,  releasePowerConfig,
 };
 } // namespace config
 

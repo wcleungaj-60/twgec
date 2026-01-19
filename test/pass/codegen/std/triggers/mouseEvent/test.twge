@@ -1,0 +1,6 @@
+block init {
+    triggers {
+        mouseEvent(actorVarName = "instance", XVarName = "x", YVarName = "y");
+        滑鼠點擊(actorVarName = "instance", XVarName = "x", YVarName = "y");
+    }
+}

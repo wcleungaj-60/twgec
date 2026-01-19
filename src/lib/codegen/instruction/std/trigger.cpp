@@ -112,6 +112,20 @@ trigger::TriggerItemPickup::method(DefaultMap defaultMap,
 }
 
 JsonObjectNode
+trigger::TriggerMouseEvent::method(DefaultMap defaultMap,
+                                   UserDefinedMetadata userDefinedMeta) {
+  return JsonObjectNode({
+      {"playerId", defaultMap.get("actorId")},
+      {"playerLocal", defaultMap.get("actorVarName")},
+      {"eventType", "\"click\""},
+      {"btn", "0"},
+      {"localMouseX", defaultMap.get("XVarName")},
+      {"localMouseY", defaultMap.get("YVarName")},
+      {"displayId", "\"\""},
+  });
+}
+
+JsonObjectNode
 trigger::TriggerReleasePower::method(DefaultMap defaultMap,
                                      UserDefinedMetadata userDefinedMeta) {
   std::string ability = defaultMap.get("ability", abilityKind::keywordEnum);
