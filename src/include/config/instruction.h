@@ -307,6 +307,7 @@ const InstructionConfig EnhFFGeneralCircularRangeConfig =
         .addParam("lineWidth", AST_INT, CODEGEN_STRING, "1")
         .addParam("deltaHpType", AST_STRING, CODEGEN_STRING, "heal")
         .addParam("deltaHpValue", AST_INT, CODEGEN_STRING, "")
+        .addParam("deltaHpCD", AST_INT, CODEGEN_STRING, "10000")
         .addParam("deltaHpTarget", AST_ACTOR_MATCH, CODEGEN_ENHFF_ACTOR_MATCH,
                   "[]")
         .addParam("deltaHpCasterCode", AST_STRING, CODEGEN_STRING, "")

@@ -118,7 +118,7 @@
                         "disAnim": "none",
                         "deltaHp": true,
                         "dhRepeat": "cd",
-                        "dhCD": "10000*1.1",
+                        "dhCD": "10000",
                         "dhSet": {
                             "deltaType": "damage",
                             "hp": "10",

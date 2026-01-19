@@ -123,7 +123,7 @@ Supported Actions:
     EnhFF::playerMousePosition  EnhFF::玩家滑鼠座標
         actorId: string, varX: string, varY: string
     EnhFF::generalCircularRange EnhFF::廣義圓形範圍
-        actorId: string, color: string, deltaHpCasterCode: string, deltaHpTarget: ActorMatch, deltaHpType: string, deltaHpValue: int|string, duration: int|string, lineWidth: int|string, offsetX: int|string, offsetY: int|string, radius: int|string, x: int|string, y: int|string
+        actorId: string, color: string, deltaHpCD: int|string, deltaHpCasterCode: string, deltaHpTarget: ActorMatch, deltaHpType: string, deltaHpValue: int|string, duration: int|string, lineWidth: int|string, offsetX: int|string, offsetY: int|string, radius: int|string, x: int|string, y: int|string
 
 Supported Checks:
     actorCount                  計算人數

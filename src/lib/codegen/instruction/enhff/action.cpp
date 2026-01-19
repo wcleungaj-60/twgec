@@ -68,7 +68,7 @@ JsonObjectNode action::ActionEnhFFGeneralCircularRange::method(
     });
     dataNode.addNode("deltaHp", "true")
         .addNode("dhRepeat", "\"cd\"")
-        .addNode("dhCD", duration.substr(0, duration.length() - 1) + "*1.1\"")
+        .addNode("dhCD", defaultMap.get("deltaHpCD"))
         .addNode("dhSet", dhSetNode.to_string(24));
     if (deltaHpTarget != "[]") {
       JsonObjectNode dhTgtItemNode =
