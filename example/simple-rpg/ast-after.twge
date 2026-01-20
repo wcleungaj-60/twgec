@@ -4,10 +4,24 @@
 const 公式::Instance角度 = "{instance.bodyRotation}*180/3.14";
 const 公式::Instance血量 = "98 + 10*{instance.CON} + 2*{instance.Level}";
 const 公式::Instance恢復量 = "1 + {instance.PSY} + {instance.CON}/2";
-const 公式::風杖傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 公式::風杖物理傷害 = "5+{attacker.STR}/2";
+const 公式::風杖光彈傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 公式::鐵劍物理傷害 = "30+{attacker.STR}*3";
 const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
+const 文字::風杖描述 = ("【風杖】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 5+力量÷2\n" + (" - 光彈傷害: 10+智慧+精神÷2\n" + ("【技能】釋出5發光彈\n" + " - 光彈傷害: 10+智慧+精神÷2")))));
+const 文字::鐵劍描述 = ("【鐵劍】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 30+力量×3\n" + ("【技能】對範圍内的角色造成三次傷害及治療\n" + (" - 對敵軍傷害量: 1+力量÷2+體質÷2 \n" + " - 對友軍回復量: 1+體質")))));
+const 文字::力量描述 = "【力量】\n消耗一點能力點，提升劍類傷害";
+const 文字::體質描述 = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力";
+const 文字::敏捷描述 = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度";
+const 文字::智慧描述 = "【智慧】\n消耗一點能力點，提升杖類傷害";
+const 文字::精神描述 = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力";
+const 角色::任何 = ActorMatch();
+const 角色::任何玩家 = ActorMatch(controller = "player");
+const 角色::任何電腦 = ActorMatch(controller = "ai");
+const 別名::武器風杖 = "custom_wind_staff";
+const 別名::武器鐵劍 = "custom_iron_sword";
 const 出生點 = Point(10,10);
 const 除錯模式 = false;
 const 狀態讀寫密鑰 = "simple-rpg-test";
@@ -18,7 +32,7 @@ __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __useCustomWeapons__ = true;
-__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 5, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 30, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
+__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 def 自定義::除錯(text) : actions {
@@ -77,7 +91,7 @@ def 自定義::上載Instance數據() : actions {
 def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(hasSavedBefore) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
@@ -126,17 +140,26 @@ def 自定義::釋放技能泛型(weapon) : block {
         發動技能(varName = "instance", weapon = weapon);
     }
     actions {
-        if((weapon == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
+        if((weapon == 別名::武器風杖)) {
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
         }
-        if((weapon == "custom_iron_sword")) {
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
+        if((weapon == 別名::武器鐵劍)) {
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
         }
+    }
+}
+def 自定義::武器物理攻擊泛型(weapon, value) : block {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = weapon);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
     }
 }
 block 下載老玩家數據 = 自定義::下載玩家數據泛型(hasSavedBefore = true);
@@ -146,8 +169,10 @@ block 點擊提升體質 = 自定義::點擊提升能力泛型("CON", "體質");
 block 點擊提升敏捷 = 自定義::點擊提升能力泛型("AGI", "敏捷");
 block 點擊提升智慧 = 自定義::點擊提升能力泛型("INT", "智慧");
 block 點擊提升精神 = 自定義::點擊提升能力泛型("PSY", "精神");
-block 釋放技能風杖 = 自定義::釋放技能泛型("custom_wind_staff");
-block 釋放技能鐵劍 = 自定義::釋放技能泛型("custom_iron_sword");
+block 釋放技能風杖 = 自定義::釋放技能泛型(別名::武器風杖);
+block 釋放技能鐵劍 = 自定義::釋放技能泛型(別名::武器鐵劍);
+block 風杖物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器風杖, 公式::風杖物理傷害);
+block 鐵劍物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器鐵劍, 公式::鐵劍物理傷害);
 block 點擊重置能力 {
     __repeat__ = -1;
     triggers {
@@ -198,7 +223,7 @@ block 野獸重生 {
 block 等級提升 {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
@@ -215,7 +240,7 @@ block 回血 {
     __repeat__ = -1;
     __repeatInterval__ = 10000;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
     }
     actions {
         角色加減血(actorCode = "instance", value = 公式::Instance恢復量);
@@ -230,28 +255,19 @@ block 查看面板 {
         角色說話(actorId = "{instance.id}", text = 文字::Instance訊息);
     }
 }
-block 法杖攻擊 {
+block 風杖光彈攻擊 {
     __repeat__ = -1;
     triggers {
-        角色發動攻擊(weapon = "custom_wind_staff", varName = "instance");
+        角色發動攻擊(weapon = 別名::武器風杖, varName = "instance");
     }
     actions {
-        光彈特效(fromActor = "instance", toAngle = 公式::Instance角度, scale = "0.5", damage = 公式::風杖傷害);
-    }
-}
-block 鐵劍攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "{attacker.STR}*3");
+        光彈特效(fromActor = "instance", toAngle = 公式::Instance角度, scale = "0.5", damage = 公式::風杖光彈傷害);
     }
 }
 block 玩家初始化 {
     __repeat__ = -1;
     triggers {
-        角色進入戰場(actor = ActorMatch(controller = "player"), varName = "instance");
+        角色進入戰場(actor = 角色::任何玩家, varName = "instance");
     }
     actions {
         自定義::儲存Instance整數("STR", 0);
@@ -266,33 +282,29 @@ block 玩家初始化 {
         自定義::儲存Instance整數("HP", 100);
         取得玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
         自定義::儲存Instance整數("completedInit", 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
     }
 }
 block 遊戲初始化 {
     actions {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 1);
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
-        設定武器技能(weapon = "custom_wind_staff");
-        設定武器技能(weapon = "custom_iron_sword");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
+        設定武器技能(weapon = 別名::武器風杖);
+        設定武器技能(weapon = 別名::武器鐵劍);
+        新增告示牌(x = 4, y = 7, rotation = 90, text = 文字::風杖描述, showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = 文字::鐵劍描述, showButtons = false);
+        for(x in 1...4) {
+            新增武器道具(x = 4, y = 8, item = 別名::武器風杖);
+            新增武器道具(x = 6, y = 8, item = 別名::武器鐵劍);
+        }
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttonCode = "increaseSTR", buttonLabel = "確認");
-        新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttonCode = "increaseCON", buttonLabel = "確認");
-        新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttonCode = "increaseAGI", buttonLabel = "確認");
-        新增告示牌(x = 9, y = 17, rotation = 270, text = "【智慧】\n消耗一點能力點，提升杖類傷害", buttonCode = "increaseINT", buttonLabel = "確認");
-        新增告示牌(x = 11, y = 17, rotation = 270, text = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力", buttonCode = "increasePSY", buttonLabel = "確認");
+        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttonCode = "increaseSTR", buttonLabel = "確認");
+        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttonCode = "increaseCON", buttonLabel = "確認");
+        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttonCode = "increaseAGI", buttonLabel = "確認");
+        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttonCode = "increaseINT", buttonLabel = "確認");
+        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttonCode = "increasePSY", buttonLabel = "確認");
         新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttonCode = "ResetPoint", buttonLabel = "確認");
     }
 }
@@ -302,10 +314,24 @@ block 遊戲初始化 {
 const 公式::Instance角度 = "{instance.bodyRotation}*180/3.14";
 const 公式::Instance血量 = "98 + 10*{instance.CON} + 2*{instance.Level}";
 const 公式::Instance恢復量 = "1 + {instance.PSY} + {instance.CON}/2";
-const 公式::風杖傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 公式::風杖物理傷害 = "5+{attacker.STR}/2";
+const 公式::風杖光彈傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 公式::鐵劍物理傷害 = "30+{attacker.STR}*3";
 const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
+const 文字::風杖描述 = ("【風杖】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 5+力量÷2\n" + (" - 光彈傷害: 10+智慧+精神÷2\n" + ("【技能】釋出5發光彈\n" + " - 光彈傷害: 10+智慧+精神÷2")))));
+const 文字::鐵劍描述 = ("【鐵劍】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 30+力量×3\n" + ("【技能】對範圍内的角色造成三次傷害及治療\n" + (" - 對敵軍傷害量: 1+力量÷2+體質÷2 \n" + " - 對友軍回復量: 1+體質")))));
+const 文字::力量描述 = "【力量】\n消耗一點能力點，提升劍類傷害";
+const 文字::體質描述 = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力";
+const 文字::敏捷描述 = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度";
+const 文字::智慧描述 = "【智慧】\n消耗一點能力點，提升杖類傷害";
+const 文字::精神描述 = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力";
+const 角色::任何 = ActorMatch();
+const 角色::任何玩家 = ActorMatch(controller = "player");
+const 角色::任何電腦 = ActorMatch(controller = "ai");
+const 別名::武器風杖 = "custom_wind_staff";
+const 別名::武器鐵劍 = "custom_iron_sword";
 const 出生點 = Point(10,10);
 const 除錯模式 = false;
 const 狀態讀寫密鑰 = "simple-rpg-test";
@@ -316,7 +342,7 @@ __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __useCustomWeapons__ = true;
-__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 5, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 30, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
+__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 def 自定義::除錯(text) : actions {
@@ -375,7 +401,7 @@ def 自定義::上載Instance數據() : actions {
 def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(hasSavedBefore) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
@@ -424,17 +450,26 @@ def 自定義::釋放技能泛型(weapon) : block {
         發動技能(varName = "instance", weapon = weapon);
     }
     actions {
-        if((weapon == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
+        if((weapon == 別名::武器風杖)) {
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
         }
-        if((weapon == "custom_iron_sword")) {
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
+        if((weapon == 別名::武器鐵劍)) {
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
         }
+    }
+}
+def 自定義::武器物理攻擊泛型(weapon, value) : block {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = weapon);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
     }
 }
 block 下載老玩家數據 = 自定義::下載玩家數據泛型(hasSavedBefore = true);
@@ -444,8 +479,10 @@ block 點擊提升體質 = 自定義::點擊提升能力泛型(type = "CON", typ
 block 點擊提升敏捷 = 自定義::點擊提升能力泛型(type = "AGI", typeZh = "敏捷");
 block 點擊提升智慧 = 自定義::點擊提升能力泛型(type = "INT", typeZh = "智慧");
 block 點擊提升精神 = 自定義::點擊提升能力泛型(type = "PSY", typeZh = "精神");
-block 釋放技能風杖 = 自定義::釋放技能泛型(weapon = "custom_wind_staff");
-block 釋放技能鐵劍 = 自定義::釋放技能泛型(weapon = "custom_iron_sword");
+block 釋放技能風杖 = 自定義::釋放技能泛型(weapon = 別名::武器風杖);
+block 釋放技能鐵劍 = 自定義::釋放技能泛型(weapon = 別名::武器鐵劍);
+block 風杖物理攻擊 = 自定義::武器物理攻擊泛型(weapon = 別名::武器風杖, value = 公式::風杖物理傷害);
+block 鐵劍物理攻擊 = 自定義::武器物理攻擊泛型(weapon = 別名::武器鐵劍, value = 公式::鐵劍物理傷害);
 block 點擊重置能力 {
     __repeat__ = -1;
     triggers {
@@ -496,7 +533,7 @@ block 野獸重生 {
 block 等級提升 {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
@@ -513,7 +550,7 @@ block 回血 {
     __repeat__ = -1;
     __repeatInterval__ = 10000;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
     }
     actions {
         角色加減血(actorCode = "instance", value = 公式::Instance恢復量);
@@ -528,28 +565,19 @@ block 查看面板 {
         角色說話(actorId = "{instance.id}", text = 文字::Instance訊息);
     }
 }
-block 法杖攻擊 {
+block 風杖光彈攻擊 {
     __repeat__ = -1;
     triggers {
-        角色發動攻擊(weapon = "custom_wind_staff", varName = "instance");
+        角色發動攻擊(weapon = 別名::武器風杖, varName = "instance");
     }
     actions {
-        光彈特效(fromActor = "instance", toAngle = 公式::Instance角度, scale = "0.5", damage = 公式::風杖傷害);
-    }
-}
-block 鐵劍攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "{attacker.STR}*3");
+        光彈特效(fromActor = "instance", toAngle = 公式::Instance角度, scale = "0.5", damage = 公式::風杖光彈傷害);
     }
 }
 block 玩家初始化 {
     __repeat__ = -1;
     triggers {
-        角色進入戰場(actor = ActorMatch(controller = "player"), varName = "instance");
+        角色進入戰場(actor = 角色::任何玩家, varName = "instance");
     }
     actions {
         自定義::儲存Instance整數(key = "STR", value = 0);
@@ -564,33 +592,29 @@ block 玩家初始化 {
         自定義::儲存Instance整數(key = "HP", value = 100);
         取得玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
         自定義::儲存Instance整數(key = "completedInit", value = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
     }
 }
 block 遊戲初始化 {
     actions {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 1);
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
-        設定武器技能(weapon = "custom_wind_staff");
-        設定武器技能(weapon = "custom_iron_sword");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
+        設定武器技能(weapon = 別名::武器風杖);
+        設定武器技能(weapon = 別名::武器鐵劍);
+        新增告示牌(x = 4, y = 7, rotation = 90, text = 文字::風杖描述, showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = 文字::鐵劍描述, showButtons = false);
+        for(x in 1...4) {
+            新增武器道具(x = 4, y = 8, item = 別名::武器風杖);
+            新增武器道具(x = 6, y = 8, item = 別名::武器鐵劍);
+        }
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttonCode = "increaseSTR", buttonLabel = "確認");
-        新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttonCode = "increaseCON", buttonLabel = "確認");
-        新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttonCode = "increaseAGI", buttonLabel = "確認");
-        新增告示牌(x = 9, y = 17, rotation = 270, text = "【智慧】\n消耗一點能力點，提升杖類傷害", buttonCode = "increaseINT", buttonLabel = "確認");
-        新增告示牌(x = 11, y = 17, rotation = 270, text = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力", buttonCode = "increasePSY", buttonLabel = "確認");
+        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttonCode = "increaseSTR", buttonLabel = "確認");
+        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttonCode = "increaseCON", buttonLabel = "確認");
+        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttonCode = "increaseAGI", buttonLabel = "確認");
+        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttonCode = "increaseINT", buttonLabel = "確認");
+        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttonCode = "increasePSY", buttonLabel = "確認");
         新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttonCode = "ResetPoint", buttonLabel = "確認");
     }
 }
@@ -600,10 +624,24 @@ block 遊戲初始化 {
 const 公式::Instance角度 = "{instance.bodyRotation}*180/3.14";
 const 公式::Instance血量 = "98 + 10*{instance.CON} + 2*{instance.Level}";
 const 公式::Instance恢復量 = "1 + {instance.PSY} + {instance.CON}/2";
-const 公式::風杖傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 公式::風杖物理傷害 = "5+{attacker.STR}/2";
+const 公式::風杖光彈傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 公式::鐵劍物理傷害 = "30+{attacker.STR}*3";
 const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
+const 文字::風杖描述 = ("【風杖】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 5+力量÷2\n" + (" - 光彈傷害: 10+智慧+精神÷2\n" + ("【技能】釋出5發光彈\n" + " - 光彈傷害: 10+智慧+精神÷2")))));
+const 文字::鐵劍描述 = ("【鐵劍】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 30+力量×3\n" + ("【技能】對範圍内的角色造成三次傷害及治療\n" + (" - 對敵軍傷害量: 1+力量÷2+體質÷2 \n" + " - 對友軍回復量: 1+體質")))));
+const 文字::力量描述 = "【力量】\n消耗一點能力點，提升劍類傷害";
+const 文字::體質描述 = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力";
+const 文字::敏捷描述 = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度";
+const 文字::智慧描述 = "【智慧】\n消耗一點能力點，提升杖類傷害";
+const 文字::精神描述 = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力";
+const 角色::任何 = ActorMatch();
+const 角色::任何玩家 = ActorMatch(controller = "player");
+const 角色::任何電腦 = ActorMatch(controller = "ai");
+const 別名::武器風杖 = "custom_wind_staff";
+const 別名::武器鐵劍 = "custom_iron_sword";
 const 出生點 = Point(10,10);
 const 除錯模式 = false;
 const 狀態讀寫密鑰 = "simple-rpg-test";
@@ -614,7 +652,7 @@ __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __useCustomWeapons__ = true;
-__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 5, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 30, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
+__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 def 自定義::除錯(text) : actions {
@@ -673,7 +711,7 @@ def 自定義::上載Instance數據() : actions {
 def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(hasSavedBefore) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
@@ -722,23 +760,32 @@ def 自定義::釋放技能泛型(weapon) : block {
         發動技能(varName = "instance", weapon = weapon);
     }
     actions {
-        if((weapon == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
+        if((weapon == 別名::武器風杖)) {
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
         }
-        if((weapon == "custom_iron_sword")) {
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
+        if((weapon == 別名::武器鐵劍)) {
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
         }
+    }
+}
+def 自定義::武器物理攻擊泛型(weapon, value) : block {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = weapon);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
     }
 }
 block 下載老玩家數據 {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(true) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
@@ -768,7 +815,7 @@ block 下載老玩家數據 {
 block 下載新玩家數據 {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(false) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
@@ -878,39 +925,57 @@ block 點擊提升精神 {
 block 釋放技能風杖 {
     __repeat__ = -1;
     triggers {
-        發動技能(varName = "instance", weapon = "custom_wind_staff");
+        發動技能(varName = "instance", weapon = 別名::武器風杖);
     }
     actions {
-        if(("custom_wind_staff" == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
+        if((別名::武器風杖 == 別名::武器風杖)) {
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
         }
-        if(("custom_wind_staff" == "custom_iron_sword")) {
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
+        if((別名::武器風杖 == 別名::武器鐵劍)) {
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
         }
     }
 }
 block 釋放技能鐵劍 {
     __repeat__ = -1;
     triggers {
-        發動技能(varName = "instance", weapon = "custom_iron_sword");
+        發動技能(varName = "instance", weapon = 別名::武器鐵劍);
     }
     actions {
-        if(("custom_iron_sword" == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
+        if((別名::武器鐵劍 == 別名::武器風杖)) {
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
         }
-        if(("custom_iron_sword" == "custom_iron_sword")) {
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
+        if((別名::武器鐵劍 == 別名::武器鐵劍)) {
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
         }
+    }
+}
+block 風杖物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器風杖);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::風杖物理傷害);
+    }
+}
+block 鐵劍物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器鐵劍);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::鐵劍物理傷害);
     }
 }
 block 點擊重置能力 {
@@ -963,7 +1028,7 @@ block 野獸重生 {
 block 等級提升 {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
@@ -980,7 +1045,7 @@ block 回血 {
     __repeat__ = -1;
     __repeatInterval__ = 10000;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
     }
     actions {
         角色加減血(actorCode = "instance", value = 公式::Instance恢復量);
@@ -995,28 +1060,19 @@ block 查看面板 {
         角色說話(actorId = "{instance.id}", text = 文字::Instance訊息);
     }
 }
-block 法杖攻擊 {
+block 風杖光彈攻擊 {
     __repeat__ = -1;
     triggers {
-        角色發動攻擊(weapon = "custom_wind_staff", varName = "instance");
+        角色發動攻擊(weapon = 別名::武器風杖, varName = "instance");
     }
     actions {
-        光彈特效(fromActor = "instance", toAngle = 公式::Instance角度, scale = "0.5", damage = 公式::風杖傷害);
-    }
-}
-block 鐵劍攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "{attacker.STR}*3");
+        光彈特效(fromActor = "instance", toAngle = 公式::Instance角度, scale = "0.5", damage = 公式::風杖光彈傷害);
     }
 }
 block 玩家初始化 {
     __repeat__ = -1;
     triggers {
-        角色進入戰場(actor = ActorMatch(controller = "player"), varName = "instance");
+        角色進入戰場(actor = 角色::任何玩家, varName = "instance");
     }
     actions {
         自定義::儲存Instance整數(key = "STR", value = 0);
@@ -1031,33 +1087,29 @@ block 玩家初始化 {
         自定義::儲存Instance整數(key = "HP", value = 100);
         取得玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
         自定義::儲存Instance整數(key = "completedInit", value = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
     }
 }
 block 遊戲初始化 {
     actions {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 1);
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
-        設定武器技能(weapon = "custom_wind_staff");
-        設定武器技能(weapon = "custom_iron_sword");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
+        設定武器技能(weapon = 別名::武器風杖);
+        設定武器技能(weapon = 別名::武器鐵劍);
+        新增告示牌(x = 4, y = 7, rotation = 90, text = 文字::風杖描述, showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = 文字::鐵劍描述, showButtons = false);
+        for(x in 1...4) {
+            新增武器道具(x = 4, y = 8, item = 別名::武器風杖);
+            新增武器道具(x = 6, y = 8, item = 別名::武器鐵劍);
+        }
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttonCode = "increaseSTR", buttonLabel = "確認");
-        新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttonCode = "increaseCON", buttonLabel = "確認");
-        新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttonCode = "increaseAGI", buttonLabel = "確認");
-        新增告示牌(x = 9, y = 17, rotation = 270, text = "【智慧】\n消耗一點能力點，提升杖類傷害", buttonCode = "increaseINT", buttonLabel = "確認");
-        新增告示牌(x = 11, y = 17, rotation = 270, text = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力", buttonCode = "increasePSY", buttonLabel = "確認");
+        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttonCode = "increaseSTR", buttonLabel = "確認");
+        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttonCode = "increaseCON", buttonLabel = "確認");
+        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttonCode = "increaseAGI", buttonLabel = "確認");
+        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttonCode = "increaseINT", buttonLabel = "確認");
+        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttonCode = "increasePSY", buttonLabel = "確認");
         新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttonCode = "ResetPoint", buttonLabel = "確認");
     }
 }
@@ -1067,10 +1119,24 @@ block 遊戲初始化 {
 const 公式::Instance角度 = "{instance.bodyRotation}*180/3.14";
 const 公式::Instance血量 = "98 + 10*{instance.CON} + 2*{instance.Level}";
 const 公式::Instance恢復量 = "1 + {instance.PSY} + {instance.CON}/2";
-const 公式::風杖傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 公式::風杖物理傷害 = "5+{attacker.STR}/2";
+const 公式::風杖光彈傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 公式::鐵劍物理傷害 = "30+{attacker.STR}*3";
 const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
+const 文字::風杖描述 = ("【風杖】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 5+力量÷2\n" + (" - 光彈傷害: 10+智慧+精神÷2\n" + ("【技能】釋出5發光彈\n" + " - 光彈傷害: 10+智慧+精神÷2")))));
+const 文字::鐵劍描述 = ("【鐵劍】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 30+力量×3\n" + ("【技能】對範圍内的角色造成三次傷害及治療\n" + (" - 對敵軍傷害量: 1+力量÷2+體質÷2 \n" + " - 對友軍回復量: 1+體質")))));
+const 文字::力量描述 = "【力量】\n消耗一點能力點，提升劍類傷害";
+const 文字::體質描述 = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力";
+const 文字::敏捷描述 = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度";
+const 文字::智慧描述 = "【智慧】\n消耗一點能力點，提升杖類傷害";
+const 文字::精神描述 = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力";
+const 角色::任何 = ActorMatch();
+const 角色::任何玩家 = ActorMatch(controller = "player");
+const 角色::任何電腦 = ActorMatch(controller = "ai");
+const 別名::武器風杖 = "custom_wind_staff";
+const 別名::武器鐵劍 = "custom_iron_sword";
 const 出生點 = Point(10,10);
 const 除錯模式 = false;
 const 狀態讀寫密鑰 = "simple-rpg-test";
@@ -1081,7 +1147,7 @@ __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __useCustomWeapons__ = true;
-__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 5, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 30, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
+__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 def 自定義::除錯(text) : actions {
@@ -1140,7 +1206,7 @@ def 自定義::上載Instance數據() : actions {
 def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(hasSavedBefore) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
@@ -1189,23 +1255,32 @@ def 自定義::釋放技能泛型(weapon) : block {
         發動技能(varName = "instance", weapon = weapon);
     }
     actions {
-        if((weapon == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
+        if((weapon == 別名::武器風杖)) {
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
         }
-        if((weapon == "custom_iron_sword")) {
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
+        if((weapon == 別名::武器鐵劍)) {
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
         }
+    }
+}
+def 自定義::武器物理攻擊泛型(weapon, value) : block {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = weapon);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
     }
 }
 block 下載老玩家數據 {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(true) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
@@ -1237,7 +1312,7 @@ block 下載老玩家數據 {
 block 下載新玩家數據 {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(false) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
@@ -1349,19 +1424,19 @@ block 點擊提升精神 {
 block 釋放技能風杖 {
     __repeat__ = -1;
     triggers {
-        發動技能(varName = "instance", weapon = "custom_wind_staff");
+        發動技能(varName = "instance", weapon = 別名::武器風杖);
     }
     actions {
-        if(("custom_wind_staff" == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
+        if((別名::武器風杖 == 別名::武器風杖)) {
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
         }
-        if(("custom_wind_staff" == "custom_iron_sword")) {
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
+        if((別名::武器風杖 == 別名::武器鐵劍)) {
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
         }
     }
     checks {
@@ -1370,20 +1445,42 @@ block 釋放技能風杖 {
 block 釋放技能鐵劍 {
     __repeat__ = -1;
     triggers {
-        發動技能(varName = "instance", weapon = "custom_iron_sword");
+        發動技能(varName = "instance", weapon = 別名::武器鐵劍);
     }
     actions {
-        if(("custom_iron_sword" == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
+        if((別名::武器鐵劍 == 別名::武器風杖)) {
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
         }
-        if(("custom_iron_sword" == "custom_iron_sword")) {
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
+        if((別名::武器鐵劍 == 別名::武器鐵劍)) {
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
         }
+    }
+    checks {
+    }
+}
+block 風杖物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器風杖);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::風杖物理傷害);
+    }
+    checks {
+    }
+}
+block 鐵劍物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器鐵劍);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::鐵劍物理傷害);
     }
     checks {
     }
@@ -1446,7 +1543,7 @@ block 野獸重生 {
 block 等級提升 {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
@@ -1465,7 +1562,7 @@ block 回血 {
     __repeat__ = -1;
     __repeatInterval__ = 10000;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
     }
     actions {
         角色加減血(actorCode = "instance", value = 公式::Instance恢復量);
@@ -1484,24 +1581,13 @@ block 查看面板 {
     checks {
     }
 }
-block 法杖攻擊 {
+block 風杖光彈攻擊 {
     __repeat__ = -1;
     triggers {
-        角色發動攻擊(weapon = "custom_wind_staff", varName = "instance");
+        角色發動攻擊(weapon = 別名::武器風杖, varName = "instance");
     }
     actions {
-        光彈特效(fromActor = "instance", toAngle = 公式::Instance角度, scale = "0.5", damage = 公式::風杖傷害);
-    }
-    checks {
-    }
-}
-block 鐵劍攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "{attacker.STR}*3");
+        光彈特效(fromActor = "instance", toAngle = 公式::Instance角度, scale = "0.5", damage = 公式::風杖光彈傷害);
     }
     checks {
     }
@@ -1509,7 +1595,7 @@ block 鐵劍攻擊 {
 block 玩家初始化 {
     __repeat__ = -1;
     triggers {
-        角色進入戰場(actor = ActorMatch(controller = "player"), varName = "instance");
+        角色進入戰場(actor = 角色::任何玩家, varName = "instance");
     }
     actions {
         自定義::儲存Instance整數(key = "STR", value = 0);
@@ -1524,6 +1610,8 @@ block 玩家初始化 {
         自定義::儲存Instance整數(key = "HP", value = 100);
         取得玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
         自定義::儲存Instance整數(key = "completedInit", value = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
     }
     checks {
     }
@@ -1532,27 +1620,21 @@ block 遊戲初始化 {
     actions {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 1);
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
-        設定武器技能(weapon = "custom_wind_staff");
-        設定武器技能(weapon = "custom_iron_sword");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
+        設定武器技能(weapon = 別名::武器風杖);
+        設定武器技能(weapon = 別名::武器鐵劍);
+        新增告示牌(x = 4, y = 7, rotation = 90, text = 文字::風杖描述, showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = 文字::鐵劍描述, showButtons = false);
+        for(x in 1...4) {
+            新增武器道具(x = 4, y = 8, item = 別名::武器風杖);
+            新增武器道具(x = 6, y = 8, item = 別名::武器鐵劍);
+        }
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttonCode = "increaseSTR", buttonLabel = "確認");
-        新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttonCode = "increaseCON", buttonLabel = "確認");
-        新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttonCode = "increaseAGI", buttonLabel = "確認");
-        新增告示牌(x = 9, y = 17, rotation = 270, text = "【智慧】\n消耗一點能力點，提升杖類傷害", buttonCode = "increaseINT", buttonLabel = "確認");
-        新增告示牌(x = 11, y = 17, rotation = 270, text = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力", buttonCode = "increasePSY", buttonLabel = "確認");
+        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttonCode = "increaseSTR", buttonLabel = "確認");
+        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttonCode = "increaseCON", buttonLabel = "確認");
+        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttonCode = "increaseAGI", buttonLabel = "確認");
+        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttonCode = "increaseINT", buttonLabel = "確認");
+        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttonCode = "increasePSY", buttonLabel = "確認");
         新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttonCode = "ResetPoint", buttonLabel = "確認");
     }
     checks {
@@ -1566,10 +1648,24 @@ block 遊戲初始化 {
 const 公式::Instance角度 = "{instance.bodyRotation}*180/3.14";
 const 公式::Instance血量 = "98 + 10*{instance.CON} + 2*{instance.Level}";
 const 公式::Instance恢復量 = "1 + {instance.PSY} + {instance.CON}/2";
-const 公式::風杖傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 公式::風杖物理傷害 = "5+{attacker.STR}/2";
+const 公式::風杖光彈傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 公式::鐵劍物理傷害 = "30+{attacker.STR}*3";
 const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
+const 文字::風杖描述 = ("【風杖】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 5+力量÷2\n" + (" - 光彈傷害: 10+智慧+精神÷2\n" + ("【技能】釋出5發光彈\n" + " - 光彈傷害: 10+智慧+精神÷2")))));
+const 文字::鐵劍描述 = ("【鐵劍】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 30+力量×3\n" + ("【技能】對範圍内的角色造成三次傷害及治療\n" + (" - 對敵軍傷害量: 1+力量÷2+體質÷2 \n" + " - 對友軍回復量: 1+體質")))));
+const 文字::力量描述 = "【力量】\n消耗一點能力點，提升劍類傷害";
+const 文字::體質描述 = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力";
+const 文字::敏捷描述 = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度";
+const 文字::智慧描述 = "【智慧】\n消耗一點能力點，提升杖類傷害";
+const 文字::精神描述 = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力";
+const 角色::任何 = ActorMatch();
+const 角色::任何玩家 = ActorMatch(controller = "player");
+const 角色::任何電腦 = ActorMatch(controller = "ai");
+const 別名::武器風杖 = "custom_wind_staff";
+const 別名::武器鐵劍 = "custom_iron_sword";
 const 出生點 = Point(10,10);
 const 除錯模式 = false;
 const 狀態讀寫密鑰 = "simple-rpg-test";
@@ -1580,13 +1676,13 @@ __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __useCustomWeapons__ = true;
-__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 5, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 30, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
+__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 block 下載老玩家數據 {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(true) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
@@ -1631,7 +1727,7 @@ block 下載老玩家數據 {
 block 下載新玩家數據 {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(false) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
@@ -1821,19 +1917,19 @@ block 點擊提升精神 {
 block 釋放技能風杖 {
     __repeat__ = -1;
     triggers {
-        發動技能(varName = "instance", weapon = "custom_wind_staff");
+        發動技能(varName = "instance", weapon = 別名::武器風杖);
     }
     actions {
-        if(("custom_wind_staff" == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
+        if((別名::武器風杖 == 別名::武器風杖)) {
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
         }
-        if(("custom_wind_staff" == "custom_iron_sword")) {
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
+        if((別名::武器風杖 == 別名::武器鐵劍)) {
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
         }
     }
     checks {
@@ -1842,20 +1938,42 @@ block 釋放技能風杖 {
 block 釋放技能鐵劍 {
     __repeat__ = -1;
     triggers {
-        發動技能(varName = "instance", weapon = "custom_iron_sword");
+        發動技能(varName = "instance", weapon = 別名::武器鐵劍);
     }
     actions {
-        if(("custom_iron_sword" == "custom_wind_staff")) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖傷害, toAngle = (公式::Instance角度 - 32));
+        if((別名::武器鐵劍 == 別名::武器風杖)) {
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
         }
-        if(("custom_iron_sword" == "custom_iron_sword")) {
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
+        if((別名::武器鐵劍 == 別名::武器鐵劍)) {
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (3 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
         }
+    }
+    checks {
+    }
+}
+block 風杖物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器風杖);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::風杖物理傷害);
+    }
+    checks {
+    }
+}
+block 鐵劍物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器鐵劍);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::鐵劍物理傷害);
     }
     checks {
     }
@@ -1941,7 +2059,7 @@ block 野獸重生 {
 block 等級提升 {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
@@ -1970,7 +2088,7 @@ block 回血 {
     __repeat__ = -1;
     __repeatInterval__ = 10000;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
     }
     actions {
         角色加減血(actorCode = "instance", value = 公式::Instance恢復量);
@@ -1989,24 +2107,13 @@ block 查看面板 {
     checks {
     }
 }
-block 法杖攻擊 {
+block 風杖光彈攻擊 {
     __repeat__ = -1;
     triggers {
-        角色發動攻擊(weapon = "custom_wind_staff", varName = "instance");
+        角色發動攻擊(weapon = 別名::武器風杖, varName = "instance");
     }
     actions {
-        光彈特效(fromActor = "instance", toAngle = 公式::Instance角度, scale = "0.5", damage = 公式::風杖傷害);
-    }
-    checks {
-    }
-}
-block 鐵劍攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "{attacker.STR}*3");
+        光彈特效(fromActor = "instance", toAngle = 公式::Instance角度, scale = "0.5", damage = 公式::風杖光彈傷害);
     }
     checks {
     }
@@ -2014,7 +2121,7 @@ block 鐵劍攻擊 {
 block 玩家初始化 {
     __repeat__ = -1;
     triggers {
-        角色進入戰場(actor = ActorMatch(controller = "player"), varName = "instance");
+        角色進入戰場(actor = 角色::任何玩家, varName = "instance");
     }
     actions {
         儲存物件變數(key = "STR", object = "instance", type = "integer", value = 0);
@@ -2029,6 +2136,8 @@ block 玩家初始化 {
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = 100);
         取得玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
         儲存物件變數(key = "completedInit", object = "instance", type = "integer", value = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
     }
     checks {
     }
@@ -2037,15 +2146,14 @@ block 遊戲初始化 {
     actions {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 1);
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
-        設定武器技能(weapon = "custom_wind_staff");
-        設定武器技能(weapon = "custom_iron_sword");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
+        設定武器技能(weapon = 別名::武器風杖);
+        設定武器技能(weapon = 別名::武器鐵劍);
+        新增告示牌(x = 4, y = 7, rotation = 90, text = 文字::風杖描述, showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = 文字::鐵劍描述, showButtons = false);
+        for(x in 1...4) {
+            新增武器道具(x = 4, y = 8, item = 別名::武器風杖);
+            新增武器道具(x = 6, y = 8, item = 別名::武器鐵劍);
+        }
         if(((19 == 21) && (9 < 9))) {
             設定地圖傳送點(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "下");
             設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "上");
@@ -2080,16 +2188,11 @@ block 遊戲初始化 {
         } else {
             print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
         }
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttonCode = "increaseSTR", buttonLabel = "確認");
-        新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttonCode = "increaseCON", buttonLabel = "確認");
-        新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttonCode = "increaseAGI", buttonLabel = "確認");
-        新增告示牌(x = 9, y = 17, rotation = 270, text = "【智慧】\n消耗一點能力點，提升杖類傷害", buttonCode = "increaseINT", buttonLabel = "確認");
-        新增告示牌(x = 11, y = 17, rotation = 270, text = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力", buttonCode = "increasePSY", buttonLabel = "確認");
+        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttonCode = "increaseSTR", buttonLabel = "確認");
+        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttonCode = "increaseCON", buttonLabel = "確認");
+        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttonCode = "increaseAGI", buttonLabel = "確認");
+        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttonCode = "increaseINT", buttonLabel = "確認");
+        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttonCode = "increasePSY", buttonLabel = "確認");
         新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttonCode = "ResetPoint", buttonLabel = "確認");
     }
     checks {
@@ -2107,7 +2210,7 @@ __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __useCustomWeapons__ = true;
-__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 5, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 30, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
+__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 block 下載老玩家數據 {
@@ -2387,6 +2490,28 @@ block 釋放技能鐵劍 {
     checks {
     }
 }
+block 風杖物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_wind_staff");
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "5+{attacker.STR}/2");
+    }
+    checks {
+    }
+}
+block 鐵劍物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "30+{attacker.STR}*3");
+    }
+    checks {
+    }
+}
 block 點擊重置能力 {
     __repeat__ = -1;
     triggers {
@@ -2468,7 +2593,7 @@ block 野獸重生 {
 block 等級提升 {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
@@ -2497,7 +2622,7 @@ block 回血 {
     __repeat__ = -1;
     __repeatInterval__ = 10000;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
     }
     actions {
         角色加減血(actorCode = "instance", value = "1 + {instance.PSY} + {instance.CON}/2");
@@ -2516,24 +2641,13 @@ block 查看面板 {
     checks {
     }
 }
-block 法杖攻擊 {
+block 風杖光彈攻擊 {
     __repeat__ = -1;
     triggers {
         角色發動攻擊(weapon = "custom_wind_staff", varName = "instance");
     }
     actions {
         光彈特效(fromActor = "instance", toAngle = "{instance.bodyRotation}*180/3.14", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10");
-    }
-    checks {
-    }
-}
-block 鐵劍攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "{attacker.STR}*3");
     }
     checks {
     }
@@ -2556,6 +2670,8 @@ block 玩家初始化 {
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = 100);
         取得玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
         儲存物件變數(key = "completedInit", object = "instance", type = "integer", value = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
     }
     checks {
     }
@@ -2566,13 +2682,12 @@ block 遊戲初始化 {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = "custom_wind_staff");
         設定武器技能(weapon = "custom_iron_sword");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
+        新增告示牌(x = 4, y = 7, rotation = 90, text = "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】釋出5發光彈\n - 光彈傷害: 10+智慧+精神÷2", showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質", showButtons = false);
+        for(x in 1...4) {
+            新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
+            新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
+        }
         if(false) {
             設定地圖傳送點(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "下");
             設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "上");
@@ -2607,11 +2722,6 @@ block 遊戲初始化 {
         } else {
             print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
         }
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttonCode = "increaseSTR", buttonLabel = "確認");
         新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttonCode = "increaseCON", buttonLabel = "確認");
         新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttonCode = "increaseAGI", buttonLabel = "確認");
@@ -2634,7 +2744,7 @@ __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __useCustomWeapons__ = true;
-__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 5, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 30, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
+__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 block 下載老玩家數據 {
@@ -2914,6 +3024,28 @@ block 釋放技能鐵劍 {
     checks {
     }
 }
+block 風杖物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_wind_staff");
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "5+{attacker.STR}/2");
+    }
+    checks {
+    }
+}
+block 鐵劍物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "30+{attacker.STR}*3");
+    }
+    checks {
+    }
+}
 block 點擊重置能力 {
     __repeat__ = -1;
     triggers {
@@ -2995,7 +3127,7 @@ block 野獸重生 {
 block 等級提升 {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
@@ -3024,7 +3156,7 @@ block 回血 {
     __repeat__ = -1;
     __repeatInterval__ = 10000;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
     }
     actions {
         角色加減血(actorCode = "instance", value = "1 + {instance.PSY} + {instance.CON}/2");
@@ -3043,24 +3175,13 @@ block 查看面板 {
     checks {
     }
 }
-block 法杖攻擊 {
+block 風杖光彈攻擊 {
     __repeat__ = -1;
     triggers {
         角色發動攻擊(weapon = "custom_wind_staff", varName = "instance");
     }
     actions {
         光彈特效(fromActor = "instance", toAngle = "{instance.bodyRotation}*180/3.14", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10");
-    }
-    checks {
-    }
-}
-block 鐵劍攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "{attacker.STR}*3");
     }
     checks {
     }
@@ -3083,6 +3204,8 @@ block 玩家初始化 {
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = 100);
         取得玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
         儲存物件變數(key = "completedInit", object = "instance", type = "integer", value = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
     }
     checks {
     }
@@ -3093,13 +3216,16 @@ block 遊戲初始化 {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = "custom_wind_staff");
         設定武器技能(weapon = "custom_iron_sword");
+        新增告示牌(x = 4, y = 7, rotation = 90, text = "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】釋出5發光彈\n - 光彈傷害: 10+智慧+精神÷2", showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質", showButtons = false);
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         if(false) {
             設定地圖傳送點(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "下");
             設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "上");
@@ -3134,11 +3260,6 @@ block 遊戲初始化 {
         } else {
             print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
         }
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttonCode = "increaseSTR", buttonLabel = "確認");
         新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttonCode = "increaseCON", buttonLabel = "確認");
         新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttonCode = "increaseAGI", buttonLabel = "確認");
@@ -3161,7 +3282,7 @@ __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __useCustomWeapons__ = true;
-__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 5, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 30, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
+__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 block 下載老玩家數據 {
@@ -3441,6 +3562,28 @@ block 釋放技能鐵劍 {
     checks {
     }
 }
+block 風杖物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_wind_staff");
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "5+{attacker.STR}/2");
+    }
+    checks {
+    }
+}
+block 鐵劍物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "30+{attacker.STR}*3");
+    }
+    checks {
+    }
+}
 block 點擊重置能力 {
     __repeat__ = -1;
     triggers {
@@ -3522,7 +3665,7 @@ block 野獸重生 {
 block 等級提升 {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
@@ -3551,7 +3694,7 @@ block 回血 {
     __repeat__ = -1;
     __repeatInterval__ = 10000;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
     }
     actions {
         角色加減血(actorCode = "instance", value = "1 + {instance.PSY} + {instance.CON}/2");
@@ -3570,24 +3713,13 @@ block 查看面板 {
     checks {
     }
 }
-block 法杖攻擊 {
+block 風杖光彈攻擊 {
     __repeat__ = -1;
     triggers {
         角色發動攻擊(weapon = "custom_wind_staff", varName = "instance");
     }
     actions {
         光彈特效(fromActor = "instance", toAngle = "{instance.bodyRotation}*180/3.14", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10");
-    }
-    checks {
-    }
-}
-block 鐵劍攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "{attacker.STR}*3");
     }
     checks {
     }
@@ -3610,6 +3742,8 @@ block 玩家初始化 {
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = 100);
         取得玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
         儲存物件變數(key = "completedInit", object = "instance", type = "integer", value = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
     }
     checks {
     }
@@ -3620,13 +3754,16 @@ block 遊戲初始化 {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = "custom_wind_staff");
         設定武器技能(weapon = "custom_iron_sword");
+        新增告示牌(x = 4, y = 7, rotation = 90, text = "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】釋出5發光彈\n - 光彈傷害: 10+智慧+精神÷2", showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質", showButtons = false);
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         if(false) {
             設定地圖傳送點(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "下");
             設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "上");
@@ -3661,11 +3798,6 @@ block 遊戲初始化 {
         } else {
             print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
         }
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttonCode = "increaseSTR", buttonLabel = "確認");
         新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttonCode = "increaseCON", buttonLabel = "確認");
         新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttonCode = "increaseAGI", buttonLabel = "確認");
@@ -3688,7 +3820,7 @@ __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __useCustomWeapons__ = true;
-__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 5, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 30, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
+__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 block 下載老玩家數據 {
@@ -3914,6 +4046,28 @@ block 釋放技能鐵劍 {
     checks {
     }
 }
+block 風杖物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_wind_staff");
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "5+{attacker.STR}/2");
+    }
+    checks {
+    }
+}
+block 鐵劍物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "30+{attacker.STR}*3");
+    }
+    checks {
+    }
+}
 block 點擊重置能力 {
     __repeat__ = -1;
     triggers {
@@ -3995,7 +4149,7 @@ block 野獸重生 {
 block 等級提升 {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
@@ -4024,7 +4178,7 @@ block 回血 {
     __repeat__ = -1;
     __repeatInterval__ = 10000;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
     }
     actions {
         角色加減血(actorCode = "instance", value = "1 + {instance.PSY} + {instance.CON}/2");
@@ -4043,24 +4197,13 @@ block 查看面板 {
     checks {
     }
 }
-block 法杖攻擊 {
+block 風杖光彈攻擊 {
     __repeat__ = -1;
     triggers {
         角色發動攻擊(weapon = "custom_wind_staff", varName = "instance");
     }
     actions {
         光彈特效(fromActor = "instance", toAngle = "{instance.bodyRotation}*180/3.14", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10");
-    }
-    checks {
-    }
-}
-block 鐵劍攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "{attacker.STR}*3");
     }
     checks {
     }
@@ -4083,6 +4226,8 @@ block 玩家初始化 {
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = 100);
         取得玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
         儲存物件變數(key = "completedInit", object = "instance", type = "integer", value = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
     }
     checks {
     }
@@ -4093,22 +4238,20 @@ block 遊戲初始化 {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = "custom_wind_staff");
         設定武器技能(weapon = "custom_iron_sword");
+        新增告示牌(x = 4, y = 7, rotation = 90, text = "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】釋出5發光彈\n - 光彈傷害: 10+智慧+精神÷2", showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質", showButtons = false);
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         設定地圖傳送點(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "右");
         設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "左");
         設定地圖傳送點(fromX = 19, fromY = 10, toX = 21, toY = 10, direction = "右");
         設定地圖傳送點(fromX = 21, fromY = 10, toX = 19, toY = 10, direction = "左");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttonCode = "increaseSTR", buttonLabel = "確認");
         新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttonCode = "increaseCON", buttonLabel = "確認");
         新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttonCode = "increaseAGI", buttonLabel = "確認");
@@ -4131,7 +4274,7 @@ __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __useCustomWeapons__ = true;
-__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 5, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 30, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
+__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14)];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 block 下載老玩家數據 {
@@ -4357,6 +4500,28 @@ block 釋放技能鐵劍 {
     checks {
     }
 }
+block 風杖物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_wind_staff");
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "5+{attacker.STR}/2");
+    }
+    checks {
+    }
+}
+block 鐵劍物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "30+{attacker.STR}*3");
+    }
+    checks {
+    }
+}
 block 點擊重置能力 {
     __repeat__ = -1;
     triggers {
@@ -4438,7 +4603,7 @@ block 野獸重生 {
 block 等級提升 {
     __repeat__ = -1;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
@@ -4467,7 +4632,7 @@ block 回血 {
     __repeat__ = -1;
     __repeatInterval__ = 10000;
     checks {
-        找出所有角色(actor = ActorMatch(controller = "玩家"), varname = "instance");
+        找出所有角色(actor = ActorMatch(controller = "player"), varname = "instance");
     }
     actions {
         角色加減血(actorCode = "instance", value = "1 + {instance.PSY} + {instance.CON}/2");
@@ -4486,24 +4651,13 @@ block 查看面板 {
     checks {
     }
 }
-block 法杖攻擊 {
+block 風杖光彈攻擊 {
     __repeat__ = -1;
     triggers {
         角色發動攻擊(weapon = "custom_wind_staff", varName = "instance");
     }
     actions {
         光彈特效(fromActor = "instance", toAngle = "{instance.bodyRotation}*180/3.14", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10");
-    }
-    checks {
-    }
-}
-block 鐵劍攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "{attacker.STR}*3");
     }
     checks {
     }
@@ -4526,6 +4680,8 @@ block 玩家初始化 {
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = 100);
         取得玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
         儲存物件變數(key = "completedInit", object = "instance", type = "integer", value = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
     }
     checks {
     }
@@ -4536,22 +4692,20 @@ block 遊戲初始化 {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = "custom_wind_staff");
         設定武器技能(weapon = "custom_iron_sword");
+        新增告示牌(x = 4, y = 7, rotation = 90, text = "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】釋出5發光彈\n - 光彈傷害: 10+智慧+精神÷2", showButtons = false);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質", showButtons = false);
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增告示牌(x = 4, y = 7, rotation = 90, text = "【法杖】\n武器傷害：5\n - 攻擊附帶傷害為【10+智慧+精神/2】的光彈\n技能：釋出5發光彈", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n武器傷害：【30+力量*3】\n技能：範圍造成敵人【1+力量/2+體質/2】的傷害3次，並範圍恢復玩家【1+體質】的血量3次", showButtons = false);
+        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         設定地圖傳送點(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "右");
         設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "左");
         設定地圖傳送點(fromX = 19, fromY = 10, toX = 21, toY = 10, direction = "右");
         設定地圖傳送點(fromX = 21, fromY = 10, toX = 19, toY = 10, direction = "左");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
         新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttonCode = "increaseSTR", buttonLabel = "確認");
         新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttonCode = "increaseCON", buttonLabel = "確認");
         新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttonCode = "increaseAGI", buttonLabel = "確認");
