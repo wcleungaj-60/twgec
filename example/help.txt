@@ -96,6 +96,8 @@ Supported Actions:
         actorCode: string, casterCode: string, type: string, value: int|string
     enblastEffect               光彈特效
         damage: int|string, fromActor: string, fromType: string, scale: int|string, speed: int|string, toAngle: int|string, toType: string
+    equipWeapon                 人物裝備武器
+        actorCode: string, hand: int|string, isDefault: bool, type: string
     getCookie                   取得Cookies
         cookies: string, varName: string
     getUserState                取得玩家狀態

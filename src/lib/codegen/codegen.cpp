@@ -147,6 +147,8 @@ void CodeGenerator::codegenAction(std::ofstream &of,
     of << action::ActionDeltaHp::CODEGEN_FUNC;
   if (identifier == "enblastEffect" || identifier == "光彈特效")
     of << action::ActionEnblastEffect::CODEGEN_FUNC;
+  if (identifier == "equipWeapon" || identifier == "人物裝備武器")
+    of << action::ActionEquipWeapon::CODEGEN_FUNC;
   if (identifier == "getCookie" || identifier == "取得Cookies")
     of << action::ActionGetCookie::CODEGEN_FUNC;
   if (identifier == "getUserState" || identifier == "取得玩家狀態")

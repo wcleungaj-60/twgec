@@ -1,0 +1,6 @@
+block init {
+    actions {
+        equipWeapon(actorCode = "instance", type = "爪子", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "狙擊槍", hand = 2, isDefault = false);
+    }
+}

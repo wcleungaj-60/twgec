@@ -246,6 +246,24 @@ action::ActionEnblastEffect::method(DefaultMap defaultMap,
 }
 
 JsonObjectNode
+action::ActionEquipWeapon::method(DefaultMap defaultMap,
+                                  UserDefinedMetadata userDefinedMeta) {
+  std::string handIndex = defaultMap.get("hand");
+  std::string weaponIndex = "-1";
+  if (handIndex == "1")
+    weaponIndex = "0";
+  if (handIndex == "2")
+    weaponIndex = "1";
+  return JsonObjectNode({
+      {"actorCode", defaultMap.get("actorCode")},
+      {"weaponType", defaultMap.get("type", weaponKind::keywordEnum)},
+      {"weaponIndex", weaponIndex},
+      {"checkOwnership", "false"},
+      {"makeDefault", defaultMap.get("isDefault")},
+  });
+}
+
+JsonObjectNode
 action::ActionGetCookie::method(DefaultMap defaultMap,
                                 UserDefinedMetadata userDefinedMeta) {
   return JsonObjectNode({

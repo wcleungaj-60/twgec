@@ -224,6 +224,12 @@ const InstructionConfig enblastEffectConfig =
         .addParam("damage", AST_INT, CODEGEN_STRING, "30")
         .addParam("scale", AST_INT, CODEGEN_STRING, "1")
         .addParam("speed", AST_INT, CODEGEN_STRING, "0.7");
+const InstructionConfig equipWeaponConfig =
+    InstructionConfig("equipWeapon", "人物裝備武器")
+        .addParam("actorCode", AST_STRING, CODEGEN_STRING, "")
+        .addParam("type", AST_STRING, CODEGEN_STRING, "fist")
+        .addParam("hand", AST_INT, CODEGEN_INT, "-1")
+        .addParam("isDefault", AST_BOOL, CODEGEN_BOOL, "true");
 const InstructionConfig getCookieConfig =
     InstructionConfig("getCookie", "取得Cookies")
         .addParam("cookies", AST_STRING, CODEGEN_STRING, "")
@@ -325,6 +331,7 @@ const std::vector<InstructionConfig> actionList = {
     addStuffConfig,
     deltaHpConfig,
     enblastEffectConfig,
+    equipWeaponConfig,
     getCookieConfig,
     getUserStateConfig,
     mapWarpConfig,
