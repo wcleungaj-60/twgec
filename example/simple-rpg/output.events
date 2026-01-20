@@ -152,6 +152,48 @@
                                     }
                                 }
                             }
+                    },
+                    {
+                        "code": "dagger",
+                        "config": {
+                                "type": "close",
+                                "clipAlias": "TWilightGameEventCompiler.weapon_dagger",
+                                "scaleOnGround": 0.8,
+                                "scaleOnIcon": 1,
+                                "pickTestFunc": "wider",
+                                "weight": 6,
+                                "damage": 0,
+                                "swapTime": 800,
+                                "frameName": "BLADE_TYPE",
+                                "clip": "",
+                                "fireTime": 1500,
+                                "fires": [
+                                    {
+                                        "fireType": "knife",
+                                        "deltaDamage": 0
+                                    }
+                                ],
+                                "sprite": {
+                                    "pivotOnHand": {
+                                        "x": 34,
+                                        "y": 24,
+                                        "degrees": -92,
+                                        "scale": {
+                                            "x": 0.7,
+                                            "y": 0.8
+                                        }
+                                    },
+                                    "pivotOnIcon": {
+                                        "x": 34,
+                                        "y": 16,
+                                        "degrees": -140,
+                                        "scale": {
+                                            "x": 1,
+                                            "y": 1
+                                        }
+                                    }
+                                }
+                            }
                     }
                 ],
                 "useCustomItems": false,
@@ -2160,6 +2202,96 @@
             ]
         },
         {
+            "id": "匕首物理攻擊",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "DeltaHp",
+                    "data": {
+                        "actorCode": "instance",
+                        "deltaType": "damage",
+                        "hp": "10+{attacker.STR}+{attacker.AGI}",
+                        "casterCode": "attacker"
+                    }
+                },
+                {
+                    "type": "Wait",
+                    "data": {
+                        "duration": "300"
+                    }
+                },
+                {
+                    "type": "DeltaHp",
+                    "data": {
+                        "actorCode": "instance",
+                        "deltaType": "damage",
+                        "hp": "10+{attacker.STR}+{attacker.AGI}",
+                        "casterCode": "attacker"
+                    }
+                },
+                {
+                    "type": "Wait",
+                    "data": {
+                        "duration": "300"
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "ActorHit",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "hitterMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "hitterVarname": "attacker",
+                        "damageTypes": [],
+                        "damageVarname": "",
+                        "aliveType": "skip",
+                        "checkFallDmg": "a",
+                        "checkDeviceDmg": "a",
+                        "checkWeaponType": true,
+                        "weaponTypeCheck": "include",
+                        "weaponType": "custom_dagger"
+                    }
+                }
+            ]
+        },
+        {
             "id": "點擊重置能力",
             "disabled": false,
             "folder": "",
@@ -3338,7 +3470,39 @@
                         ],
                         "shape": "wood",
                         "rotation": "90",
-                        "speech": "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】釋出5發光彈\n - 光彈傷害: 10+智慧+精神÷2",
+                        "speech": "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】散射釋出五發光彈\n - 光彈傷害: 10+智慧+精神÷2",
+                        "parsePolicy": "view",
+                        "showButtons": false,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "",
+                                    "close": true,
+                                    "label": "",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "5",
+                                "y": "7",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "90",
+                        "speech": "【匕首】\n【普通攻擊】- 連擊兩次\n - 武器傷害: 10+力量+敏捷\n",
                         "parsePolicy": "view",
                         "showButtons": false,
                         "btnsGroup": {
@@ -3410,28 +3574,11 @@
                     "type": "AddStuff",
                     "data": {
                         "itemCode": "item*",
-                        "itemType": "custom_iron_sword",
+                        "itemType": "custom_dagger",
                         "loop": true,
                         "loopInterval": "10000",
                         "location": {
-                            "x": "6",
-                            "y": "8",
-                            "range": "0"
-                        },
-                        "rotation": "0",
-                        "cameraZoomPolicy": "none",
-                        "localVarname": "item"
-                    }
-                },
-                {
-                    "type": "AddStuff",
-                    "data": {
-                        "itemCode": "item*",
-                        "itemType": "custom_wind_staff",
-                        "loop": true,
-                        "loopInterval": "10000",
-                        "location": {
-                            "x": "4",
+                            "x": "5",
                             "y": "8",
                             "range": "0"
                         },
@@ -3478,6 +3625,23 @@
                     "type": "AddStuff",
                     "data": {
                         "itemCode": "item*",
+                        "itemType": "custom_dagger",
+                        "loop": true,
+                        "loopInterval": "10000",
+                        "location": {
+                            "x": "5",
+                            "y": "8",
+                            "range": "0"
+                        },
+                        "rotation": "0",
+                        "cameraZoomPolicy": "none",
+                        "localVarname": "item"
+                    }
+                },
+                {
+                    "type": "AddStuff",
+                    "data": {
+                        "itemCode": "item*",
                         "itemType": "custom_iron_sword",
                         "loop": true,
                         "loopInterval": "10000",
@@ -3500,6 +3664,74 @@
                         "loopInterval": "10000",
                         "location": {
                             "x": "4",
+                            "y": "8",
+                            "range": "0"
+                        },
+                        "rotation": "0",
+                        "cameraZoomPolicy": "none",
+                        "localVarname": "item"
+                    }
+                },
+                {
+                    "type": "AddStuff",
+                    "data": {
+                        "itemCode": "item*",
+                        "itemType": "custom_dagger",
+                        "loop": true,
+                        "loopInterval": "10000",
+                        "location": {
+                            "x": "5",
+                            "y": "8",
+                            "range": "0"
+                        },
+                        "rotation": "0",
+                        "cameraZoomPolicy": "none",
+                        "localVarname": "item"
+                    }
+                },
+                {
+                    "type": "AddStuff",
+                    "data": {
+                        "itemCode": "item*",
+                        "itemType": "custom_iron_sword",
+                        "loop": true,
+                        "loopInterval": "10000",
+                        "location": {
+                            "x": "6",
+                            "y": "8",
+                            "range": "0"
+                        },
+                        "rotation": "0",
+                        "cameraZoomPolicy": "none",
+                        "localVarname": "item"
+                    }
+                },
+                {
+                    "type": "AddStuff",
+                    "data": {
+                        "itemCode": "item*",
+                        "itemType": "custom_wind_staff",
+                        "loop": true,
+                        "loopInterval": "10000",
+                        "location": {
+                            "x": "4",
+                            "y": "8",
+                            "range": "0"
+                        },
+                        "rotation": "0",
+                        "cameraZoomPolicy": "none",
+                        "localVarname": "item"
+                    }
+                },
+                {
+                    "type": "AddStuff",
+                    "data": {
+                        "itemCode": "item*",
+                        "itemType": "custom_dagger",
+                        "loop": true,
+                        "loopInterval": "10000",
+                        "location": {
+                            "x": "5",
                             "y": "8",
                             "range": "0"
                         },
