@@ -1,28 +1,43 @@
 #include "ast.h"
 #include "option/option.h"
-#include <algorithm>
 #include <functional>
 
 namespace transform {
 
+struct PassConfig {
+  // Reduce the number of pass printed
+  bool hidden;
+  // Avoid error throwing before the last CSE
+  bool allowUnresolvedExpression;
+};
+
 // Symbol redefinition or use before define will be checked
-bool symbolChecking(const std::unique_ptr<ModuleNode> &moduleNode);
+bool symbolChecking(const std::unique_ptr<ModuleNode> &moduleNode,
+                    PassConfig config);
 // Positional Arg will be converted into Named Arg
-bool argBinding(const std::unique_ptr<ModuleNode> &moduleNode);
+bool argBinding(const std::unique_ptr<ModuleNode> &moduleNode,
+                PassConfig config);
 // The block function will be inlined
-bool blockInling(const std::unique_ptr<ModuleNode> &moduleNode);
+bool blockInling(const std::unique_ptr<ModuleNode> &moduleNode,
+                 PassConfig config);
 // Number of actions, checks, and triggers in a block will be checked
-bool blockLegalization(const std::unique_ptr<ModuleNode> &moduleNode);
+bool blockLegalization(const std::unique_ptr<ModuleNode> &moduleNode,
+                       PassConfig config);
 // The actions, checks, and triggers function will be inlined
-bool functionInling(const std::unique_ptr<ModuleNode> &moduleNode);
+bool functionInling(const std::unique_ptr<ModuleNode> &moduleNode,
+                    PassConfig config);
 // Propagate the constant and fold the constant
-bool constantFolding(const std::unique_ptr<ModuleNode> &moduleNode);
+bool constantFolding(const std::unique_ptr<ModuleNode> &moduleNode,
+                     PassConfig config);
 // Unroll for loop
-bool forLoopUnrolling(const std::unique_ptr<ModuleNode> &moduleNode);
+bool forLoopUnrolling(const std::unique_ptr<ModuleNode> &moduleNode,
+                      PassConfig config);
 // Flatten the if-statement and remove the dead condition branch
-bool ifStatementPropagation(const std::unique_ptr<ModuleNode> &moduleNode);
+bool ifStatementPropagation(const std::unique_ptr<ModuleNode> &moduleNode,
+                            PassConfig config);
 // Promote type `A` to `list[A]` implicitly
-bool implicitListPromotion(const std::unique_ptr<ModuleNode> &moduleNode);
+bool implicitListPromotion(const std::unique_ptr<ModuleNode> &moduleNode,
+                           PassConfig config);
 
 namespace pass {
 const std::string symbolChecking = "symbolChecking";
@@ -41,7 +56,8 @@ private:
   const std::unique_ptr<ModuleNode> &moduleNode;
   Option opt;
 
-  map<std::string, std::function<bool(const std::unique_ptr<ModuleNode> &)>>
+  map<std::string,
+      std::function<bool(const std::unique_ptr<ModuleNode> &, PassConfig)>>
       passMap = {
           {pass::symbolChecking, symbolChecking},
           {pass::argBinding, argBinding},
@@ -54,29 +70,40 @@ private:
           {pass::implicitListPromotion, implicitListPromotion},
   };
 
-  bool singlePass(std::string passName) {
-    std::function<bool(const std::unique_ptr<ModuleNode> &)> passFunc =
-        passMap[passName];
-    if (opt.printASTBefore)
+  bool singlePass(std::string passName, PassConfig config) {
+    std::function<bool(const std::unique_ptr<ModuleNode> &, PassConfig)>
+        passFunc = passMap[passName];
+    if (opt.printASTBefore && !config.hidden)
       moduleNode->print(std::string("AST Before ") + passName);
-    if (!passFunc(std::move(moduleNode)))
+    if (!passFunc(std::move(moduleNode), config))
       return false;
-    if (opt.printASTAfter)
+    if (opt.printASTAfter && !config.hidden)
       moduleNode->print(std::string("AST After ") + passName);
     return true;
   }
 
   bool pipeline() {
-    bool ret = singlePass(pass::symbolChecking) &&
-               singlePass(pass::argBinding) && singlePass(pass::blockInling) &&
-               singlePass(pass::blockLegalization) &&
-               singlePass(pass::functionInling) &&
-               singlePass(pass::constantFolding) &&
-               singlePass(pass::forLoopUnrolling) &&
-               singlePass(pass::constantFolding) &&
-               singlePass(pass::ifStatementPropagation) &&
-               singlePass(pass::implicitListPromotion);
-    if (!ret)
+    // Before expression propagation
+    PassConfig config = {.hidden = false, .allowUnresolvedExpression = true};
+    if (!(singlePass(pass::symbolChecking, config) &&
+          singlePass(pass::argBinding, config) &&
+          singlePass(pass::blockInling, config) &&
+          singlePass(pass::blockLegalization, config) &&
+          singlePass(pass::functionInling, config)))
+      return false;
+    // Expression propagation
+    PassConfig CSEConfig = {.hidden = true, .allowUnresolvedExpression = true};
+    PassConfig lastCSEConfig = {.hidden = true,
+                                .allowUnresolvedExpression = false};
+    if (!(singlePass(pass::constantFolding, CSEConfig) &&
+          singlePass(pass::forLoopUnrolling, config) &&
+          singlePass(pass::constantFolding, CSEConfig) &&
+          singlePass(pass::ifStatementPropagation, config) &&
+          singlePass(pass::constantFolding, lastCSEConfig)))
+      return false;
+    // After expression propagation
+    config = {.hidden = false, .allowUnresolvedExpression = false};
+    if (!singlePass(pass::implicitListPromotion, config))
       return false;
     if (opt.printASTBefore)
       moduleNode->print("AST Before Code Generation");
@@ -87,8 +114,9 @@ public:
   bool execute() {
     if (opt.runOnly.empty())
       return pipeline();
-    for(std::string pass: opt.runOnly)
-      if(!singlePass(pass))
+    PassConfig config = {.hidden = false, .allowUnresolvedExpression = false};
+    for (std::string pass : opt.runOnly)
+      if (!singlePass(pass, config))
         return false;
     return true;
   }

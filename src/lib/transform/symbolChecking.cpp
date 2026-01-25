@@ -105,7 +105,8 @@ bool useBeforeDefineChecking(const unique_ptr<ModuleNode> &moduleNode) {
   return ret;
 }
 
-bool symbolChecking(const unique_ptr<ModuleNode> &moduleNode) {
+bool symbolChecking(const unique_ptr<ModuleNode> &moduleNode,
+                    PassConfig config) {
   return redefinitionChecking(moduleNode) &&
          useBeforeDefineChecking(moduleNode);
 }

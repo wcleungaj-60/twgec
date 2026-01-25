@@ -1,0 +1,191 @@
+//----------------------------------//
+//--- AST After forLoopUnrolling ---//
+//----------------------------------//
+block b1 {
+    actions {
+        if(false) {
+            addActor(x = -2, y = -2);
+        }
+        if(true) {
+            addActor(x = -2, y = -1);
+        }
+        if(true) {
+            addActor(x = -2, y = 0);
+        }
+        if(true) {
+            addActor(x = -2, y = 1);
+        }
+        if(true) {
+            addActor(x = -2, y = 2);
+        }
+        if(true) {
+            addActor(x = -1, y = -2);
+        }
+        if(false) {
+            addActor(x = -1, y = -1);
+        }
+        if(true) {
+            addActor(x = -1, y = 0);
+        }
+        if(true) {
+            addActor(x = -1, y = 1);
+        }
+        if(true) {
+            addActor(x = -1, y = 2);
+        }
+        if(true) {
+            addActor(x = 0, y = -2);
+        }
+        if(true) {
+            addActor(x = 0, y = -1);
+        }
+        if(false) {
+            addActor(x = 0, y = 0);
+        }
+        if(true) {
+            addActor(x = 0, y = 1);
+        }
+        if(true) {
+            addActor(x = 0, y = 2);
+        }
+        if(true) {
+            addActor(x = 1, y = -2);
+        }
+        if(true) {
+            addActor(x = 1, y = -1);
+        }
+        if(true) {
+            addActor(x = 1, y = 0);
+        }
+        if(false) {
+            addActor(x = 1, y = 1);
+        }
+        if(true) {
+            addActor(x = 1, y = 2);
+        }
+        if(true) {
+            addActor(x = 2, y = -2);
+        }
+        if(true) {
+            addActor(x = 2, y = -1);
+        }
+        if(true) {
+            addActor(x = 2, y = 0);
+        }
+        if(true) {
+            addActor(x = 2, y = 1);
+        }
+        if(false) {
+            addActor(x = 2, y = 2);
+        }
+    }
+}
+//---------------------------------//
+//--- AST After constantFolding ---//
+//---------------------------------//
+block b1 {
+    actions {
+        if(false) {
+            addActor(x = -2, y = -2);
+        }
+        if(true) {
+            addActor(x = -2, y = -1);
+        }
+        if(true) {
+            addActor(x = -2, y = 0);
+        }
+        if(true) {
+            addActor(x = -2, y = 1);
+        }
+        if(true) {
+            addActor(x = -2, y = 2);
+        }
+        if(true) {
+            addActor(x = -1, y = -2);
+        }
+        if(false) {
+            addActor(x = -1, y = -1);
+        }
+        if(true) {
+            addActor(x = -1, y = 0);
+        }
+        if(true) {
+            addActor(x = -1, y = 1);
+        }
+        if(true) {
+            addActor(x = -1, y = 2);
+        }
+        if(true) {
+            addActor(x = 0, y = -2);
+        }
+        if(true) {
+            addActor(x = 0, y = -1);
+        }
+        if(false) {
+            addActor(x = 0, y = 0);
+        }
+        if(true) {
+            addActor(x = 0, y = 1);
+        }
+        if(true) {
+            addActor(x = 0, y = 2);
+        }
+        if(true) {
+            addActor(x = 1, y = -2);
+        }
+        if(true) {
+            addActor(x = 1, y = -1);
+        }
+        if(true) {
+            addActor(x = 1, y = 0);
+        }
+        if(false) {
+            addActor(x = 1, y = 1);
+        }
+        if(true) {
+            addActor(x = 1, y = 2);
+        }
+        if(true) {
+            addActor(x = 2, y = -2);
+        }
+        if(true) {
+            addActor(x = 2, y = -1);
+        }
+        if(true) {
+            addActor(x = 2, y = 0);
+        }
+        if(true) {
+            addActor(x = 2, y = 1);
+        }
+        if(false) {
+            addActor(x = 2, y = 2);
+        }
+    }
+}
+//----------------------------------------//
+//--- AST After ifStatementPropagation ---//
+//----------------------------------------//
+block b1 {
+    actions {
+        addActor(x = -2, y = -1);
+        addActor(x = -2, y = 0);
+        addActor(x = -2, y = 1);
+        addActor(x = -2, y = 2);
+        addActor(x = -1, y = -2);
+        addActor(x = -1, y = 0);
+        addActor(x = -1, y = 1);
+        addActor(x = -1, y = 2);
+        addActor(x = 0, y = -2);
+        addActor(x = 0, y = -1);
+        addActor(x = 0, y = 1);
+        addActor(x = 0, y = 2);
+        addActor(x = 1, y = -2);
+        addActor(x = 1, y = -1);
+        addActor(x = 1, y = 0);
+        addActor(x = 1, y = 2);
+        addActor(x = 2, y = -2);
+        addActor(x = 2, y = -1);
+        addActor(x = 2, y = 0);
+        addActor(x = 2, y = 1);
+    }
+}

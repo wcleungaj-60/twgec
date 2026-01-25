@@ -2234,12 +2234,6 @@
                         "hp": "10+{attacker.STR}+{attacker.AGI}",
                         "casterCode": "attacker"
                     }
-                },
-                {
-                    "type": "Wait",
-                    "data": {
-                        "duration": "300"
-                    }
                 }
             ],
             "checks": [],

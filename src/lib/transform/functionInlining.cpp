@@ -90,7 +90,8 @@ bool functionInling(
   return true;
 }
 
-bool functionInling(const unique_ptr<ModuleNode> &moduleNode) {
+bool functionInling(const unique_ptr<ModuleNode> &moduleNode,
+                    PassConfig config) {
   std::map<std::string, std::unique_ptr<FunDefNode>> funDefsMap;
   bool ret = true;
   for (auto &funDef : moduleNode->funDefs) {

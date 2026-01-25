@@ -3,9 +3,10 @@
 #include <set>
 namespace transform {
 
-bool blockLegalization(const std::unique_ptr<ModuleNode> &moduleNode) {
+bool blockLegalization(const std::unique_ptr<ModuleNode> &moduleNode,
+                       PassConfig config) {
   for (auto &blockNode : moduleNode->blocks) {
-    auto& blockBody = blockNode->blockBody;
+    auto &blockBody = blockNode->blockBody;
     std::set<FunDefType> instrSetType;
     for (auto &typedInstrSet : blockBody->typedInstrSets) {
       auto type = typedInstrSet->type;

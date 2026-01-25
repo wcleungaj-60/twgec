@@ -8,7 +8,7 @@ using std::map;
 using std::string;
 using std::unique_ptr;
 
-bool blockInling(const unique_ptr<ModuleNode> &moduleNode) {
+bool blockInling(const unique_ptr<ModuleNode> &moduleNode, PassConfig config) {
   std::map<std::string, std::unique_ptr<BlockBodyNode>> blockDefMap;
   for (auto &funDef : moduleNode->funDefs) {
     if (funDef->blockBody)

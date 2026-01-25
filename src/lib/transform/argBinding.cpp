@@ -61,7 +61,7 @@ bool argBinding(std::map<std::string, std::unique_ptr<FunDefNode>> &funDefs,
   return true;
 }
 
-bool argBinding(const unique_ptr<ModuleNode> &moduleNode) {
+bool argBinding(const unique_ptr<ModuleNode> &moduleNode, PassConfig config) {
   std::map<std::string, std::unique_ptr<FunDefNode>> funDefsMap;
   bool ret = true;
   // initalize func param

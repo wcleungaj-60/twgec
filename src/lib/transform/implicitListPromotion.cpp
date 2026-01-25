@@ -6,7 +6,8 @@ namespace transform {
 using std::string;
 using std::unique_ptr;
 
-bool implicitListPromotion(const unique_ptr<ModuleNode> &moduleNode) {
+bool implicitListPromotion(const unique_ptr<ModuleNode> &moduleNode,
+                           PassConfig config) {
   for (auto &metadata : moduleNode->metadatas) {
     if ((metadata->key == keyword::metadataKind::royalLocs ||
          metadata->key == keyword::metadataKind::skydowLocs ||

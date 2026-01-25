@@ -1,0 +1,13 @@
+// OPTION: --print-ast-after --run-only=forLoopUnrolling,constantFolding,ifStatementPropagation
+
+block b1 {
+    actions {
+        for(x in -2...2) {
+            for(y in -2...2) {
+                if(x != y) {
+                    addActor(x = x, y = y);
+                }
+            }
+        }
+    }
+}

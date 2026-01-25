@@ -231,7 +231,7 @@ def 自定義::武器物理攻擊泛型(weapon, value, comboNum) : block  {
     actions {
         for(i in 1...comboNum) {
             角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
-            if(comboNum != 1) { // TODO: support i != comboNum
+            if(comboNum != i) {
                 等待(duration = 300);
             }
         }

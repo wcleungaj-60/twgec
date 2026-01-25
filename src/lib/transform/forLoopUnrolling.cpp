@@ -72,7 +72,8 @@ PropagationResult forLoopUnrolling(std::unique_ptr<InstrSetNode> &instrSet) {
   return PropagationResult::PROPAGATED;
 }
 
-bool forLoopUnrolling(const unique_ptr<ModuleNode> &moduleNode) {
+bool forLoopUnrolling(const unique_ptr<ModuleNode> &moduleNode,
+                      PassConfig config) {
   PropagationResult result = PropagationResult::PROPAGATED;
   while (result == PropagationResult::PROPAGATED) {
     result = PropagationResult::UNCHANGED;
