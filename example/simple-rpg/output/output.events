@@ -439,7 +439,7 @@
                             {
                                 "attr": "closeWeaponSpeed",
                                 "operation": "set",
-                                "value": "4-3/(1+0.05*{instance.AGI})"
+                                "value": "4-3/(1+0.01*{instance.AGI})"
                             }
                         ],
                         "takeFriendAIFire": "u",
@@ -616,7 +616,7 @@
             "triggers": []
         },
         {
-            "id": "點擊提升力量",
+            "id": "點擊提升一點力量",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -631,7 +631,7 @@
                         "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "{instance.Point}-1"
+                        "value": "({instance.Point}-1)"
                     }
                 },
                 {
@@ -640,7 +640,7 @@
                         "objectId": "instance",
                         "key": "STR",
                         "valueType": "integer",
-                        "value": "{instance.STR}+1"
+                        "value": "({instance.STR}+1)"
                     }
                 },
                 {
@@ -690,7 +690,7 @@
                             {
                                 "attr": "closeWeaponSpeed",
                                 "operation": "set",
-                                "value": "4-3/(1+0.05*{instance.AGI})"
+                                "value": "4-3/(1+0.01*{instance.AGI})"
                             }
                         ],
                         "takeFriendAIFire": "u",
@@ -836,8 +836,8 @@
                     "type": "NumberCheck",
                     "data": {
                         "value1": "{instance.Point}",
-                        "operator": ">",
-                        "value2": "0",
+                        "operator": ">=",
+                        "value2": "1",
                         "_logi": {
                             "_and_or": ""
                         },
@@ -852,14 +852,14 @@
                         "actorMatches": [],
                         "varname": "instance",
                         "checkButtoncode": true,
-                        "buttonCode": "increaseSTR",
+                        "buttonCode": "increaseSTR1",
                         "varnameDevice": ""
                     }
                 }
             ]
         },
         {
-            "id": "點擊提升體質",
+            "id": "點擊提升一點體質",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -874,7 +874,7 @@
                         "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "{instance.Point}-1"
+                        "value": "({instance.Point}-1)"
                     }
                 },
                 {
@@ -883,7 +883,7 @@
                         "objectId": "instance",
                         "key": "CON",
                         "valueType": "integer",
-                        "value": "{instance.CON}+1"
+                        "value": "({instance.CON}+1)"
                     }
                 },
                 {
@@ -933,7 +933,7 @@
                             {
                                 "attr": "closeWeaponSpeed",
                                 "operation": "set",
-                                "value": "4-3/(1+0.05*{instance.AGI})"
+                                "value": "4-3/(1+0.01*{instance.AGI})"
                             }
                         ],
                         "takeFriendAIFire": "u",
@@ -1079,8 +1079,8 @@
                     "type": "NumberCheck",
                     "data": {
                         "value1": "{instance.Point}",
-                        "operator": ">",
-                        "value2": "0",
+                        "operator": ">=",
+                        "value2": "1",
                         "_logi": {
                             "_and_or": ""
                         },
@@ -1095,14 +1095,14 @@
                         "actorMatches": [],
                         "varname": "instance",
                         "checkButtoncode": true,
-                        "buttonCode": "increaseCON",
+                        "buttonCode": "increaseCON1",
                         "varnameDevice": ""
                     }
                 }
             ]
         },
         {
-            "id": "點擊提升敏捷",
+            "id": "點擊提升一點敏捷",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -1117,7 +1117,7 @@
                         "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "{instance.Point}-1"
+                        "value": "({instance.Point}-1)"
                     }
                 },
                 {
@@ -1126,7 +1126,7 @@
                         "objectId": "instance",
                         "key": "AGI",
                         "valueType": "integer",
-                        "value": "{instance.AGI}+1"
+                        "value": "({instance.AGI}+1)"
                     }
                 },
                 {
@@ -1176,7 +1176,7 @@
                             {
                                 "attr": "closeWeaponSpeed",
                                 "operation": "set",
-                                "value": "4-3/(1+0.05*{instance.AGI})"
+                                "value": "4-3/(1+0.01*{instance.AGI})"
                             }
                         ],
                         "takeFriendAIFire": "u",
@@ -1322,8 +1322,8 @@
                     "type": "NumberCheck",
                     "data": {
                         "value1": "{instance.Point}",
-                        "operator": ">",
-                        "value2": "0",
+                        "operator": ">=",
+                        "value2": "1",
                         "_logi": {
                             "_and_or": ""
                         },
@@ -1338,14 +1338,14 @@
                         "actorMatches": [],
                         "varname": "instance",
                         "checkButtoncode": true,
-                        "buttonCode": "increaseAGI",
+                        "buttonCode": "increaseAGI1",
                         "varnameDevice": ""
                     }
                 }
             ]
         },
         {
-            "id": "點擊提升智慧",
+            "id": "點擊提升一點智慧",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -1360,7 +1360,7 @@
                         "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "{instance.Point}-1"
+                        "value": "({instance.Point}-1)"
                     }
                 },
                 {
@@ -1369,7 +1369,7 @@
                         "objectId": "instance",
                         "key": "INT",
                         "valueType": "integer",
-                        "value": "{instance.INT}+1"
+                        "value": "({instance.INT}+1)"
                     }
                 },
                 {
@@ -1419,7 +1419,7 @@
                             {
                                 "attr": "closeWeaponSpeed",
                                 "operation": "set",
-                                "value": "4-3/(1+0.05*{instance.AGI})"
+                                "value": "4-3/(1+0.01*{instance.AGI})"
                             }
                         ],
                         "takeFriendAIFire": "u",
@@ -1565,8 +1565,8 @@
                     "type": "NumberCheck",
                     "data": {
                         "value1": "{instance.Point}",
-                        "operator": ">",
-                        "value2": "0",
+                        "operator": ">=",
+                        "value2": "1",
                         "_logi": {
                             "_and_or": ""
                         },
@@ -1581,14 +1581,14 @@
                         "actorMatches": [],
                         "varname": "instance",
                         "checkButtoncode": true,
-                        "buttonCode": "increaseINT",
+                        "buttonCode": "increaseINT1",
                         "varnameDevice": ""
                     }
                 }
             ]
         },
         {
-            "id": "點擊提升精神",
+            "id": "點擊提升一點精神",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -1603,7 +1603,7 @@
                         "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "{instance.Point}-1"
+                        "value": "({instance.Point}-1)"
                     }
                 },
                 {
@@ -1612,7 +1612,7 @@
                         "objectId": "instance",
                         "key": "PSY",
                         "valueType": "integer",
-                        "value": "{instance.PSY}+1"
+                        "value": "({instance.PSY}+1)"
                     }
                 },
                 {
@@ -1662,7 +1662,7 @@
                             {
                                 "attr": "closeWeaponSpeed",
                                 "operation": "set",
-                                "value": "4-3/(1+0.05*{instance.AGI})"
+                                "value": "4-3/(1+0.01*{instance.AGI})"
                             }
                         ],
                         "takeFriendAIFire": "u",
@@ -1808,8 +1808,8 @@
                     "type": "NumberCheck",
                     "data": {
                         "value1": "{instance.Point}",
-                        "operator": ">",
-                        "value2": "0",
+                        "operator": ">=",
+                        "value2": "1",
                         "_logi": {
                             "_and_or": ""
                         },
@@ -1824,7 +1824,1222 @@
                         "actorMatches": [],
                         "varname": "instance",
                         "checkButtoncode": true,
-                        "buttonCode": "increasePSY",
+                        "buttonCode": "increasePSY1",
+                        "varnameDevice": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "點擊提升十點力量",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "Point",
+                        "valueType": "integer",
+                        "value": "({instance.Point}-10)"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "STR",
+                        "valueType": "integer",
+                        "value": "({instance.STR}+10)"
+                    }
+                },
+                {
+                    "type": "ActorTalk",
+                    "data": {
+                        "cleanTalk": true,
+                        "speech": "成功提升十點力量，尚餘{instance.Point}點能力點",
+                        "duration": "3000",
+                        "wait": false,
+                        "waitMore": "100",
+                        "actorCode": "instance"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "HP",
+                        "valueType": "integer",
+                        "value": "98 + 10*{instance.CON} + 2*{instance.Level}"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "maxHp",
+                                "operation": "set",
+                                "value": "{instance.HP}"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "closeWeaponSpeed",
+                                "operation": "set",
+                                "value": "4-3/(1+0.01*{instance.AGI})"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "weight",
+                                "operation": "set",
+                                "value": "3*pow(0.97,{instance.AGI})"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Point",
+                        "valueType": "string",
+                        "value": "{{instance}.Point}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "ExpNeeded",
+                        "valueType": "string",
+                        "value": "{{instance}.ExpNeeded}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Level",
+                        "valueType": "string",
+                        "value": "{{instance}.Level}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "STR",
+                        "valueType": "string",
+                        "value": "{{instance}.STR}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "CON",
+                        "valueType": "string",
+                        "value": "{{instance}.CON}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "AGI",
+                        "valueType": "string",
+                        "value": "{{instance}.AGI}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "INT",
+                        "valueType": "string",
+                        "value": "{{instance}.INT}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "PSY",
+                        "valueType": "string",
+                        "value": "{{instance}.PSY}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Exp",
+                        "valueType": "string",
+                        "value": "{{instance}.Exp}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "HP",
+                        "valueType": "string",
+                        "value": "{{instance}.HP}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "savedBefore",
+                        "valueType": "integer",
+                        "value": "1"
+                    }
+                }
+            ],
+            "checks": [
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{instance.Point}",
+                        "operator": ">=",
+                        "value2": "10",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
+            "triggers": [
+                {
+                    "type": "TalkButton",
+                    "data": {
+                        "actorMatches": [],
+                        "varname": "instance",
+                        "checkButtoncode": true,
+                        "buttonCode": "increaseSTR10",
+                        "varnameDevice": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "點擊提升十點體質",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "Point",
+                        "valueType": "integer",
+                        "value": "({instance.Point}-10)"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "CON",
+                        "valueType": "integer",
+                        "value": "({instance.CON}+10)"
+                    }
+                },
+                {
+                    "type": "ActorTalk",
+                    "data": {
+                        "cleanTalk": true,
+                        "speech": "成功提升十點體質，尚餘{instance.Point}點能力點",
+                        "duration": "3000",
+                        "wait": false,
+                        "waitMore": "100",
+                        "actorCode": "instance"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "HP",
+                        "valueType": "integer",
+                        "value": "98 + 10*{instance.CON} + 2*{instance.Level}"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "maxHp",
+                                "operation": "set",
+                                "value": "{instance.HP}"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "closeWeaponSpeed",
+                                "operation": "set",
+                                "value": "4-3/(1+0.01*{instance.AGI})"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "weight",
+                                "operation": "set",
+                                "value": "3*pow(0.97,{instance.AGI})"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Point",
+                        "valueType": "string",
+                        "value": "{{instance}.Point}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "ExpNeeded",
+                        "valueType": "string",
+                        "value": "{{instance}.ExpNeeded}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Level",
+                        "valueType": "string",
+                        "value": "{{instance}.Level}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "STR",
+                        "valueType": "string",
+                        "value": "{{instance}.STR}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "CON",
+                        "valueType": "string",
+                        "value": "{{instance}.CON}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "AGI",
+                        "valueType": "string",
+                        "value": "{{instance}.AGI}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "INT",
+                        "valueType": "string",
+                        "value": "{{instance}.INT}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "PSY",
+                        "valueType": "string",
+                        "value": "{{instance}.PSY}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Exp",
+                        "valueType": "string",
+                        "value": "{{instance}.Exp}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "HP",
+                        "valueType": "string",
+                        "value": "{{instance}.HP}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "savedBefore",
+                        "valueType": "integer",
+                        "value": "1"
+                    }
+                }
+            ],
+            "checks": [
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{instance.Point}",
+                        "operator": ">=",
+                        "value2": "10",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
+            "triggers": [
+                {
+                    "type": "TalkButton",
+                    "data": {
+                        "actorMatches": [],
+                        "varname": "instance",
+                        "checkButtoncode": true,
+                        "buttonCode": "increaseCON10",
+                        "varnameDevice": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "點擊提升十點敏捷",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "Point",
+                        "valueType": "integer",
+                        "value": "({instance.Point}-10)"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "AGI",
+                        "valueType": "integer",
+                        "value": "({instance.AGI}+10)"
+                    }
+                },
+                {
+                    "type": "ActorTalk",
+                    "data": {
+                        "cleanTalk": true,
+                        "speech": "成功提升十點敏捷，尚餘{instance.Point}點能力點",
+                        "duration": "3000",
+                        "wait": false,
+                        "waitMore": "100",
+                        "actorCode": "instance"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "HP",
+                        "valueType": "integer",
+                        "value": "98 + 10*{instance.CON} + 2*{instance.Level}"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "maxHp",
+                                "operation": "set",
+                                "value": "{instance.HP}"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "closeWeaponSpeed",
+                                "operation": "set",
+                                "value": "4-3/(1+0.01*{instance.AGI})"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "weight",
+                                "operation": "set",
+                                "value": "3*pow(0.97,{instance.AGI})"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Point",
+                        "valueType": "string",
+                        "value": "{{instance}.Point}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "ExpNeeded",
+                        "valueType": "string",
+                        "value": "{{instance}.ExpNeeded}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Level",
+                        "valueType": "string",
+                        "value": "{{instance}.Level}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "STR",
+                        "valueType": "string",
+                        "value": "{{instance}.STR}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "CON",
+                        "valueType": "string",
+                        "value": "{{instance}.CON}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "AGI",
+                        "valueType": "string",
+                        "value": "{{instance}.AGI}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "INT",
+                        "valueType": "string",
+                        "value": "{{instance}.INT}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "PSY",
+                        "valueType": "string",
+                        "value": "{{instance}.PSY}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Exp",
+                        "valueType": "string",
+                        "value": "{{instance}.Exp}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "HP",
+                        "valueType": "string",
+                        "value": "{{instance}.HP}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "savedBefore",
+                        "valueType": "integer",
+                        "value": "1"
+                    }
+                }
+            ],
+            "checks": [
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{instance.Point}",
+                        "operator": ">=",
+                        "value2": "10",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
+            "triggers": [
+                {
+                    "type": "TalkButton",
+                    "data": {
+                        "actorMatches": [],
+                        "varname": "instance",
+                        "checkButtoncode": true,
+                        "buttonCode": "increaseAGI10",
+                        "varnameDevice": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "點擊提升十點智慧",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "Point",
+                        "valueType": "integer",
+                        "value": "({instance.Point}-10)"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "INT",
+                        "valueType": "integer",
+                        "value": "({instance.INT}+10)"
+                    }
+                },
+                {
+                    "type": "ActorTalk",
+                    "data": {
+                        "cleanTalk": true,
+                        "speech": "成功提升十點智慧，尚餘{instance.Point}點能力點",
+                        "duration": "3000",
+                        "wait": false,
+                        "waitMore": "100",
+                        "actorCode": "instance"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "HP",
+                        "valueType": "integer",
+                        "value": "98 + 10*{instance.CON} + 2*{instance.Level}"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "maxHp",
+                                "operation": "set",
+                                "value": "{instance.HP}"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "closeWeaponSpeed",
+                                "operation": "set",
+                                "value": "4-3/(1+0.01*{instance.AGI})"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "weight",
+                                "operation": "set",
+                                "value": "3*pow(0.97,{instance.AGI})"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Point",
+                        "valueType": "string",
+                        "value": "{{instance}.Point}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "ExpNeeded",
+                        "valueType": "string",
+                        "value": "{{instance}.ExpNeeded}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Level",
+                        "valueType": "string",
+                        "value": "{{instance}.Level}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "STR",
+                        "valueType": "string",
+                        "value": "{{instance}.STR}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "CON",
+                        "valueType": "string",
+                        "value": "{{instance}.CON}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "AGI",
+                        "valueType": "string",
+                        "value": "{{instance}.AGI}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "INT",
+                        "valueType": "string",
+                        "value": "{{instance}.INT}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "PSY",
+                        "valueType": "string",
+                        "value": "{{instance}.PSY}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Exp",
+                        "valueType": "string",
+                        "value": "{{instance}.Exp}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "HP",
+                        "valueType": "string",
+                        "value": "{{instance}.HP}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "savedBefore",
+                        "valueType": "integer",
+                        "value": "1"
+                    }
+                }
+            ],
+            "checks": [
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{instance.Point}",
+                        "operator": ">=",
+                        "value2": "10",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
+            "triggers": [
+                {
+                    "type": "TalkButton",
+                    "data": {
+                        "actorMatches": [],
+                        "varname": "instance",
+                        "checkButtoncode": true,
+                        "buttonCode": "increaseINT10",
+                        "varnameDevice": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "點擊提升十點精神",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "Point",
+                        "valueType": "integer",
+                        "value": "({instance.Point}-10)"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "PSY",
+                        "valueType": "integer",
+                        "value": "({instance.PSY}+10)"
+                    }
+                },
+                {
+                    "type": "ActorTalk",
+                    "data": {
+                        "cleanTalk": true,
+                        "speech": "成功提升十點精神，尚餘{instance.Point}點能力點",
+                        "duration": "3000",
+                        "wait": false,
+                        "waitMore": "100",
+                        "actorCode": "instance"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "HP",
+                        "valueType": "integer",
+                        "value": "98 + 10*{instance.CON} + 2*{instance.Level}"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "maxHp",
+                                "operation": "set",
+                                "value": "{instance.HP}"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "closeWeaponSpeed",
+                                "operation": "set",
+                                "value": "4-3/(1+0.01*{instance.AGI})"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "weight",
+                                "operation": "set",
+                                "value": "3*pow(0.97,{instance.AGI})"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Point",
+                        "valueType": "string",
+                        "value": "{{instance}.Point}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "ExpNeeded",
+                        "valueType": "string",
+                        "value": "{{instance}.ExpNeeded}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Level",
+                        "valueType": "string",
+                        "value": "{{instance}.Level}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "STR",
+                        "valueType": "string",
+                        "value": "{{instance}.STR}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "CON",
+                        "valueType": "string",
+                        "value": "{{instance}.CON}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "AGI",
+                        "valueType": "string",
+                        "value": "{{instance}.AGI}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "INT",
+                        "valueType": "string",
+                        "value": "{{instance}.INT}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "PSY",
+                        "valueType": "string",
+                        "value": "{{instance}.PSY}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Exp",
+                        "valueType": "string",
+                        "value": "{{instance}.Exp}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "HP",
+                        "valueType": "string",
+                        "value": "{{instance}.HP}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "savedBefore",
+                        "valueType": "integer",
+                        "value": "1"
+                    }
+                }
+            ],
+            "checks": [
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{instance.Point}",
+                        "operator": ">=",
+                        "value2": "10",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
+            "triggers": [
+                {
+                    "type": "TalkButton",
+                    "data": {
+                        "actorMatches": [],
+                        "varname": "instance",
+                        "checkButtoncode": true,
+                        "buttonCode": "increasePSY10",
                         "varnameDevice": ""
                     }
                 }
@@ -2216,14 +3431,74 @@
                     "data": {
                         "actorCode": "instance",
                         "deltaType": "damage",
-                        "hp": "10+{attacker.STR}+{attacker.AGI}",
+                        "hp": "10+{attacker.STR}*2+{attacker.AGI}",
                         "casterCode": "attacker"
                     }
-                },
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "ActorHit",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "hitterMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "hitterVarname": "attacker",
+                        "damageTypes": [],
+                        "damageVarname": "",
+                        "aliveType": "skip",
+                        "checkFallDmg": "a",
+                        "checkDeviceDmg": "a",
+                        "checkWeaponType": true,
+                        "weaponTypeCheck": "include",
+                        "weaponType": "custom_dagger"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "匕首物理連擊",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
                 {
                     "type": "Wait",
                     "data": {
-                        "duration": "300"
+                        "duration": "100"
                     }
                 },
                 {
@@ -2231,12 +3506,25 @@
                     "data": {
                         "actorCode": "instance",
                         "deltaType": "damage",
-                        "hp": "10+{attacker.STR}+{attacker.AGI}",
+                        "hp": "10+{attacker.STR}*2+{attacker.AGI}",
                         "casterCode": "attacker"
                     }
                 }
             ],
-            "checks": [],
+            "checks": [
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "10+{attacker.AGI}*2",
+                        "operator": ">=",
+                        "value2": "random(0, 100)",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
             "triggers": [
                 {
                     "type": "ActorHit",
@@ -2396,7 +3684,7 @@
                             {
                                 "attr": "closeWeaponSpeed",
                                 "operation": "set",
-                                "value": "4-3/(1+0.05*{instance.AGI})"
+                                "value": "4-3/(1+0.01*{instance.AGI})"
                             }
                         ],
                         "takeFriendAIFire": "u",
@@ -3489,7 +4777,7 @@
                         ],
                         "shape": "wood",
                         "rotation": "90",
-                        "speech": "【匕首】\n【普通攻擊】- 連擊兩次\n - 武器傷害: 10+力量+敏捷\n",
+                        "speech": "【匕首】\n【普通攻擊】\n - 武器傷害: 10+力量×2+敏捷\n - 連擊率: 10%+敏捷×2%，上限100%\n",
                         "parsePolicy": "view",
                         "showButtons": false,
                         "btnsGroup": {
@@ -3815,7 +5103,7 @@
                         ],
                         "shape": "wood",
                         "rotation": "270",
-                        "speech": "【力量】\n消耗一點能力點，提升劍類傷害",
+                        "speech": "【力量】\n每一點可提升若干的武器物理傷害\n詳細見各武器描述",
                         "parsePolicy": "view",
                         "showButtons": true,
                         "btnsGroup": {
@@ -3825,9 +5113,15 @@
                             "varnameButton": "",
                             "btns": [
                                 {
-                                    "buttonCode": "increaseSTR",
+                                    "buttonCode": "increaseSTR1",
                                     "close": true,
-                                    "label": "確認",
+                                    "label": "提升一點",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "increaseSTR10",
+                                    "close": true,
+                                    "label": "提升十點",
                                     "icon": ""
                                 }
                             ]
@@ -3847,7 +5141,7 @@
                         ],
                         "shape": "wood",
                         "rotation": "270",
-                        "speech": "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力",
+                        "speech": "【體質】\n每一點可提升半點恢復力\n及增加十點血量上限",
                         "parsePolicy": "view",
                         "showButtons": true,
                         "btnsGroup": {
@@ -3857,9 +5151,15 @@
                             "varnameButton": "",
                             "btns": [
                                 {
-                                    "buttonCode": "increaseCON",
+                                    "buttonCode": "increaseCON1",
                                     "close": true,
-                                    "label": "確認",
+                                    "label": "提升一點",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "increaseCON10",
+                                    "close": true,
+                                    "label": "提升十點",
                                     "icon": ""
                                 }
                             ]
@@ -3879,7 +5179,7 @@
                         ],
                         "shape": "wood",
                         "rotation": "270",
-                        "speech": "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度",
+                        "speech": "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度",
                         "parsePolicy": "view",
                         "showButtons": true,
                         "btnsGroup": {
@@ -3889,9 +5189,15 @@
                             "varnameButton": "",
                             "btns": [
                                 {
-                                    "buttonCode": "increaseAGI",
+                                    "buttonCode": "increaseAGI1",
                                     "close": true,
-                                    "label": "確認",
+                                    "label": "提升一點",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "increaseAGI10",
+                                    "close": true,
+                                    "label": "提升十點",
                                     "icon": ""
                                 }
                             ]
@@ -3911,7 +5217,7 @@
                         ],
                         "shape": "wood",
                         "rotation": "270",
-                        "speech": "【智慧】\n消耗一點能力點，提升杖類傷害",
+                        "speech": "【智慧】\n每一點可提升若干的杖類傷害\n詳細見各武器描述",
                         "parsePolicy": "view",
                         "showButtons": true,
                         "btnsGroup": {
@@ -3921,9 +5227,15 @@
                             "varnameButton": "",
                             "btns": [
                                 {
-                                    "buttonCode": "increaseINT",
+                                    "buttonCode": "increaseINT1",
                                     "close": true,
-                                    "label": "確認",
+                                    "label": "提升一點",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "increaseINT10",
+                                    "close": true,
+                                    "label": "提升十點",
                                     "icon": ""
                                 }
                             ]
@@ -3943,7 +5255,7 @@
                         ],
                         "shape": "wood",
                         "rotation": "270",
-                        "speech": "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力",
+                        "speech": "【精神】\n每一點可提升一點恢復力\n及提升小量的杖類傷害",
                         "parsePolicy": "view",
                         "showButtons": true,
                         "btnsGroup": {
@@ -3953,9 +5265,15 @@
                             "varnameButton": "",
                             "btns": [
                                 {
-                                    "buttonCode": "increasePSY",
+                                    "buttonCode": "increasePSY1",
                                     "close": true,
-                                    "label": "確認",
+                                    "label": "提升一點",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "increasePSY10",
+                                    "close": true,
+                                    "label": "提升十點",
                                     "icon": ""
                                 }
                             ]

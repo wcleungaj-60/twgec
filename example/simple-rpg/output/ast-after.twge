@@ -9,16 +9,17 @@ const 公式::風杖光彈傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
 const 公式::鐵劍物理傷害 = "30+{attacker.STR}*3";
 const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
-const 公式::匕首物理傷害 = "10+{attacker.STR}+{attacker.AGI}";
+const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
+const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
 const 文字::風杖描述 = ("【風杖】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 5+力量÷2\n" + (" - 光彈傷害: 10+智慧+精神÷2\n" + ("【技能】散射釋出五發光彈\n" + " - 光彈傷害: 10+智慧+精神÷2")))));
 const 文字::鐵劍描述 = ("【鐵劍】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 30+力量×3\n" + ("【技能】對範圍内的角色造成三次傷害及治療\n" + (" - 對敵軍傷害量: 1+力量÷2+體質÷2 \n" + " - 對友軍回復量: 1+體質")))));
-const 文字::匕首描述 = ("【匕首】\n" + ("【普通攻擊】- 連擊兩次\n" + " - 武器傷害: 10+力量+敏捷\n"));
-const 文字::力量描述 = "【力量】\n消耗一點能力點，提升劍類傷害";
-const 文字::體質描述 = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力";
-const 文字::敏捷描述 = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度";
-const 文字::智慧描述 = "【智慧】\n消耗一點能力點，提升杖類傷害";
-const 文字::精神描述 = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力";
+const 文字::匕首描述 = ("【匕首】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 10+力量×2+敏捷\n" + " - 連擊率: 10%+敏捷×2%，上限100%\n")));
+const 文字::力量描述 = "【力量】\n每一點可提升若干的武器物理傷害\n詳細見各武器描述";
+const 文字::體質描述 = "【體質】\n每一點可提升半點恢復力\n及增加十點血量上限";
+const 文字::敏捷描述 = "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度";
+const 文字::智慧描述 = "【智慧】\n每一點可提升若干的杖類傷害\n詳細見各武器描述";
+const 文字::精神描述 = "【精神】\n每一點可提升一點恢復力\n及提升小量的杖類傷害";
 const 角色::任何 = ActorMatch();
 const 角色::任何玩家 = ActorMatch(controller = "player");
 const 角色::任何電腦 = ActorMatch(controller = "ai");
@@ -68,7 +69,7 @@ def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
 def 自定義::更新角色屬性(actorId) : actions {
     儲存物件變數(key = "HP", object = actorId, type = "integer", value = ("98 + 10*{" + (actorId + (".CON} + 2*{" + (actorId + ".Level}")))));
     設定角色屬性(actorId = actorId, attr = "maxHp", value = ("{" + (actorId + ".HP}")));
-    設定角色屬性(actorId = actorId, attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + (actorId + ".AGI})")));
+    設定角色屬性(actorId = actorId, attr = "closeWeaponSpeed", value = ("4-3/(1+0.01*{" + (actorId + ".AGI})")));
     設定角色屬性(actorId = actorId, attr = "weight", value = ("3*pow(0.97,{" + (actorId + ".AGI})")));
 }
 def 自定義::輔助::下載Instance數據(key) : actions {
@@ -121,18 +122,26 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
         }
     }
 }
-def 自定義::點擊提升能力泛型(type, typeZh) : block {
+def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("increase" + type));
+        if((value == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "1")));
+        } else if((value == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "10")));
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = value);
     }
     actions {
-        自定義::儲存Instance整數("Point", "{instance.Point}-1");
-        自定義::儲存Instance整數(type, ("{instance." + (type + "}+1")));
-        角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        自定義::儲存Instance整數("Point", ("{instance.Point}" - value));
+        自定義::儲存Instance整數(type, (("{instance." + (type + "}")) + value));
+        if((value == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        } else if((value == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        }
         自定義::更新角色屬性("instance");
         自定義::上載Instance數據();
     }
@@ -156,32 +165,46 @@ def 自定義::釋放技能泛型(weapon) : block {
         }
     }
 }
-def 自定義::武器物理攻擊泛型(weapon, value, comboNum) : block {
+def 自定義::武器物理攻擊泛型(weapon, value) : block {
     __repeat__ = -1;
     triggers {
         角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = weapon);
     }
     actions {
-        for(i in 1...comboNum) {
-            角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
-            if((comboNum != i)) {
-                等待(duration = 300);
-            }
-        }
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
+    }
+}
+def 自定義::武器物理連擊泛型(weapon, value, comboRate) : block {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = weapon);
+    }
+    checks {
+        比較數字(lhs = comboRate, op = ">=", rhs = "random(0, 100)");
+    }
+    actions {
+        等待(duration = 100);
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
     }
 }
 block 下載老玩家數據 = 自定義::下載玩家數據泛型(hasSavedBefore = true);
 block 下載新玩家數據 = 自定義::下載玩家數據泛型(hasSavedBefore = false);
-block 點擊提升力量 = 自定義::點擊提升能力泛型("STR", "力量");
-block 點擊提升體質 = 自定義::點擊提升能力泛型("CON", "體質");
-block 點擊提升敏捷 = 自定義::點擊提升能力泛型("AGI", "敏捷");
-block 點擊提升智慧 = 自定義::點擊提升能力泛型("INT", "智慧");
-block 點擊提升精神 = 自定義::點擊提升能力泛型("PSY", "精神");
+block 點擊提升一點力量 = 自定義::點擊提升能力泛型("STR", "力量", 1);
+block 點擊提升一點體質 = 自定義::點擊提升能力泛型("CON", "體質", 1);
+block 點擊提升一點敏捷 = 自定義::點擊提升能力泛型("AGI", "敏捷", 1);
+block 點擊提升一點智慧 = 自定義::點擊提升能力泛型("INT", "智慧", 1);
+block 點擊提升一點精神 = 自定義::點擊提升能力泛型("PSY", "精神", 1);
+block 點擊提升十點力量 = 自定義::點擊提升能力泛型("STR", "力量", 10);
+block 點擊提升十點體質 = 自定義::點擊提升能力泛型("CON", "體質", 10);
+block 點擊提升十點敏捷 = 自定義::點擊提升能力泛型("AGI", "敏捷", 10);
+block 點擊提升十點智慧 = 自定義::點擊提升能力泛型("INT", "智慧", 10);
+block 點擊提升十點精神 = 自定義::點擊提升能力泛型("PSY", "精神", 10);
 block 釋放技能風杖 = 自定義::釋放技能泛型(別名::武器風杖);
 block 釋放技能鐵劍 = 自定義::釋放技能泛型(別名::武器鐵劍);
-block 風杖物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器風杖, 公式::風杖物理傷害, 1);
-block 鐵劍物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器鐵劍, 公式::鐵劍物理傷害, 1);
-block 匕首物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器匕首, 公式::匕首物理傷害, 2);
+block 風杖物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器風杖, 公式::風杖物理傷害);
+block 鐵劍物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器鐵劍, 公式::鐵劍物理傷害);
+block 匕首物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器匕首, 公式::匕首物理傷害);
+block 匕首物理連擊 = 自定義::武器物理連擊泛型(別名::武器匕首, 公式::匕首物理傷害, 公式::匕首連擊機率);
 block 點擊重置能力 {
     __repeat__ = -1;
     triggers {
@@ -311,11 +334,11 @@ block 遊戲初始化 {
         }
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
-        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR", text = "確認")]);
-        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON", text = "確認")]);
-        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI", text = "確認")]);
-        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT", text = "確認")]);
-        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY", text = "確認")]);
+        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR1", text = "提升一點"),Button(id = "increaseSTR10", text = "提升十點")]);
+        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON1", text = "提升一點"),Button(id = "increaseCON10", text = "提升十點")]);
+        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI1", text = "提升一點"),Button(id = "increaseAGI10", text = "提升十點")]);
+        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT1", text = "提升一點"),Button(id = "increaseINT10", text = "提升十點")]);
+        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY1", text = "提升一點"),Button(id = "increasePSY10", text = "提升十點")]);
         新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
 }
@@ -330,16 +353,17 @@ const 公式::風杖光彈傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
 const 公式::鐵劍物理傷害 = "30+{attacker.STR}*3";
 const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
-const 公式::匕首物理傷害 = "10+{attacker.STR}+{attacker.AGI}";
+const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
+const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
 const 文字::風杖描述 = ("【風杖】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 5+力量÷2\n" + (" - 光彈傷害: 10+智慧+精神÷2\n" + ("【技能】散射釋出五發光彈\n" + " - 光彈傷害: 10+智慧+精神÷2")))));
 const 文字::鐵劍描述 = ("【鐵劍】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 30+力量×3\n" + ("【技能】對範圍内的角色造成三次傷害及治療\n" + (" - 對敵軍傷害量: 1+力量÷2+體質÷2 \n" + " - 對友軍回復量: 1+體質")))));
-const 文字::匕首描述 = ("【匕首】\n" + ("【普通攻擊】- 連擊兩次\n" + " - 武器傷害: 10+力量+敏捷\n"));
-const 文字::力量描述 = "【力量】\n消耗一點能力點，提升劍類傷害";
-const 文字::體質描述 = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力";
-const 文字::敏捷描述 = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度";
-const 文字::智慧描述 = "【智慧】\n消耗一點能力點，提升杖類傷害";
-const 文字::精神描述 = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力";
+const 文字::匕首描述 = ("【匕首】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 10+力量×2+敏捷\n" + " - 連擊率: 10%+敏捷×2%，上限100%\n")));
+const 文字::力量描述 = "【力量】\n每一點可提升若干的武器物理傷害\n詳細見各武器描述";
+const 文字::體質描述 = "【體質】\n每一點可提升半點恢復力\n及增加十點血量上限";
+const 文字::敏捷描述 = "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度";
+const 文字::智慧描述 = "【智慧】\n每一點可提升若干的杖類傷害\n詳細見各武器描述";
+const 文字::精神描述 = "【精神】\n每一點可提升一點恢復力\n及提升小量的杖類傷害";
 const 角色::任何 = ActorMatch();
 const 角色::任何玩家 = ActorMatch(controller = "player");
 const 角色::任何電腦 = ActorMatch(controller = "ai");
@@ -389,7 +413,7 @@ def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
 def 自定義::更新角色屬性(actorId) : actions {
     儲存物件變數(key = "HP", object = actorId, type = "integer", value = ("98 + 10*{" + (actorId + (".CON} + 2*{" + (actorId + ".Level}")))));
     設定角色屬性(actorId = actorId, attr = "maxHp", value = ("{" + (actorId + ".HP}")));
-    設定角色屬性(actorId = actorId, attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + (actorId + ".AGI})")));
+    設定角色屬性(actorId = actorId, attr = "closeWeaponSpeed", value = ("4-3/(1+0.01*{" + (actorId + ".AGI})")));
     設定角色屬性(actorId = actorId, attr = "weight", value = ("3*pow(0.97,{" + (actorId + ".AGI})")));
 }
 def 自定義::輔助::下載Instance數據(key) : actions {
@@ -442,18 +466,26 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
         }
     }
 }
-def 自定義::點擊提升能力泛型(type, typeZh) : block {
+def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("increase" + type));
+        if((value == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "1")));
+        } else if((value == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "10")));
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = value);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存Instance整數(key = type, value = ("{instance." + (type + "}+1")));
-        角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - value));
+        自定義::儲存Instance整數(key = type, value = (("{instance." + (type + "}")) + value));
+        if((value == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        } else if((value == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        }
         自定義::更新角色屬性(actorId = "instance");
         自定義::上載Instance數據();
     }
@@ -477,32 +509,46 @@ def 自定義::釋放技能泛型(weapon) : block {
         }
     }
 }
-def 自定義::武器物理攻擊泛型(weapon, value, comboNum) : block {
+def 自定義::武器物理攻擊泛型(weapon, value) : block {
     __repeat__ = -1;
     triggers {
         角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = weapon);
     }
     actions {
-        for(i in 1...comboNum) {
-            角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
-            if((comboNum != i)) {
-                等待(duration = 300);
-            }
-        }
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
+    }
+}
+def 自定義::武器物理連擊泛型(weapon, value, comboRate) : block {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = weapon);
+    }
+    checks {
+        比較數字(lhs = comboRate, op = ">=", rhs = "random(0, 100)");
+    }
+    actions {
+        等待(duration = 100);
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
     }
 }
 block 下載老玩家數據 = 自定義::下載玩家數據泛型(hasSavedBefore = true);
 block 下載新玩家數據 = 自定義::下載玩家數據泛型(hasSavedBefore = false);
-block 點擊提升力量 = 自定義::點擊提升能力泛型(type = "STR", typeZh = "力量");
-block 點擊提升體質 = 自定義::點擊提升能力泛型(type = "CON", typeZh = "體質");
-block 點擊提升敏捷 = 自定義::點擊提升能力泛型(type = "AGI", typeZh = "敏捷");
-block 點擊提升智慧 = 自定義::點擊提升能力泛型(type = "INT", typeZh = "智慧");
-block 點擊提升精神 = 自定義::點擊提升能力泛型(type = "PSY", typeZh = "精神");
+block 點擊提升一點力量 = 自定義::點擊提升能力泛型(type = "STR", typeZh = "力量", value = 1);
+block 點擊提升一點體質 = 自定義::點擊提升能力泛型(type = "CON", typeZh = "體質", value = 1);
+block 點擊提升一點敏捷 = 自定義::點擊提升能力泛型(type = "AGI", typeZh = "敏捷", value = 1);
+block 點擊提升一點智慧 = 自定義::點擊提升能力泛型(type = "INT", typeZh = "智慧", value = 1);
+block 點擊提升一點精神 = 自定義::點擊提升能力泛型(type = "PSY", typeZh = "精神", value = 1);
+block 點擊提升十點力量 = 自定義::點擊提升能力泛型(type = "STR", typeZh = "力量", value = 10);
+block 點擊提升十點體質 = 自定義::點擊提升能力泛型(type = "CON", typeZh = "體質", value = 10);
+block 點擊提升十點敏捷 = 自定義::點擊提升能力泛型(type = "AGI", typeZh = "敏捷", value = 10);
+block 點擊提升十點智慧 = 自定義::點擊提升能力泛型(type = "INT", typeZh = "智慧", value = 10);
+block 點擊提升十點精神 = 自定義::點擊提升能力泛型(type = "PSY", typeZh = "精神", value = 10);
 block 釋放技能風杖 = 自定義::釋放技能泛型(weapon = 別名::武器風杖);
 block 釋放技能鐵劍 = 自定義::釋放技能泛型(weapon = 別名::武器鐵劍);
-block 風杖物理攻擊 = 自定義::武器物理攻擊泛型(weapon = 別名::武器風杖, value = 公式::風杖物理傷害, comboNum = 1);
-block 鐵劍物理攻擊 = 自定義::武器物理攻擊泛型(weapon = 別名::武器鐵劍, value = 公式::鐵劍物理傷害, comboNum = 1);
-block 匕首物理攻擊 = 自定義::武器物理攻擊泛型(weapon = 別名::武器匕首, value = 公式::匕首物理傷害, comboNum = 2);
+block 風杖物理攻擊 = 自定義::武器物理攻擊泛型(weapon = 別名::武器風杖, value = 公式::風杖物理傷害);
+block 鐵劍物理攻擊 = 自定義::武器物理攻擊泛型(weapon = 別名::武器鐵劍, value = 公式::鐵劍物理傷害);
+block 匕首物理攻擊 = 自定義::武器物理攻擊泛型(weapon = 別名::武器匕首, value = 公式::匕首物理傷害);
+block 匕首物理連擊 = 自定義::武器物理連擊泛型(weapon = 別名::武器匕首, value = 公式::匕首物理傷害, comboRate = 公式::匕首連擊機率);
 block 點擊重置能力 {
     __repeat__ = -1;
     triggers {
@@ -632,11 +678,11 @@ block 遊戲初始化 {
         }
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
-        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR", text = "確認")]);
-        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON", text = "確認")]);
-        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI", text = "確認")]);
-        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT", text = "確認")]);
-        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY", text = "確認")]);
+        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR1", text = "提升一點"),Button(id = "increaseSTR10", text = "提升十點")]);
+        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON1", text = "提升一點"),Button(id = "increaseCON10", text = "提升十點")]);
+        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI1", text = "提升一點"),Button(id = "increaseAGI10", text = "提升十點")]);
+        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT1", text = "提升一點"),Button(id = "increaseINT10", text = "提升十點")]);
+        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY1", text = "提升一點"),Button(id = "increasePSY10", text = "提升十點")]);
         新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
 }
@@ -651,16 +697,17 @@ const 公式::風杖光彈傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
 const 公式::鐵劍物理傷害 = "30+{attacker.STR}*3";
 const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
-const 公式::匕首物理傷害 = "10+{attacker.STR}+{attacker.AGI}";
+const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
+const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
 const 文字::風杖描述 = ("【風杖】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 5+力量÷2\n" + (" - 光彈傷害: 10+智慧+精神÷2\n" + ("【技能】散射釋出五發光彈\n" + " - 光彈傷害: 10+智慧+精神÷2")))));
 const 文字::鐵劍描述 = ("【鐵劍】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 30+力量×3\n" + ("【技能】對範圍内的角色造成三次傷害及治療\n" + (" - 對敵軍傷害量: 1+力量÷2+體質÷2 \n" + " - 對友軍回復量: 1+體質")))));
-const 文字::匕首描述 = ("【匕首】\n" + ("【普通攻擊】- 連擊兩次\n" + " - 武器傷害: 10+力量+敏捷\n"));
-const 文字::力量描述 = "【力量】\n消耗一點能力點，提升劍類傷害";
-const 文字::體質描述 = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力";
-const 文字::敏捷描述 = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度";
-const 文字::智慧描述 = "【智慧】\n消耗一點能力點，提升杖類傷害";
-const 文字::精神描述 = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力";
+const 文字::匕首描述 = ("【匕首】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 10+力量×2+敏捷\n" + " - 連擊率: 10%+敏捷×2%，上限100%\n")));
+const 文字::力量描述 = "【力量】\n每一點可提升若干的武器物理傷害\n詳細見各武器描述";
+const 文字::體質描述 = "【體質】\n每一點可提升半點恢復力\n及增加十點血量上限";
+const 文字::敏捷描述 = "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度";
+const 文字::智慧描述 = "【智慧】\n每一點可提升若干的杖類傷害\n詳細見各武器描述";
+const 文字::精神描述 = "【精神】\n每一點可提升一點恢復力\n及提升小量的杖類傷害";
 const 角色::任何 = ActorMatch();
 const 角色::任何玩家 = ActorMatch(controller = "player");
 const 角色::任何電腦 = ActorMatch(controller = "ai");
@@ -710,7 +757,7 @@ def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
 def 自定義::更新角色屬性(actorId) : actions {
     儲存物件變數(key = "HP", object = actorId, type = "integer", value = ("98 + 10*{" + (actorId + (".CON} + 2*{" + (actorId + ".Level}")))));
     設定角色屬性(actorId = actorId, attr = "maxHp", value = ("{" + (actorId + ".HP}")));
-    設定角色屬性(actorId = actorId, attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + (actorId + ".AGI})")));
+    設定角色屬性(actorId = actorId, attr = "closeWeaponSpeed", value = ("4-3/(1+0.01*{" + (actorId + ".AGI})")));
     設定角色屬性(actorId = actorId, attr = "weight", value = ("3*pow(0.97,{" + (actorId + ".AGI})")));
 }
 def 自定義::輔助::下載Instance數據(key) : actions {
@@ -763,18 +810,26 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
         }
     }
 }
-def 自定義::點擊提升能力泛型(type, typeZh) : block {
+def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("increase" + type));
+        if((value == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "1")));
+        } else if((value == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "10")));
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = value);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存Instance整數(key = type, value = ("{instance." + (type + "}+1")));
-        角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - value));
+        自定義::儲存Instance整數(key = type, value = (("{instance." + (type + "}")) + value));
+        if((value == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        } else if((value == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        }
         自定義::更新角色屬性(actorId = "instance");
         自定義::上載Instance數據();
     }
@@ -798,18 +853,26 @@ def 自定義::釋放技能泛型(weapon) : block {
         }
     }
 }
-def 自定義::武器物理攻擊泛型(weapon, value, comboNum) : block {
+def 自定義::武器物理攻擊泛型(weapon, value) : block {
     __repeat__ = -1;
     triggers {
         角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = weapon);
     }
     actions {
-        for(i in 1...comboNum) {
-            角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
-            if((comboNum != i)) {
-                等待(duration = 300);
-            }
-        }
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
+    }
+}
+def 自定義::武器物理連擊泛型(weapon, value, comboRate) : block {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = weapon);
+    }
+    checks {
+        比較數字(lhs = comboRate, op = ">=", rhs = "random(0, 100)");
+    }
+    actions {
+        等待(duration = 100);
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
     }
 }
 block 下載老玩家數據 {
@@ -872,82 +935,242 @@ block 下載新玩家數據 {
         }
     }
 }
-block 點擊提升力量 {
+block 點擊提升一點力量 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("increase" + "STR"));
+        if((1 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "1")));
+        } else if((1 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "10")));
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存Instance整數(key = "STR", value = ("{instance." + ("STR" + "}+1")));
-        角色說話(actorId = "instance", text = ("成功提升一點" + ("力量" + "，尚餘{instance.Point}點能力點")));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
+        自定義::儲存Instance整數(key = "STR", value = (("{instance." + ("STR" + "}")) + 1));
+        if((1 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("力量" + "，尚餘{instance.Point}點能力點")));
+        } else if((1 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("力量" + "，尚餘{instance.Point}點能力點")));
+        }
         自定義::更新角色屬性(actorId = "instance");
         自定義::上載Instance數據();
     }
 }
-block 點擊提升體質 {
+block 點擊提升一點體質 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("increase" + "CON"));
+        if((1 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "1")));
+        } else if((1 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "10")));
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存Instance整數(key = "CON", value = ("{instance." + ("CON" + "}+1")));
-        角色說話(actorId = "instance", text = ("成功提升一點" + ("體質" + "，尚餘{instance.Point}點能力點")));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
+        自定義::儲存Instance整數(key = "CON", value = (("{instance." + ("CON" + "}")) + 1));
+        if((1 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("體質" + "，尚餘{instance.Point}點能力點")));
+        } else if((1 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("體質" + "，尚餘{instance.Point}點能力點")));
+        }
         自定義::更新角色屬性(actorId = "instance");
         自定義::上載Instance數據();
     }
 }
-block 點擊提升敏捷 {
+block 點擊提升一點敏捷 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("increase" + "AGI"));
+        if((1 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "1")));
+        } else if((1 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "10")));
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存Instance整數(key = "AGI", value = ("{instance." + ("AGI" + "}+1")));
-        角色說話(actorId = "instance", text = ("成功提升一點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
+        自定義::儲存Instance整數(key = "AGI", value = (("{instance." + ("AGI" + "}")) + 1));
+        if((1 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
+        } else if((1 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
+        }
         自定義::更新角色屬性(actorId = "instance");
         自定義::上載Instance數據();
     }
 }
-block 點擊提升智慧 {
+block 點擊提升一點智慧 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("increase" + "INT"));
+        if((1 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "1")));
+        } else if((1 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "10")));
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存Instance整數(key = "INT", value = ("{instance." + ("INT" + "}+1")));
-        角色說話(actorId = "instance", text = ("成功提升一點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
+        自定義::儲存Instance整數(key = "INT", value = (("{instance." + ("INT" + "}")) + 1));
+        if((1 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
+        } else if((1 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
+        }
         自定義::更新角色屬性(actorId = "instance");
         自定義::上載Instance數據();
     }
 }
-block 點擊提升精神 {
+block 點擊提升一點精神 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("increase" + "PSY"));
+        if((1 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "1")));
+        } else if((1 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "10")));
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存Instance整數(key = "PSY", value = ("{instance." + ("PSY" + "}+1")));
-        角色說話(actorId = "instance", text = ("成功提升一點" + ("精神" + "，尚餘{instance.Point}點能力點")));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
+        自定義::儲存Instance整數(key = "PSY", value = (("{instance." + ("PSY" + "}")) + 1));
+        if((1 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("精神" + "，尚餘{instance.Point}點能力點")));
+        } else if((1 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("精神" + "，尚餘{instance.Point}點能力點")));
+        }
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
+    }
+}
+block 點擊提升十點力量 {
+    __repeat__ = -1;
+    triggers {
+        if((10 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "1")));
+        } else if((10 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "10")));
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
+        自定義::儲存Instance整數(key = "STR", value = (("{instance." + ("STR" + "}")) + 10));
+        if((10 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("力量" + "，尚餘{instance.Point}點能力點")));
+        } else if((10 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("力量" + "，尚餘{instance.Point}點能力點")));
+        }
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
+    }
+}
+block 點擊提升十點體質 {
+    __repeat__ = -1;
+    triggers {
+        if((10 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "1")));
+        } else if((10 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "10")));
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
+        自定義::儲存Instance整數(key = "CON", value = (("{instance." + ("CON" + "}")) + 10));
+        if((10 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("體質" + "，尚餘{instance.Point}點能力點")));
+        } else if((10 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("體質" + "，尚餘{instance.Point}點能力點")));
+        }
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
+    }
+}
+block 點擊提升十點敏捷 {
+    __repeat__ = -1;
+    triggers {
+        if((10 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "1")));
+        } else if((10 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "10")));
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
+        自定義::儲存Instance整數(key = "AGI", value = (("{instance." + ("AGI" + "}")) + 10));
+        if((10 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
+        } else if((10 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
+        }
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
+    }
+}
+block 點擊提升十點智慧 {
+    __repeat__ = -1;
+    triggers {
+        if((10 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "1")));
+        } else if((10 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "10")));
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
+        自定義::儲存Instance整數(key = "INT", value = (("{instance." + ("INT" + "}")) + 10));
+        if((10 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
+        } else if((10 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
+        }
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
+    }
+}
+block 點擊提升十點精神 {
+    __repeat__ = -1;
+    triggers {
+        if((10 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "1")));
+        } else if((10 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "10")));
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
+        自定義::儲存Instance整數(key = "PSY", value = (("{instance." + ("PSY" + "}")) + 10));
+        if((10 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("精神" + "，尚餘{instance.Point}點能力點")));
+        } else if((10 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("精神" + "，尚餘{instance.Point}點能力點")));
+        }
         自定義::更新角色屬性(actorId = "instance");
         自定義::上載Instance數據();
     }
@@ -996,12 +1219,7 @@ block 風杖物理攻擊 {
         角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器風杖);
     }
     actions {
-        for(i in 1...1) {
-            角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::風杖物理傷害);
-            if((1 != i)) {
-                等待(duration = 300);
-            }
-        }
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::風杖物理傷害);
     }
 }
 block 鐵劍物理攻擊 {
@@ -1010,12 +1228,7 @@ block 鐵劍物理攻擊 {
         角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器鐵劍);
     }
     actions {
-        for(i in 1...1) {
-            角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::鐵劍物理傷害);
-            if((1 != i)) {
-                等待(duration = 300);
-            }
-        }
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::鐵劍物理傷害);
     }
 }
 block 匕首物理攻擊 {
@@ -1024,12 +1237,20 @@ block 匕首物理攻擊 {
         角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器匕首);
     }
     actions {
-        for(i in 1...2) {
-            角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
-            if((2 != i)) {
-                等待(duration = 300);
-            }
-        }
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
+    }
+}
+block 匕首物理連擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器匕首);
+    }
+    checks {
+        比較數字(lhs = 公式::匕首連擊機率, op = ">=", rhs = "random(0, 100)");
+    }
+    actions {
+        等待(duration = 100);
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
     }
 }
 block 點擊重置能力 {
@@ -1161,11 +1382,11 @@ block 遊戲初始化 {
         }
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
-        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR", text = "確認")]);
-        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON", text = "確認")]);
-        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI", text = "確認")]);
-        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT", text = "確認")]);
-        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY", text = "確認")]);
+        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR1", text = "提升一點"),Button(id = "increaseSTR10", text = "提升十點")]);
+        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON1", text = "提升一點"),Button(id = "increaseCON10", text = "提升十點")]);
+        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI1", text = "提升一點"),Button(id = "increaseAGI10", text = "提升十點")]);
+        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT1", text = "提升一點"),Button(id = "increaseINT10", text = "提升十點")]);
+        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY1", text = "提升一點"),Button(id = "increasePSY10", text = "提升十點")]);
         新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
 }
@@ -1180,16 +1401,17 @@ const 公式::風杖光彈傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
 const 公式::鐵劍物理傷害 = "30+{attacker.STR}*3";
 const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
-const 公式::匕首物理傷害 = "10+{attacker.STR}+{attacker.AGI}";
+const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
+const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
 const 文字::風杖描述 = ("【風杖】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 5+力量÷2\n" + (" - 光彈傷害: 10+智慧+精神÷2\n" + ("【技能】散射釋出五發光彈\n" + " - 光彈傷害: 10+智慧+精神÷2")))));
 const 文字::鐵劍描述 = ("【鐵劍】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 30+力量×3\n" + ("【技能】對範圍内的角色造成三次傷害及治療\n" + (" - 對敵軍傷害量: 1+力量÷2+體質÷2 \n" + " - 對友軍回復量: 1+體質")))));
-const 文字::匕首描述 = ("【匕首】\n" + ("【普通攻擊】- 連擊兩次\n" + " - 武器傷害: 10+力量+敏捷\n"));
-const 文字::力量描述 = "【力量】\n消耗一點能力點，提升劍類傷害";
-const 文字::體質描述 = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力";
-const 文字::敏捷描述 = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度";
-const 文字::智慧描述 = "【智慧】\n消耗一點能力點，提升杖類傷害";
-const 文字::精神描述 = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力";
+const 文字::匕首描述 = ("【匕首】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 10+力量×2+敏捷\n" + " - 連擊率: 10%+敏捷×2%，上限100%\n")));
+const 文字::力量描述 = "【力量】\n每一點可提升若干的武器物理傷害\n詳細見各武器描述";
+const 文字::體質描述 = "【體質】\n每一點可提升半點恢復力\n及增加十點血量上限";
+const 文字::敏捷描述 = "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度";
+const 文字::智慧描述 = "【智慧】\n每一點可提升若干的杖類傷害\n詳細見各武器描述";
+const 文字::精神描述 = "【精神】\n每一點可提升一點恢復力\n及提升小量的杖類傷害";
 const 角色::任何 = ActorMatch();
 const 角色::任何玩家 = ActorMatch(controller = "player");
 const 角色::任何電腦 = ActorMatch(controller = "ai");
@@ -1239,7 +1461,7 @@ def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
 def 自定義::更新角色屬性(actorId) : actions {
     儲存物件變數(key = "HP", object = actorId, type = "integer", value = ("98 + 10*{" + (actorId + (".CON} + 2*{" + (actorId + ".Level}")))));
     設定角色屬性(actorId = actorId, attr = "maxHp", value = ("{" + (actorId + ".HP}")));
-    設定角色屬性(actorId = actorId, attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + (actorId + ".AGI})")));
+    設定角色屬性(actorId = actorId, attr = "closeWeaponSpeed", value = ("4-3/(1+0.01*{" + (actorId + ".AGI})")));
     設定角色屬性(actorId = actorId, attr = "weight", value = ("3*pow(0.97,{" + (actorId + ".AGI})")));
 }
 def 自定義::輔助::下載Instance數據(key) : actions {
@@ -1292,18 +1514,26 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
         }
     }
 }
-def 自定義::點擊提升能力泛型(type, typeZh) : block {
+def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("increase" + type));
+        if((value == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "1")));
+        } else if((value == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "10")));
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = value);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存Instance整數(key = type, value = ("{instance." + (type + "}+1")));
-        角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - value));
+        自定義::儲存Instance整數(key = type, value = (("{instance." + (type + "}")) + value));
+        if((value == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        } else if((value == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        }
         自定義::更新角色屬性(actorId = "instance");
         自定義::上載Instance數據();
     }
@@ -1327,18 +1557,26 @@ def 自定義::釋放技能泛型(weapon) : block {
         }
     }
 }
-def 自定義::武器物理攻擊泛型(weapon, value, comboNum) : block {
+def 自定義::武器物理攻擊泛型(weapon, value) : block {
     __repeat__ = -1;
     triggers {
         角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = weapon);
     }
     actions {
-        for(i in 1...comboNum) {
-            角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
-            if((comboNum != i)) {
-                等待(duration = 300);
-            }
-        }
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
+    }
+}
+def 自定義::武器物理連擊泛型(weapon, value, comboRate) : block {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = weapon);
+    }
+    checks {
+        比較數字(lhs = comboRate, op = ">=", rhs = "random(0, 100)");
+    }
+    actions {
+        等待(duration = 100);
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
     }
 }
 block 下載老玩家數據 {
@@ -1405,82 +1643,242 @@ block 下載新玩家數據 {
     triggers {
     }
 }
-block 點擊提升力量 {
+block 點擊提升一點力量 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("increase" + "STR"));
+        if((1 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "1")));
+        } else if((1 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "10")));
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存Instance整數(key = "STR", value = ("{instance." + ("STR" + "}+1")));
-        角色說話(actorId = "instance", text = ("成功提升一點" + ("力量" + "，尚餘{instance.Point}點能力點")));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
+        自定義::儲存Instance整數(key = "STR", value = (("{instance." + ("STR" + "}")) + 1));
+        if((1 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("力量" + "，尚餘{instance.Point}點能力點")));
+        } else if((1 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("力量" + "，尚餘{instance.Point}點能力點")));
+        }
         自定義::更新角色屬性(actorId = "instance");
         自定義::上載Instance數據();
     }
 }
-block 點擊提升體質 {
+block 點擊提升一點體質 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("increase" + "CON"));
+        if((1 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "1")));
+        } else if((1 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "10")));
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存Instance整數(key = "CON", value = ("{instance." + ("CON" + "}+1")));
-        角色說話(actorId = "instance", text = ("成功提升一點" + ("體質" + "，尚餘{instance.Point}點能力點")));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
+        自定義::儲存Instance整數(key = "CON", value = (("{instance." + ("CON" + "}")) + 1));
+        if((1 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("體質" + "，尚餘{instance.Point}點能力點")));
+        } else if((1 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("體質" + "，尚餘{instance.Point}點能力點")));
+        }
         自定義::更新角色屬性(actorId = "instance");
         自定義::上載Instance數據();
     }
 }
-block 點擊提升敏捷 {
+block 點擊提升一點敏捷 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("increase" + "AGI"));
+        if((1 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "1")));
+        } else if((1 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "10")));
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存Instance整數(key = "AGI", value = ("{instance." + ("AGI" + "}+1")));
-        角色說話(actorId = "instance", text = ("成功提升一點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
+        自定義::儲存Instance整數(key = "AGI", value = (("{instance." + ("AGI" + "}")) + 1));
+        if((1 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
+        } else if((1 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
+        }
         自定義::更新角色屬性(actorId = "instance");
         自定義::上載Instance數據();
     }
 }
-block 點擊提升智慧 {
+block 點擊提升一點智慧 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("increase" + "INT"));
+        if((1 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "1")));
+        } else if((1 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "10")));
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存Instance整數(key = "INT", value = ("{instance." + ("INT" + "}+1")));
-        角色說話(actorId = "instance", text = ("成功提升一點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
+        自定義::儲存Instance整數(key = "INT", value = (("{instance." + ("INT" + "}")) + 1));
+        if((1 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
+        } else if((1 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
+        }
         自定義::更新角色屬性(actorId = "instance");
         自定義::上載Instance數據();
     }
 }
-block 點擊提升精神 {
+block 點擊提升一點精神 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("increase" + "PSY"));
+        if((1 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "1")));
+        } else if((1 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "10")));
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}-1");
-        自定義::儲存Instance整數(key = "PSY", value = ("{instance." + ("PSY" + "}+1")));
-        角色說話(actorId = "instance", text = ("成功提升一點" + ("精神" + "，尚餘{instance.Point}點能力點")));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
+        自定義::儲存Instance整數(key = "PSY", value = (("{instance." + ("PSY" + "}")) + 1));
+        if((1 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("精神" + "，尚餘{instance.Point}點能力點")));
+        } else if((1 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("精神" + "，尚餘{instance.Point}點能力點")));
+        }
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
+    }
+}
+block 點擊提升十點力量 {
+    __repeat__ = -1;
+    triggers {
+        if((10 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "1")));
+        } else if((10 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "10")));
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
+        自定義::儲存Instance整數(key = "STR", value = (("{instance." + ("STR" + "}")) + 10));
+        if((10 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("力量" + "，尚餘{instance.Point}點能力點")));
+        } else if((10 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("力量" + "，尚餘{instance.Point}點能力點")));
+        }
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
+    }
+}
+block 點擊提升十點體質 {
+    __repeat__ = -1;
+    triggers {
+        if((10 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "1")));
+        } else if((10 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "10")));
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
+        自定義::儲存Instance整數(key = "CON", value = (("{instance." + ("CON" + "}")) + 10));
+        if((10 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("體質" + "，尚餘{instance.Point}點能力點")));
+        } else if((10 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("體質" + "，尚餘{instance.Point}點能力點")));
+        }
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
+    }
+}
+block 點擊提升十點敏捷 {
+    __repeat__ = -1;
+    triggers {
+        if((10 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "1")));
+        } else if((10 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "10")));
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
+        自定義::儲存Instance整數(key = "AGI", value = (("{instance." + ("AGI" + "}")) + 10));
+        if((10 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
+        } else if((10 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
+        }
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
+    }
+}
+block 點擊提升十點智慧 {
+    __repeat__ = -1;
+    triggers {
+        if((10 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "1")));
+        } else if((10 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "10")));
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
+        自定義::儲存Instance整數(key = "INT", value = (("{instance." + ("INT" + "}")) + 10));
+        if((10 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
+        } else if((10 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
+        }
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
+    }
+}
+block 點擊提升十點精神 {
+    __repeat__ = -1;
+    triggers {
+        if((10 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "1")));
+        } else if((10 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "10")));
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
+        自定義::儲存Instance整數(key = "PSY", value = (("{instance." + ("PSY" + "}")) + 10));
+        if((10 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("精神" + "，尚餘{instance.Point}點能力點")));
+        } else if((10 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("精神" + "，尚餘{instance.Point}點能力點")));
+        }
         自定義::更新角色屬性(actorId = "instance");
         自定義::上載Instance數據();
     }
@@ -1533,12 +1931,7 @@ block 風杖物理攻擊 {
         角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器風杖);
     }
     actions {
-        for(i in 1...1) {
-            角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::風杖物理傷害);
-            if((1 != i)) {
-                等待(duration = 300);
-            }
-        }
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::風杖物理傷害);
     }
     checks {
     }
@@ -1549,12 +1942,7 @@ block 鐵劍物理攻擊 {
         角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器鐵劍);
     }
     actions {
-        for(i in 1...1) {
-            角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::鐵劍物理傷害);
-            if((1 != i)) {
-                等待(duration = 300);
-            }
-        }
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::鐵劍物理傷害);
     }
     checks {
     }
@@ -1565,14 +1953,22 @@ block 匕首物理攻擊 {
         角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器匕首);
     }
     actions {
-        for(i in 1...2) {
-            角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
-            if((2 != i)) {
-                等待(duration = 300);
-            }
-        }
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
     }
     checks {
+    }
+}
+block 匕首物理連擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器匕首);
+    }
+    checks {
+        比較數字(lhs = 公式::匕首連擊機率, op = ">=", rhs = "random(0, 100)");
+    }
+    actions {
+        等待(duration = 100);
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
     }
 }
 block 點擊重置能力 {
@@ -1722,11 +2118,11 @@ block 遊戲初始化 {
         }
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
-        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR", text = "確認")]);
-        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON", text = "確認")]);
-        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI", text = "確認")]);
-        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT", text = "確認")]);
-        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY", text = "確認")]);
+        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR1", text = "提升一點"),Button(id = "increaseSTR10", text = "提升十點")]);
+        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON1", text = "提升一點"),Button(id = "increaseCON10", text = "提升十點")]);
+        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI1", text = "提升一點"),Button(id = "increaseAGI10", text = "提升十點")]);
+        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT1", text = "提升一點"),Button(id = "increaseINT10", text = "提升十點")]);
+        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY1", text = "提升一點"),Button(id = "increasePSY10", text = "提升十點")]);
         新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
     checks {
@@ -1745,16 +2141,17 @@ const 公式::風杖光彈傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
 const 公式::鐵劍物理傷害 = "30+{attacker.STR}*3";
 const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
-const 公式::匕首物理傷害 = "10+{attacker.STR}+{attacker.AGI}";
+const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
+const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
 const 文字::風杖描述 = ("【風杖】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 5+力量÷2\n" + (" - 光彈傷害: 10+智慧+精神÷2\n" + ("【技能】散射釋出五發光彈\n" + " - 光彈傷害: 10+智慧+精神÷2")))));
 const 文字::鐵劍描述 = ("【鐵劍】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 30+力量×3\n" + ("【技能】對範圍内的角色造成三次傷害及治療\n" + (" - 對敵軍傷害量: 1+力量÷2+體質÷2 \n" + " - 對友軍回復量: 1+體質")))));
-const 文字::匕首描述 = ("【匕首】\n" + ("【普通攻擊】- 連擊兩次\n" + " - 武器傷害: 10+力量+敏捷\n"));
-const 文字::力量描述 = "【力量】\n消耗一點能力點，提升劍類傷害";
-const 文字::體質描述 = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力";
-const 文字::敏捷描述 = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度";
-const 文字::智慧描述 = "【智慧】\n消耗一點能力點，提升杖類傷害";
-const 文字::精神描述 = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力";
+const 文字::匕首描述 = ("【匕首】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 10+力量×2+敏捷\n" + " - 連擊率: 10%+敏捷×2%，上限100%\n")));
+const 文字::力量描述 = "【力量】\n每一點可提升若干的武器物理傷害\n詳細見各武器描述";
+const 文字::體質描述 = "【體質】\n每一點可提升半點恢復力\n及增加十點血量上限";
+const 文字::敏捷描述 = "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度";
+const 文字::智慧描述 = "【智慧】\n每一點可提升若干的杖類傷害\n詳細見各武器描述";
+const 文字::精神描述 = "【精神】\n每一點可提升一點恢復力\n及提升小量的杖類傷害";
 const 角色::任何 = ActorMatch();
 const 角色::任何玩家 = ActorMatch(controller = "player");
 const 角色::任何電腦 = ActorMatch(controller = "ai");
@@ -1811,7 +2208,7 @@ block 下載老玩家數據 {
             儲存物件變數(key = "HP", object = "instance", type = "integer", value = ("{{instance}_" + ("HP" + "}")));
             儲存物件變數(key = "HP", object = "instance", type = "integer", value = ("98 + 10*{" + ("instance" + (".CON} + 2*{" + ("instance" + ".Level}")))));
             設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
-            設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + ("instance" + ".AGI})")));
+            設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.01*{" + ("instance" + ".AGI})")));
             設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
@@ -1856,7 +2253,7 @@ block 下載新玩家數據 {
             儲存物件變數(key = "HP", object = "instance", type = "integer", value = ("{{instance}_" + ("HP" + "}")));
             儲存物件變數(key = "HP", object = "instance", type = "integer", value = ("98 + 10*{" + ("instance" + (".CON} + 2*{" + ("instance" + ".Level}")))));
             設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
-            設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + ("instance" + ".AGI})")));
+            設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.01*{" + ("instance" + ".AGI})")));
             設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
@@ -1864,21 +2261,29 @@ block 下載新玩家數據 {
     triggers {
     }
 }
-block 點擊提升力量 {
+block 點擊提升一點力量 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("increase" + "STR"));
+        if((1 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "1")));
+        } else if((1 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "10")));
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "STR", object = "instance", type = "integer", value = ("{instance." + ("STR" + "}+1")));
-        角色說話(actorId = "instance", text = ("成功提升一點" + ("力量" + "，尚餘{instance.Point}點能力點")));
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 1));
+        儲存物件變數(key = "STR", object = "instance", type = "integer", value = (("{instance." + ("STR" + "}")) + 1));
+        if((1 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("力量" + "，尚餘{instance.Point}點能力點")));
+        } else if((1 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("力量" + "，尚餘{instance.Point}點能力點")));
+        }
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = ("98 + 10*{" + ("instance" + (".CON} + 2*{" + ("instance" + ".Level}")))));
         設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + ("instance" + ".AGI})")));
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.01*{" + ("instance" + ".AGI})")));
         設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
@@ -1893,21 +2298,29 @@ block 點擊提升力量 {
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊提升體質 {
+block 點擊提升一點體質 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("increase" + "CON"));
+        if((1 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "1")));
+        } else if((1 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "10")));
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "CON", object = "instance", type = "integer", value = ("{instance." + ("CON" + "}+1")));
-        角色說話(actorId = "instance", text = ("成功提升一點" + ("體質" + "，尚餘{instance.Point}點能力點")));
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 1));
+        儲存物件變數(key = "CON", object = "instance", type = "integer", value = (("{instance." + ("CON" + "}")) + 1));
+        if((1 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("體質" + "，尚餘{instance.Point}點能力點")));
+        } else if((1 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("體質" + "，尚餘{instance.Point}點能力點")));
+        }
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = ("98 + 10*{" + ("instance" + (".CON} + 2*{" + ("instance" + ".Level}")))));
         設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + ("instance" + ".AGI})")));
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.01*{" + ("instance" + ".AGI})")));
         設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
@@ -1922,21 +2335,29 @@ block 點擊提升體質 {
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊提升敏捷 {
+block 點擊提升一點敏捷 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("increase" + "AGI"));
+        if((1 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "1")));
+        } else if((1 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "10")));
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = ("{instance." + ("AGI" + "}+1")));
-        角色說話(actorId = "instance", text = ("成功提升一點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 1));
+        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = (("{instance." + ("AGI" + "}")) + 1));
+        if((1 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
+        } else if((1 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
+        }
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = ("98 + 10*{" + ("instance" + (".CON} + 2*{" + ("instance" + ".Level}")))));
         設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + ("instance" + ".AGI})")));
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.01*{" + ("instance" + ".AGI})")));
         設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
@@ -1951,21 +2372,29 @@ block 點擊提升敏捷 {
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊提升智慧 {
+block 點擊提升一點智慧 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("increase" + "INT"));
+        if((1 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "1")));
+        } else if((1 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "10")));
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "INT", object = "instance", type = "integer", value = ("{instance." + ("INT" + "}+1")));
-        角色說話(actorId = "instance", text = ("成功提升一點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 1));
+        儲存物件變數(key = "INT", object = "instance", type = "integer", value = (("{instance." + ("INT" + "}")) + 1));
+        if((1 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
+        } else if((1 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
+        }
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = ("98 + 10*{" + ("instance" + (".CON} + 2*{" + ("instance" + ".Level}")))));
         設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + ("instance" + ".AGI})")));
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.01*{" + ("instance" + ".AGI})")));
         設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
@@ -1980,21 +2409,214 @@ block 點擊提升智慧 {
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊提升精神 {
+block 點擊提升一點精神 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("increase" + "PSY"));
+        if((1 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "1")));
+        } else if((1 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "10")));
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = ("{instance." + ("PSY" + "}+1")));
-        角色說話(actorId = "instance", text = ("成功提升一點" + ("精神" + "，尚餘{instance.Point}點能力點")));
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 1));
+        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = (("{instance." + ("PSY" + "}")) + 1));
+        if((1 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("精神" + "，尚餘{instance.Point}點能力點")));
+        } else if((1 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("精神" + "，尚餘{instance.Point}點能力點")));
+        }
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = ("98 + 10*{" + ("instance" + (".CON} + 2*{" + ("instance" + ".Level}")))));
         設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + ("instance" + ".AGI})")));
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.01*{" + ("instance" + ".AGI})")));
+        設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點力量 {
+    __repeat__ = -1;
+    triggers {
+        if((10 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "1")));
+        } else if((10 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "10")));
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 10));
+        儲存物件變數(key = "STR", object = "instance", type = "integer", value = (("{instance." + ("STR" + "}")) + 10));
+        if((10 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("力量" + "，尚餘{instance.Point}點能力點")));
+        } else if((10 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("力量" + "，尚餘{instance.Point}點能力點")));
+        }
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = ("98 + 10*{" + ("instance" + (".CON} + 2*{" + ("instance" + ".Level}")))));
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.01*{" + ("instance" + ".AGI})")));
+        設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點體質 {
+    __repeat__ = -1;
+    triggers {
+        if((10 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "1")));
+        } else if((10 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "10")));
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 10));
+        儲存物件變數(key = "CON", object = "instance", type = "integer", value = (("{instance." + ("CON" + "}")) + 10));
+        if((10 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("體質" + "，尚餘{instance.Point}點能力點")));
+        } else if((10 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("體質" + "，尚餘{instance.Point}點能力點")));
+        }
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = ("98 + 10*{" + ("instance" + (".CON} + 2*{" + ("instance" + ".Level}")))));
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.01*{" + ("instance" + ".AGI})")));
+        設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點敏捷 {
+    __repeat__ = -1;
+    triggers {
+        if((10 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "1")));
+        } else if((10 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "10")));
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 10));
+        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = (("{instance." + ("AGI" + "}")) + 10));
+        if((10 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
+        } else if((10 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
+        }
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = ("98 + 10*{" + ("instance" + (".CON} + 2*{" + ("instance" + ".Level}")))));
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.01*{" + ("instance" + ".AGI})")));
+        設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點智慧 {
+    __repeat__ = -1;
+    triggers {
+        if((10 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "1")));
+        } else if((10 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "10")));
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 10));
+        儲存物件變數(key = "INT", object = "instance", type = "integer", value = (("{instance." + ("INT" + "}")) + 10));
+        if((10 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
+        } else if((10 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
+        }
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = ("98 + 10*{" + ("instance" + (".CON} + 2*{" + ("instance" + ".Level}")))));
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.01*{" + ("instance" + ".AGI})")));
+        設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點精神 {
+    __repeat__ = -1;
+    triggers {
+        if((10 == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "1")));
+        } else if((10 == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "10")));
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 10));
+        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = (("{instance." + ("PSY" + "}")) + 10));
+        if((10 == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + ("精神" + "，尚餘{instance.Point}點能力點")));
+        } else if((10 == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + ("精神" + "，尚餘{instance.Point}點能力點")));
+        }
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = ("98 + 10*{" + ("instance" + (".CON} + 2*{" + ("instance" + ".Level}")))));
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.01*{" + ("instance" + ".AGI})")));
         設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
@@ -2057,12 +2679,7 @@ block 風杖物理攻擊 {
         角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器風杖);
     }
     actions {
-        for(i in 1...1) {
-            角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::風杖物理傷害);
-            if((1 != i)) {
-                等待(duration = 300);
-            }
-        }
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::風杖物理傷害);
     }
     checks {
     }
@@ -2073,12 +2690,7 @@ block 鐵劍物理攻擊 {
         角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器鐵劍);
     }
     actions {
-        for(i in 1...1) {
-            角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::鐵劍物理傷害);
-            if((1 != i)) {
-                等待(duration = 300);
-            }
-        }
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::鐵劍物理傷害);
     }
     checks {
     }
@@ -2089,14 +2701,22 @@ block 匕首物理攻擊 {
         角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器匕首);
     }
     actions {
-        for(i in 1...2) {
-            角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
-            if((2 != i)) {
-                等待(duration = 300);
-            }
-        }
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
     }
     checks {
+    }
+}
+block 匕首物理連擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器匕首);
+    }
+    checks {
+        比較數字(lhs = 公式::匕首連擊機率, op = ">=", rhs = "random(0, 100)");
+    }
+    actions {
+        等待(duration = 100);
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
     }
 }
 block 點擊重置能力 {
@@ -2114,7 +2734,7 @@ block 點擊重置能力 {
         角色說話(actorId = "instance", text = "成功重設能力點，目前有{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = ("98 + 10*{" + ("instance" + (".CON} + 2*{" + ("instance" + ".Level}")))));
         設定角色屬性(actorId = "instance", attr = "maxHp", value = ("{" + ("instance" + ".HP}")));
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.05*{" + ("instance" + ".AGI})")));
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = ("4-3/(1+0.01*{" + ("instance" + ".AGI})")));
         設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
@@ -2311,11 +2931,11 @@ block 遊戲初始化 {
         } else {
             print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
         }
-        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR", text = "確認")]);
-        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON", text = "確認")]);
-        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI", text = "確認")]);
-        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT", text = "確認")]);
-        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY", text = "確認")]);
+        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR1", text = "提升一點"),Button(id = "increaseSTR10", text = "提升十點")]);
+        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON1", text = "提升一點"),Button(id = "increaseCON10", text = "提升十點")]);
+        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI1", text = "提升一點"),Button(id = "increaseAGI10", text = "提升十點")]);
+        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT1", text = "提升一點"),Button(id = "increaseINT10", text = "提升十點")]);
+        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY1", text = "提升一點"),Button(id = "increasePSY10", text = "提升十點")]);
         新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
     checks {
@@ -2373,7 +2993,7 @@ block 下載老玩家數據 {
             儲存物件變數(key = "HP", object = "instance", type = "integer", value = "{{instance}_HP}");
             儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
             設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-            設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+            設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
             設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
@@ -2418,7 +3038,7 @@ block 下載新玩家數據 {
             儲存物件變數(key = "HP", object = "instance", type = "integer", value = "{{instance}_HP}");
             儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
             設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-            設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+            設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
             設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
@@ -2426,21 +3046,29 @@ block 下載新玩家數據 {
     triggers {
     }
 }
-block 點擊提升力量 {
+block 點擊提升一點力量 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = "increaseSTR");
+        if(true) {
+            告示牌按鈕(varName = "instance", buttonId = "increaseSTR1");
+        } else if(false) {
+            告示牌按鈕(varName = "instance", buttonId = "increaseSTR10");
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "{instance.STR}+1");
-        角色說話(actorId = "instance", text = "成功提升一點力量，尚餘{instance.Point}點能力點");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
+        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "({instance.STR}+1)");
+        if(true) {
+            角色說話(actorId = "instance", text = "成功提升一點力量，尚餘{instance.Point}點能力點");
+        } else if(false) {
+            角色說話(actorId = "instance", text = "成功提升十點力量，尚餘{instance.Point}點能力點");
+        }
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
@@ -2455,21 +3083,29 @@ block 點擊提升力量 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊提升體質 {
+block 點擊提升一點體質 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = "increaseCON");
+        if(true) {
+            告示牌按鈕(varName = "instance", buttonId = "increaseCON1");
+        } else if(false) {
+            告示牌按鈕(varName = "instance", buttonId = "increaseCON10");
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "{instance.CON}+1");
-        角色說話(actorId = "instance", text = "成功提升一點體質，尚餘{instance.Point}點能力點");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
+        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "({instance.CON}+1)");
+        if(true) {
+            角色說話(actorId = "instance", text = "成功提升一點體質，尚餘{instance.Point}點能力點");
+        } else if(false) {
+            角色說話(actorId = "instance", text = "成功提升十點體質，尚餘{instance.Point}點能力點");
+        }
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
@@ -2484,21 +3120,29 @@ block 點擊提升體質 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊提升敏捷 {
+block 點擊提升一點敏捷 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = "increaseAGI");
+        if(true) {
+            告示牌按鈕(varName = "instance", buttonId = "increaseAGI1");
+        } else if(false) {
+            告示牌按鈕(varName = "instance", buttonId = "increaseAGI10");
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "{instance.AGI}+1");
-        角色說話(actorId = "instance", text = "成功提升一點敏捷，尚餘{instance.Point}點能力點");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
+        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "({instance.AGI}+1)");
+        if(true) {
+            角色說話(actorId = "instance", text = "成功提升一點敏捷，尚餘{instance.Point}點能力點");
+        } else if(false) {
+            角色說話(actorId = "instance", text = "成功提升十點敏捷，尚餘{instance.Point}點能力點");
+        }
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
@@ -2513,21 +3157,29 @@ block 點擊提升敏捷 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊提升智慧 {
+block 點擊提升一點智慧 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = "increaseINT");
+        if(true) {
+            告示牌按鈕(varName = "instance", buttonId = "increaseINT1");
+        } else if(false) {
+            告示牌按鈕(varName = "instance", buttonId = "increaseINT10");
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "{instance.INT}+1");
-        角色說話(actorId = "instance", text = "成功提升一點智慧，尚餘{instance.Point}點能力點");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
+        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "({instance.INT}+1)");
+        if(true) {
+            角色說話(actorId = "instance", text = "成功提升一點智慧，尚餘{instance.Point}點能力點");
+        } else if(false) {
+            角色說話(actorId = "instance", text = "成功提升十點智慧，尚餘{instance.Point}點能力點");
+        }
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
@@ -2542,21 +3194,214 @@ block 點擊提升智慧 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊提升精神 {
+block 點擊提升一點精神 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = "increasePSY");
+        if(true) {
+            告示牌按鈕(varName = "instance", buttonId = "increasePSY1");
+        } else if(false) {
+            告示牌按鈕(varName = "instance", buttonId = "increasePSY10");
+        }
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "{instance.PSY}+1");
-        角色說話(actorId = "instance", text = "成功提升一點精神，尚餘{instance.Point}點能力點");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
+        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "({instance.PSY}+1)");
+        if(true) {
+            角色說話(actorId = "instance", text = "成功提升一點精神，尚餘{instance.Point}點能力點");
+        } else if(false) {
+            角色說話(actorId = "instance", text = "成功提升十點精神，尚餘{instance.Point}點能力點");
+        }
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點力量 {
+    __repeat__ = -1;
+    triggers {
+        if(false) {
+            告示牌按鈕(varName = "instance", buttonId = "increaseSTR1");
+        } else if(true) {
+            告示牌按鈕(varName = "instance", buttonId = "increaseSTR10");
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
+        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "({instance.STR}+10)");
+        if(false) {
+            角色說話(actorId = "instance", text = "成功提升一點力量，尚餘{instance.Point}點能力點");
+        } else if(true) {
+            角色說話(actorId = "instance", text = "成功提升十點力量，尚餘{instance.Point}點能力點");
+        }
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點體質 {
+    __repeat__ = -1;
+    triggers {
+        if(false) {
+            告示牌按鈕(varName = "instance", buttonId = "increaseCON1");
+        } else if(true) {
+            告示牌按鈕(varName = "instance", buttonId = "increaseCON10");
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
+        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "({instance.CON}+10)");
+        if(false) {
+            角色說話(actorId = "instance", text = "成功提升一點體質，尚餘{instance.Point}點能力點");
+        } else if(true) {
+            角色說話(actorId = "instance", text = "成功提升十點體質，尚餘{instance.Point}點能力點");
+        }
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點敏捷 {
+    __repeat__ = -1;
+    triggers {
+        if(false) {
+            告示牌按鈕(varName = "instance", buttonId = "increaseAGI1");
+        } else if(true) {
+            告示牌按鈕(varName = "instance", buttonId = "increaseAGI10");
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
+        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "({instance.AGI}+10)");
+        if(false) {
+            角色說話(actorId = "instance", text = "成功提升一點敏捷，尚餘{instance.Point}點能力點");
+        } else if(true) {
+            角色說話(actorId = "instance", text = "成功提升十點敏捷，尚餘{instance.Point}點能力點");
+        }
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點智慧 {
+    __repeat__ = -1;
+    triggers {
+        if(false) {
+            告示牌按鈕(varName = "instance", buttonId = "increaseINT1");
+        } else if(true) {
+            告示牌按鈕(varName = "instance", buttonId = "increaseINT10");
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
+        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "({instance.INT}+10)");
+        if(false) {
+            角色說話(actorId = "instance", text = "成功提升一點智慧，尚餘{instance.Point}點能力點");
+        } else if(true) {
+            角色說話(actorId = "instance", text = "成功提升十點智慧，尚餘{instance.Point}點能力點");
+        }
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點精神 {
+    __repeat__ = -1;
+    triggers {
+        if(false) {
+            告示牌按鈕(varName = "instance", buttonId = "increasePSY1");
+        } else if(true) {
+            告示牌按鈕(varName = "instance", buttonId = "increasePSY10");
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
+        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "({instance.PSY}+10)");
+        if(false) {
+            角色說話(actorId = "instance", text = "成功提升一點精神，尚餘{instance.Point}點能力點");
+        } else if(true) {
+            角色說話(actorId = "instance", text = "成功提升十點精神，尚餘{instance.Point}點能力點");
+        }
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
@@ -2620,9 +3465,6 @@ block 風杖物理攻擊 {
     }
     actions {
         角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "5+{attacker.STR}/2");
-        if(false) {
-            等待(duration = 300);
-        }
     }
     checks {
     }
@@ -2634,9 +3476,6 @@ block 鐵劍物理攻擊 {
     }
     actions {
         角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "30+{attacker.STR}*3");
-        if(false) {
-            等待(duration = 300);
-        }
     }
     checks {
     }
@@ -2647,16 +3486,22 @@ block 匕首物理攻擊 {
         角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_dagger");
     }
     actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}+{attacker.AGI}");
-        if(true) {
-            等待(duration = 300);
-        }
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}+{attacker.AGI}");
-        if(false) {
-            等待(duration = 300);
-        }
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}*2+{attacker.AGI}");
     }
     checks {
+    }
+}
+block 匕首物理連擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_dagger");
+    }
+    checks {
+        比較數字(lhs = "10+{attacker.AGI}*2", op = ">=", rhs = "random(0, 100)");
+    }
+    actions {
+        等待(duration = 100);
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}*2+{attacker.AGI}");
     }
 }
 block 點擊重置能力 {
@@ -2674,7 +3519,7 @@ block 點擊重置能力 {
         角色說話(actorId = "instance", text = "成功重設能力點，目前有{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
@@ -2830,7 +3675,7 @@ block 遊戲初始化 {
         設定武器技能(weapon = "custom_wind_staff");
         設定武器技能(weapon = "custom_iron_sword");
         新增告示牌(x = 4, y = 7, rotation = 90, text = "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】散射釋出五發光彈\n - 光彈傷害: 10+智慧+精神÷2", showButtons = false);
-        新增告示牌(x = 5, y = 7, rotation = 90, text = "【匕首】\n【普通攻擊】- 連擊兩次\n - 武器傷害: 10+力量+敏捷\n", showButtons = false);
+        新增告示牌(x = 5, y = 7, rotation = 90, text = "【匕首】\n【普通攻擊】\n - 武器傷害: 10+力量×2+敏捷\n - 連擊率: 10%+敏捷×2%，上限100%\n", showButtons = false);
         新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質", showButtons = false);
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增武器道具(x = 5, y = 8, item = "custom_dagger");
@@ -2878,11 +3723,11 @@ block 遊戲初始化 {
         } else {
             print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
         }
-        新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttons = [Button(id = "increaseSTR", text = "確認")]);
-        新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttons = [Button(id = "increaseCON", text = "確認")]);
-        新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttons = [Button(id = "increaseAGI", text = "確認")]);
-        新增告示牌(x = 9, y = 17, rotation = 270, text = "【智慧】\n消耗一點能力點，提升杖類傷害", buttons = [Button(id = "increaseINT", text = "確認")]);
-        新增告示牌(x = 11, y = 17, rotation = 270, text = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力", buttons = [Button(id = "increasePSY", text = "確認")]);
+        新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n每一點可提升若干的武器物理傷害\n詳細見各武器描述", buttons = [Button(id = "increaseSTR1", text = "提升一點"),Button(id = "increaseSTR10", text = "提升十點")]);
+        新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n每一點可提升半點恢復力\n及增加十點血量上限", buttons = [Button(id = "increaseCON1", text = "提升一點"),Button(id = "increaseCON10", text = "提升十點")]);
+        新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度", buttons = [Button(id = "increaseAGI1", text = "提升一點"),Button(id = "increaseAGI10", text = "提升十點")]);
+        新增告示牌(x = 9, y = 17, rotation = 270, text = "【智慧】\n每一點可提升若干的杖類傷害\n詳細見各武器描述", buttons = [Button(id = "increaseINT1", text = "提升一點"),Button(id = "increaseINT10", text = "提升十點")]);
+        新增告示牌(x = 11, y = 17, rotation = 270, text = "【精神】\n每一點可提升一點恢復力\n及提升小量的杖類傷害", buttons = [Button(id = "increasePSY1", text = "提升一點"),Button(id = "increasePSY10", text = "提升十點")]);
         新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
     checks {
@@ -2934,7 +3779,7 @@ block 下載老玩家數據 {
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "{{instance}_HP}");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         角色加減血(actorCode = "instance", type = "heal", value = 9999);
     }
@@ -2954,21 +3799,21 @@ block 下載新玩家數據 {
     triggers {
     }
 }
-block 點擊提升力量 {
+block 點擊提升一點力量 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = "increaseSTR");
+        告示牌按鈕(varName = "instance", buttonId = "increaseSTR1");
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "{instance.STR}+1");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
+        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "({instance.STR}+1)");
         角色說話(actorId = "instance", text = "成功提升一點力量，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
@@ -2983,21 +3828,21 @@ block 點擊提升力量 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊提升體質 {
+block 點擊提升一點體質 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = "increaseCON");
+        告示牌按鈕(varName = "instance", buttonId = "increaseCON1");
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "{instance.CON}+1");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
+        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "({instance.CON}+1)");
         角色說話(actorId = "instance", text = "成功提升一點體質，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
@@ -3012,21 +3857,21 @@ block 點擊提升體質 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊提升敏捷 {
+block 點擊提升一點敏捷 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = "increaseAGI");
+        告示牌按鈕(varName = "instance", buttonId = "increaseAGI1");
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "{instance.AGI}+1");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
+        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "({instance.AGI}+1)");
         角色說話(actorId = "instance", text = "成功提升一點敏捷，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
@@ -3041,21 +3886,21 @@ block 點擊提升敏捷 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊提升智慧 {
+block 點擊提升一點智慧 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = "increaseINT");
+        告示牌按鈕(varName = "instance", buttonId = "increaseINT1");
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "{instance.INT}+1");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
+        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "({instance.INT}+1)");
         角色說話(actorId = "instance", text = "成功提升一點智慧，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
@@ -3070,21 +3915,166 @@ block 點擊提升智慧 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊提升精神 {
+block 點擊提升一點精神 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = "increasePSY");
+        告示牌按鈕(varName = "instance", buttonId = "increasePSY1");
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "{instance.PSY}+1");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
+        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "({instance.PSY}+1)");
         角色說話(actorId = "instance", text = "成功提升一點精神，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點力量 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "increaseSTR10");
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
+        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "({instance.STR}+10)");
+        角色說話(actorId = "instance", text = "成功提升十點力量，尚餘{instance.Point}點能力點");
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點體質 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "increaseCON10");
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
+        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "({instance.CON}+10)");
+        角色說話(actorId = "instance", text = "成功提升十點體質，尚餘{instance.Point}點能力點");
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點敏捷 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "increaseAGI10");
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
+        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "({instance.AGI}+10)");
+        角色說話(actorId = "instance", text = "成功提升十點敏捷，尚餘{instance.Point}點能力點");
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點智慧 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "increaseINT10");
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
+        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "({instance.INT}+10)");
+        角色說話(actorId = "instance", text = "成功提升十點智慧，尚餘{instance.Point}點能力點");
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點精神 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "increasePSY10");
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
+        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "({instance.PSY}+10)");
+        角色說話(actorId = "instance", text = "成功提升十點精神，尚餘{instance.Point}點能力點");
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
@@ -3154,11 +4144,22 @@ block 匕首物理攻擊 {
         角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_dagger");
     }
     actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}+{attacker.AGI}");
-        等待(duration = 300);
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}+{attacker.AGI}");
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}*2+{attacker.AGI}");
     }
     checks {
+    }
+}
+block 匕首物理連擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_dagger");
+    }
+    checks {
+        比較數字(lhs = "10+{attacker.AGI}*2", op = ">=", rhs = "random(0, 100)");
+    }
+    actions {
+        等待(duration = 100);
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}*2+{attacker.AGI}");
     }
 }
 block 點擊重置能力 {
@@ -3176,7 +4177,7 @@ block 點擊重置能力 {
         角色說話(actorId = "instance", text = "成功重設能力點，目前有{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
@@ -3332,7 +4333,7 @@ block 遊戲初始化 {
         設定武器技能(weapon = "custom_wind_staff");
         設定武器技能(weapon = "custom_iron_sword");
         新增告示牌(x = 4, y = 7, rotation = 90, text = "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】散射釋出五發光彈\n - 光彈傷害: 10+智慧+精神÷2", showButtons = false);
-        新增告示牌(x = 5, y = 7, rotation = 90, text = "【匕首】\n【普通攻擊】- 連擊兩次\n - 武器傷害: 10+力量+敏捷\n", showButtons = false);
+        新增告示牌(x = 5, y = 7, rotation = 90, text = "【匕首】\n【普通攻擊】\n - 武器傷害: 10+力量×2+敏捷\n - 連擊率: 10%+敏捷×2%，上限100%\n", showButtons = false);
         新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質", showButtons = false);
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增武器道具(x = 5, y = 8, item = "custom_dagger");
@@ -3350,11 +4351,11 @@ block 遊戲初始化 {
         設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "左");
         設定地圖傳送點(fromX = 19, fromY = 10, toX = 21, toY = 10, direction = "右");
         設定地圖傳送點(fromX = 21, fromY = 10, toX = 19, toY = 10, direction = "左");
-        新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttons = [Button(id = "increaseSTR", text = "確認")]);
-        新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttons = [Button(id = "increaseCON", text = "確認")]);
-        新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttons = [Button(id = "increaseAGI", text = "確認")]);
-        新增告示牌(x = 9, y = 17, rotation = 270, text = "【智慧】\n消耗一點能力點，提升杖類傷害", buttons = [Button(id = "increaseINT", text = "確認")]);
-        新增告示牌(x = 11, y = 17, rotation = 270, text = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力", buttons = [Button(id = "increasePSY", text = "確認")]);
+        新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n每一點可提升若干的武器物理傷害\n詳細見各武器描述", buttons = [Button(id = "increaseSTR1", text = "提升一點"),Button(id = "increaseSTR10", text = "提升十點")]);
+        新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n每一點可提升半點恢復力\n及增加十點血量上限", buttons = [Button(id = "increaseCON1", text = "提升一點"),Button(id = "increaseCON10", text = "提升十點")]);
+        新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度", buttons = [Button(id = "increaseAGI1", text = "提升一點"),Button(id = "increaseAGI10", text = "提升十點")]);
+        新增告示牌(x = 9, y = 17, rotation = 270, text = "【智慧】\n每一點可提升若干的杖類傷害\n詳細見各武器描述", buttons = [Button(id = "increaseINT1", text = "提升一點"),Button(id = "increaseINT10", text = "提升十點")]);
+        新增告示牌(x = 11, y = 17, rotation = 270, text = "【精神】\n每一點可提升一點恢復力\n及提升小量的杖類傷害", buttons = [Button(id = "increasePSY1", text = "提升一點"),Button(id = "increasePSY10", text = "提升十點")]);
         新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
     checks {
@@ -3406,7 +4407,7 @@ block 下載老玩家數據 {
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "{{instance}_HP}");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         角色加減血(actorCode = "instance", type = "heal", value = 9999);
     }
@@ -3426,21 +4427,21 @@ block 下載新玩家數據 {
     triggers {
     }
 }
-block 點擊提升力量 {
+block 點擊提升一點力量 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = "increaseSTR");
+        告示牌按鈕(varName = "instance", buttonId = "increaseSTR1");
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "{instance.STR}+1");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
+        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "({instance.STR}+1)");
         角色說話(actorId = "instance", text = "成功提升一點力量，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
@@ -3455,21 +4456,21 @@ block 點擊提升力量 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊提升體質 {
+block 點擊提升一點體質 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = "increaseCON");
+        告示牌按鈕(varName = "instance", buttonId = "increaseCON1");
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "{instance.CON}+1");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
+        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "({instance.CON}+1)");
         角色說話(actorId = "instance", text = "成功提升一點體質，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
@@ -3484,21 +4485,21 @@ block 點擊提升體質 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊提升敏捷 {
+block 點擊提升一點敏捷 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = "increaseAGI");
+        告示牌按鈕(varName = "instance", buttonId = "increaseAGI1");
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "{instance.AGI}+1");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
+        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "({instance.AGI}+1)");
         角色說話(actorId = "instance", text = "成功提升一點敏捷，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
@@ -3513,21 +4514,21 @@ block 點擊提升敏捷 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊提升智慧 {
+block 點擊提升一點智慧 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = "increaseINT");
+        告示牌按鈕(varName = "instance", buttonId = "increaseINT1");
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "{instance.INT}+1");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
+        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "({instance.INT}+1)");
         角色說話(actorId = "instance", text = "成功提升一點智慧，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
@@ -3542,21 +4543,166 @@ block 點擊提升智慧 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊提升精神 {
+block 點擊提升一點精神 {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = "increasePSY");
+        告示牌按鈕(varName = "instance", buttonId = "increasePSY1");
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}-1");
-        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "{instance.PSY}+1");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
+        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "({instance.PSY}+1)");
         角色說話(actorId = "instance", text = "成功提升一點精神，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點力量 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "increaseSTR10");
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
+        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "({instance.STR}+10)");
+        角色說話(actorId = "instance", text = "成功提升十點力量，尚餘{instance.Point}點能力點");
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點體質 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "increaseCON10");
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
+        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "({instance.CON}+10)");
+        角色說話(actorId = "instance", text = "成功提升十點體質，尚餘{instance.Point}點能力點");
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點敏捷 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "increaseAGI10");
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
+        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "({instance.AGI}+10)");
+        角色說話(actorId = "instance", text = "成功提升十點敏捷，尚餘{instance.Point}點能力點");
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點智慧 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "increaseINT10");
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
+        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "({instance.INT}+10)");
+        角色說話(actorId = "instance", text = "成功提升十點智慧，尚餘{instance.Point}點能力點");
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+}
+block 點擊提升十點精神 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "increasePSY10");
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
+    }
+    actions {
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
+        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "({instance.PSY}+10)");
+        角色說話(actorId = "instance", text = "成功提升十點精神，尚餘{instance.Point}點能力點");
+        儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
+        設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
@@ -3626,11 +4772,22 @@ block 匕首物理攻擊 {
         角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_dagger");
     }
     actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}+{attacker.AGI}");
-        等待(duration = 300);
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}+{attacker.AGI}");
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}*2+{attacker.AGI}");
     }
     checks {
+    }
+}
+block 匕首物理連擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_dagger");
+    }
+    checks {
+        比較數字(lhs = "10+{attacker.AGI}*2", op = ">=", rhs = "random(0, 100)");
+    }
+    actions {
+        等待(duration = 100);
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}*2+{attacker.AGI}");
     }
 }
 block 點擊重置能力 {
@@ -3648,7 +4805,7 @@ block 點擊重置能力 {
         角色說話(actorId = "instance", text = "成功重設能力點，目前有{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
-        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{instance.AGI})");
+        設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
@@ -3804,7 +4961,7 @@ block 遊戲初始化 {
         設定武器技能(weapon = "custom_wind_staff");
         設定武器技能(weapon = "custom_iron_sword");
         新增告示牌(x = 4, y = 7, rotation = 90, text = "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】散射釋出五發光彈\n - 光彈傷害: 10+智慧+精神÷2", showButtons = false);
-        新增告示牌(x = 5, y = 7, rotation = 90, text = "【匕首】\n【普通攻擊】- 連擊兩次\n - 武器傷害: 10+力量+敏捷\n", showButtons = false);
+        新增告示牌(x = 5, y = 7, rotation = 90, text = "【匕首】\n【普通攻擊】\n - 武器傷害: 10+力量×2+敏捷\n - 連擊率: 10%+敏捷×2%，上限100%\n", showButtons = false);
         新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質", showButtons = false);
         新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
         新增武器道具(x = 5, y = 8, item = "custom_dagger");
@@ -3822,11 +4979,11 @@ block 遊戲初始化 {
         設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "左");
         設定地圖傳送點(fromX = 19, fromY = 10, toX = 21, toY = 10, direction = "右");
         設定地圖傳送點(fromX = 21, fromY = 10, toX = 19, toY = 10, direction = "左");
-        新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttons = [Button(id = "increaseSTR", text = "確認")]);
-        新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttons = [Button(id = "increaseCON", text = "確認")]);
-        新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttons = [Button(id = "increaseAGI", text = "確認")]);
-        新增告示牌(x = 9, y = 17, rotation = 270, text = "【智慧】\n消耗一點能力點，提升杖類傷害", buttons = [Button(id = "increaseINT", text = "確認")]);
-        新增告示牌(x = 11, y = 17, rotation = 270, text = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力", buttons = [Button(id = "increasePSY", text = "確認")]);
+        新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n每一點可提升若干的武器物理傷害\n詳細見各武器描述", buttons = [Button(id = "increaseSTR1", text = "提升一點"),Button(id = "increaseSTR10", text = "提升十點")]);
+        新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n每一點可提升半點恢復力\n及增加十點血量上限", buttons = [Button(id = "increaseCON1", text = "提升一點"),Button(id = "increaseCON10", text = "提升十點")]);
+        新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度", buttons = [Button(id = "increaseAGI1", text = "提升一點"),Button(id = "increaseAGI10", text = "提升十點")]);
+        新增告示牌(x = 9, y = 17, rotation = 270, text = "【智慧】\n每一點可提升若干的杖類傷害\n詳細見各武器描述", buttons = [Button(id = "increaseINT1", text = "提升一點"),Button(id = "increaseINT10", text = "提升十點")]);
+        新增告示牌(x = 11, y = 17, rotation = 270, text = "【精神】\n每一點可提升一點恢復力\n及提升小量的杖類傷害", buttons = [Button(id = "increasePSY1", text = "提升一點"),Button(id = "increasePSY10", text = "提升十點")]);
         新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
     checks {

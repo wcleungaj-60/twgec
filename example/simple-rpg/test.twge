@@ -7,7 +7,8 @@ const 公式::風杖光彈傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
 const 公式::鐵劍物理傷害 = "30+{attacker.STR}*3";
 const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
-const 公式::匕首物理傷害 = "10+{attacker.STR}+{attacker.AGI}";
+const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
+const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
 
 const 文字::Instance訊息 =
 "【Lv{{instance.id}.Level}】\n" +
@@ -34,13 +35,14 @@ const 文字::鐵劍描述 =
 " - 對友軍回復量: 1+體質";
 const 文字::匕首描述 =
 "【匕首】\n" + 
-"【普通攻擊】- 連擊兩次\n" + 
-" - 武器傷害: 10+力量+敏捷\n";
-const 文字::力量描述 = "【力量】\n消耗一點能力點，提升劍類傷害";
-const 文字::體質描述 = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力";
-const 文字::敏捷描述 = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度";
-const 文字::智慧描述 = "【智慧】\n消耗一點能力點，提升杖類傷害";
-const 文字::精神描述 = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力";
+"【普通攻擊】\n" + 
+" - 武器傷害: 10+力量×2+敏捷\n" +
+" - 連擊率: 10%+敏捷×2%，上限100%\n";
+const 文字::力量描述 = "【力量】\n每一點可提升若干的武器物理傷害\n詳細見各武器描述";
+const 文字::體質描述 = "【體質】\n每一點可提升半點恢復力\n及增加十點血量上限";
+const 文字::敏捷描述 = "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度";
+const 文字::智慧描述 = "【智慧】\n每一點可提升若干的杖類傷害\n詳細見各武器描述";
+const 文字::精神描述 = "【精神】\n每一點可提升一點恢復力\n及提升小量的杖類傷害";
 
 const 角色::任何 = ActorMatch();
 const 角色::任何玩家 = ActorMatch(controller = "player");
@@ -110,7 +112,7 @@ def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2): actions {
 def 自定義::更新角色屬性(actorId): actions {
     儲存物件變數(key = "HP", object = actorId, type = "integer", value = "98 + 10*{"+actorId+".CON} + 2*{"+actorId+".Level}");
     設定角色屬性(actorId = actorId, attr = "maxHp", value = "{"+actorId+".HP}");
-    設定角色屬性(actorId = actorId, attr = "closeWeaponSpeed", value = "4-3/(1+0.05*{"+actorId+".AGI})");
+    設定角色屬性(actorId = actorId, attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{"+actorId+".AGI})");
     設定角色屬性(actorId = actorId, attr = "weight", value = "3*pow(0.97,{"+actorId+".AGI})");
 }
 
@@ -173,28 +175,43 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
 block 下載老玩家數據 = 自定義::下載玩家數據泛型(hasSavedBefore = true);
 block 下載新玩家數據 = 自定義::下載玩家數據泛型(hasSavedBefore = false);
 
-def 自定義::點擊提升能力泛型(type, typeZh) : block {
+def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
     __repeat__ = -1;
     triggers {
-        告示牌按鈕(varName = "instance", buttonId = "increase" + type);
+        if(value == 1) {
+            // TODO: Support twge::int_to_str
+            告示牌按鈕(varName = "instance", buttonId = "increase" + type + "1");
+        } else if (value == 10) {
+            告示牌按鈕(varName = "instance", buttonId = "increase" + type + "10");
+        }
+        // TODO: Support error throwing
     }
     checks {
-        比較數字(lhs = "{instance.Point}", op = ">", rhs = 0);
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = value);
     }
     actions {
-        自定義::儲存Instance整數("Point", "{instance.Point}-1");
-        自定義::儲存Instance整數(type, "{instance."+type+"}+1");
-        角色說話(actorId = "instance", text = "成功提升一點" + typeZh + "，尚餘{instance.Point}點能力點");
+        自定義::儲存Instance整數("Point", "{instance.Point}" - value);
+        自定義::儲存Instance整數(type, ("{instance."+type+"}") + value);
+        if(value == 1) {
+            角色說話(actorId = "instance", text = "成功提升一點" + typeZh + "，尚餘{instance.Point}點能力點");
+        } else if (value == 10) {
+            角色說話(actorId = "instance", text = "成功提升十點" + typeZh + "，尚餘{instance.Point}點能力點");
+        }
         自定義::更新角色屬性("instance");
         自定義::上載Instance數據();
     }
 }
 
-block 點擊提升力量 = 自定義::點擊提升能力泛型("STR", "力量");
-block 點擊提升體質 = 自定義::點擊提升能力泛型("CON", "體質");
-block 點擊提升敏捷 = 自定義::點擊提升能力泛型("AGI", "敏捷");
-block 點擊提升智慧 = 自定義::點擊提升能力泛型("INT", "智慧");
-block 點擊提升精神 = 自定義::點擊提升能力泛型("PSY", "精神");
+block 點擊提升一點力量 = 自定義::點擊提升能力泛型("STR", "力量", 1);
+block 點擊提升一點體質 = 自定義::點擊提升能力泛型("CON", "體質", 1);
+block 點擊提升一點敏捷 = 自定義::點擊提升能力泛型("AGI", "敏捷", 1);
+block 點擊提升一點智慧 = 自定義::點擊提升能力泛型("INT", "智慧", 1);
+block 點擊提升一點精神 = 自定義::點擊提升能力泛型("PSY", "精神", 1);
+block 點擊提升十點力量 = 自定義::點擊提升能力泛型("STR", "力量", 10);
+block 點擊提升十點體質 = 自定義::點擊提升能力泛型("CON", "體質", 10);
+block 點擊提升十點敏捷 = 自定義::點擊提升能力泛型("AGI", "敏捷", 10);
+block 點擊提升十點智慧 = 自定義::點擊提升能力泛型("INT", "智慧", 10);
+block 點擊提升十點精神 = 自定義::點擊提升能力泛型("PSY", "精神", 10);
 
 def 自定義::釋放技能泛型(weapon) : block {
     __repeat__ = -1;
@@ -223,24 +240,34 @@ def 自定義::釋放技能泛型(weapon) : block {
 block 釋放技能風杖 = 自定義::釋放技能泛型(別名::武器風杖);
 block 釋放技能鐵劍 = 自定義::釋放技能泛型(別名::武器鐵劍);
 
-def 自定義::武器物理攻擊泛型(weapon, value, comboNum) : block  {
+def 自定義::武器物理攻擊泛型(weapon, value) : block  {
     __repeat__ = -1;
     triggers {
         角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = weapon);
     }
     actions {
-        for(i in 1...comboNum) {
-            角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
-            if(comboNum != i) {
-                等待(duration = 300);
-            }
-        }
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
     }
 }
 
-block 風杖物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器風杖, 公式::風杖物理傷害, 1);
-block 鐵劍物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器鐵劍, 公式::鐵劍物理傷害, 1);
-block 匕首物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器匕首, 公式::匕首物理傷害, 2);
+def 自定義::武器物理連擊泛型(weapon, value, comboRate) : block  {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = weapon);
+    }
+    checks {
+        比較數字(lhs = comboRate, op = ">=", rhs = "random(0, 100)");
+    }
+    actions {
+        等待(duration = 100);
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
+    }
+}
+
+block 風杖物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器風杖, 公式::風杖物理傷害);
+block 鐵劍物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器鐵劍, 公式::鐵劍物理傷害);
+block 匕首物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器匕首, 公式::匕首物理傷害);
+block 匕首物理連擊 = 自定義::武器物理連擊泛型(別名::武器匕首, 公式::匕首物理傷害, 公式::匕首連擊機率);
 
 //------------------- 遊戲事件 -------------------//
 
@@ -386,11 +413,16 @@ block 遊戲初始化 {
         }
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
-        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR", text = "確認")]);
-        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON", text = "確認")]);
-        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI", text = "確認")]);
-        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT", text = "確認")]);
-        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY", text = "確認")]);
+        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述,
+            buttons = [Button(id = "increaseSTR1", text = "提升一點"), Button(id = "increaseSTR10", text = "提升十點")]);
+        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述,
+            buttons = [Button(id = "increaseCON1", text = "提升一點"), Button(id = "increaseCON10", text = "提升十點")]);
+        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述,
+            buttons = [Button(id = "increaseAGI1", text = "提升一點"), Button(id = "increaseAGI10", text = "提升十點")]);
+        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述,
+            buttons = [Button(id = "increaseINT1", text = "提升一點"), Button(id = "increaseINT10", text = "提升十點")]);
+        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述,
+            buttons = [Button(id = "increasePSY1", text = "提升一點"), Button(id = "increasePSY10", text = "提升十點")]);
         新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
 }
