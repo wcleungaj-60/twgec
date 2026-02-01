@@ -56,13 +56,14 @@ ExpNode = LogicalOrExpNode
 - AdditiveExpNode = MultiplicativeExpNode [ [AddToken | SubToken] MultiplicativeExpNode ]*
 - MultiplicativeExpNode = PrimaryExpNode [ [MulToken | DivToken | ModToken] PrimaryExpNode ]*
 - PrimaryExpNode = ValueNode | [OpenParToken ExpNode CloseParToken]
-ValueNode := StringValueNode | IntValueNode | BoolValueNode | VariableValueNode | PointValueNode | ActorMatchValueNode | CustomWeaponToken
+ValueNode := StringValueNode | IntValueNode | BoolValueNode | VariableValueNode | PointValueNode | ActorMatchValueNode | ButtonValueNode | CustomWeaponToken
 - StringValueNode := StringToken
 - IntValueNode := IntToken
 - BoolValueNode := TrueToken | FalseToken
 - VariableValueNode := ScopedIdentifierToken
 - PointValueNode := PointToken OpenParToken IntToken CommaToken IntToken CloseParToken
 - ActorMatchValueNode := ActorMatchToken ParamAppsNode
+- ButtonValueNode := ButtonToken ParamAppsNode
 - CustomWeaponValueNode := CustomWeaponToken ParamAppsNode
 - ListValueNode := OpenSqrToken [ExpNode [CommaToken ExpNode]*]? CloseSqrToken
 // Other

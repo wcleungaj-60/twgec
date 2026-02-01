@@ -1001,7 +1001,7 @@
             "devOnly": false,
             "actions": [
                 {
-                    "type": "Longbo",
+                    "type": "LongBo",
                     "data": {
                         "posType": "actor",
                         "actorCode": "instance",

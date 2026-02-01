@@ -41,6 +41,8 @@ Builtin Struct:
         x: int, y: int
     ActorMatch
         controller: string, id: string, matchKind: string, group: int
+    Button
+        id: string, label: string
     CustomWeapon
         reference: string, code: string, scaleOnGround: int, scaleOnIcon: int, weight: int, damage: int, swapTime: int, fireTime: int, fireType: int, pivotOnHandX: int, pivotOnHandXScale: int, pivotOnHandY: int, pivotOnHandYScale: int, pivotOnHandDegree: int, pivotOnIconX: int, pivotOnIconXScale: int, pivotOnIconY: int, pivotOnIconYScale: int, pivotOnIconDegree)";
 

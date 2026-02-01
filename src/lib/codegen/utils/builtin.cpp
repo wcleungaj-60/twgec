@@ -6,6 +6,23 @@ using namespace keyword;
 using namespace codegen::formatter;
 
 namespace {
+JsonObjectNode getButtonNode(std::unique_ptr<ExpressionNode> &expNode) {
+  buttonDefaultMap.clearInputMap();
+  auto buttonValueNode = dynamic_cast<ButtonValueNode *>(expNode->value.get());
+  if (!buttonValueNode) {
+    std::cerr << "Button-typed value is expected at " << expNode->loc << "\n";
+    return JsonObjectNode();
+  }
+  buttonDefaultMap.addInputMap(
+      buttonValueNode->paramApps->named_args);
+  return JsonObjectNode({
+      {"buttonCode", buttonDefaultMap.get("id")},
+      {"close", "true"},
+      {"label", buttonDefaultMap.get("text")},
+      {"icon", "\"\""},
+  });
+}
+
 JsonObjectNode getCustomWeaponsNode(std::unique_ptr<ExpressionNode> &expNode) {
   customWeaponDefaultMap.clearInputMap();
   auto customWeaponValueNode =
@@ -141,6 +158,13 @@ DefaultMap actorMatchDefaultMap = DefaultMap(
     },
     "actorMatch");
 
+DefaultMap buttonDefaultMap = DefaultMap(
+    {
+        {"id", {config::AST_STRING, config::CODEGEN_STRING, ""}},
+        {"text", {config::AST_STRING, config::CODEGEN_STRING, ""}},
+    },
+    "button");
+
 DefaultMap customWeaponDefaultMap = DefaultMap(
     {
         {"reference", {config::AST_STRING, config::CODEGEN_STRING, ""}},
@@ -196,6 +220,16 @@ JsonArrayNode getActorMatchesNode(const std::shared_ptr<ValueNode> &valueNode) {
   return JsonArrayNode(std::make_shared<JsonObjectNode>(actorMatchNode));
 }
 
+JsonArrayNode getButtonListNode(const std::shared_ptr<ValueNode> &valueNode) {
+  JsonArrayNode arrayNode = JsonArrayNode();
+  if (auto listNode = dynamic_cast<ListValueNode *>(valueNode.get()))
+    for (auto &item : listNode->items)
+      arrayNode.addNode(std::make_shared<JsonObjectNode>(getButtonNode(item)));
+  else
+    std::cerr << "list-typed value is expected at " << valueNode->loc << "\n";
+  return arrayNode;
+}
+
 JsonObjectNode
 getEnhFFActorMatchesNode(const std::shared_ptr<ValueNode> &valueNode) {
   actorMatchDefaultMap.clearInputMap();
@@ -210,7 +244,7 @@ getEnhFFActorMatchesNode(const std::shared_ptr<ValueNode> &valueNode) {
   auto controllerMap = [](std::string s) -> std::string {
     if (s.find(actorBrainKind::keywordAI) != -1)
       return "\"1\"";
-    else if (s.find(actorBrainKind::keywordPlayer) != - 1)
+    else if (s.find(actorBrainKind::keywordPlayer) != -1)
       return "\"2\"";
     return "\"0\"";
   };

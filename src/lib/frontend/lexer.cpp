@@ -22,6 +22,7 @@ std::string _for = "for";
 std::string in = "in";
 std::string Point = "Point";
 std::string ActorMatch = "ActorMatch";
+std::string Button = "Button";
 std::string CustomWeapon = "CustomWeapon";
 
 const std::map<std::string, TokenType> initMap = {
@@ -39,6 +40,7 @@ const std::map<std::string, TokenType> initMap = {
     {in, TokenType::IN},
     {Point, TokenType::POINT},
     {ActorMatch, TokenType::ACTOR_MATCH},
+    {Button, TokenType::BUTTON},
     {CustomWeapon, TokenType::CUSTOM_WEAPON},
 };
 } // namespace keyword
@@ -242,6 +244,7 @@ Token Lexer::nextToken() {
     LEXER_MATCH_KEYWORD_AND_RETURN(keyword::in)
     LEXER_MATCH_KEYWORD_AND_RETURN(keyword::Point)
     LEXER_MATCH_KEYWORD_AND_RETURN(keyword::ActorMatch)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::Button)
     LEXER_MATCH_KEYWORD_AND_RETURN(keyword::CustomWeapon)
     else if (isValidIdentifierLeadingCharacter(current)) {
       return identifierToken();

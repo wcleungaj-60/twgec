@@ -21,6 +21,7 @@
   LEXER_PRINT_SWTICH_CASE(TokenType::END, "end");                              \
   LEXER_PRINT_SWTICH_CASE(TokenType::POINT, "Point");                          \
   LEXER_PRINT_SWTICH_CASE(TokenType::ACTOR_MATCH, "ActorMatch");               \
+  LEXER_PRINT_SWTICH_CASE(TokenType::BUTTON, "Button");                        \
   LEXER_PRINT_SWTICH_CASE(TokenType::CUSTOM_WEAPON, "CustomWeapon");           \
   /* operation */                                                              \
   LEXER_PRINT_SWTICH_CASE(TokenType::OPENCUR, "{");                            \
@@ -84,6 +85,7 @@ enum class TokenType {
   /* Builtin Struct */
   POINT,         // Point
   ACTOR_MATCH,   // ActorMatch
+  BUTTON,        // button
   CUSTOM_WEAPON, // CustomWeapon
   /* Speical Character */
   OPENCUR,            // {

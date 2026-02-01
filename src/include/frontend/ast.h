@@ -32,6 +32,7 @@ class PositionalParamAppsNode;
 class ExpressionNode;
 class ValueNode;
 class ActorMatchValueNode;
+class ButtonValueNode;
 class CustomWeaponValueNode;
 class BoolValueNode;
 class IntValueNode;
@@ -428,6 +429,19 @@ public:
   std::unique_ptr<ValueNode> clone();
 };
 
+class ButtonValueNode : public ValueNode {
+public:
+  // Variable
+  std::unique_ptr<ParamAppsNode> paramApps;
+
+  // Constructor
+  ButtonValueNode(std::unique_ptr<ParamAppsNode> paramApps, Location loc)
+      : paramApps(std::move(paramApps)), ValueNode(loc) {}
+
+  // Function
+  std::unique_ptr<ValueNode> clone();
+};
+
 class CustomWeaponValueNode : public ValueNode {
 public:
   // Variable
@@ -641,6 +655,16 @@ inline std::ostream &operator<<(std::ostream &os,
         os << ", ";
     }
     os << ")";
+  } else if (auto buttonNode =
+                 dynamic_cast<ButtonValueNode *>(valueNode.get())) {
+    os << "Button(";
+    for (auto i = 0; i < buttonNode->paramApps->named_args.size(); i++) {
+      os << buttonNode->paramApps->named_args[i]->key << " = "
+         << *buttonNode->paramApps->named_args[i]->expNode.get();
+      if (i != buttonNode->paramApps->named_args.size() - 1)
+        os << ", ";
+    }
+    os << ")";
   } else if (auto customWeaponNode =
                  dynamic_cast<CustomWeaponValueNode *>(valueNode.get())) {
     os << "CustomWeapon(";
@@ -684,6 +708,16 @@ inline std::ostream &operator<<(std::ostream &os,
       os << actorMatchNode->paramApps->named_args[i]->key << " = "
          << *actorMatchNode->paramApps->named_args[i]->expNode.get();
       if (i != actorMatchNode->paramApps->named_args.size() - 1)
+        os << ", ";
+    }
+    os << ")";
+  } else if (auto buttonNode =
+                 dynamic_cast<ButtonValueNode *>(valueNode.get())) {
+    os << "Button(";
+    for (auto i = 0; i < buttonNode->paramApps->named_args.size(); i++) {
+      os << buttonNode->paramApps->named_args[i]->key << " = "
+         << *buttonNode->paramApps->named_args[i]->expNode.get();
+      if (i != buttonNode->paramApps->named_args.size() - 1)
         os << ", ";
     }
     os << ")";

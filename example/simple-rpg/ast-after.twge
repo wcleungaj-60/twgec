@@ -311,12 +311,12 @@ block 遊戲初始化 {
         }
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
-        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttonCode = "increaseSTR", buttonLabel = "確認");
-        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttonCode = "increaseCON", buttonLabel = "確認");
-        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttonCode = "increaseAGI", buttonLabel = "確認");
-        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttonCode = "increaseINT", buttonLabel = "確認");
-        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttonCode = "increasePSY", buttonLabel = "確認");
-        新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttonCode = "ResetPoint", buttonLabel = "確認");
+        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR", text = "確認")]);
+        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON", text = "確認")]);
+        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI", text = "確認")]);
+        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT", text = "確認")]);
+        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY", text = "確認")]);
+        新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
 }
 //----------------------------//
@@ -632,12 +632,12 @@ block 遊戲初始化 {
         }
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
-        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttonCode = "increaseSTR", buttonLabel = "確認");
-        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttonCode = "increaseCON", buttonLabel = "確認");
-        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttonCode = "increaseAGI", buttonLabel = "確認");
-        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttonCode = "increaseINT", buttonLabel = "確認");
-        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttonCode = "increasePSY", buttonLabel = "確認");
-        新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttonCode = "ResetPoint", buttonLabel = "確認");
+        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR", text = "確認")]);
+        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON", text = "確認")]);
+        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI", text = "確認")]);
+        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT", text = "確認")]);
+        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY", text = "確認")]);
+        新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
 }
 //-----------------------------//
@@ -1161,12 +1161,12 @@ block 遊戲初始化 {
         }
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
-        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttonCode = "increaseSTR", buttonLabel = "確認");
-        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttonCode = "increaseCON", buttonLabel = "確認");
-        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttonCode = "increaseAGI", buttonLabel = "確認");
-        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttonCode = "increaseINT", buttonLabel = "確認");
-        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttonCode = "increasePSY", buttonLabel = "確認");
-        新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttonCode = "ResetPoint", buttonLabel = "確認");
+        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR", text = "確認")]);
+        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON", text = "確認")]);
+        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI", text = "確認")]);
+        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT", text = "確認")]);
+        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY", text = "確認")]);
+        新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
 }
 //-----------------------------------//
@@ -1722,12 +1722,12 @@ block 遊戲初始化 {
         }
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
-        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttonCode = "increaseSTR", buttonLabel = "確認");
-        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttonCode = "increaseCON", buttonLabel = "確認");
-        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttonCode = "increaseAGI", buttonLabel = "確認");
-        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttonCode = "increaseINT", buttonLabel = "確認");
-        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttonCode = "increasePSY", buttonLabel = "確認");
-        新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttonCode = "ResetPoint", buttonLabel = "確認");
+        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR", text = "確認")]);
+        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON", text = "確認")]);
+        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI", text = "確認")]);
+        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT", text = "確認")]);
+        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY", text = "確認")]);
+        新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
     checks {
     }
@@ -2311,12 +2311,12 @@ block 遊戲初始化 {
         } else {
             print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
         }
-        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttonCode = "increaseSTR", buttonLabel = "確認");
-        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttonCode = "increaseCON", buttonLabel = "確認");
-        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttonCode = "increaseAGI", buttonLabel = "確認");
-        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttonCode = "increaseINT", buttonLabel = "確認");
-        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttonCode = "increasePSY", buttonLabel = "確認");
-        新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttonCode = "ResetPoint", buttonLabel = "確認");
+        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR", text = "確認")]);
+        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON", text = "確認")]);
+        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI", text = "確認")]);
+        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT", text = "確認")]);
+        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY", text = "確認")]);
+        新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
     checks {
     }
@@ -2878,12 +2878,12 @@ block 遊戲初始化 {
         } else {
             print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
         }
-        新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttonCode = "increaseSTR", buttonLabel = "確認");
-        新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttonCode = "increaseCON", buttonLabel = "確認");
-        新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttonCode = "increaseAGI", buttonLabel = "確認");
-        新增告示牌(x = 9, y = 17, rotation = 270, text = "【智慧】\n消耗一點能力點，提升杖類傷害", buttonCode = "increaseINT", buttonLabel = "確認");
-        新增告示牌(x = 11, y = 17, rotation = 270, text = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力", buttonCode = "increasePSY", buttonLabel = "確認");
-        新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttonCode = "ResetPoint", buttonLabel = "確認");
+        新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttons = [Button(id = "increaseSTR", text = "確認")]);
+        新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttons = [Button(id = "increaseCON", text = "確認")]);
+        新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttons = [Button(id = "increaseAGI", text = "確認")]);
+        新增告示牌(x = 9, y = 17, rotation = 270, text = "【智慧】\n消耗一點能力點，提升杖類傷害", buttons = [Button(id = "increaseINT", text = "確認")]);
+        新增告示牌(x = 11, y = 17, rotation = 270, text = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力", buttons = [Button(id = "increasePSY", text = "確認")]);
+        新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
     checks {
     }
@@ -3350,12 +3350,12 @@ block 遊戲初始化 {
         設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "左");
         設定地圖傳送點(fromX = 19, fromY = 10, toX = 21, toY = 10, direction = "右");
         設定地圖傳送點(fromX = 21, fromY = 10, toX = 19, toY = 10, direction = "左");
-        新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttonCode = "increaseSTR", buttonLabel = "確認");
-        新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttonCode = "increaseCON", buttonLabel = "確認");
-        新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttonCode = "increaseAGI", buttonLabel = "確認");
-        新增告示牌(x = 9, y = 17, rotation = 270, text = "【智慧】\n消耗一點能力點，提升杖類傷害", buttonCode = "increaseINT", buttonLabel = "確認");
-        新增告示牌(x = 11, y = 17, rotation = 270, text = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力", buttonCode = "increasePSY", buttonLabel = "確認");
-        新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttonCode = "ResetPoint", buttonLabel = "確認");
+        新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttons = [Button(id = "increaseSTR", text = "確認")]);
+        新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttons = [Button(id = "increaseCON", text = "確認")]);
+        新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttons = [Button(id = "increaseAGI", text = "確認")]);
+        新增告示牌(x = 9, y = 17, rotation = 270, text = "【智慧】\n消耗一點能力點，提升杖類傷害", buttons = [Button(id = "increaseINT", text = "確認")]);
+        新增告示牌(x = 11, y = 17, rotation = 270, text = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力", buttons = [Button(id = "increasePSY", text = "確認")]);
+        新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
     checks {
     }
@@ -3822,12 +3822,12 @@ block 遊戲初始化 {
         設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "左");
         設定地圖傳送點(fromX = 19, fromY = 10, toX = 21, toY = 10, direction = "右");
         設定地圖傳送點(fromX = 21, fromY = 10, toX = 19, toY = 10, direction = "左");
-        新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttonCode = "increaseSTR", buttonLabel = "確認");
-        新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttonCode = "increaseCON", buttonLabel = "確認");
-        新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttonCode = "increaseAGI", buttonLabel = "確認");
-        新增告示牌(x = 9, y = 17, rotation = 270, text = "【智慧】\n消耗一點能力點，提升杖類傷害", buttonCode = "increaseINT", buttonLabel = "確認");
-        新增告示牌(x = 11, y = 17, rotation = 270, text = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力", buttonCode = "increasePSY", buttonLabel = "確認");
-        新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttonCode = "ResetPoint", buttonLabel = "確認");
+        新增告示牌(x = 3, y = 17, rotation = 270, text = "【力量】\n消耗一點能力點，提升劍類傷害", buttons = [Button(id = "increaseSTR", text = "確認")]);
+        新增告示牌(x = 5, y = 17, rotation = 270, text = "【體質】\n消耗一點能力點，增加十點血量上限及半點恢復力", buttons = [Button(id = "increaseCON", text = "確認")]);
+        新增告示牌(x = 7, y = 17, rotation = 270, text = "【敏捷】\n消耗一點能力點，重量減少3%，並提升武器攻擊速度", buttons = [Button(id = "increaseAGI", text = "確認")]);
+        新增告示牌(x = 9, y = 17, rotation = 270, text = "【智慧】\n消耗一點能力點，提升杖類傷害", buttons = [Button(id = "increaseINT", text = "確認")]);
+        新增告示牌(x = 11, y = 17, rotation = 270, text = "【精神】\n消耗一點能力點，小量提升杖類傷害及提升一點恢復力", buttons = [Button(id = "increasePSY", text = "確認")]);
+        新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
     checks {
     }

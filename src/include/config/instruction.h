@@ -19,6 +19,7 @@ enum ASTType {
   AST_BOOL,
   AST_POINT,
   AST_ACTOR_MATCH,
+  AST_LIST_BUTTON,
   AST_LIST_STRING,
   AST_LIST_POINT,
   AST_LIST_CUSTOM_WEAPON,
@@ -37,6 +38,8 @@ inline std::string toString(ASTType astType) {
     return "Point";
   case AST_ACTOR_MATCH:
     return "ActorMatch";
+  case AST_LIST_BUTTON:
+    return "list[Button]";
   case AST_LIST_CUSTOM_WEAPON:
     return "CustomWeapon";
   case AST_STRING:
@@ -57,6 +60,7 @@ enum CodegenType {
   CODEGEN_BOOL,
   CODEGEN_ACTOR_MATCH,
   CODEGEN_ENHFF_ACTOR_MATCH,
+  CODEGEN_LIST_BUTTON,
   CODEGEN_LIST_CUSTOM_WEAPON,
   CODEGEN_LIST_STRING,
   CODEGEN_LIST_SPAWN_POINT,  // {x,y}
@@ -191,8 +195,7 @@ const InstructionConfig addDropItemConfig =
 const InstructionConfig addMapSignConfig =
     InstructionConfig("addMapSign", "新增告示牌")
         .addParam("text", AST_STRING, CODEGEN_STRING, "")
-        .addParam("buttonCode", AST_STRING, CODEGEN_STRING, "")
-        .addParam("buttonLabel", AST_STRING, CODEGEN_STRING, "")
+        .addParam("buttons", AST_LIST_BUTTON, CODEGEN_LIST_BUTTON, "[]")
         .addParam("x", AST_INT, CODEGEN_STRING, "0")
         .addParam("y", AST_INT, CODEGEN_STRING, "0")
         .addParam("range", AST_INT, CODEGEN_STRING, "0")

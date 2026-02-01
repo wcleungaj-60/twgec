@@ -562,6 +562,12 @@ std::unique_ptr<ValueNode> Parser::parseValue() {
                                                    loc);
     return nullptr;
   }
+  if (consume(TokenType::BUTTON, false)) {
+    auto paramAppsNode = parseParamAppsNode();
+    if (paramAppsNode)
+      return std::make_unique<ButtonValueNode>(std::move(paramAppsNode), loc);
+    return nullptr;
+  }
   if (consume(TokenType::CUSTOM_WEAPON, false)) {
     auto paramAppsNode = parseParamAppsNode();
     if (paramAppsNode)

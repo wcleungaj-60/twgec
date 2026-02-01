@@ -3472,14 +3472,7 @@
                             "btnMinWidth": "1",
                             "textAlign": "center",
                             "varnameButton": "",
-                            "btns": [
-                                {
-                                    "buttonCode": "",
-                                    "close": true,
-                                    "label": "",
-                                    "icon": ""
-                                }
-                            ]
+                            "btns": []
                         }
                     }
                 },
@@ -3504,14 +3497,7 @@
                             "btnMinWidth": "1",
                             "textAlign": "center",
                             "varnameButton": "",
-                            "btns": [
-                                {
-                                    "buttonCode": "",
-                                    "close": true,
-                                    "label": "",
-                                    "icon": ""
-                                }
-                            ]
+                            "btns": []
                         }
                     }
                 },
@@ -3536,14 +3522,7 @@
                             "btnMinWidth": "1",
                             "textAlign": "center",
                             "varnameButton": "",
-                            "btns": [
-                                {
-                                    "buttonCode": "",
-                                    "close": true,
-                                    "label": "",
-                                    "icon": ""
-                                }
-                            ]
+                            "btns": []
                         }
                     }
                 },

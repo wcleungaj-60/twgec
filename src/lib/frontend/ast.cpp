@@ -271,6 +271,10 @@ std::unique_ptr<ValueNode> ActorMatchValueNode::clone() {
   return std::make_unique<ActorMatchValueNode>(paramApps->clone(), loc);
 }
 
+std::unique_ptr<ValueNode> ButtonValueNode::clone() {
+  return std::make_unique<ButtonValueNode>(paramApps->clone(), loc);
+}
+
 std::unique_ptr<ValueNode> CustomWeaponValueNode::clone() {
   return std::make_unique<CustomWeaponValueNode>(paramApps->clone(), loc);
 }
@@ -426,6 +430,9 @@ bool ExpressionNode::propagateExp(
     } else if (auto *actorMatchNode =
                    dynamic_cast<ActorMatchValueNode *>(value.get())) {
       actorMatchNode->paramApps->propagateExp(varExpMap);
+    } else if (auto *buttonNode =
+                   dynamic_cast<ButtonValueNode *>(value.get())) {
+      buttonNode->paramApps->propagateExp(varExpMap);
     } else if (auto *customWeaponNode =
                    dynamic_cast<CustomWeaponValueNode *>(value.get())) {
       customWeaponNode->paramApps->propagateExp(varExpMap);
@@ -523,6 +530,7 @@ bool ExpressionNode::foldValue() {
     bool ret = true;
     auto valuePoint = dynamic_cast<PointValueNode *>(value.get());
     auto valueActorMatch = dynamic_cast<ActorMatchValueNode *>(value.get());
+    auto valueButton = dynamic_cast<ButtonValueNode *>(value.get());
     auto valueCustomWeapon = dynamic_cast<CustomWeaponValueNode *>(value.get());
     auto valueList = dynamic_cast<ListValueNode *>(value.get());
     if (valuePoint) {
@@ -533,6 +541,8 @@ bool ExpressionNode::foldValue() {
         ret &= item->foldValue();
     } else if (valueActorMatch) {
       ret &= valueActorMatch->paramApps->foldValue();
+    } else if (valueButton) {
+      ret &= valueButton->paramApps->foldValue();
     } else if (valueCustomWeapon) {
       ret &= valueCustomWeapon->paramApps->foldValue();
     }
@@ -793,15 +803,14 @@ bool NamedParamAppsNode::hasUnresolvedValue(std::set<std::string> except) {
   return expNode->hasUnresolvedValue(except);
 }
 
-bool PositionalParamAppsNode::hasUnresolvedValue(
-    std::set<std::string> except) {
+bool PositionalParamAppsNode::hasUnresolvedValue(std::set<std::string> except) {
   return expNode->hasUnresolvedValue(except);
 }
 
 bool ExpressionNode::hasUnresolvedValue(std::set<std::string> except) {
   if (isValue) {
     if (auto varNode = dynamic_cast<VariableValueNode *>(value.get())) {
-      if(except.count(varNode->value) > 0)
+      if (except.count(varNode->value) > 0)
         return false;
       std::cerr << "Compilation Error: Found unresolvable variable `"
                 << varNode->value << "` at " << varNode->loc << "\n";

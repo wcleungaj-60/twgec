@@ -152,20 +152,12 @@ action::ActionAddDropItem::method(DefaultMap defaultMap,
 JsonObjectNode
 action::ActionAddMapSign::method(DefaultMap defaultMap,
                                  UserDefinedMetadata userDefinedMeta) {
-  JsonObjectNode btnNode = JsonObjectNode({
-      {"buttonCode", defaultMap.get("buttonCode")},
-      {"close", "true"},
-      {"label", defaultMap.get("buttonLabel")},
-      {"icon", "\"\""},
-  });
-  JsonArrayNode btnsNode =
-      JsonArrayNode(std::make_shared<JsonObjectNode>(btnNode));
   JsonObjectNode btnsGroupNode = JsonObjectNode({
       {"rowSize", "\"1\""},
       {"btnMinWidth", "\"1\""},
       {"textAlign", "\"center\""},
       {"varnameButton", "\"\""},
-      {"btns", btnsNode.to_string(28)},
+      {"btns", defaultMap.get("buttons")},
   });
   JsonObjectNode locNode = JsonObjectNode({
       {"x", defaultMap.get("x")},

@@ -9,9 +9,11 @@ using namespace keyword;
 using namespace codegen::formatter;
 
 extern DefaultMap actorMatchDefaultMap;
+extern DefaultMap buttonDefaultMap;
 extern DefaultMap customWeaponDefaultMap;
 
 JsonArrayNode getActorMatchesNode(const std::shared_ptr<ValueNode> &);
+JsonArrayNode getButtonListNode(const std::shared_ptr<ValueNode> &);
 JsonArrayNode getCustomWeaponsListNode(const std::shared_ptr<ValueNode> &);
 JsonArrayNode getPatrolPathListNode(const std::shared_ptr<ValueNode> &);
 JsonArrayNode getSpawnPointListNode(const std::shared_ptr<ValueNode> &);

@@ -22,7 +22,7 @@ def setNum(key, value) : actions {
 }
 
 def addJobMapSign(x, y, rotation, text, buttonCodeSuffix) : actions {
-    addMapSign(x = x, y = y, rotation = rotation, text = text, buttonCode = "chooseJob" + buttonCodeSuffix, buttonLabel = "選擇");
+    addMapSign(x = x, y = y, rotation = rotation, text = text, buttons = [Button( id = "chooseJob" + buttonCodeSuffix, text = "選擇")]);
 }
 
 def chooseJobDef(buttonId, jobName) : block {
