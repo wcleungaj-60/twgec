@@ -161,7 +161,7 @@
                                 "scaleOnGround": 0.8,
                                 "scaleOnIcon": 1,
                                 "pickTestFunc": "wider",
-                                "weight": 6,
+                                "weight": 3,
                                 "damage": 0,
                                 "swapTime": 800,
                                 "frameName": "BLADE_TYPE",
@@ -477,6 +477,17 @@
                         "hp": "9999",
                         "casterCode": ""
                     }
+                },
+                {
+                    "type": "ActorTalk",
+                    "data": {
+                        "cleanTalk": true,
+                        "speech": "初始化完畢",
+                        "duration": "3000",
+                        "wait": false,
+                        "waitMore": "100",
+                        "actorCode": "instance"
+                    }
                 }
             ],
             "checks": [
@@ -554,6 +565,17 @@
                         "key": "completedInit",
                         "valueType": "string",
                         "value": "2"
+                    }
+                },
+                {
+                    "type": "ActorTalk",
+                    "data": {
+                        "cleanTalk": true,
+                        "speech": "初始化完畢",
+                        "duration": "3000",
+                        "wait": false,
+                        "waitMore": "100",
+                        "actorCode": "instance"
                     }
                 }
             ],
@@ -3046,6 +3068,186 @@
             ]
         },
         {
+            "id": "點擊裝備武器風杖",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "EquipWeapon",
+                    "data": {
+                        "actorCode": "instance",
+                        "weaponType": "custom_wind_staff",
+                        "weaponIndex": 0,
+                        "checkOwnership": false,
+                        "makeDefault": true
+                    }
+                },
+                {
+                    "type": "EquipWeapon",
+                    "data": {
+                        "actorCode": "instance",
+                        "weaponType": "custom_wind_staff",
+                        "weaponIndex": 1,
+                        "checkOwnership": false,
+                        "makeDefault": true
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "TalkButton",
+                    "data": {
+                        "actorMatches": [],
+                        "varname": "instance",
+                        "checkButtoncode": true,
+                        "buttonCode": "wearWindStaff",
+                        "varnameDevice": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "點擊裝備武器鐵劍",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "EquipWeapon",
+                    "data": {
+                        "actorCode": "instance",
+                        "weaponType": "custom_iron_sword",
+                        "weaponIndex": 0,
+                        "checkOwnership": false,
+                        "makeDefault": true
+                    }
+                },
+                {
+                    "type": "EquipWeapon",
+                    "data": {
+                        "actorCode": "instance",
+                        "weaponType": "custom_iron_sword",
+                        "weaponIndex": 1,
+                        "checkOwnership": false,
+                        "makeDefault": true
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "TalkButton",
+                    "data": {
+                        "actorMatches": [],
+                        "varname": "instance",
+                        "checkButtoncode": true,
+                        "buttonCode": "wearIronSword",
+                        "varnameDevice": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "點擊裝備武器匕首",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "EquipWeapon",
+                    "data": {
+                        "actorCode": "instance",
+                        "weaponType": "custom_dagger",
+                        "weaponIndex": 0,
+                        "checkOwnership": false,
+                        "makeDefault": true
+                    }
+                },
+                {
+                    "type": "EquipWeapon",
+                    "data": {
+                        "actorCode": "instance",
+                        "weaponType": "custom_dagger",
+                        "weaponIndex": 1,
+                        "checkOwnership": false,
+                        "makeDefault": true
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "TalkButton",
+                    "data": {
+                        "actorMatches": [],
+                        "varname": "instance",
+                        "checkButtoncode": true,
+                        "buttonCode": "wearDagger",
+                        "varnameDevice": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "點擊裝備武器拳頭",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "EquipWeapon",
+                    "data": {
+                        "actorCode": "instance",
+                        "weaponType": "kongfu",
+                        "weaponIndex": 0,
+                        "checkOwnership": false,
+                        "makeDefault": true
+                    }
+                },
+                {
+                    "type": "EquipWeapon",
+                    "data": {
+                        "actorCode": "instance",
+                        "weaponType": "kongfu",
+                        "weaponIndex": 1,
+                        "checkOwnership": false,
+                        "makeDefault": true
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "TalkButton",
+                    "data": {
+                        "actorMatches": [],
+                        "varname": "instance",
+                        "checkButtoncode": true,
+                        "buttonCode": "wearNone",
+                        "varnameDevice": ""
+                    }
+                }
+            ]
+        },
+        {
             "id": "釋放技能風杖",
             "disabled": false,
             "folder": "",
@@ -4619,15 +4821,6 @@
                     }
                 },
                 {
-                    "type": "SetObjectVar",
-                    "data": {
-                        "objectId": "instance",
-                        "key": "completedInit",
-                        "valueType": "integer",
-                        "value": "1"
-                    }
-                },
-                {
                     "type": "EquipWeapon",
                     "data": {
                         "actorCode": "instance",
@@ -4645,6 +4838,32 @@
                         "weaponIndex": 1,
                         "checkOwnership": false,
                         "makeDefault": true
+                    }
+                },
+                {
+                    "type": "ActorTalk",
+                    "data": {
+                        "cleanTalk": true,
+                        "speech": "玩家初始中",
+                        "duration": "3000",
+                        "wait": false,
+                        "waitMore": "100",
+                        "actorCode": "instance"
+                    }
+                },
+                {
+                    "type": "Wait",
+                    "data": {
+                        "duration": "500"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "completedInit",
+                        "valueType": "integer",
+                        "value": "1"
                     }
                 }
             ],
@@ -4754,13 +4973,26 @@
                         "rotation": "90",
                         "speech": "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】散射釋出五發光彈\n - 光彈傷害: 10+智慧+精神÷2",
                         "parsePolicy": "view",
-                        "showButtons": false,
+                        "showButtons": true,
                         "btnsGroup": {
                             "rowSize": "1",
                             "btnMinWidth": "1",
                             "textAlign": "center",
                             "varnameButton": "",
-                            "btns": []
+                            "btns": [
+                                {
+                                    "buttonCode": "wearWindStaff",
+                                    "close": true,
+                                    "label": "裝備",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "wearNone",
+                                    "close": true,
+                                    "label": "卸下",
+                                    "icon": ""
+                                }
+                            ]
                         }
                     }
                 },
@@ -4779,13 +5011,26 @@
                         "rotation": "90",
                         "speech": "【匕首】\n【普通攻擊】\n - 武器傷害: 10+力量×2+敏捷\n - 連擊率: 10%+敏捷×2%，上限100%\n",
                         "parsePolicy": "view",
-                        "showButtons": false,
+                        "showButtons": true,
                         "btnsGroup": {
                             "rowSize": "1",
                             "btnMinWidth": "1",
                             "textAlign": "center",
                             "varnameButton": "",
-                            "btns": []
+                            "btns": [
+                                {
+                                    "buttonCode": "wearDagger",
+                                    "close": true,
+                                    "label": "裝備",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "wearNone",
+                                    "close": true,
+                                    "label": "卸下",
+                                    "icon": ""
+                                }
+                            ]
                         }
                     }
                 },
@@ -4804,218 +5049,27 @@
                         "rotation": "90",
                         "speech": "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質",
                         "parsePolicy": "view",
-                        "showButtons": false,
+                        "showButtons": true,
                         "btnsGroup": {
                             "rowSize": "1",
                             "btnMinWidth": "1",
                             "textAlign": "center",
                             "varnameButton": "",
-                            "btns": []
+                            "btns": [
+                                {
+                                    "buttonCode": "wearIronSword",
+                                    "close": true,
+                                    "label": "裝備",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "wearNone",
+                                    "close": true,
+                                    "label": "卸下",
+                                    "icon": ""
+                                }
+                            ]
                         }
-                    }
-                },
-                {
-                    "type": "AddStuff",
-                    "data": {
-                        "itemCode": "item*",
-                        "itemType": "custom_wind_staff",
-                        "loop": true,
-                        "loopInterval": "10000",
-                        "location": {
-                            "x": "4",
-                            "y": "8",
-                            "range": "0"
-                        },
-                        "rotation": "0",
-                        "cameraZoomPolicy": "none",
-                        "localVarname": "item"
-                    }
-                },
-                {
-                    "type": "AddStuff",
-                    "data": {
-                        "itemCode": "item*",
-                        "itemType": "custom_dagger",
-                        "loop": true,
-                        "loopInterval": "10000",
-                        "location": {
-                            "x": "5",
-                            "y": "8",
-                            "range": "0"
-                        },
-                        "rotation": "0",
-                        "cameraZoomPolicy": "none",
-                        "localVarname": "item"
-                    }
-                },
-                {
-                    "type": "AddStuff",
-                    "data": {
-                        "itemCode": "item*",
-                        "itemType": "custom_iron_sword",
-                        "loop": true,
-                        "loopInterval": "10000",
-                        "location": {
-                            "x": "6",
-                            "y": "8",
-                            "range": "0"
-                        },
-                        "rotation": "0",
-                        "cameraZoomPolicy": "none",
-                        "localVarname": "item"
-                    }
-                },
-                {
-                    "type": "AddStuff",
-                    "data": {
-                        "itemCode": "item*",
-                        "itemType": "custom_wind_staff",
-                        "loop": true,
-                        "loopInterval": "10000",
-                        "location": {
-                            "x": "4",
-                            "y": "8",
-                            "range": "0"
-                        },
-                        "rotation": "0",
-                        "cameraZoomPolicy": "none",
-                        "localVarname": "item"
-                    }
-                },
-                {
-                    "type": "AddStuff",
-                    "data": {
-                        "itemCode": "item*",
-                        "itemType": "custom_dagger",
-                        "loop": true,
-                        "loopInterval": "10000",
-                        "location": {
-                            "x": "5",
-                            "y": "8",
-                            "range": "0"
-                        },
-                        "rotation": "0",
-                        "cameraZoomPolicy": "none",
-                        "localVarname": "item"
-                    }
-                },
-                {
-                    "type": "AddStuff",
-                    "data": {
-                        "itemCode": "item*",
-                        "itemType": "custom_iron_sword",
-                        "loop": true,
-                        "loopInterval": "10000",
-                        "location": {
-                            "x": "6",
-                            "y": "8",
-                            "range": "0"
-                        },
-                        "rotation": "0",
-                        "cameraZoomPolicy": "none",
-                        "localVarname": "item"
-                    }
-                },
-                {
-                    "type": "AddStuff",
-                    "data": {
-                        "itemCode": "item*",
-                        "itemType": "custom_wind_staff",
-                        "loop": true,
-                        "loopInterval": "10000",
-                        "location": {
-                            "x": "4",
-                            "y": "8",
-                            "range": "0"
-                        },
-                        "rotation": "0",
-                        "cameraZoomPolicy": "none",
-                        "localVarname": "item"
-                    }
-                },
-                {
-                    "type": "AddStuff",
-                    "data": {
-                        "itemCode": "item*",
-                        "itemType": "custom_dagger",
-                        "loop": true,
-                        "loopInterval": "10000",
-                        "location": {
-                            "x": "5",
-                            "y": "8",
-                            "range": "0"
-                        },
-                        "rotation": "0",
-                        "cameraZoomPolicy": "none",
-                        "localVarname": "item"
-                    }
-                },
-                {
-                    "type": "AddStuff",
-                    "data": {
-                        "itemCode": "item*",
-                        "itemType": "custom_iron_sword",
-                        "loop": true,
-                        "loopInterval": "10000",
-                        "location": {
-                            "x": "6",
-                            "y": "8",
-                            "range": "0"
-                        },
-                        "rotation": "0",
-                        "cameraZoomPolicy": "none",
-                        "localVarname": "item"
-                    }
-                },
-                {
-                    "type": "AddStuff",
-                    "data": {
-                        "itemCode": "item*",
-                        "itemType": "custom_wind_staff",
-                        "loop": true,
-                        "loopInterval": "10000",
-                        "location": {
-                            "x": "4",
-                            "y": "8",
-                            "range": "0"
-                        },
-                        "rotation": "0",
-                        "cameraZoomPolicy": "none",
-                        "localVarname": "item"
-                    }
-                },
-                {
-                    "type": "AddStuff",
-                    "data": {
-                        "itemCode": "item*",
-                        "itemType": "custom_dagger",
-                        "loop": true,
-                        "loopInterval": "10000",
-                        "location": {
-                            "x": "5",
-                            "y": "8",
-                            "range": "0"
-                        },
-                        "rotation": "0",
-                        "cameraZoomPolicy": "none",
-                        "localVarname": "item"
-                    }
-                },
-                {
-                    "type": "AddStuff",
-                    "data": {
-                        "itemCode": "item*",
-                        "itemType": "custom_iron_sword",
-                        "loop": true,
-                        "loopInterval": "10000",
-                        "location": {
-                            "x": "6",
-                            "y": "8",
-                            "range": "0"
-                        },
-                        "rotation": "0",
-                        "cameraZoomPolicy": "none",
-                        "localVarname": "item"
                     }
                 },
                 {

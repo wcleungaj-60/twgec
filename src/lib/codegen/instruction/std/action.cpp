@@ -77,10 +77,12 @@ action::ActionAddActor::method(DefaultMap defaultMap,
     roleNode.addNode("rsrc", externRole);
 
   JsonObjectNode weapon0Node = JsonObjectNode({
-      {"w0Type", defaultMap.get("weapon1", weaponKind::keywordEnum)},
+      {"w0Type", defaultMap.get("weapon1", weaponKind::keywordEnum,
+                                userDefinedMeta.customWeaponsKeywordEnum)},
   });
   JsonObjectNode weapon1Node = JsonObjectNode({
-      {"w1Type", defaultMap.get("weapon2", weaponKind::keywordEnum)},
+      {"w1Type", defaultMap.get("weapon2", weaponKind::keywordEnum,
+                                userDefinedMeta.customWeaponsKeywordEnum)},
   });
   JsonObjectNode locationNode = JsonObjectNode({
       {"x", defaultMap.get("x")},
@@ -248,7 +250,8 @@ action::ActionEquipWeapon::method(DefaultMap defaultMap,
     weaponIndex = "1";
   return JsonObjectNode({
       {"actorCode", defaultMap.get("actorCode")},
-      {"weaponType", defaultMap.get("type", weaponKind::keywordEnum)},
+      {"weaponType", defaultMap.get("type", weaponKind::keywordEnum,
+                                    userDefinedMeta.customWeaponsKeywordEnum)},
       {"weaponIndex", weaponIndex},
       {"checkOwnership", "false"},
       {"makeDefault", defaultMap.get("isDefault")},

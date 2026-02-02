@@ -36,7 +36,7 @@ __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __useCustomWeapons__ = true;
-__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_dagger", code = "dagger", damage = 0, fireType = "小刀前刺", pivotOnHandDegree = -92, pivotOnHandX = 34, pivotOnHandY = 24, pivotOnHandXScale = "0.7", pivotOnHandYScale = "0.8", pivotOnIconDegree = -140, pivotOnIconX = 34, pivotOnIconY = 16)];
+__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_dagger", code = "dagger", damage = 0, fireType = "小刀前刺", pivotOnHandDegree = -92, pivotOnHandX = 34, pivotOnHandY = 24, pivotOnHandXScale = "0.7", pivotOnHandYScale = "0.8", pivotOnIconDegree = -140, pivotOnIconX = 34, pivotOnIconY = 16, weight = 3)];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 def 自定義::除錯(text) : actions {
@@ -92,6 +92,9 @@ def 自定義::上載Instance數據() : actions {
     自定義::輔助::上載Instance數據("HP");
     儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
 }
+def 自定義::新增能力點告示牌(x, y, text, type) : actions {
+    新增告示牌(x = x, y = y, rotation = 270, text = text, buttons = [Button(id = ("increase" + (type + "1")), text = "提升一點"),Button(id = ("increase" + (type + "10")), text = "提升十點")]);
+}
 def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     __repeat__ = -1;
     checks {
@@ -99,8 +102,7 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(hasSavedBefore) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
-        }
-        if((hasSavedBefore == false)) {
+        } else {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "undefined");
         }
     }
@@ -120,6 +122,7 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
             自定義::更新角色屬性("instance");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
+        角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
     }
 }
 def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
@@ -144,6 +147,16 @@ def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
         }
         自定義::更新角色屬性("instance");
         自定義::上載Instance數據();
+    }
+}
+def 自定義::點擊裝備武器泛型(button, weapon) : block {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + button));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = weapon, hand = 1);
+        人物裝備武器(actorCode = "instance", type = weapon, hand = 2);
     }
 }
 def 自定義::釋放技能泛型(weapon) : block {
@@ -199,6 +212,10 @@ block 點擊提升十點體質 = 自定義::點擊提升能力泛型("CON", "體
 block 點擊提升十點敏捷 = 自定義::點擊提升能力泛型("AGI", "敏捷", 10);
 block 點擊提升十點智慧 = 自定義::點擊提升能力泛型("INT", "智慧", 10);
 block 點擊提升十點精神 = 自定義::點擊提升能力泛型("PSY", "精神", 10);
+block 點擊裝備武器風杖 = 自定義::點擊裝備武器泛型("WindStaff", 別名::武器風杖);
+block 點擊裝備武器鐵劍 = 自定義::點擊裝備武器泛型("IronSword", 別名::武器鐵劍);
+block 點擊裝備武器匕首 = 自定義::點擊裝備武器泛型("Dagger", 別名::武器匕首);
+block 點擊裝備武器拳頭 = 自定義::點擊裝備武器泛型("None", "fist");
 block 釋放技能風杖 = 自定義::釋放技能泛型(別名::武器風杖);
 block 釋放技能鐵劍 = 自定義::釋放技能泛型(別名::武器鐵劍);
 block 風杖物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器風杖, 公式::風杖物理傷害);
@@ -313,9 +330,11 @@ block 玩家初始化 {
         自定義::儲存Instance整數("ExpNeeded", 6);
         自定義::儲存Instance整數("HP", 100);
         取得玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
-        自定義::儲存Instance整數("completedInit", 1);
         人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
         人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+        角色說話(actorId = "instance", cleanTalk = true, text = "玩家初始中");
+        等待(duration = 500);
+        自定義::儲存Instance整數("completedInit", 1);
     }
 }
 block 遊戲初始化 {
@@ -324,21 +343,16 @@ block 遊戲初始化 {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = 別名::武器風杖);
         設定武器技能(weapon = 別名::武器鐵劍);
-        新增告示牌(x = 4, y = 7, rotation = 90, text = 文字::風杖描述, showButtons = false);
-        新增告示牌(x = 5, y = 7, rotation = 90, text = 文字::匕首描述, showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = 文字::鐵劍描述, showButtons = false);
-        for(x in 1...4) {
-            新增武器道具(x = 4, y = 8, item = 別名::武器風杖);
-            新增武器道具(x = 5, y = 8, item = 別名::武器匕首);
-            新增武器道具(x = 6, y = 8, item = 別名::武器鐵劍);
-        }
+        新增告示牌(x = 4, y = 7, rotation = 90, text = 文字::風杖描述, buttons = [Button(id = "wearWindStaff", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
+        新增告示牌(x = 5, y = 7, rotation = 90, text = 文字::匕首描述, buttons = [Button(id = "wearDagger", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = 文字::鐵劍描述, buttons = [Button(id = "wearIronSword", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
-        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR1", text = "提升一點"),Button(id = "increaseSTR10", text = "提升十點")]);
-        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON1", text = "提升一點"),Button(id = "increaseCON10", text = "提升十點")]);
-        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI1", text = "提升一點"),Button(id = "increaseAGI10", text = "提升十點")]);
-        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT1", text = "提升一點"),Button(id = "increaseINT10", text = "提升十點")]);
-        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY1", text = "提升一點"),Button(id = "increasePSY10", text = "提升十點")]);
+        自定義::新增能力點告示牌(3, 17, 文字::力量描述, "STR");
+        自定義::新增能力點告示牌(5, 17, 文字::體質描述, "CON");
+        自定義::新增能力點告示牌(7, 17, 文字::敏捷描述, "AGI");
+        自定義::新增能力點告示牌(9, 17, 文字::智慧描述, "INT");
+        自定義::新增能力點告示牌(11, 17, 文字::精神描述, "PSY");
         新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
 }
@@ -380,7 +394,7 @@ __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __useCustomWeapons__ = true;
-__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_dagger", code = "dagger", damage = 0, fireType = "小刀前刺", pivotOnHandDegree = -92, pivotOnHandX = 34, pivotOnHandY = 24, pivotOnHandXScale = "0.7", pivotOnHandYScale = "0.8", pivotOnIconDegree = -140, pivotOnIconX = 34, pivotOnIconY = 16)];
+__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_dagger", code = "dagger", damage = 0, fireType = "小刀前刺", pivotOnHandDegree = -92, pivotOnHandX = 34, pivotOnHandY = 24, pivotOnHandXScale = "0.7", pivotOnHandYScale = "0.8", pivotOnIconDegree = -140, pivotOnIconX = 34, pivotOnIconY = 16, weight = 3)];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 def 自定義::除錯(text) : actions {
@@ -436,6 +450,9 @@ def 自定義::上載Instance數據() : actions {
     自定義::輔助::上載Instance數據(key = "HP");
     儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
 }
+def 自定義::新增能力點告示牌(x, y, text, type) : actions {
+    新增告示牌(x = x, y = y, rotation = 270, text = text, buttons = [Button(id = ("increase" + (type + "1")), text = "提升一點"),Button(id = ("increase" + (type + "10")), text = "提升十點")]);
+}
 def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     __repeat__ = -1;
     checks {
@@ -443,8 +460,7 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(hasSavedBefore) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
-        }
-        if((hasSavedBefore == false)) {
+        } else {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "undefined");
         }
     }
@@ -464,6 +480,7 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
             自定義::更新角色屬性(actorId = "instance");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
+        角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
     }
 }
 def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
@@ -488,6 +505,16 @@ def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
         }
         自定義::更新角色屬性(actorId = "instance");
         自定義::上載Instance數據();
+    }
+}
+def 自定義::點擊裝備武器泛型(button, weapon) : block {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + button));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = weapon, hand = 1);
+        人物裝備武器(actorCode = "instance", type = weapon, hand = 2);
     }
 }
 def 自定義::釋放技能泛型(weapon) : block {
@@ -543,6 +570,10 @@ block 點擊提升十點體質 = 自定義::點擊提升能力泛型(type = "CON
 block 點擊提升十點敏捷 = 自定義::點擊提升能力泛型(type = "AGI", typeZh = "敏捷", value = 10);
 block 點擊提升十點智慧 = 自定義::點擊提升能力泛型(type = "INT", typeZh = "智慧", value = 10);
 block 點擊提升十點精神 = 自定義::點擊提升能力泛型(type = "PSY", typeZh = "精神", value = 10);
+block 點擊裝備武器風杖 = 自定義::點擊裝備武器泛型(button = "WindStaff", weapon = 別名::武器風杖);
+block 點擊裝備武器鐵劍 = 自定義::點擊裝備武器泛型(button = "IronSword", weapon = 別名::武器鐵劍);
+block 點擊裝備武器匕首 = 自定義::點擊裝備武器泛型(button = "Dagger", weapon = 別名::武器匕首);
+block 點擊裝備武器拳頭 = 自定義::點擊裝備武器泛型(button = "None", weapon = "fist");
 block 釋放技能風杖 = 自定義::釋放技能泛型(weapon = 別名::武器風杖);
 block 釋放技能鐵劍 = 自定義::釋放技能泛型(weapon = 別名::武器鐵劍);
 block 風杖物理攻擊 = 自定義::武器物理攻擊泛型(weapon = 別名::武器風杖, value = 公式::風杖物理傷害);
@@ -657,9 +688,11 @@ block 玩家初始化 {
         自定義::儲存Instance整數(key = "ExpNeeded", value = 6);
         自定義::儲存Instance整數(key = "HP", value = 100);
         取得玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
-        自定義::儲存Instance整數(key = "completedInit", value = 1);
         人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
         人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+        角色說話(actorId = "instance", cleanTalk = true, text = "玩家初始中");
+        等待(duration = 500);
+        自定義::儲存Instance整數(key = "completedInit", value = 1);
     }
 }
 block 遊戲初始化 {
@@ -668,21 +701,16 @@ block 遊戲初始化 {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = 別名::武器風杖);
         設定武器技能(weapon = 別名::武器鐵劍);
-        新增告示牌(x = 4, y = 7, rotation = 90, text = 文字::風杖描述, showButtons = false);
-        新增告示牌(x = 5, y = 7, rotation = 90, text = 文字::匕首描述, showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = 文字::鐵劍描述, showButtons = false);
-        for(x in 1...4) {
-            新增武器道具(x = 4, y = 8, item = 別名::武器風杖);
-            新增武器道具(x = 5, y = 8, item = 別名::武器匕首);
-            新增武器道具(x = 6, y = 8, item = 別名::武器鐵劍);
-        }
+        新增告示牌(x = 4, y = 7, rotation = 90, text = 文字::風杖描述, buttons = [Button(id = "wearWindStaff", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
+        新增告示牌(x = 5, y = 7, rotation = 90, text = 文字::匕首描述, buttons = [Button(id = "wearDagger", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = 文字::鐵劍描述, buttons = [Button(id = "wearIronSword", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
-        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR1", text = "提升一點"),Button(id = "increaseSTR10", text = "提升十點")]);
-        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON1", text = "提升一點"),Button(id = "increaseCON10", text = "提升十點")]);
-        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI1", text = "提升一點"),Button(id = "increaseAGI10", text = "提升十點")]);
-        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT1", text = "提升一點"),Button(id = "increaseINT10", text = "提升十點")]);
-        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY1", text = "提升一點"),Button(id = "increasePSY10", text = "提升十點")]);
+        自定義::新增能力點告示牌(x = 3, y = 17, text = 文字::力量描述, type = "STR");
+        自定義::新增能力點告示牌(x = 5, y = 17, text = 文字::體質描述, type = "CON");
+        自定義::新增能力點告示牌(x = 7, y = 17, text = 文字::敏捷描述, type = "AGI");
+        自定義::新增能力點告示牌(x = 9, y = 17, text = 文字::智慧描述, type = "INT");
+        自定義::新增能力點告示牌(x = 11, y = 17, text = 文字::精神描述, type = "PSY");
         新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
 }
@@ -724,7 +752,7 @@ __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __useCustomWeapons__ = true;
-__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_dagger", code = "dagger", damage = 0, fireType = "小刀前刺", pivotOnHandDegree = -92, pivotOnHandX = 34, pivotOnHandY = 24, pivotOnHandXScale = "0.7", pivotOnHandYScale = "0.8", pivotOnIconDegree = -140, pivotOnIconX = 34, pivotOnIconY = 16)];
+__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_dagger", code = "dagger", damage = 0, fireType = "小刀前刺", pivotOnHandDegree = -92, pivotOnHandX = 34, pivotOnHandY = 24, pivotOnHandXScale = "0.7", pivotOnHandYScale = "0.8", pivotOnIconDegree = -140, pivotOnIconX = 34, pivotOnIconY = 16, weight = 3)];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 def 自定義::除錯(text) : actions {
@@ -780,6 +808,9 @@ def 自定義::上載Instance數據() : actions {
     自定義::輔助::上載Instance數據(key = "HP");
     儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
 }
+def 自定義::新增能力點告示牌(x, y, text, type) : actions {
+    新增告示牌(x = x, y = y, rotation = 270, text = text, buttons = [Button(id = ("increase" + (type + "1")), text = "提升一點"),Button(id = ("increase" + (type + "10")), text = "提升十點")]);
+}
 def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     __repeat__ = -1;
     checks {
@@ -787,8 +818,7 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(hasSavedBefore) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
-        }
-        if((hasSavedBefore == false)) {
+        } else {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "undefined");
         }
     }
@@ -808,6 +838,7 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
             自定義::更新角色屬性(actorId = "instance");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
+        角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
     }
 }
 def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
@@ -832,6 +863,16 @@ def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
         }
         自定義::更新角色屬性(actorId = "instance");
         自定義::上載Instance數據();
+    }
+}
+def 自定義::點擊裝備武器泛型(button, weapon) : block {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + button));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = weapon, hand = 1);
+        人物裝備武器(actorCode = "instance", type = weapon, hand = 2);
     }
 }
 def 自定義::釋放技能泛型(weapon) : block {
@@ -882,8 +923,7 @@ block 下載老玩家數據 {
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(true) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
-        }
-        if((true == false)) {
+        } else {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "undefined");
         }
     }
@@ -903,6 +943,7 @@ block 下載老玩家數據 {
             自定義::更新角色屬性(actorId = "instance");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
+        角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
     }
 }
 block 下載新玩家數據 {
@@ -912,8 +953,7 @@ block 下載新玩家數據 {
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(false) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
-        }
-        if((false == false)) {
+        } else {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "undefined");
         }
     }
@@ -933,6 +973,7 @@ block 下載新玩家數據 {
             自定義::更新角色屬性(actorId = "instance");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
+        角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
     }
 }
 block 點擊提升一點力量 {
@@ -1175,6 +1216,46 @@ block 點擊提升十點精神 {
         自定義::上載Instance數據();
     }
 }
+block 點擊裝備武器風杖 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "WindStaff"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = 別名::武器風杖, hand = 1);
+        人物裝備武器(actorCode = "instance", type = 別名::武器風杖, hand = 2);
+    }
+}
+block 點擊裝備武器鐵劍 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "IronSword"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = 別名::武器鐵劍, hand = 1);
+        人物裝備武器(actorCode = "instance", type = 別名::武器鐵劍, hand = 2);
+    }
+}
+block 點擊裝備武器匕首 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "Dagger"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = 別名::武器匕首, hand = 1);
+        人物裝備武器(actorCode = "instance", type = 別名::武器匕首, hand = 2);
+    }
+}
+block 點擊裝備武器拳頭 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "None"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+    }
+}
 block 釋放技能風杖 {
     __repeat__ = -1;
     triggers {
@@ -1361,9 +1442,11 @@ block 玩家初始化 {
         自定義::儲存Instance整數(key = "ExpNeeded", value = 6);
         自定義::儲存Instance整數(key = "HP", value = 100);
         取得玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
-        自定義::儲存Instance整數(key = "completedInit", value = 1);
         人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
         人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+        角色說話(actorId = "instance", cleanTalk = true, text = "玩家初始中");
+        等待(duration = 500);
+        自定義::儲存Instance整數(key = "completedInit", value = 1);
     }
 }
 block 遊戲初始化 {
@@ -1372,21 +1455,16 @@ block 遊戲初始化 {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = 別名::武器風杖);
         設定武器技能(weapon = 別名::武器鐵劍);
-        新增告示牌(x = 4, y = 7, rotation = 90, text = 文字::風杖描述, showButtons = false);
-        新增告示牌(x = 5, y = 7, rotation = 90, text = 文字::匕首描述, showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = 文字::鐵劍描述, showButtons = false);
-        for(x in 1...4) {
-            新增武器道具(x = 4, y = 8, item = 別名::武器風杖);
-            新增武器道具(x = 5, y = 8, item = 別名::武器匕首);
-            新增武器道具(x = 6, y = 8, item = 別名::武器鐵劍);
-        }
+        新增告示牌(x = 4, y = 7, rotation = 90, text = 文字::風杖描述, buttons = [Button(id = "wearWindStaff", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
+        新增告示牌(x = 5, y = 7, rotation = 90, text = 文字::匕首描述, buttons = [Button(id = "wearDagger", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = 文字::鐵劍描述, buttons = [Button(id = "wearIronSword", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
-        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR1", text = "提升一點"),Button(id = "increaseSTR10", text = "提升十點")]);
-        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON1", text = "提升一點"),Button(id = "increaseCON10", text = "提升十點")]);
-        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI1", text = "提升一點"),Button(id = "increaseAGI10", text = "提升十點")]);
-        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT1", text = "提升一點"),Button(id = "increaseINT10", text = "提升十點")]);
-        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY1", text = "提升一點"),Button(id = "increasePSY10", text = "提升十點")]);
+        自定義::新增能力點告示牌(x = 3, y = 17, text = 文字::力量描述, type = "STR");
+        自定義::新增能力點告示牌(x = 5, y = 17, text = 文字::體質描述, type = "CON");
+        自定義::新增能力點告示牌(x = 7, y = 17, text = 文字::敏捷描述, type = "AGI");
+        自定義::新增能力點告示牌(x = 9, y = 17, text = 文字::智慧描述, type = "INT");
+        自定義::新增能力點告示牌(x = 11, y = 17, text = 文字::精神描述, type = "PSY");
         新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
 }
@@ -1428,7 +1506,7 @@ __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __useCustomWeapons__ = true;
-__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_dagger", code = "dagger", damage = 0, fireType = "小刀前刺", pivotOnHandDegree = -92, pivotOnHandX = 34, pivotOnHandY = 24, pivotOnHandXScale = "0.7", pivotOnHandYScale = "0.8", pivotOnIconDegree = -140, pivotOnIconX = 34, pivotOnIconY = 16)];
+__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_dagger", code = "dagger", damage = 0, fireType = "小刀前刺", pivotOnHandDegree = -92, pivotOnHandX = 34, pivotOnHandY = 24, pivotOnHandXScale = "0.7", pivotOnHandYScale = "0.8", pivotOnIconDegree = -140, pivotOnIconX = 34, pivotOnIconY = 16, weight = 3)];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 def 自定義::除錯(text) : actions {
@@ -1484,6 +1562,9 @@ def 自定義::上載Instance數據() : actions {
     自定義::輔助::上載Instance數據(key = "HP");
     儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
 }
+def 自定義::新增能力點告示牌(x, y, text, type) : actions {
+    新增告示牌(x = x, y = y, rotation = 270, text = text, buttons = [Button(id = ("increase" + (type + "1")), text = "提升一點"),Button(id = ("increase" + (type + "10")), text = "提升十點")]);
+}
 def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     __repeat__ = -1;
     checks {
@@ -1491,8 +1572,7 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(hasSavedBefore) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
-        }
-        if((hasSavedBefore == false)) {
+        } else {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "undefined");
         }
     }
@@ -1512,6 +1592,7 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
             自定義::更新角色屬性(actorId = "instance");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
+        角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
     }
 }
 def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
@@ -1536,6 +1617,16 @@ def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
         }
         自定義::更新角色屬性(actorId = "instance");
         自定義::上載Instance數據();
+    }
+}
+def 自定義::點擊裝備武器泛型(button, weapon) : block {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + button));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = weapon, hand = 1);
+        人物裝備武器(actorCode = "instance", type = weapon, hand = 2);
     }
 }
 def 自定義::釋放技能泛型(weapon) : block {
@@ -1586,8 +1677,7 @@ block 下載老玩家數據 {
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(true) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
-        }
-        if((true == false)) {
+        } else {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "undefined");
         }
     }
@@ -1607,6 +1697,7 @@ block 下載老玩家數據 {
             自定義::更新角色屬性(actorId = "instance");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
+        角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
     }
     triggers {
     }
@@ -1618,8 +1709,7 @@ block 下載新玩家數據 {
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(false) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
-        }
-        if((false == false)) {
+        } else {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "undefined");
         }
     }
@@ -1639,6 +1729,7 @@ block 下載新玩家數據 {
             自定義::更新角色屬性(actorId = "instance");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
+        角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
     }
     triggers {
     }
@@ -1883,6 +1974,54 @@ block 點擊提升十點精神 {
         自定義::上載Instance數據();
     }
 }
+block 點擊裝備武器風杖 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "WindStaff"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = 別名::武器風杖, hand = 1);
+        人物裝備武器(actorCode = "instance", type = 別名::武器風杖, hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器鐵劍 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "IronSword"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = 別名::武器鐵劍, hand = 1);
+        人物裝備武器(actorCode = "instance", type = 別名::武器鐵劍, hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器匕首 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "Dagger"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = 別名::武器匕首, hand = 1);
+        人物裝備武器(actorCode = "instance", type = 別名::武器匕首, hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器拳頭 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "None"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+    }
+    checks {
+    }
+}
 block 釋放技能風杖 {
     __repeat__ = -1;
     triggers {
@@ -2095,9 +2234,11 @@ block 玩家初始化 {
         自定義::儲存Instance整數(key = "ExpNeeded", value = 6);
         自定義::儲存Instance整數(key = "HP", value = 100);
         取得玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
-        自定義::儲存Instance整數(key = "completedInit", value = 1);
         人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
         人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+        角色說話(actorId = "instance", cleanTalk = true, text = "玩家初始中");
+        等待(duration = 500);
+        自定義::儲存Instance整數(key = "completedInit", value = 1);
     }
     checks {
     }
@@ -2108,21 +2249,16 @@ block 遊戲初始化 {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = 別名::武器風杖);
         設定武器技能(weapon = 別名::武器鐵劍);
-        新增告示牌(x = 4, y = 7, rotation = 90, text = 文字::風杖描述, showButtons = false);
-        新增告示牌(x = 5, y = 7, rotation = 90, text = 文字::匕首描述, showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = 文字::鐵劍描述, showButtons = false);
-        for(x in 1...4) {
-            新增武器道具(x = 4, y = 8, item = 別名::武器風杖);
-            新增武器道具(x = 5, y = 8, item = 別名::武器匕首);
-            新增武器道具(x = 6, y = 8, item = 別名::武器鐵劍);
-        }
+        新增告示牌(x = 4, y = 7, rotation = 90, text = 文字::風杖描述, buttons = [Button(id = "wearWindStaff", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
+        新增告示牌(x = 5, y = 7, rotation = 90, text = 文字::匕首描述, buttons = [Button(id = "wearDagger", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = 文字::鐵劍描述, buttons = [Button(id = "wearIronSword", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
-        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR1", text = "提升一點"),Button(id = "increaseSTR10", text = "提升十點")]);
-        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON1", text = "提升一點"),Button(id = "increaseCON10", text = "提升十點")]);
-        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI1", text = "提升一點"),Button(id = "increaseAGI10", text = "提升十點")]);
-        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT1", text = "提升一點"),Button(id = "increaseINT10", text = "提升十點")]);
-        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY1", text = "提升一點"),Button(id = "increasePSY10", text = "提升十點")]);
+        自定義::新增能力點告示牌(x = 3, y = 17, text = 文字::力量描述, type = "STR");
+        自定義::新增能力點告示牌(x = 5, y = 17, text = 文字::體質描述, type = "CON");
+        自定義::新增能力點告示牌(x = 7, y = 17, text = 文字::敏捷描述, type = "AGI");
+        自定義::新增能力點告示牌(x = 9, y = 17, text = 文字::智慧描述, type = "INT");
+        自定義::新增能力點告示牌(x = 11, y = 17, text = 文字::精神描述, type = "PSY");
         新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
     checks {
@@ -2168,7 +2304,7 @@ __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __useCustomWeapons__ = true;
-__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_dagger", code = "dagger", damage = 0, fireType = "小刀前刺", pivotOnHandDegree = -92, pivotOnHandX = 34, pivotOnHandY = 24, pivotOnHandXScale = "0.7", pivotOnHandYScale = "0.8", pivotOnIconDegree = -140, pivotOnIconX = 34, pivotOnIconY = 16)];
+__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_dagger", code = "dagger", damage = 0, fireType = "小刀前刺", pivotOnHandDegree = -92, pivotOnHandX = 34, pivotOnHandY = 24, pivotOnHandXScale = "0.7", pivotOnHandYScale = "0.8", pivotOnIconDegree = -140, pivotOnIconX = 34, pivotOnIconY = 16, weight = 3)];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 block 下載老玩家數據 {
@@ -2178,8 +2314,7 @@ block 下載老玩家數據 {
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(true) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
-        }
-        if((true == false)) {
+        } else {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "undefined");
         }
     }
@@ -2212,6 +2347,7 @@ block 下載老玩家數據 {
             設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
+        角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
     }
     triggers {
     }
@@ -2223,8 +2359,7 @@ block 下載新玩家數據 {
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(false) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
-        }
-        if((false == false)) {
+        } else {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "undefined");
         }
     }
@@ -2257,6 +2392,7 @@ block 下載新玩家數據 {
             設定角色屬性(actorId = "instance", attr = "weight", value = ("3*pow(0.97,{" + ("instance" + ".AGI})")));
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
+        角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
     }
     triggers {
     }
@@ -2631,6 +2767,54 @@ block 點擊提升十點精神 {
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
+block 點擊裝備武器風杖 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "WindStaff"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = 別名::武器風杖, hand = 1);
+        人物裝備武器(actorCode = "instance", type = 別名::武器風杖, hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器鐵劍 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "IronSword"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = 別名::武器鐵劍, hand = 1);
+        人物裝備武器(actorCode = "instance", type = 別名::武器鐵劍, hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器匕首 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "Dagger"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = 別名::武器匕首, hand = 1);
+        人物裝備武器(actorCode = "instance", type = 別名::武器匕首, hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器拳頭 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "None"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+    }
+    checks {
+    }
+}
 block 釋放技能風杖 {
     __repeat__ = -1;
     triggers {
@@ -2876,9 +3060,11 @@ block 玩家初始化 {
         儲存物件變數(key = "ExpNeeded", object = "instance", type = "integer", value = 6);
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = 100);
         取得玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
-        儲存物件變數(key = "completedInit", object = "instance", type = "integer", value = 1);
         人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
         人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+        角色說話(actorId = "instance", cleanTalk = true, text = "玩家初始中");
+        等待(duration = 500);
+        儲存物件變數(key = "completedInit", object = "instance", type = "integer", value = 1);
     }
     checks {
     }
@@ -2889,14 +3075,9 @@ block 遊戲初始化 {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = 別名::武器風杖);
         設定武器技能(weapon = 別名::武器鐵劍);
-        新增告示牌(x = 4, y = 7, rotation = 90, text = 文字::風杖描述, showButtons = false);
-        新增告示牌(x = 5, y = 7, rotation = 90, text = 文字::匕首描述, showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = 文字::鐵劍描述, showButtons = false);
-        for(x in 1...4) {
-            新增武器道具(x = 4, y = 8, item = 別名::武器風杖);
-            新增武器道具(x = 5, y = 8, item = 別名::武器匕首);
-            新增武器道具(x = 6, y = 8, item = 別名::武器鐵劍);
-        }
+        新增告示牌(x = 4, y = 7, rotation = 90, text = 文字::風杖描述, buttons = [Button(id = "wearWindStaff", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
+        新增告示牌(x = 5, y = 7, rotation = 90, text = 文字::匕首描述, buttons = [Button(id = "wearDagger", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = 文字::鐵劍描述, buttons = [Button(id = "wearIronSword", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
         if(((19 == 21) && (9 < 9))) {
             設定地圖傳送點(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "下");
             設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "上");
@@ -2931,11 +3112,11 @@ block 遊戲初始化 {
         } else {
             print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
         }
-        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = "increaseSTR1", text = "提升一點"),Button(id = "increaseSTR10", text = "提升十點")]);
-        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = "increaseCON1", text = "提升一點"),Button(id = "increaseCON10", text = "提升十點")]);
-        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = "increaseAGI1", text = "提升一點"),Button(id = "increaseAGI10", text = "提升十點")]);
-        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = "increaseINT1", text = "提升一點"),Button(id = "increaseINT10", text = "提升十點")]);
-        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = "increasePSY1", text = "提升一點"),Button(id = "increasePSY10", text = "提升十點")]);
+        新增告示牌(x = 3, y = 17, rotation = 270, text = 文字::力量描述, buttons = [Button(id = ("increase" + ("STR" + "1")), text = "提升一點"),Button(id = ("increase" + ("STR" + "10")), text = "提升十點")]);
+        新增告示牌(x = 5, y = 17, rotation = 270, text = 文字::體質描述, buttons = [Button(id = ("increase" + ("CON" + "1")), text = "提升一點"),Button(id = ("increase" + ("CON" + "10")), text = "提升十點")]);
+        新增告示牌(x = 7, y = 17, rotation = 270, text = 文字::敏捷描述, buttons = [Button(id = ("increase" + ("AGI" + "1")), text = "提升一點"),Button(id = ("increase" + ("AGI" + "10")), text = "提升十點")]);
+        新增告示牌(x = 9, y = 17, rotation = 270, text = 文字::智慧描述, buttons = [Button(id = ("increase" + ("INT" + "1")), text = "提升一點"),Button(id = ("increase" + ("INT" + "10")), text = "提升十點")]);
+        新增告示牌(x = 11, y = 17, rotation = 270, text = 文字::精神描述, buttons = [Button(id = ("increase" + ("PSY" + "1")), text = "提升一點"),Button(id = ("increase" + ("PSY" + "10")), text = "提升十點")]);
         新增告示牌(x = 1, y = 15, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
     }
     checks {
@@ -2953,7 +3134,7 @@ __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __useCustomWeapons__ = true;
-__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_dagger", code = "dagger", damage = 0, fireType = "小刀前刺", pivotOnHandDegree = -92, pivotOnHandX = 34, pivotOnHandY = 24, pivotOnHandXScale = "0.7", pivotOnHandYScale = "0.8", pivotOnIconDegree = -140, pivotOnIconX = 34, pivotOnIconY = 16)];
+__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_dagger", code = "dagger", damage = 0, fireType = "小刀前刺", pivotOnHandDegree = -92, pivotOnHandX = 34, pivotOnHandY = 24, pivotOnHandXScale = "0.7", pivotOnHandYScale = "0.8", pivotOnIconDegree = -140, pivotOnIconX = 34, pivotOnIconY = 16, weight = 3)];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 block 下載老玩家數據 {
@@ -2963,8 +3144,7 @@ block 下載老玩家數據 {
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(true) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
-        }
-        if(false) {
+        } else {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "undefined");
         }
     }
@@ -2997,6 +3177,7 @@ block 下載老玩家數據 {
             設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
+        角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
     }
     triggers {
     }
@@ -3008,8 +3189,7 @@ block 下載新玩家數據 {
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
         if(false) {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
-        }
-        if(true) {
+        } else {
             比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "undefined");
         }
     }
@@ -3042,6 +3222,7 @@ block 下載新玩家數據 {
             設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
+        角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
     }
     triggers {
     }
@@ -3416,6 +3597,54 @@ block 點擊提升十點精神 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
+block 點擊裝備武器風杖 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearWindStaff");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "custom_wind_staff", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "custom_wind_staff", hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器鐵劍 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearIronSword");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "custom_iron_sword", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "custom_iron_sword", hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器匕首 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearDagger");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "custom_dagger", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "custom_dagger", hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器拳頭 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearNone");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+    }
+    checks {
+    }
+}
 block 釋放技能風杖 {
     __repeat__ = -1;
     triggers {
@@ -3661,9 +3890,11 @@ block 玩家初始化 {
         儲存物件變數(key = "ExpNeeded", object = "instance", type = "integer", value = 6);
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = 100);
         取得玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
-        儲存物件變數(key = "completedInit", object = "instance", type = "integer", value = 1);
         人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
         人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+        角色說話(actorId = "instance", cleanTalk = true, text = "玩家初始中");
+        等待(duration = 500);
+        儲存物件變數(key = "completedInit", object = "instance", type = "integer", value = 1);
     }
     checks {
     }
@@ -3674,21 +3905,9 @@ block 遊戲初始化 {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = "custom_wind_staff");
         設定武器技能(weapon = "custom_iron_sword");
-        新增告示牌(x = 4, y = 7, rotation = 90, text = "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】散射釋出五發光彈\n - 光彈傷害: 10+智慧+精神÷2", showButtons = false);
-        新增告示牌(x = 5, y = 7, rotation = 90, text = "【匕首】\n【普通攻擊】\n - 武器傷害: 10+力量×2+敏捷\n - 連擊率: 10%+敏捷×2%，上限100%\n", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質", showButtons = false);
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 5, y = 8, item = "custom_dagger");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 5, y = 8, item = "custom_dagger");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 5, y = 8, item = "custom_dagger");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 5, y = 8, item = "custom_dagger");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
+        新增告示牌(x = 4, y = 7, rotation = 90, text = "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】散射釋出五發光彈\n - 光彈傷害: 10+智慧+精神÷2", buttons = [Button(id = "wearWindStaff", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
+        新增告示牌(x = 5, y = 7, rotation = 90, text = "【匕首】\n【普通攻擊】\n - 武器傷害: 10+力量×2+敏捷\n - 連擊率: 10%+敏捷×2%，上限100%\n", buttons = [Button(id = "wearDagger", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質", buttons = [Button(id = "wearIronSword", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
         if(false) {
             設定地圖傳送點(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "下");
             設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "上");
@@ -3745,7 +3964,7 @@ __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __useCustomWeapons__ = true;
-__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_dagger", code = "dagger", damage = 0, fireType = "小刀前刺", pivotOnHandDegree = -92, pivotOnHandX = 34, pivotOnHandY = 24, pivotOnHandXScale = "0.7", pivotOnHandYScale = "0.8", pivotOnIconDegree = -140, pivotOnIconX = 34, pivotOnIconY = 16)];
+__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_dagger", code = "dagger", damage = 0, fireType = "小刀前刺", pivotOnHandDegree = -92, pivotOnHandX = 34, pivotOnHandY = 24, pivotOnHandXScale = "0.7", pivotOnHandYScale = "0.8", pivotOnIconDegree = -140, pivotOnIconX = 34, pivotOnIconY = 16, weight = 3)];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 block 下載老玩家數據 {
@@ -3782,6 +4001,7 @@ block 下載老玩家數據 {
         設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         角色加減血(actorCode = "instance", type = "heal", value = 9999);
+        角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
     }
     triggers {
     }
@@ -3795,6 +4015,7 @@ block 下載新玩家數據 {
     }
     actions {
         儲存物件變數(key = "completedInit", object = "instance", type = "string", value = 2);
+        角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
     }
     triggers {
     }
@@ -4089,6 +4310,54 @@ block 點擊提升十點精神 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
+block 點擊裝備武器風杖 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearWindStaff");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "custom_wind_staff", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "custom_wind_staff", hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器鐵劍 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearIronSword");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "custom_iron_sword", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "custom_iron_sword", hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器匕首 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearDagger");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "custom_dagger", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "custom_dagger", hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器拳頭 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearNone");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+    }
+    checks {
+    }
+}
 block 釋放技能風杖 {
     __repeat__ = -1;
     triggers {
@@ -4319,9 +4588,11 @@ block 玩家初始化 {
         儲存物件變數(key = "ExpNeeded", object = "instance", type = "integer", value = 6);
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = 100);
         取得玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
-        儲存物件變數(key = "completedInit", object = "instance", type = "integer", value = 1);
         人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
         人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+        角色說話(actorId = "instance", cleanTalk = true, text = "玩家初始中");
+        等待(duration = 500);
+        儲存物件變數(key = "completedInit", object = "instance", type = "integer", value = 1);
     }
     checks {
     }
@@ -4332,21 +4603,9 @@ block 遊戲初始化 {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = "custom_wind_staff");
         設定武器技能(weapon = "custom_iron_sword");
-        新增告示牌(x = 4, y = 7, rotation = 90, text = "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】散射釋出五發光彈\n - 光彈傷害: 10+智慧+精神÷2", showButtons = false);
-        新增告示牌(x = 5, y = 7, rotation = 90, text = "【匕首】\n【普通攻擊】\n - 武器傷害: 10+力量×2+敏捷\n - 連擊率: 10%+敏捷×2%，上限100%\n", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質", showButtons = false);
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 5, y = 8, item = "custom_dagger");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 5, y = 8, item = "custom_dagger");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 5, y = 8, item = "custom_dagger");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 5, y = 8, item = "custom_dagger");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
+        新增告示牌(x = 4, y = 7, rotation = 90, text = "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】散射釋出五發光彈\n - 光彈傷害: 10+智慧+精神÷2", buttons = [Button(id = "wearWindStaff", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
+        新增告示牌(x = 5, y = 7, rotation = 90, text = "【匕首】\n【普通攻擊】\n - 武器傷害: 10+力量×2+敏捷\n - 連擊率: 10%+敏捷×2%，上限100%\n", buttons = [Button(id = "wearDagger", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質", buttons = [Button(id = "wearIronSword", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
         設定地圖傳送點(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "右");
         設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "左");
         設定地圖傳送點(fromX = 19, fromY = 10, toX = 21, toY = 10, direction = "右");
@@ -4373,7 +4632,7 @@ __lives__ = 9999;
 __title__ = "RPG試驗";
 __useDefaultItems__ = true;
 __useCustomWeapons__ = true;
-__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_dagger", code = "dagger", damage = 0, fireType = "小刀前刺", pivotOnHandDegree = -92, pivotOnHandX = 34, pivotOnHandY = 24, pivotOnHandXScale = "0.7", pivotOnHandYScale = "0.8", pivotOnIconDegree = -140, pivotOnIconX = 34, pivotOnIconY = 16)];
+__customWeapons__ = [CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈", pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5", pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈", pivotOnHandDegree = 35, pivotOnHandX = -12, pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14),CustomWeapon(reference = "TWilightGameEventCompiler.weapon_dagger", code = "dagger", damage = 0, fireType = "小刀前刺", pivotOnHandDegree = -92, pivotOnHandX = 34, pivotOnHandY = 24, pivotOnHandXScale = "0.7", pivotOnHandYScale = "0.8", pivotOnIconDegree = -140, pivotOnIconX = 34, pivotOnIconY = 16, weight = 3)];
 __map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
 __roomSize__ = 8;
 block 下載老玩家數據 {
@@ -4410,6 +4669,7 @@ block 下載老玩家數據 {
         設定角色屬性(actorId = "instance", attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{instance.AGI})");
         設定角色屬性(actorId = "instance", attr = "weight", value = "3*pow(0.97,{instance.AGI})");
         角色加減血(actorCode = "instance", type = "heal", value = 9999);
+        角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
     }
     triggers {
     }
@@ -4423,6 +4683,7 @@ block 下載新玩家數據 {
     }
     actions {
         儲存物件變數(key = "completedInit", object = "instance", type = "string", value = 2);
+        角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
     }
     triggers {
     }
@@ -4717,6 +4978,54 @@ block 點擊提升十點精神 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
+block 點擊裝備武器風杖 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearWindStaff");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "custom_wind_staff", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "custom_wind_staff", hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器鐵劍 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearIronSword");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "custom_iron_sword", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "custom_iron_sword", hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器匕首 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearDagger");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "custom_dagger", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "custom_dagger", hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器拳頭 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearNone");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+    }
+    checks {
+    }
+}
 block 釋放技能風杖 {
     __repeat__ = -1;
     triggers {
@@ -4947,9 +5256,11 @@ block 玩家初始化 {
         儲存物件變數(key = "ExpNeeded", object = "instance", type = "integer", value = 6);
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = 100);
         取得玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
-        儲存物件變數(key = "completedInit", object = "instance", type = "integer", value = 1);
         人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
         人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+        角色說話(actorId = "instance", cleanTalk = true, text = "玩家初始中");
+        等待(duration = 500);
+        儲存物件變數(key = "completedInit", object = "instance", type = "integer", value = 1);
     }
     checks {
     }
@@ -4960,21 +5271,9 @@ block 遊戲初始化 {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = "custom_wind_staff");
         設定武器技能(weapon = "custom_iron_sword");
-        新增告示牌(x = 4, y = 7, rotation = 90, text = "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】散射釋出五發光彈\n - 光彈傷害: 10+智慧+精神÷2", showButtons = false);
-        新增告示牌(x = 5, y = 7, rotation = 90, text = "【匕首】\n【普通攻擊】\n - 武器傷害: 10+力量×2+敏捷\n - 連擊率: 10%+敏捷×2%，上限100%\n", showButtons = false);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質", showButtons = false);
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 5, y = 8, item = "custom_dagger");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 5, y = 8, item = "custom_dagger");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 5, y = 8, item = "custom_dagger");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
-        新增武器道具(x = 4, y = 8, item = "custom_wind_staff");
-        新增武器道具(x = 5, y = 8, item = "custom_dagger");
-        新增武器道具(x = 6, y = 8, item = "custom_iron_sword");
+        新增告示牌(x = 4, y = 7, rotation = 90, text = "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】散射釋出五發光彈\n - 光彈傷害: 10+智慧+精神÷2", buttons = [Button(id = "wearWindStaff", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
+        新增告示牌(x = 5, y = 7, rotation = 90, text = "【匕首】\n【普通攻擊】\n - 武器傷害: 10+力量×2+敏捷\n - 連擊率: 10%+敏捷×2%，上限100%\n", buttons = [Button(id = "wearDagger", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
+        新增告示牌(x = 6, y = 7, rotation = 90, text = "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質", buttons = [Button(id = "wearIronSword", text = "裝備"),Button(id = "wearNone", text = "卸下")]);
         設定地圖傳送點(fromX = 19, fromY = 9, toX = 21, toY = 9, direction = "右");
         設定地圖傳送點(fromX = 21, fromY = 9, toX = 19, toY = 9, direction = "左");
         設定地圖傳送點(fromX = 19, fromY = 10, toX = 21, toY = 10, direction = "右");
