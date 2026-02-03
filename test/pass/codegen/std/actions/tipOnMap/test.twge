@@ -1,0 +1,5 @@
+block init {
+    actions {
+        tipOnMap(x = 1, y = 1, duration = 2500, text = "<span>text</span>", html = true);
+    }
+}

@@ -171,6 +171,8 @@ void CodeGenerator::codegenAction(std::ofstream &of,
     of << action::ActionSetUserState::CODEGEN_FUNC;
   if (identifier == "setWeaponAbility" || identifier == "設定武器技能")
     of << action::ActionSetWeaponAbility::CODEGEN_FUNC;
+  if (identifier == "tipOnMap" || identifier == "地圖標示文字")
+    of << action::ActionTipOnMap::CODEGEN_FUNC;
   if (identifier == "wait" || identifier == "等待")
     of << action::ActionWait::CODEGEN_FUNC;
   // EnhFF Module

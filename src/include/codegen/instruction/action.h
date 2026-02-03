@@ -37,6 +37,7 @@ REGISTER_CODE_GEN(SetGlobal);
 REGISTER_CODE_GEN(SetObjectVar);
 REGISTER_CODE_GEN(SetUserState);
 REGISTER_CODE_GEN(SetWeaponAbility);
+REGISTER_CODE_GEN(TipOnMap);
 REGISTER_CODE_GEN(Wait);
 
 // EnhFF module

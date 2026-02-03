@@ -291,6 +291,13 @@ const InstructionConfig setWeaponAbilityConfig =
         .addParam("level", AST_INT, CODEGEN_INT, "1")
         .addParam("operation", AST_STRING, CODEGEN_STRING, "set")
         .addParam("ability", AST_STRING, CODEGEN_STRING, "sounded");
+const InstructionConfig tipOnMapConfig =
+    InstructionConfig("tipOnMap", "地圖標示文字")
+        .addParam("x", AST_INT, CODEGEN_STRING, "0")
+        .addParam("y", AST_INT, CODEGEN_STRING, "0")
+        .addParam("duration", AST_INT, CODEGEN_STRING, "3000")
+        .addParam("text", AST_STRING, CODEGEN_STRING, "")
+        .addParam("html", AST_BOOL, CODEGEN_BOOL, "false");
 const InstructionConfig waitConfig =
     InstructionConfig("wait", "等待")
         .addParam("duration", AST_INT, CODEGEN_STRING, "0");
@@ -346,6 +353,7 @@ const std::vector<InstructionConfig> actionList = {
     setObjectVarConfig,
     setUserStateConfig,
     setWeaponAbilityConfig,
+    tipOnMapConfig,
     waitConfig,
     EnhFFPlayerMousePositionConfig,
     EnhFFGeneralCircularRangeConfig,

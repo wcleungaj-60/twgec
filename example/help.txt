@@ -122,6 +122,8 @@ Supported Actions:
         category: string, key: string, playerId: string, type: string, value: string
     setWeaponAbility            設定武器技能
         ability: string, level: int|string, operation: string, weapon: string
+    tipOnMap                    地圖標示文字
+        duration: int|string, html: bool, text: string, x: int|string, y: int|string
     wait                        等待
         duration: int|string
     EnhFF::playerMousePosition  EnhFF::玩家滑鼠座標

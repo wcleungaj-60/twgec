@@ -393,6 +393,30 @@ action::ActionSetWeaponAbility::method(DefaultMap defaultMap,
   });
 }
 
+JsonObjectNode
+action::ActionTipOnMap::method(DefaultMap defaultMap,
+                               UserDefinedMetadata userDefinedMeta) {
+  JsonObjectNode locNode = JsonObjectNode({
+      {"x", defaultMap.get("x")},
+      {"y", defaultMap.get("y")},
+      {"range", "\"0\""},
+  });
+  JsonArrayNode locsNode =
+      JsonArrayNode(std::make_shared<JsonObjectNode>(locNode));
+  return JsonObjectNode({
+      {"locs", locsNode.to_string(24)},
+      {"shiftX", "\"0\""},
+      {"shiftY", "\"0\""},
+      {"cleanTalk", "false"},
+      {"speech", defaultMap.get("text")},
+      {"html", defaultMap.get("html")},
+      {"align", "\"center\""},
+      {"scalePolicy", "\"withWindowMinOne\""},
+      {"stay", "\"time\""},
+      {"duration", defaultMap.get("duration")},
+  });
+}
+
 JsonObjectNode action::ActionWait::method(DefaultMap defaultMap,
                                           UserDefinedMetadata userDefinedMeta) {
   return JsonObjectNode({
