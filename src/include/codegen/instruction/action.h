@@ -18,6 +18,7 @@ namespace action {
 REGISTER_CODE_GEN(ActorAttributes);
 REGISTER_CODE_GEN(ActorDisappear);
 REGISTER_CODE_GEN(ActorFollow);
+REGISTER_CODE_GEN(ActorRelocate);
 REGISTER_CODE_GEN(ActorTalk);
 REGISTER_CODE_GEN(AddActor);
 REGISTER_CODE_GEN(AddDropItem);

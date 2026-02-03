@@ -133,6 +133,8 @@ void CodeGenerator::codegenAction(std::ofstream &of,
     of << action::ActionActorDisappear::CODEGEN_FUNC;
   if (identifier == "actorFollow" || identifier == "跟隨人物")
     of << action::ActionActorFollow::CODEGEN_FUNC;
+  if (identifier == "actorRelocate" || identifier == "移動角色位置")
+    of << action::ActionActorRelocate::CODEGEN_FUNC;
   if (identifier == "actorTalk" || identifier == "角色說話")
     of << action::ActionActorTalk::CODEGEN_FUNC;
   if (identifier == "addActor" || identifier == "新增角色")

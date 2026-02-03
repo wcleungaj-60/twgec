@@ -52,6 +52,26 @@ action::ActionActorFollow::method(DefaultMap defaultMap,
 }
 
 JsonObjectNode
+action::ActionActorRelocate::method(DefaultMap defaultMap,
+                                    UserDefinedMetadata userDefinedMeta) {
+  JsonObjectNode locNode = JsonObjectNode({
+      {"x", defaultMap.get("x")},
+      {"y", defaultMap.get("y")},
+      {"range", "\"0\""},
+  });
+  JsonArrayNode locsNode =
+      JsonArrayNode(std::make_shared<JsonObjectNode>(locNode));
+  return JsonObjectNode({
+      {"actorCode", defaultMap.get("actorId")},
+      {"locType", "\"loc\""},
+      {"locs", locsNode.to_string(24)},
+      {"shiftX", "\"0\""},
+      {"shiftY", "\"0\""},
+      {"keepAbStates", defaultMap.get("keepAbility")},
+  });
+}
+
+JsonObjectNode
 action::ActionActorTalk::method(DefaultMap defaultMap,
                                 UserDefinedMetadata userDefinedMeta) {
   return JsonObjectNode({

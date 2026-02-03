@@ -1,0 +1,5 @@
+block init {
+    actions {
+        actorRelocate(actorId = "instance", x = "10", y = "10", keepAbility = true);
+    }
+}

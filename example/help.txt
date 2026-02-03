@@ -84,6 +84,8 @@ Supported Actions:
         actorId: string, delay: int|string, duration: int|string
     actorFollow                 跟隨人物
         actorId: string, targetId: string, type: string
+    actorRelocate               移動角色位置
+        actorId: string, keepAbility: bool, x: int|string, y: int|string
     actorTalk                   角色說話
         actorId: string, cleanTalk: bool, duration: int|string, text: string, wait: bool
     addActor                    新增角色
