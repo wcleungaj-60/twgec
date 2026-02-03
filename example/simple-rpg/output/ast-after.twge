@@ -11,6 +11,8 @@ const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
 const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
+const 公式::InstanceX坐標 = "{instance.gamePosition.x}/32";
+const 公式::InstanceY坐標 = "{instance.gamePosition.y}/32";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
 const 文字::風杖描述 = ("【風杖】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 5+力量÷2\n" + (" - 光彈傷害: 10+智慧+精神÷2\n" + ("【技能】散射釋出五發光彈\n" + " - 光彈傷害: 10+智慧+精神÷2")))));
 const 文字::鐵劍描述 = ("【鐵劍】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 30+力量×3\n" + ("【技能】對範圍内的角色造成三次傷害及治療\n" + (" - 對敵軍傷害量: 1+力量÷2+體質÷2 \n" + " - 對友軍回復量: 1+體質")))));
@@ -20,6 +22,8 @@ const 文字::體質描述 = "【體質】\n每一點可提升半點恢復力\n�
 const 文字::敏捷描述 = "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度";
 const 文字::智慧描述 = "【智慧】\n每一點可提升若干的杖類傷害\n詳細見各武器描述";
 const 文字::精神描述 = "【精神】\n每一點可提升一點恢復力\n及提升小量的杖類傷害";
+const 文字::HTML經驗提升 = "<span style='color: green'>EXP+1</span>";
+const 文字::HTML等級提升 = "<span style='color: green'>Level Up</span>";
 const 角色::任何 = ActorMatch();
 const 角色::任何玩家 = ActorMatch(controller = "player");
 const 角色::任何電腦 = ActorMatch(controller = "ai");
@@ -246,6 +250,7 @@ block 提升經驗 {
     }
     actions {
         自定義::儲存Instance整數("Exp", ("{instance.Exp}" + 1));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = 文字::HTML經驗提升);
         自定義::上載Instance數據();
     }
 }
@@ -255,7 +260,7 @@ block 野獸死亡 {
         角色死亡(actor = ActorMatch(id = "monster"), varName = "instance");
     }
     actions {
-        新增放置可拾取道具(itemCode = "deer_exp", x = "({instance.gamePosition.x}-16)/32", y = "({instance.gamePosition.y}-16)/32", type = "sariraFire");
+        新增放置可拾取道具(itemCode = "deer_exp", x = (公式::InstanceX坐標 + "-0.5"), y = (公式::InstanceY坐標 + "-0.5"), type = "sariraFire");
     }
 }
 block 野獸重生 {
@@ -276,6 +281,7 @@ block 等級提升 {
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = 文字::HTML等級提升, duration = 6000);
         自定義::儲存Instance整數("Exp", "{instance.Exp}-{instance.ExpNeeded}");
         自定義::儲存Instance整數("Level", ("{instance.Level}" + 1));
         自定義::儲存Instance整數("Point", ("{instance.Point}" + 2));
@@ -369,6 +375,8 @@ const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
 const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
+const 公式::InstanceX坐標 = "{instance.gamePosition.x}/32";
+const 公式::InstanceY坐標 = "{instance.gamePosition.y}/32";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
 const 文字::風杖描述 = ("【風杖】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 5+力量÷2\n" + (" - 光彈傷害: 10+智慧+精神÷2\n" + ("【技能】散射釋出五發光彈\n" + " - 光彈傷害: 10+智慧+精神÷2")))));
 const 文字::鐵劍描述 = ("【鐵劍】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 30+力量×3\n" + ("【技能】對範圍内的角色造成三次傷害及治療\n" + (" - 對敵軍傷害量: 1+力量÷2+體質÷2 \n" + " - 對友軍回復量: 1+體質")))));
@@ -378,6 +386,8 @@ const 文字::體質描述 = "【體質】\n每一點可提升半點恢復力\n�
 const 文字::敏捷描述 = "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度";
 const 文字::智慧描述 = "【智慧】\n每一點可提升若干的杖類傷害\n詳細見各武器描述";
 const 文字::精神描述 = "【精神】\n每一點可提升一點恢復力\n及提升小量的杖類傷害";
+const 文字::HTML經驗提升 = "<span style='color: green'>EXP+1</span>";
+const 文字::HTML等級提升 = "<span style='color: green'>Level Up</span>";
 const 角色::任何 = ActorMatch();
 const 角色::任何玩家 = ActorMatch(controller = "player");
 const 角色::任何電腦 = ActorMatch(controller = "ai");
@@ -604,6 +614,7 @@ block 提升經驗 {
     }
     actions {
         自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}" + 1));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = 文字::HTML經驗提升);
         自定義::上載Instance數據();
     }
 }
@@ -613,7 +624,7 @@ block 野獸死亡 {
         角色死亡(actor = ActorMatch(id = "monster"), varName = "instance");
     }
     actions {
-        新增放置可拾取道具(itemCode = "deer_exp", x = "({instance.gamePosition.x}-16)/32", y = "({instance.gamePosition.y}-16)/32", type = "sariraFire");
+        新增放置可拾取道具(itemCode = "deer_exp", x = (公式::InstanceX坐標 + "-0.5"), y = (公式::InstanceY坐標 + "-0.5"), type = "sariraFire");
     }
 }
 block 野獸重生 {
@@ -634,6 +645,7 @@ block 等級提升 {
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = 文字::HTML等級提升, duration = 6000);
         自定義::儲存Instance整數(key = "Exp", value = "{instance.Exp}-{instance.ExpNeeded}");
         自定義::儲存Instance整數(key = "Level", value = ("{instance.Level}" + 1));
         自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" + 2));
@@ -727,6 +739,8 @@ const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
 const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
+const 公式::InstanceX坐標 = "{instance.gamePosition.x}/32";
+const 公式::InstanceY坐標 = "{instance.gamePosition.y}/32";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
 const 文字::風杖描述 = ("【風杖】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 5+力量÷2\n" + (" - 光彈傷害: 10+智慧+精神÷2\n" + ("【技能】散射釋出五發光彈\n" + " - 光彈傷害: 10+智慧+精神÷2")))));
 const 文字::鐵劍描述 = ("【鐵劍】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 30+力量×3\n" + ("【技能】對範圍内的角色造成三次傷害及治療\n" + (" - 對敵軍傷害量: 1+力量÷2+體質÷2 \n" + " - 對友軍回復量: 1+體質")))));
@@ -736,6 +750,8 @@ const 文字::體質描述 = "【體質】\n每一點可提升半點恢復力\n�
 const 文字::敏捷描述 = "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度";
 const 文字::智慧描述 = "【智慧】\n每一點可提升若干的杖類傷害\n詳細見各武器描述";
 const 文字::精神描述 = "【精神】\n每一點可提升一點恢復力\n及提升小量的杖類傷害";
+const 文字::HTML經驗提升 = "<span style='color: green'>EXP+1</span>";
+const 文字::HTML等級提升 = "<span style='color: green'>Level Up</span>";
 const 角色::任何 = ActorMatch();
 const 角色::任何玩家 = ActorMatch(controller = "player");
 const 角色::任何電腦 = ActorMatch(controller = "ai");
@@ -1358,6 +1374,7 @@ block 提升經驗 {
     }
     actions {
         自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}" + 1));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = 文字::HTML經驗提升);
         自定義::上載Instance數據();
     }
 }
@@ -1367,7 +1384,7 @@ block 野獸死亡 {
         角色死亡(actor = ActorMatch(id = "monster"), varName = "instance");
     }
     actions {
-        新增放置可拾取道具(itemCode = "deer_exp", x = "({instance.gamePosition.x}-16)/32", y = "({instance.gamePosition.y}-16)/32", type = "sariraFire");
+        新增放置可拾取道具(itemCode = "deer_exp", x = (公式::InstanceX坐標 + "-0.5"), y = (公式::InstanceY坐標 + "-0.5"), type = "sariraFire");
     }
 }
 block 野獸重生 {
@@ -1388,6 +1405,7 @@ block 等級提升 {
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = 文字::HTML等級提升, duration = 6000);
         自定義::儲存Instance整數(key = "Exp", value = "{instance.Exp}-{instance.ExpNeeded}");
         自定義::儲存Instance整數(key = "Level", value = ("{instance.Level}" + 1));
         自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" + 2));
@@ -1481,6 +1499,8 @@ const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
 const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
+const 公式::InstanceX坐標 = "{instance.gamePosition.x}/32";
+const 公式::InstanceY坐標 = "{instance.gamePosition.y}/32";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
 const 文字::風杖描述 = ("【風杖】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 5+力量÷2\n" + (" - 光彈傷害: 10+智慧+精神÷2\n" + ("【技能】散射釋出五發光彈\n" + " - 光彈傷害: 10+智慧+精神÷2")))));
 const 文字::鐵劍描述 = ("【鐵劍】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 30+力量×3\n" + ("【技能】對範圍内的角色造成三次傷害及治療\n" + (" - 對敵軍傷害量: 1+力量÷2+體質÷2 \n" + " - 對友軍回復量: 1+體質")))));
@@ -1490,6 +1510,8 @@ const 文字::體質描述 = "【體質】\n每一點可提升半點恢復力\n�
 const 文字::敏捷描述 = "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度";
 const 文字::智慧描述 = "【智慧】\n每一點可提升若干的杖類傷害\n詳細見各武器描述";
 const 文字::精神描述 = "【精神】\n每一點可提升一點恢復力\n及提升小量的杖類傷害";
+const 文字::HTML經驗提升 = "<span style='color: green'>EXP+1</span>";
+const 文字::HTML等級提升 = "<span style='color: green'>Level Up</span>";
 const 角色::任何 = ActorMatch();
 const 角色::任何玩家 = ActorMatch(controller = "player");
 const 角色::任何電腦 = ActorMatch(controller = "ai");
@@ -2136,6 +2158,7 @@ block 提升經驗 {
     }
     actions {
         自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}" + 1));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = 文字::HTML經驗提升);
         自定義::上載Instance數據();
     }
     checks {
@@ -2147,7 +2170,7 @@ block 野獸死亡 {
         角色死亡(actor = ActorMatch(id = "monster"), varName = "instance");
     }
     actions {
-        新增放置可拾取道具(itemCode = "deer_exp", x = "({instance.gamePosition.x}-16)/32", y = "({instance.gamePosition.y}-16)/32", type = "sariraFire");
+        新增放置可拾取道具(itemCode = "deer_exp", x = (公式::InstanceX坐標 + "-0.5"), y = (公式::InstanceY坐標 + "-0.5"), type = "sariraFire");
     }
     checks {
     }
@@ -2172,6 +2195,7 @@ block 等級提升 {
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = 文字::HTML等級提升, duration = 6000);
         自定義::儲存Instance整數(key = "Exp", value = "{instance.Exp}-{instance.ExpNeeded}");
         自定義::儲存Instance整數(key = "Level", value = ("{instance.Level}" + 1));
         自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" + 2));
@@ -2279,6 +2303,8 @@ const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
 const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
+const 公式::InstanceX坐標 = "{instance.gamePosition.x}/32";
+const 公式::InstanceY坐標 = "{instance.gamePosition.y}/32";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
 const 文字::風杖描述 = ("【風杖】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 5+力量÷2\n" + (" - 光彈傷害: 10+智慧+精神÷2\n" + ("【技能】散射釋出五發光彈\n" + " - 光彈傷害: 10+智慧+精神÷2")))));
 const 文字::鐵劍描述 = ("【鐵劍】\n" + ("【普通攻擊】\n" + (" - 武器傷害: 30+力量×3\n" + ("【技能】對範圍内的角色造成三次傷害及治療\n" + (" - 對敵軍傷害量: 1+力量÷2+體質÷2 \n" + " - 對友軍回復量: 1+體質")))));
@@ -2288,6 +2314,8 @@ const 文字::體質描述 = "【體質】\n每一點可提升半點恢復力\n�
 const 文字::敏捷描述 = "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度";
 const 文字::智慧描述 = "【智慧】\n每一點可提升若干的杖類傷害\n詳細見各武器描述";
 const 文字::精神描述 = "【精神】\n每一點可提升一點恢復力\n及提升小量的杖類傷害";
+const 文字::HTML經驗提升 = "<span style='color: green'>EXP+1</span>";
+const 文字::HTML等級提升 = "<span style='color: green'>Level Up</span>";
 const 角色::任何 = ActorMatch();
 const 角色::任何玩家 = ActorMatch(controller = "player");
 const 角色::任何電腦 = ActorMatch(controller = "ai");
@@ -2942,6 +2970,7 @@ block 提升經驗 {
     }
     actions {
         儲存物件變數(key = "Exp", object = "instance", type = "integer", value = ("{instance.Exp}" + 1));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = 文字::HTML經驗提升);
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
@@ -2963,7 +2992,7 @@ block 野獸死亡 {
         角色死亡(actor = ActorMatch(id = "monster"), varName = "instance");
     }
     actions {
-        新增放置可拾取道具(itemCode = "deer_exp", x = "({instance.gamePosition.x}-16)/32", y = "({instance.gamePosition.y}-16)/32", type = "sariraFire");
+        新增放置可拾取道具(itemCode = "deer_exp", x = (公式::InstanceX坐標 + "-0.5"), y = (公式::InstanceY坐標 + "-0.5"), type = "sariraFire");
     }
     checks {
     }
@@ -2988,6 +3017,7 @@ block 等級提升 {
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = 文字::HTML等級提升, duration = 6000);
         儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}-{instance.ExpNeeded}");
         儲存物件變數(key = "Level", object = "instance", type = "integer", value = ("{instance.Level}" + 1));
         儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" + 2));
@@ -3772,6 +3802,7 @@ block 提升經驗 {
     }
     actions {
         儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "({instance.Exp}+1)");
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>EXP+1</span>");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
         儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
@@ -3793,7 +3824,7 @@ block 野獸死亡 {
         角色死亡(actor = ActorMatch(id = "monster"), varName = "instance");
     }
     actions {
-        新增放置可拾取道具(itemCode = "deer_exp", x = "({instance.gamePosition.x}-16)/32", y = "({instance.gamePosition.y}-16)/32", type = "sariraFire");
+        新增放置可拾取道具(itemCode = "deer_exp", x = "{instance.gamePosition.x}/32-0.5", y = "{instance.gamePosition.y}/32-0.5", type = "sariraFire");
     }
     checks {
     }
@@ -3818,6 +3849,7 @@ block 等級提升 {
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>Level Up</span>", duration = 6000);
         儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}-{instance.ExpNeeded}");
         儲存物件變數(key = "Level", object = "instance", type = "integer", value = "({instance.Level}+1)");
         儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}+2)");
@@ -4470,6 +4502,7 @@ block 提升經驗 {
     }
     actions {
         儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "({instance.Exp}+1)");
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>EXP+1</span>");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
         儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
@@ -4491,7 +4524,7 @@ block 野獸死亡 {
         角色死亡(actor = ActorMatch(id = "monster"), varName = "instance");
     }
     actions {
-        新增放置可拾取道具(itemCode = "deer_exp", x = "({instance.gamePosition.x}-16)/32", y = "({instance.gamePosition.y}-16)/32", type = "sariraFire");
+        新增放置可拾取道具(itemCode = "deer_exp", x = "{instance.gamePosition.x}/32-0.5", y = "{instance.gamePosition.y}/32-0.5", type = "sariraFire");
     }
     checks {
     }
@@ -4516,6 +4549,7 @@ block 等級提升 {
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>Level Up</span>", duration = 6000);
         儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}-{instance.ExpNeeded}");
         儲存物件變數(key = "Level", object = "instance", type = "integer", value = "({instance.Level}+1)");
         儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}+2)");
@@ -5138,6 +5172,7 @@ block 提升經驗 {
     }
     actions {
         儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "({instance.Exp}+1)");
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>EXP+1</span>");
         儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
         儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
         儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
@@ -5159,7 +5194,7 @@ block 野獸死亡 {
         角色死亡(actor = ActorMatch(id = "monster"), varName = "instance");
     }
     actions {
-        新增放置可拾取道具(itemCode = "deer_exp", x = "({instance.gamePosition.x}-16)/32", y = "({instance.gamePosition.y}-16)/32", type = "sariraFire");
+        新增放置可拾取道具(itemCode = "deer_exp", x = "{instance.gamePosition.x}/32-0.5", y = "{instance.gamePosition.y}/32-0.5", type = "sariraFire");
     }
     checks {
     }
@@ -5184,6 +5219,7 @@ block 等級提升 {
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>Level Up</span>", duration = 6000);
         儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}-{instance.ExpNeeded}");
         儲存物件變數(key = "Level", object = "instance", type = "integer", value = "({instance.Level}+1)");
         儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}+2)");

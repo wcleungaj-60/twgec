@@ -4061,6 +4061,27 @@
                     }
                 },
                 {
+                    "type": "TipOnMap",
+                    "data": {
+                        "locs": [
+                            {
+                                "x": "{instance.gamePosition.x}/32",
+                                "y": "{instance.gamePosition.y}/32",
+                                "range": "0"
+                            }
+                        ],
+                        "shiftX": "0",
+                        "shiftY": "0",
+                        "cleanTalk": false,
+                        "speech": "<span style='color: green'>EXP+1</span>",
+                        "html": true,
+                        "align": "center",
+                        "scalePolicy": "withWindowMinOne",
+                        "stay": "time",
+                        "duration": "3000"
+                    }
+                },
+                {
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
@@ -4202,8 +4223,8 @@
                     "type": "AddDropItem",
                     "data": {
                         "location": {
-                            "x": "({instance.gamePosition.x}-16)/32",
-                            "y": "({instance.gamePosition.y}-16)/32",
+                            "x": "{instance.gamePosition.x}/32-0.5",
+                            "y": "{instance.gamePosition.y}/32-0.5",
                             "range": "0"
                         },
                         "shiftX": 0,
@@ -4358,6 +4379,27 @@
             "repeatInterval": 0,
             "devOnly": false,
             "actions": [
+                {
+                    "type": "TipOnMap",
+                    "data": {
+                        "locs": [
+                            {
+                                "x": "{instance.gamePosition.x}/32",
+                                "y": "{instance.gamePosition.y}/32",
+                                "range": "0"
+                            }
+                        ],
+                        "shiftX": "0",
+                        "shiftY": "0",
+                        "cleanTalk": false,
+                        "speech": "<span style='color: green'>Level Up</span>",
+                        "html": true,
+                        "align": "center",
+                        "scalePolicy": "withWindowMinOne",
+                        "stay": "time",
+                        "duration": "6000"
+                    }
+                },
                 {
                     "type": "SetObjectVar",
                     "data": {

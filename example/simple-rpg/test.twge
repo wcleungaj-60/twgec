@@ -9,6 +9,8 @@ const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
 const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
+const 公式::InstanceX坐標 = "{instance.gamePosition.x}/32";
+const 公式::InstanceY坐標 = "{instance.gamePosition.y}/32";
 
 const 文字::Instance訊息 =
 "【Lv{{instance.id}.Level}】\n" +
@@ -43,6 +45,8 @@ const 文字::體質描述 = "【體質】\n每一點可提升半點恢復力\n�
 const 文字::敏捷描述 = "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度";
 const 文字::智慧描述 = "【智慧】\n每一點可提升若干的杖類傷害\n詳細見各武器描述";
 const 文字::精神描述 = "【精神】\n每一點可提升一點恢復力\n及提升小量的杖類傷害";
+const 文字::HTML經驗提升 = "<span style='color: green'>EXP+1</span>";
+const 文字::HTML等級提升 = "<span style='color: green'>Level Up</span>";
 
 const 角色::任何 = ActorMatch();
 const 角色::任何玩家 = ActorMatch(controller = "player");
@@ -319,7 +323,7 @@ block 提升經驗 {
     }
     actions {
         自定義::儲存Instance整數("Exp", "{instance.Exp}"+1);
-        // TODO: Popup text
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = 文字::HTML經驗提升);
         // TODO: Call event
         自定義::上載Instance數據();
     }
@@ -331,7 +335,7 @@ block 野獸死亡 {
         角色死亡(actor = ActorMatch(id = "monster"), varName = "instance");
     }
     actions {
-        新增放置可拾取道具(itemCode = "deer_exp", x = "({instance.gamePosition.x}-16)/32", y = "({instance.gamePosition.y}-16)/32", type = "sariraFire");
+        新增放置可拾取道具(itemCode = "deer_exp", x = 公式::InstanceX坐標 + "-0.5", y = 公式::InstanceY坐標 + "-0.5", type = "sariraFire");
     }
 }
 
@@ -356,6 +360,7 @@ block 等級提升 {
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
     }
     actions {
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = 文字::HTML等級提升, duration = 6000);
         自定義::儲存Instance整數("Exp", "{instance.Exp}-{instance.ExpNeeded}");
         自定義::儲存Instance整數("Level", "{instance.Level}"+1);
         自定義::儲存Instance整數("Point", "{instance.Point}"+2);
