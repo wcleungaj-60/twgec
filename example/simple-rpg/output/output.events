@@ -3367,7 +3367,7 @@
                         "onActorLayer": "over",
                         "region": {
                             "defType": "circle",
-                            "ciRad": "96",
+                            "ciRad": "128",
                             "offX": "0",
                             "offY": "0"
                         },
@@ -3419,7 +3419,7 @@
                         "onActorLayer": "over",
                         "region": {
                             "defType": "circle",
-                            "ciRad": "96",
+                            "ciRad": "128",
                             "offX": "0",
                             "offY": "0"
                         },
@@ -4042,7 +4042,7 @@
             ]
         },
         {
-            "id": "提升經驗",
+            "id": "提升經驗一級鹿",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -4057,7 +4057,7 @@
                         "objectId": "instance",
                         "key": "Exp",
                         "valueType": "integer",
-                        "value": "({instance.Exp}+1)"
+                        "value": "{instance.Exp}+1"
                     }
                 },
                 {
@@ -4201,16 +4201,184 @@
                         "varname": "instance",
                         "itemMatch": {
                             "method": "equal",
-                            "itemCode": "",
+                            "itemCode": "deer_exp_01",
                             "itemType": ""
                         },
-                        "itemVarname": "deer_exp"
+                        "itemVarname": ""
                     }
                 }
             ]
         },
         {
-            "id": "野獸死亡",
+            "id": "提升經驗三級鹿",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "Exp",
+                        "valueType": "integer",
+                        "value": "{instance.Exp}+3"
+                    }
+                },
+                {
+                    "type": "TipOnMap",
+                    "data": {
+                        "locs": [
+                            {
+                                "x": "{instance.gamePosition.x}/32",
+                                "y": "{instance.gamePosition.y}/32",
+                                "range": "0"
+                            }
+                        ],
+                        "shiftX": "0",
+                        "shiftY": "0",
+                        "cleanTalk": false,
+                        "speech": "<span style='color: green'>EXP+3</span>",
+                        "html": true,
+                        "align": "center",
+                        "scalePolicy": "withWindowMinOne",
+                        "stay": "time",
+                        "duration": "3000"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Point",
+                        "valueType": "string",
+                        "value": "{{instance}.Point}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "ExpNeeded",
+                        "valueType": "string",
+                        "value": "{{instance}.ExpNeeded}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Level",
+                        "valueType": "string",
+                        "value": "{{instance}.Level}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "STR",
+                        "valueType": "string",
+                        "value": "{{instance}.STR}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "CON",
+                        "valueType": "string",
+                        "value": "{{instance}.CON}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "AGI",
+                        "valueType": "string",
+                        "value": "{{instance}.AGI}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "INT",
+                        "valueType": "string",
+                        "value": "{{instance}.INT}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "PSY",
+                        "valueType": "string",
+                        "value": "{{instance}.PSY}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "Exp",
+                        "valueType": "string",
+                        "value": "{{instance}.Exp}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "HP",
+                        "valueType": "string",
+                        "value": "{{instance}.HP}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test",
+                        "key": "savedBefore",
+                        "valueType": "integer",
+                        "value": "1"
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "ItemPickup",
+                    "data": {
+                        "actorMatches": [],
+                        "varname": "instance",
+                        "itemMatch": {
+                            "method": "equal",
+                            "itemCode": "deer_exp_03",
+                            "itemType": ""
+                        },
+                        "itemVarname": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "野獸死亡一級鹿",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -4229,7 +4397,7 @@
                         },
                         "shiftX": 0,
                         "shiftY": 0,
-                        "itemCode": "deer_exp",
+                        "itemCode": "deer_exp_01",
                         "itemType": "sariraFire",
                         "itemScale": "1",
                         "localVarname": ""
@@ -4246,7 +4414,7 @@
                                 "actorCodes": [
                                     {
                                         "method": "contain",
-                                        "actorCode": "monster"
+                                        "actorCode": "monster_deer_lv01"
                                     }
                                 ],
                                 "brain": "all",
@@ -4266,7 +4434,63 @@
             ]
         },
         {
-            "id": "野獸重生",
+            "id": "野獸死亡三級鹿",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "AddDropItem",
+                    "data": {
+                        "location": {
+                            "x": "{instance.gamePosition.x}/32-0.5",
+                            "y": "{instance.gamePosition.y}/32-0.5",
+                            "range": "0"
+                        },
+                        "shiftX": 0,
+                        "shiftY": 0,
+                        "itemCode": "deer_exp_03",
+                        "itemType": "sariraFire",
+                        "itemScale": "1",
+                        "localVarname": ""
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "ActorDead",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": "monster_deer_lv03"
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "timing": "preDead",
+                        "deathsVarname": "deaths",
+                        "hitterMatches": [],
+                        "hitterVarname": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "野獸重生一級鹿",
             "disabled": false,
             "folder": "",
             "startTime": 0,
@@ -4278,7 +4502,7 @@
                 {
                     "type": "AddActor",
                     "data": {
-                        "actorCode": "monster_deer*",
+                        "actorCode": "monster_deer_lv01*",
                         "name": "鹿(60)",
                         "role": {
                             "dr": 40
@@ -4293,8 +4517,8 @@
                         "camp": "third",
                         "group": "0",
                         "location": {
-                            "x": "random(21,40)",
-                            "y": "random(0,19)",
+                            "x": "30",
+                            "y": "10",
                             "range": "0"
                         },
                         "shiftX": 0,
@@ -4310,7 +4534,7 @@
                         "weight": "4",
                         "strength": "10",
                         "vision": "300",
-                        "range": "10000",
+                        "range": "10",
                         "score": "10",
                         "bloodType": "default",
                         "unbrokenArmor": true,
@@ -4347,7 +4571,7 @@
                                 "actorCodes": [
                                     {
                                         "method": "contain",
-                                        "actorCode": "monster_deer"
+                                        "actorCode": "monster_deer_lv01"
                                     }
                                 ],
                                 "brain": "all",
@@ -4359,7 +4583,111 @@
                         ],
                         "operator": "<",
                         "varname": "",
-                        "value": "5",
+                        "value": "4",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
+            "triggers": []
+        },
+        {
+            "id": "野獸重生三級鹿",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 12000,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "AddActor",
+                    "data": {
+                        "actorCode": "monster_deer_lv03*",
+                        "name": "鹿(150)",
+                        "role": {
+                            "dr": 40
+                        },
+                        "actorType": "defaultType",
+                        "weapon0": {
+                            "w0Type": "kongfu"
+                        },
+                        "weapon1": {
+                            "w1Type": "kongfu"
+                        },
+                        "camp": "third",
+                        "group": "0",
+                        "location": {
+                            "x": "30",
+                            "y": "30",
+                            "range": "0"
+                        },
+                        "shiftX": 0,
+                        "shiftY": 0,
+                        "spawnLoc": true,
+                        "rotation": "0",
+                        "idleRotate": true,
+                        "maxhp": "150",
+                        "manaPower": "0",
+                        "lives": "1",
+                        "preferAbilityLevel": "smart",
+                        "maxAbilityLevel": 1,
+                        "weight": "4",
+                        "strength": "25",
+                        "vision": "300",
+                        "range": "10",
+                        "score": "10",
+                        "bloodType": "default",
+                        "unbrokenArmor": true,
+                        "tornadoRes": "none",
+                        "distractWhenHit": true,
+                        "thinkInterval": 60,
+                        "farAutoLevel": "0",
+                        "patrols": true,
+                        "patrolPath": [],
+                        "bornDelayDuration": "0",
+                        "bornDuration": "1000",
+                        "bornLockDuration": "1000",
+                        "bornEffect": "none",
+                        "bornAnim": "fadein",
+                        "localVarname": "actor",
+                        "globalVarname": ""
+                    }
+                },
+                {
+                    "type": "ActorFollow",
+                    "data": {
+                        "actorCode": "actor",
+                        "followType": "self",
+                        "targetCode": ""
+                    }
+                }
+            ],
+            "checks": [
+                {
+                    "type": "ActorCount",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": "monster_deer_lv03"
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "operator": "<",
+                        "varname": "",
+                        "value": "3",
                         "_logi": {
                             "_and_or": ""
                         },
@@ -5182,6 +5510,78 @@
                         "target": {
                             "x": "19",
                             "y": "10",
+                            "range": "0"
+                        }
+                    }
+                },
+                {
+                    "type": "MapWarp",
+                    "data": {
+                        "location": {
+                            "x": "30",
+                            "y": "19",
+                            "range": "0"
+                        },
+                        "op": "add",
+                        "direction": "down",
+                        "warpSpeed": "imme",
+                        "target": {
+                            "x": "30",
+                            "y": "21",
+                            "range": "0"
+                        }
+                    }
+                },
+                {
+                    "type": "MapWarp",
+                    "data": {
+                        "location": {
+                            "x": "30",
+                            "y": "21",
+                            "range": "0"
+                        },
+                        "op": "add",
+                        "direction": "up",
+                        "warpSpeed": "imme",
+                        "target": {
+                            "x": "30",
+                            "y": "19",
+                            "range": "0"
+                        }
+                    }
+                },
+                {
+                    "type": "MapWarp",
+                    "data": {
+                        "location": {
+                            "x": "31",
+                            "y": "19",
+                            "range": "0"
+                        },
+                        "op": "add",
+                        "direction": "down",
+                        "warpSpeed": "imme",
+                        "target": {
+                            "x": "31",
+                            "y": "21",
+                            "range": "0"
+                        }
+                    }
+                },
+                {
+                    "type": "MapWarp",
+                    "data": {
+                        "location": {
+                            "x": "31",
+                            "y": "21",
+                            "range": "0"
+                        },
+                        "op": "add",
+                        "direction": "up",
+                        "warpSpeed": "imme",
+                        "target": {
+                            "x": "31",
+                            "y": "19",
                             "range": "0"
                         }
                     }
