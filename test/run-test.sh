@@ -73,6 +73,6 @@ for dir in $(find $TEST_DIR -type d); do
     unit_test $dir
 done
 
-for file in $(find $SMOKE_DIR -type f -name "test.twge"); do
+for file in $(find $SMOKE_DIR -type f -name "main.twge"); do
     smoke_test $file
 done
