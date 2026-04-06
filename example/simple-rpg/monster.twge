@@ -1,0 +1,50 @@
+def 自定義::拾取經驗泛型(drop_item_code, exp_string) : block {
+    __repeat__ = -1;
+    triggers {
+        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = drop_item_code);
+    }
+    actions {
+        自定義::儲存Instance整數("Exp", "{instance.Exp}+"+exp_string);
+        // TODO: Support return string type function
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: green'>EXP+"+exp_string+"</span>");
+        // TODO: Support Call event
+        自定義::上載Instance數據();
+    }
+}
+
+block 拾取經驗一級鹿 = 自定義::拾取經驗泛型("deer_exp_01", "1");
+block 拾取經驗三級鹿 = 自定義::拾取經驗泛型("deer_exp_03", "3");
+
+def 自定義::野獸死亡泛型(actor_id, drop_item_code, drop_item_type) : block {
+    __repeat__ = -1;
+    triggers {
+        角色死亡(actor = ActorMatch(id = actor_id), varName = "instance");
+    }
+    actions {
+        新增放置可拾取道具(itemCode = drop_item_code, x = 公式::InstanceX坐標 + "-0.5", y = 公式::InstanceY坐標 + "-0.5", type = drop_item_type);
+    }
+}
+
+block 野獸死亡一級鹿 = 自定義::野獸死亡泛型("monster_deer_lv01", "deer_exp_01", "sariraFire");
+block 野獸死亡三級鹿 = 自定義::野獸死亡泛型("monster_deer_lv03", "deer_exp_03", "sariraFire");
+
+// TODO: Support syntax
+// def 自定義::野獸重生拳頭類泛型(actor_id, name, x, y, range, hp, strength, role) : block = 
+//      野獸重生拳頭類泛型(actor_id, name, x, y, range, hp, "fist", "fist", strength, role);
+// TODO: Support typing
+def 自定義::野獸重生泛型(interval, max_num, actor_id, name, x, y, hp, strength, role) : block {
+    __repeat__ = -1;
+    __repeatInterval__ = interval;
+    checks {
+        計算人數(actor = ActorMatch(id = actor_id, matchKind = "contain"), op = "<", value = max_num);
+    }
+    actions {
+        新增角色(name = name, id = actor_id + "*", camp = "第三", 
+                hp = hp, x = x, y = y, range = 10, localVarname = "actor", 
+                weapon1 = "fist", weapon2 = "fist", strength = strength, role = role);
+        跟隨人物(actorId = "actor", type = "跟隨自己");
+    }
+}
+
+block 野獸重生一級鹿 = 自定義::野獸重生泛型(8000, 4, "monster_deer_lv01", "鹿(60)", 30, 10, 60, 10, "鹿");
+block 野獸重生三級鹿 = 自定義::野獸重生泛型(12000, 3, "monster_deer_lv03", "鹿(150)", 30, 30, 150, 25, "鹿");

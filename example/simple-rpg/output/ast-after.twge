@@ -50,25 +50,6 @@ def 自定義::除錯(text) : actions {
 def 自定義::儲存Instance整數(key, value) : actions {
     儲存物件變數(key = key, object = "instance", type = "integer", value = value);
 }
-def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
-    if(((x1 == x2) && (y1 < y2))) {
-        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "下");
-        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "上");
-    } else if(((x1 == x2) && (y1 > y2))) {
-        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "上");
-        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "下");
-    } else if(((x1 > x2) && (y1 == y2))) {
-        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "左");
-        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "右");
-    } else if(((x1 < x2) && (y1 == y2))) {
-        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "右");
-        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "左");
-    } else if(((x1 == x2) && (y1 == y2))) {
-        print(type = "error", text = "Cannot set the same point as the mapWarp src and dst");
-    } else {
-        print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
-    }
-}
 def 自定義::更新角色屬性(actorId) : actions {
     儲存物件變數(key = "HP", object = actorId, type = "integer", value = ("98 + 10*{" + (actorId + (".CON} + 2*{" + (actorId + ".Level}")))));
     設定角色屬性(actorId = actorId, attr = "maxHp", value = ("{" + (actorId + ".HP}")));
@@ -94,9 +75,6 @@ def 自定義::上載Instance數據() : actions {
     自定義::輔助::上載Instance數據("Exp");
     自定義::輔助::上載Instance數據("HP");
     儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
-}
-def 自定義::新增能力點告示牌(x, y, text, type) : actions {
-    新增告示牌(x = x, y = y, rotation = 270, text = text, buttons = [Button(id = ("increase" + (type + "1")), text = "提升一點"),Button(id = ("increase" + (type + "10")), text = "提升十點")]);
 }
 def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     __repeat__ = -1;
@@ -126,30 +104,6 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
         角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
-    }
-}
-def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
-    __repeat__ = -1;
-    triggers {
-        if((value == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "1")));
-        } else if((value == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "10")));
-        }
-    }
-    checks {
-        比較數字(lhs = "{instance.Point}", op = ">=", rhs = value);
-    }
-    actions {
-        自定義::儲存Instance整數("Point", ("{instance.Point}" - value));
-        自定義::儲存Instance整數(type, (("{instance." + (type + "}")) + value));
-        if((value == 1)) {
-            角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
-        } else if((value == 10)) {
-            角色說話(actorId = "instance", text = ("成功提升十點" + (typeZh + "，尚餘{instance.Point}點能力點")));
-        }
-        自定義::更新角色屬性("instance");
-        自定義::上載Instance數據();
     }
 }
 def 自定義::點擊裝備武器泛型(button, weapon) : block {
@@ -203,7 +157,7 @@ def 自定義::武器物理連擊泛型(weapon, value, comboRate) : block {
         角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
     }
 }
-def 自定義::提升經驗泛型(drop_item_code, exp_string) : block {
+def 自定義::拾取經驗泛型(drop_item_code, exp_string) : block {
     __repeat__ = -1;
     triggers {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = drop_item_code);
@@ -234,18 +188,54 @@ def 自定義::野獸重生泛型(interval, max_num, actor_id, name, x, y, hp, s
         跟隨人物(actorId = "actor", type = "跟隨自己");
     }
 }
+def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
+    __repeat__ = -1;
+    triggers {
+        if((value == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "1")));
+        } else if((value == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "10")));
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = value);
+    }
+    actions {
+        自定義::儲存Instance整數("Point", ("{instance.Point}" - value));
+        自定義::儲存Instance整數(type, (("{instance." + (type + "}")) + value));
+        if((value == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        } else if((value == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        }
+        自定義::更新角色屬性("instance");
+        自定義::上載Instance數據();
+    }
+}
+def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
+    if(((x1 == x2) && (y1 < y2))) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "下");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "上");
+    } else if(((x1 == x2) && (y1 > y2))) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "上");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "下");
+    } else if(((x1 > x2) && (y1 == y2))) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "左");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "右");
+    } else if(((x1 < x2) && (y1 == y2))) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "右");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "左");
+    } else if(((x1 == x2) && (y1 == y2))) {
+        print(type = "error", text = "Cannot set the same point as the mapWarp src and dst");
+    } else {
+        print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
+    }
+}
+def 自定義::新增能力點告示牌(x, y, text, type) : actions {
+    新增告示牌(x = x, y = y, rotation = 270, text = text, buttons = [Button(id = ("increase" + (type + "1")), text = "提升一點"),Button(id = ("increase" + (type + "10")), text = "提升十點")]);
+}
 block 下載老玩家數據 = 自定義::下載玩家數據泛型(hasSavedBefore = true);
 block 下載新玩家數據 = 自定義::下載玩家數據泛型(hasSavedBefore = false);
-block 點擊提升一點力量 = 自定義::點擊提升能力泛型("STR", "力量", 1);
-block 點擊提升一點體質 = 自定義::點擊提升能力泛型("CON", "體質", 1);
-block 點擊提升一點敏捷 = 自定義::點擊提升能力泛型("AGI", "敏捷", 1);
-block 點擊提升一點智慧 = 自定義::點擊提升能力泛型("INT", "智慧", 1);
-block 點擊提升一點精神 = 自定義::點擊提升能力泛型("PSY", "精神", 1);
-block 點擊提升十點力量 = 自定義::點擊提升能力泛型("STR", "力量", 10);
-block 點擊提升十點體質 = 自定義::點擊提升能力泛型("CON", "體質", 10);
-block 點擊提升十點敏捷 = 自定義::點擊提升能力泛型("AGI", "敏捷", 10);
-block 點擊提升十點智慧 = 自定義::點擊提升能力泛型("INT", "智慧", 10);
-block 點擊提升十點精神 = 自定義::點擊提升能力泛型("PSY", "精神", 10);
 block 點擊裝備武器風杖 = 自定義::點擊裝備武器泛型("WindStaff", 別名::武器風杖);
 block 點擊裝備武器鐵劍 = 自定義::點擊裝備武器泛型("IronSword", 別名::武器鐵劍);
 block 點擊裝備武器匕首 = 自定義::點擊裝備武器泛型("Dagger", 別名::武器匕首);
@@ -256,6 +246,22 @@ block 風杖物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器風
 block 鐵劍物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器鐵劍, 公式::鐵劍物理傷害);
 block 匕首物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器匕首, 公式::匕首物理傷害);
 block 匕首物理連擊 = 自定義::武器物理連擊泛型(別名::武器匕首, 公式::匕首物理傷害, 公式::匕首連擊機率);
+block 拾取經驗一級鹿 = 自定義::拾取經驗泛型("deer_exp_01", "1");
+block 拾取經驗三級鹿 = 自定義::拾取經驗泛型("deer_exp_03", "3");
+block 野獸死亡一級鹿 = 自定義::野獸死亡泛型("monster_deer_lv01", "deer_exp_01", "sariraFire");
+block 野獸死亡三級鹿 = 自定義::野獸死亡泛型("monster_deer_lv03", "deer_exp_03", "sariraFire");
+block 野獸重生一級鹿 = 自定義::野獸重生泛型(8000, 4, "monster_deer_lv01", "鹿(60)", 30, 10, 60, 10, "鹿");
+block 野獸重生三級鹿 = 自定義::野獸重生泛型(12000, 3, "monster_deer_lv03", "鹿(150)", 30, 30, 150, 25, "鹿");
+block 點擊提升一點力量 = 自定義::點擊提升能力泛型("STR", "力量", 1);
+block 點擊提升一點體質 = 自定義::點擊提升能力泛型("CON", "體質", 1);
+block 點擊提升一點敏捷 = 自定義::點擊提升能力泛型("AGI", "敏捷", 1);
+block 點擊提升一點智慧 = 自定義::點擊提升能力泛型("INT", "智慧", 1);
+block 點擊提升一點精神 = 自定義::點擊提升能力泛型("PSY", "精神", 1);
+block 點擊提升十點力量 = 自定義::點擊提升能力泛型("STR", "力量", 10);
+block 點擊提升十點體質 = 自定義::點擊提升能力泛型("CON", "體質", 10);
+block 點擊提升十點敏捷 = 自定義::點擊提升能力泛型("AGI", "敏捷", 10);
+block 點擊提升十點智慧 = 自定義::點擊提升能力泛型("INT", "智慧", 10);
+block 點擊提升十點精神 = 自定義::點擊提升能力泛型("PSY", "精神", 10);
 block 點擊重置能力 {
     __repeat__ = -1;
     triggers {
@@ -273,12 +279,6 @@ block 點擊重置能力 {
         自定義::上載Instance數據();
     }
 }
-block 提升經驗一級鹿 = 自定義::提升經驗泛型("deer_exp_01", "1");
-block 提升經驗三級鹿 = 自定義::提升經驗泛型("deer_exp_03", "3");
-block 野獸死亡一級鹿 = 自定義::野獸死亡泛型("monster_deer_lv01", "deer_exp_01", "sariraFire");
-block 野獸死亡三級鹿 = 自定義::野獸死亡泛型("monster_deer_lv03", "deer_exp_03", "sariraFire");
-block 野獸重生一級鹿 = 自定義::野獸重生泛型(8000, 4, "monster_deer_lv01", "鹿(60)", 30, 10, 60, 10, "鹿");
-block 野獸重生三級鹿 = 自定義::野獸重生泛型(12000, 3, "monster_deer_lv03", "鹿(150)", 30, 30, 150, 25, "鹿");
 block 等級提升 {
     __repeat__ = -1;
     checks {
@@ -421,25 +421,6 @@ def 自定義::除錯(text) : actions {
 def 自定義::儲存Instance整數(key, value) : actions {
     儲存物件變數(key = key, object = "instance", type = "integer", value = value);
 }
-def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
-    if(((x1 == x2) && (y1 < y2))) {
-        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "下");
-        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "上");
-    } else if(((x1 == x2) && (y1 > y2))) {
-        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "上");
-        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "下");
-    } else if(((x1 > x2) && (y1 == y2))) {
-        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "左");
-        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "右");
-    } else if(((x1 < x2) && (y1 == y2))) {
-        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "右");
-        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "左");
-    } else if(((x1 == x2) && (y1 == y2))) {
-        print(type = "error", text = "Cannot set the same point as the mapWarp src and dst");
-    } else {
-        print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
-    }
-}
 def 自定義::更新角色屬性(actorId) : actions {
     儲存物件變數(key = "HP", object = actorId, type = "integer", value = ("98 + 10*{" + (actorId + (".CON} + 2*{" + (actorId + ".Level}")))));
     設定角色屬性(actorId = actorId, attr = "maxHp", value = ("{" + (actorId + ".HP}")));
@@ -465,9 +446,6 @@ def 自定義::上載Instance數據() : actions {
     自定義::輔助::上載Instance數據(key = "Exp");
     自定義::輔助::上載Instance數據(key = "HP");
     儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
-}
-def 自定義::新增能力點告示牌(x, y, text, type) : actions {
-    新增告示牌(x = x, y = y, rotation = 270, text = text, buttons = [Button(id = ("increase" + (type + "1")), text = "提升一點"),Button(id = ("increase" + (type + "10")), text = "提升十點")]);
 }
 def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     __repeat__ = -1;
@@ -497,30 +475,6 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
         角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
-    }
-}
-def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
-    __repeat__ = -1;
-    triggers {
-        if((value == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "1")));
-        } else if((value == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "10")));
-        }
-    }
-    checks {
-        比較數字(lhs = "{instance.Point}", op = ">=", rhs = value);
-    }
-    actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - value));
-        自定義::儲存Instance整數(key = type, value = (("{instance." + (type + "}")) + value));
-        if((value == 1)) {
-            角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
-        } else if((value == 10)) {
-            角色說話(actorId = "instance", text = ("成功提升十點" + (typeZh + "，尚餘{instance.Point}點能力點")));
-        }
-        自定義::更新角色屬性(actorId = "instance");
-        自定義::上載Instance數據();
     }
 }
 def 自定義::點擊裝備武器泛型(button, weapon) : block {
@@ -574,7 +528,7 @@ def 自定義::武器物理連擊泛型(weapon, value, comboRate) : block {
         角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
     }
 }
-def 自定義::提升經驗泛型(drop_item_code, exp_string) : block {
+def 自定義::拾取經驗泛型(drop_item_code, exp_string) : block {
     __repeat__ = -1;
     triggers {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = drop_item_code);
@@ -605,18 +559,54 @@ def 自定義::野獸重生泛型(interval, max_num, actor_id, name, x, y, hp, s
         跟隨人物(actorId = "actor", type = "跟隨自己");
     }
 }
+def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
+    __repeat__ = -1;
+    triggers {
+        if((value == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "1")));
+        } else if((value == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "10")));
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = value);
+    }
+    actions {
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - value));
+        自定義::儲存Instance整數(key = type, value = (("{instance." + (type + "}")) + value));
+        if((value == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        } else if((value == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        }
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
+    }
+}
+def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
+    if(((x1 == x2) && (y1 < y2))) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "下");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "上");
+    } else if(((x1 == x2) && (y1 > y2))) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "上");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "下");
+    } else if(((x1 > x2) && (y1 == y2))) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "左");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "右");
+    } else if(((x1 < x2) && (y1 == y2))) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "右");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "左");
+    } else if(((x1 == x2) && (y1 == y2))) {
+        print(type = "error", text = "Cannot set the same point as the mapWarp src and dst");
+    } else {
+        print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
+    }
+}
+def 自定義::新增能力點告示牌(x, y, text, type) : actions {
+    新增告示牌(x = x, y = y, rotation = 270, text = text, buttons = [Button(id = ("increase" + (type + "1")), text = "提升一點"),Button(id = ("increase" + (type + "10")), text = "提升十點")]);
+}
 block 下載老玩家數據 = 自定義::下載玩家數據泛型(hasSavedBefore = true);
 block 下載新玩家數據 = 自定義::下載玩家數據泛型(hasSavedBefore = false);
-block 點擊提升一點力量 = 自定義::點擊提升能力泛型(type = "STR", typeZh = "力量", value = 1);
-block 點擊提升一點體質 = 自定義::點擊提升能力泛型(type = "CON", typeZh = "體質", value = 1);
-block 點擊提升一點敏捷 = 自定義::點擊提升能力泛型(type = "AGI", typeZh = "敏捷", value = 1);
-block 點擊提升一點智慧 = 自定義::點擊提升能力泛型(type = "INT", typeZh = "智慧", value = 1);
-block 點擊提升一點精神 = 自定義::點擊提升能力泛型(type = "PSY", typeZh = "精神", value = 1);
-block 點擊提升十點力量 = 自定義::點擊提升能力泛型(type = "STR", typeZh = "力量", value = 10);
-block 點擊提升十點體質 = 自定義::點擊提升能力泛型(type = "CON", typeZh = "體質", value = 10);
-block 點擊提升十點敏捷 = 自定義::點擊提升能力泛型(type = "AGI", typeZh = "敏捷", value = 10);
-block 點擊提升十點智慧 = 自定義::點擊提升能力泛型(type = "INT", typeZh = "智慧", value = 10);
-block 點擊提升十點精神 = 自定義::點擊提升能力泛型(type = "PSY", typeZh = "精神", value = 10);
 block 點擊裝備武器風杖 = 自定義::點擊裝備武器泛型(button = "WindStaff", weapon = 別名::武器風杖);
 block 點擊裝備武器鐵劍 = 自定義::點擊裝備武器泛型(button = "IronSword", weapon = 別名::武器鐵劍);
 block 點擊裝備武器匕首 = 自定義::點擊裝備武器泛型(button = "Dagger", weapon = 別名::武器匕首);
@@ -627,6 +617,22 @@ block 風杖物理攻擊 = 自定義::武器物理攻擊泛型(weapon = 別名::
 block 鐵劍物理攻擊 = 自定義::武器物理攻擊泛型(weapon = 別名::武器鐵劍, value = 公式::鐵劍物理傷害);
 block 匕首物理攻擊 = 自定義::武器物理攻擊泛型(weapon = 別名::武器匕首, value = 公式::匕首物理傷害);
 block 匕首物理連擊 = 自定義::武器物理連擊泛型(weapon = 別名::武器匕首, value = 公式::匕首物理傷害, comboRate = 公式::匕首連擊機率);
+block 拾取經驗一級鹿 = 自定義::拾取經驗泛型(drop_item_code = "deer_exp_01", exp_string = "1");
+block 拾取經驗三級鹿 = 自定義::拾取經驗泛型(drop_item_code = "deer_exp_03", exp_string = "3");
+block 野獸死亡一級鹿 = 自定義::野獸死亡泛型(actor_id = "monster_deer_lv01", drop_item_code = "deer_exp_01", drop_item_type = "sariraFire");
+block 野獸死亡三級鹿 = 自定義::野獸死亡泛型(actor_id = "monster_deer_lv03", drop_item_code = "deer_exp_03", drop_item_type = "sariraFire");
+block 野獸重生一級鹿 = 自定義::野獸重生泛型(interval = 8000, max_num = 4, actor_id = "monster_deer_lv01", name = "鹿(60)", x = 30, y = 10, hp = 60, strength = 10, role = "鹿");
+block 野獸重生三級鹿 = 自定義::野獸重生泛型(interval = 12000, max_num = 3, actor_id = "monster_deer_lv03", name = "鹿(150)", x = 30, y = 30, hp = 150, strength = 25, role = "鹿");
+block 點擊提升一點力量 = 自定義::點擊提升能力泛型(type = "STR", typeZh = "力量", value = 1);
+block 點擊提升一點體質 = 自定義::點擊提升能力泛型(type = "CON", typeZh = "體質", value = 1);
+block 點擊提升一點敏捷 = 自定義::點擊提升能力泛型(type = "AGI", typeZh = "敏捷", value = 1);
+block 點擊提升一點智慧 = 自定義::點擊提升能力泛型(type = "INT", typeZh = "智慧", value = 1);
+block 點擊提升一點精神 = 自定義::點擊提升能力泛型(type = "PSY", typeZh = "精神", value = 1);
+block 點擊提升十點力量 = 自定義::點擊提升能力泛型(type = "STR", typeZh = "力量", value = 10);
+block 點擊提升十點體質 = 自定義::點擊提升能力泛型(type = "CON", typeZh = "體質", value = 10);
+block 點擊提升十點敏捷 = 自定義::點擊提升能力泛型(type = "AGI", typeZh = "敏捷", value = 10);
+block 點擊提升十點智慧 = 自定義::點擊提升能力泛型(type = "INT", typeZh = "智慧", value = 10);
+block 點擊提升十點精神 = 自定義::點擊提升能力泛型(type = "PSY", typeZh = "精神", value = 10);
 block 點擊重置能力 {
     __repeat__ = -1;
     triggers {
@@ -644,12 +650,6 @@ block 點擊重置能力 {
         自定義::上載Instance數據();
     }
 }
-block 提升經驗一級鹿 = 自定義::提升經驗泛型(drop_item_code = "deer_exp_01", exp_string = "1");
-block 提升經驗三級鹿 = 自定義::提升經驗泛型(drop_item_code = "deer_exp_03", exp_string = "3");
-block 野獸死亡一級鹿 = 自定義::野獸死亡泛型(actor_id = "monster_deer_lv01", drop_item_code = "deer_exp_01", drop_item_type = "sariraFire");
-block 野獸死亡三級鹿 = 自定義::野獸死亡泛型(actor_id = "monster_deer_lv03", drop_item_code = "deer_exp_03", drop_item_type = "sariraFire");
-block 野獸重生一級鹿 = 自定義::野獸重生泛型(interval = 8000, max_num = 4, actor_id = "monster_deer_lv01", name = "鹿(60)", x = 30, y = 10, hp = 60, strength = 10, role = "鹿");
-block 野獸重生三級鹿 = 自定義::野獸重生泛型(interval = 12000, max_num = 3, actor_id = "monster_deer_lv03", name = "鹿(150)", x = 30, y = 30, hp = 150, strength = 25, role = "鹿");
 block 等級提升 {
     __repeat__ = -1;
     checks {
@@ -792,25 +792,6 @@ def 自定義::除錯(text) : actions {
 def 自定義::儲存Instance整數(key, value) : actions {
     儲存物件變數(key = key, object = "instance", type = "integer", value = value);
 }
-def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
-    if(((x1 == x2) && (y1 < y2))) {
-        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "下");
-        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "上");
-    } else if(((x1 == x2) && (y1 > y2))) {
-        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "上");
-        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "下");
-    } else if(((x1 > x2) && (y1 == y2))) {
-        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "左");
-        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "右");
-    } else if(((x1 < x2) && (y1 == y2))) {
-        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "右");
-        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "左");
-    } else if(((x1 == x2) && (y1 == y2))) {
-        print(type = "error", text = "Cannot set the same point as the mapWarp src and dst");
-    } else {
-        print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
-    }
-}
 def 自定義::更新角色屬性(actorId) : actions {
     儲存物件變數(key = "HP", object = actorId, type = "integer", value = ("98 + 10*{" + (actorId + (".CON} + 2*{" + (actorId + ".Level}")))));
     設定角色屬性(actorId = actorId, attr = "maxHp", value = ("{" + (actorId + ".HP}")));
@@ -836,9 +817,6 @@ def 自定義::上載Instance數據() : actions {
     自定義::輔助::上載Instance數據(key = "Exp");
     自定義::輔助::上載Instance數據(key = "HP");
     儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
-}
-def 自定義::新增能力點告示牌(x, y, text, type) : actions {
-    新增告示牌(x = x, y = y, rotation = 270, text = text, buttons = [Button(id = ("increase" + (type + "1")), text = "提升一點"),Button(id = ("increase" + (type + "10")), text = "提升十點")]);
 }
 def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     __repeat__ = -1;
@@ -868,30 +846,6 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
         角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
-    }
-}
-def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
-    __repeat__ = -1;
-    triggers {
-        if((value == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "1")));
-        } else if((value == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "10")));
-        }
-    }
-    checks {
-        比較數字(lhs = "{instance.Point}", op = ">=", rhs = value);
-    }
-    actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - value));
-        自定義::儲存Instance整數(key = type, value = (("{instance." + (type + "}")) + value));
-        if((value == 1)) {
-            角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
-        } else if((value == 10)) {
-            角色說話(actorId = "instance", text = ("成功提升十點" + (typeZh + "，尚餘{instance.Point}點能力點")));
-        }
-        自定義::更新角色屬性(actorId = "instance");
-        自定義::上載Instance數據();
     }
 }
 def 自定義::點擊裝備武器泛型(button, weapon) : block {
@@ -945,7 +899,7 @@ def 自定義::武器物理連擊泛型(weapon, value, comboRate) : block {
         角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
     }
 }
-def 自定義::提升經驗泛型(drop_item_code, exp_string) : block {
+def 自定義::拾取經驗泛型(drop_item_code, exp_string) : block {
     __repeat__ = -1;
     triggers {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = drop_item_code);
@@ -975,6 +929,52 @@ def 自定義::野獸重生泛型(interval, max_num, actor_id, name, x, y, hp, s
         新增角色(name = name, id = (actor_id + "*"), camp = "第三", hp = hp, x = x, y = y, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = strength, role = role);
         跟隨人物(actorId = "actor", type = "跟隨自己");
     }
+}
+def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
+    __repeat__ = -1;
+    triggers {
+        if((value == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "1")));
+        } else if((value == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "10")));
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = value);
+    }
+    actions {
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - value));
+        自定義::儲存Instance整數(key = type, value = (("{instance." + (type + "}")) + value));
+        if((value == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        } else if((value == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        }
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
+    }
+}
+def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
+    if(((x1 == x2) && (y1 < y2))) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "下");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "上");
+    } else if(((x1 == x2) && (y1 > y2))) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "上");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "下");
+    } else if(((x1 > x2) && (y1 == y2))) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "左");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "右");
+    } else if(((x1 < x2) && (y1 == y2))) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "右");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "左");
+    } else if(((x1 == x2) && (y1 == y2))) {
+        print(type = "error", text = "Cannot set the same point as the mapWarp src and dst");
+    } else {
+        print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
+    }
+}
+def 自定義::新增能力點告示牌(x, y, text, type) : actions {
+    新增告示牌(x = x, y = y, rotation = 270, text = text, buttons = [Button(id = ("increase" + (type + "1")), text = "提升一點"),Button(id = ("increase" + (type + "10")), text = "提升十點")]);
 }
 block 下載老玩家數據 {
     __repeat__ = -1;
@@ -1034,6 +1034,186 @@ block 下載新玩家數據 {
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
         角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
+    }
+}
+block 點擊裝備武器風杖 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "WindStaff"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = 別名::武器風杖, hand = 1);
+        人物裝備武器(actorCode = "instance", type = 別名::武器風杖, hand = 2);
+    }
+}
+block 點擊裝備武器鐵劍 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "IronSword"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = 別名::武器鐵劍, hand = 1);
+        人物裝備武器(actorCode = "instance", type = 別名::武器鐵劍, hand = 2);
+    }
+}
+block 點擊裝備武器匕首 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "Dagger"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = 別名::武器匕首, hand = 1);
+        人物裝備武器(actorCode = "instance", type = 別名::武器匕首, hand = 2);
+    }
+}
+block 點擊裝備武器拳頭 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "None"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+    }
+}
+block 釋放技能風杖 {
+    __repeat__ = -1;
+    triggers {
+        發動技能(varName = "instance", weapon = 別名::武器風杖);
+    }
+    actions {
+        if((別名::武器風杖 == 別名::武器風杖)) {
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
+        }
+        if((別名::武器風杖 == 別名::武器鐵劍)) {
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
+        }
+    }
+}
+block 釋放技能鐵劍 {
+    __repeat__ = -1;
+    triggers {
+        發動技能(varName = "instance", weapon = 別名::武器鐵劍);
+    }
+    actions {
+        if((別名::武器鐵劍 == 別名::武器風杖)) {
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
+        }
+        if((別名::武器鐵劍 == 別名::武器鐵劍)) {
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
+        }
+    }
+}
+block 風杖物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器風杖);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::風杖物理傷害);
+    }
+}
+block 鐵劍物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器鐵劍);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::鐵劍物理傷害);
+    }
+}
+block 匕首物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器匕首);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
+    }
+}
+block 匕首物理連擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器匕首);
+    }
+    checks {
+        比較數字(lhs = 公式::匕首連擊機率, op = ">=", rhs = "random(0, 100)");
+    }
+    actions {
+        等待(duration = 100);
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
+    }
+}
+block 拾取經驗一級鹿 {
+    __repeat__ = -1;
+    triggers {
+        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_01");
+    }
+    actions {
+        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + "1"));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + ("1" + "</span>")));
+        自定義::上載Instance數據();
+    }
+}
+block 拾取經驗三級鹿 {
+    __repeat__ = -1;
+    triggers {
+        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_03");
+    }
+    actions {
+        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + "3"));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + ("3" + "</span>")));
+        自定義::上載Instance數據();
+    }
+}
+block 野獸死亡一級鹿 {
+    __repeat__ = -1;
+    triggers {
+        角色死亡(actor = ActorMatch(id = "monster_deer_lv01"), varName = "instance");
+    }
+    actions {
+        新增放置可拾取道具(itemCode = "deer_exp_01", x = (公式::InstanceX坐標 + "-0.5"), y = (公式::InstanceY坐標 + "-0.5"), type = "sariraFire");
+    }
+}
+block 野獸死亡三級鹿 {
+    __repeat__ = -1;
+    triggers {
+        角色死亡(actor = ActorMatch(id = "monster_deer_lv03"), varName = "instance");
+    }
+    actions {
+        新增放置可拾取道具(itemCode = "deer_exp_03", x = (公式::InstanceX坐標 + "-0.5"), y = (公式::InstanceY坐標 + "-0.5"), type = "sariraFire");
+    }
+}
+block 野獸重生一級鹿 {
+    __repeat__ = -1;
+    __repeatInterval__ = 8000;
+    checks {
+        計算人數(actor = ActorMatch(id = "monster_deer_lv01", matchKind = "contain"), op = "<", value = 4);
+    }
+    actions {
+        新增角色(name = "鹿(60)", id = ("monster_deer_lv01" + "*"), camp = "第三", hp = 60, x = 30, y = 10, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 10, role = "鹿");
+        跟隨人物(actorId = "actor", type = "跟隨自己");
+    }
+}
+block 野獸重生三級鹿 {
+    __repeat__ = -1;
+    __repeatInterval__ = 12000;
+    checks {
+        計算人數(actor = ActorMatch(id = "monster_deer_lv03", matchKind = "contain"), op = "<", value = 3);
+    }
+    actions {
+        新增角色(name = "鹿(150)", id = ("monster_deer_lv03" + "*"), camp = "第三", hp = 150, x = 30, y = 30, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 25, role = "鹿");
+        跟隨人物(actorId = "actor", type = "跟隨自己");
     }
 }
 block 點擊提升一點力量 {
@@ -1276,124 +1456,6 @@ block 點擊提升十點精神 {
         自定義::上載Instance數據();
     }
 }
-block 點擊裝備武器風杖 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("wear" + "WindStaff"));
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = 別名::武器風杖, hand = 1);
-        人物裝備武器(actorCode = "instance", type = 別名::武器風杖, hand = 2);
-    }
-}
-block 點擊裝備武器鐵劍 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("wear" + "IronSword"));
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = 別名::武器鐵劍, hand = 1);
-        人物裝備武器(actorCode = "instance", type = 別名::武器鐵劍, hand = 2);
-    }
-}
-block 點擊裝備武器匕首 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("wear" + "Dagger"));
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = 別名::武器匕首, hand = 1);
-        人物裝備武器(actorCode = "instance", type = 別名::武器匕首, hand = 2);
-    }
-}
-block 點擊裝備武器拳頭 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("wear" + "None"));
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
-        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
-    }
-}
-block 釋放技能風杖 {
-    __repeat__ = -1;
-    triggers {
-        發動技能(varName = "instance", weapon = 別名::武器風杖);
-    }
-    actions {
-        if((別名::武器風杖 == 別名::武器風杖)) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
-        }
-        if((別名::武器風杖 == 別名::武器鐵劍)) {
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
-        }
-    }
-}
-block 釋放技能鐵劍 {
-    __repeat__ = -1;
-    triggers {
-        發動技能(varName = "instance", weapon = 別名::武器鐵劍);
-    }
-    actions {
-        if((別名::武器鐵劍 == 別名::武器風杖)) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
-        }
-        if((別名::武器鐵劍 == 別名::武器鐵劍)) {
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
-        }
-    }
-}
-block 風杖物理攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器風杖);
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::風杖物理傷害);
-    }
-}
-block 鐵劍物理攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器鐵劍);
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::鐵劍物理傷害);
-    }
-}
-block 匕首物理攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器匕首);
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
-    }
-}
-block 匕首物理連擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器匕首);
-    }
-    checks {
-        比較數字(lhs = 公式::匕首連擊機率, op = ">=", rhs = "random(0, 100)");
-    }
-    actions {
-        等待(duration = 100);
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
-    }
-}
 block 點擊重置能力 {
     __repeat__ = -1;
     triggers {
@@ -1409,68 +1471,6 @@ block 點擊重置能力 {
         角色說話(actorId = "instance", text = "成功重設能力點，目前有{instance.Point}點能力點");
         自定義::更新角色屬性(actorId = "instance");
         自定義::上載Instance數據();
-    }
-}
-block 提升經驗一級鹿 {
-    __repeat__ = -1;
-    triggers {
-        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_01");
-    }
-    actions {
-        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + "1"));
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + ("1" + "</span>")));
-        自定義::上載Instance數據();
-    }
-}
-block 提升經驗三級鹿 {
-    __repeat__ = -1;
-    triggers {
-        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_03");
-    }
-    actions {
-        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + "3"));
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + ("3" + "</span>")));
-        自定義::上載Instance數據();
-    }
-}
-block 野獸死亡一級鹿 {
-    __repeat__ = -1;
-    triggers {
-        角色死亡(actor = ActorMatch(id = "monster_deer_lv01"), varName = "instance");
-    }
-    actions {
-        新增放置可拾取道具(itemCode = "deer_exp_01", x = (公式::InstanceX坐標 + "-0.5"), y = (公式::InstanceY坐標 + "-0.5"), type = "sariraFire");
-    }
-}
-block 野獸死亡三級鹿 {
-    __repeat__ = -1;
-    triggers {
-        角色死亡(actor = ActorMatch(id = "monster_deer_lv03"), varName = "instance");
-    }
-    actions {
-        新增放置可拾取道具(itemCode = "deer_exp_03", x = (公式::InstanceX坐標 + "-0.5"), y = (公式::InstanceY坐標 + "-0.5"), type = "sariraFire");
-    }
-}
-block 野獸重生一級鹿 {
-    __repeat__ = -1;
-    __repeatInterval__ = 8000;
-    checks {
-        計算人數(actor = ActorMatch(id = "monster_deer_lv01", matchKind = "contain"), op = "<", value = 4);
-    }
-    actions {
-        新增角色(name = "鹿(60)", id = ("monster_deer_lv01" + "*"), camp = "第三", hp = 60, x = 30, y = 10, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 10, role = "鹿");
-        跟隨人物(actorId = "actor", type = "跟隨自己");
-    }
-}
-block 野獸重生三級鹿 {
-    __repeat__ = -1;
-    __repeatInterval__ = 12000;
-    checks {
-        計算人數(actor = ActorMatch(id = "monster_deer_lv03", matchKind = "contain"), op = "<", value = 3);
-    }
-    actions {
-        新增角色(name = "鹿(150)", id = ("monster_deer_lv03" + "*"), camp = "第三", hp = 150, x = 30, y = 30, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 25, role = "鹿");
-        跟隨人物(actorId = "actor", type = "跟隨自己");
     }
 }
 block 等級提升 {
@@ -1615,25 +1615,6 @@ def 自定義::除錯(text) : actions {
 def 自定義::儲存Instance整數(key, value) : actions {
     儲存物件變數(key = key, object = "instance", type = "integer", value = value);
 }
-def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
-    if(((x1 == x2) && (y1 < y2))) {
-        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "下");
-        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "上");
-    } else if(((x1 == x2) && (y1 > y2))) {
-        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "上");
-        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "下");
-    } else if(((x1 > x2) && (y1 == y2))) {
-        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "左");
-        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "右");
-    } else if(((x1 < x2) && (y1 == y2))) {
-        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "右");
-        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "左");
-    } else if(((x1 == x2) && (y1 == y2))) {
-        print(type = "error", text = "Cannot set the same point as the mapWarp src and dst");
-    } else {
-        print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
-    }
-}
 def 自定義::更新角色屬性(actorId) : actions {
     儲存物件變數(key = "HP", object = actorId, type = "integer", value = ("98 + 10*{" + (actorId + (".CON} + 2*{" + (actorId + ".Level}")))));
     設定角色屬性(actorId = actorId, attr = "maxHp", value = ("{" + (actorId + ".HP}")));
@@ -1659,9 +1640,6 @@ def 自定義::上載Instance數據() : actions {
     自定義::輔助::上載Instance數據(key = "Exp");
     自定義::輔助::上載Instance數據(key = "HP");
     儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
-}
-def 自定義::新增能力點告示牌(x, y, text, type) : actions {
-    新增告示牌(x = x, y = y, rotation = 270, text = text, buttons = [Button(id = ("increase" + (type + "1")), text = "提升一點"),Button(id = ("increase" + (type + "10")), text = "提升十點")]);
 }
 def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     __repeat__ = -1;
@@ -1691,30 +1669,6 @@ def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
         角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
-    }
-}
-def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
-    __repeat__ = -1;
-    triggers {
-        if((value == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "1")));
-        } else if((value == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "10")));
-        }
-    }
-    checks {
-        比較數字(lhs = "{instance.Point}", op = ">=", rhs = value);
-    }
-    actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - value));
-        自定義::儲存Instance整數(key = type, value = (("{instance." + (type + "}")) + value));
-        if((value == 1)) {
-            角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
-        } else if((value == 10)) {
-            角色說話(actorId = "instance", text = ("成功提升十點" + (typeZh + "，尚餘{instance.Point}點能力點")));
-        }
-        自定義::更新角色屬性(actorId = "instance");
-        自定義::上載Instance數據();
     }
 }
 def 自定義::點擊裝備武器泛型(button, weapon) : block {
@@ -1768,7 +1722,7 @@ def 自定義::武器物理連擊泛型(weapon, value, comboRate) : block {
         角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
     }
 }
-def 自定義::提升經驗泛型(drop_item_code, exp_string) : block {
+def 自定義::拾取經驗泛型(drop_item_code, exp_string) : block {
     __repeat__ = -1;
     triggers {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = drop_item_code);
@@ -1798,6 +1752,52 @@ def 自定義::野獸重生泛型(interval, max_num, actor_id, name, x, y, hp, s
         新增角色(name = name, id = (actor_id + "*"), camp = "第三", hp = hp, x = x, y = y, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = strength, role = role);
         跟隨人物(actorId = "actor", type = "跟隨自己");
     }
+}
+def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
+    __repeat__ = -1;
+    triggers {
+        if((value == 1)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "1")));
+        } else if((value == 10)) {
+            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "10")));
+        }
+    }
+    checks {
+        比較數字(lhs = "{instance.Point}", op = ">=", rhs = value);
+    }
+    actions {
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - value));
+        自定義::儲存Instance整數(key = type, value = (("{instance." + (type + "}")) + value));
+        if((value == 1)) {
+            角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        } else if((value == 10)) {
+            角色說話(actorId = "instance", text = ("成功提升十點" + (typeZh + "，尚餘{instance.Point}點能力點")));
+        }
+        自定義::更新角色屬性(actorId = "instance");
+        自定義::上載Instance數據();
+    }
+}
+def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2) : actions {
+    if(((x1 == x2) && (y1 < y2))) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "下");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "上");
+    } else if(((x1 == x2) && (y1 > y2))) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "上");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "下");
+    } else if(((x1 > x2) && (y1 == y2))) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "左");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "右");
+    } else if(((x1 < x2) && (y1 == y2))) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "右");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "左");
+    } else if(((x1 == x2) && (y1 == y2))) {
+        print(type = "error", text = "Cannot set the same point as the mapWarp src and dst");
+    } else {
+        print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
+    }
+}
+def 自定義::新增能力點告示牌(x, y, text, type) : actions {
+    新增告示牌(x = x, y = y, rotation = 270, text = text, buttons = [Button(id = ("increase" + (type + "1")), text = "提升一點"),Button(id = ("increase" + (type + "10")), text = "提升十點")]);
 }
 block 下載老玩家數據 {
     __repeat__ = -1;
@@ -1859,6 +1859,216 @@ block 下載新玩家數據 {
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
         角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
+    }
+    triggers {
+    }
+}
+block 點擊裝備武器風杖 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "WindStaff"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = 別名::武器風杖, hand = 1);
+        人物裝備武器(actorCode = "instance", type = 別名::武器風杖, hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器鐵劍 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "IronSword"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = 別名::武器鐵劍, hand = 1);
+        人物裝備武器(actorCode = "instance", type = 別名::武器鐵劍, hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器匕首 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "Dagger"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = 別名::武器匕首, hand = 1);
+        人物裝備武器(actorCode = "instance", type = 別名::武器匕首, hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器拳頭 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "None"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+    }
+    checks {
+    }
+}
+block 釋放技能風杖 {
+    __repeat__ = -1;
+    triggers {
+        發動技能(varName = "instance", weapon = 別名::武器風杖);
+    }
+    actions {
+        if((別名::武器風杖 == 別名::武器風杖)) {
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
+        }
+        if((別名::武器風杖 == 別名::武器鐵劍)) {
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
+        }
+    }
+    checks {
+    }
+}
+block 釋放技能鐵劍 {
+    __repeat__ = -1;
+    triggers {
+        發動技能(varName = "instance", weapon = 別名::武器鐵劍);
+    }
+    actions {
+        if((別名::武器鐵劍 == 別名::武器風杖)) {
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
+        }
+        if((別名::武器鐵劍 == 別名::武器鐵劍)) {
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
+        }
+    }
+    checks {
+    }
+}
+block 風杖物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器風杖);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::風杖物理傷害);
+    }
+    checks {
+    }
+}
+block 鐵劍物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器鐵劍);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::鐵劍物理傷害);
+    }
+    checks {
+    }
+}
+block 匕首物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器匕首);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
+    }
+    checks {
+    }
+}
+block 匕首物理連擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器匕首);
+    }
+    checks {
+        比較數字(lhs = 公式::匕首連擊機率, op = ">=", rhs = "random(0, 100)");
+    }
+    actions {
+        等待(duration = 100);
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
+    }
+}
+block 拾取經驗一級鹿 {
+    __repeat__ = -1;
+    triggers {
+        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_01");
+    }
+    actions {
+        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + "1"));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + ("1" + "</span>")));
+        自定義::上載Instance數據();
+    }
+    checks {
+    }
+}
+block 拾取經驗三級鹿 {
+    __repeat__ = -1;
+    triggers {
+        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_03");
+    }
+    actions {
+        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + "3"));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + ("3" + "</span>")));
+        自定義::上載Instance數據();
+    }
+    checks {
+    }
+}
+block 野獸死亡一級鹿 {
+    __repeat__ = -1;
+    triggers {
+        角色死亡(actor = ActorMatch(id = "monster_deer_lv01"), varName = "instance");
+    }
+    actions {
+        新增放置可拾取道具(itemCode = "deer_exp_01", x = (公式::InstanceX坐標 + "-0.5"), y = (公式::InstanceY坐標 + "-0.5"), type = "sariraFire");
+    }
+    checks {
+    }
+}
+block 野獸死亡三級鹿 {
+    __repeat__ = -1;
+    triggers {
+        角色死亡(actor = ActorMatch(id = "monster_deer_lv03"), varName = "instance");
+    }
+    actions {
+        新增放置可拾取道具(itemCode = "deer_exp_03", x = (公式::InstanceX坐標 + "-0.5"), y = (公式::InstanceY坐標 + "-0.5"), type = "sariraFire");
+    }
+    checks {
+    }
+}
+block 野獸重生一級鹿 {
+    __repeat__ = -1;
+    __repeatInterval__ = 8000;
+    checks {
+        計算人數(actor = ActorMatch(id = "monster_deer_lv01", matchKind = "contain"), op = "<", value = 4);
+    }
+    actions {
+        新增角色(name = "鹿(60)", id = ("monster_deer_lv01" + "*"), camp = "第三", hp = 60, x = 30, y = 10, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 10, role = "鹿");
+        跟隨人物(actorId = "actor", type = "跟隨自己");
+    }
+    triggers {
+    }
+}
+block 野獸重生三級鹿 {
+    __repeat__ = -1;
+    __repeatInterval__ = 12000;
+    checks {
+        計算人數(actor = ActorMatch(id = "monster_deer_lv03", matchKind = "contain"), op = "<", value = 3);
+    }
+    actions {
+        新增角色(name = "鹿(150)", id = ("monster_deer_lv03" + "*"), camp = "第三", hp = 150, x = 30, y = 30, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 25, role = "鹿");
+        跟隨人物(actorId = "actor", type = "跟隨自己");
     }
     triggers {
     }
@@ -2103,142 +2313,6 @@ block 點擊提升十點精神 {
         自定義::上載Instance數據();
     }
 }
-block 點擊裝備武器風杖 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("wear" + "WindStaff"));
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = 別名::武器風杖, hand = 1);
-        人物裝備武器(actorCode = "instance", type = 別名::武器風杖, hand = 2);
-    }
-    checks {
-    }
-}
-block 點擊裝備武器鐵劍 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("wear" + "IronSword"));
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = 別名::武器鐵劍, hand = 1);
-        人物裝備武器(actorCode = "instance", type = 別名::武器鐵劍, hand = 2);
-    }
-    checks {
-    }
-}
-block 點擊裝備武器匕首 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("wear" + "Dagger"));
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = 別名::武器匕首, hand = 1);
-        人物裝備武器(actorCode = "instance", type = 別名::武器匕首, hand = 2);
-    }
-    checks {
-    }
-}
-block 點擊裝備武器拳頭 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("wear" + "None"));
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
-        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
-    }
-    checks {
-    }
-}
-block 釋放技能風杖 {
-    __repeat__ = -1;
-    triggers {
-        發動技能(varName = "instance", weapon = 別名::武器風杖);
-    }
-    actions {
-        if((別名::武器風杖 == 別名::武器風杖)) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
-        }
-        if((別名::武器風杖 == 別名::武器鐵劍)) {
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
-        }
-    }
-    checks {
-    }
-}
-block 釋放技能鐵劍 {
-    __repeat__ = -1;
-    triggers {
-        發動技能(varName = "instance", weapon = 別名::武器鐵劍);
-    }
-    actions {
-        if((別名::武器鐵劍 == 別名::武器風杖)) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
-        }
-        if((別名::武器鐵劍 == 別名::武器鐵劍)) {
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
-        }
-    }
-    checks {
-    }
-}
-block 風杖物理攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器風杖);
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::風杖物理傷害);
-    }
-    checks {
-    }
-}
-block 鐵劍物理攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器鐵劍);
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::鐵劍物理傷害);
-    }
-    checks {
-    }
-}
-block 匕首物理攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器匕首);
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
-    }
-    checks {
-    }
-}
-block 匕首物理連擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器匕首);
-    }
-    checks {
-        比較數字(lhs = 公式::匕首連擊機率, op = ">=", rhs = "random(0, 100)");
-    }
-    actions {
-        等待(duration = 100);
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
-    }
-}
 block 點擊重置能力 {
     __repeat__ = -1;
     triggers {
@@ -2256,80 +2330,6 @@ block 點擊重置能力 {
         自定義::上載Instance數據();
     }
     checks {
-    }
-}
-block 提升經驗一級鹿 {
-    __repeat__ = -1;
-    triggers {
-        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_01");
-    }
-    actions {
-        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + "1"));
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + ("1" + "</span>")));
-        自定義::上載Instance數據();
-    }
-    checks {
-    }
-}
-block 提升經驗三級鹿 {
-    __repeat__ = -1;
-    triggers {
-        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_03");
-    }
-    actions {
-        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + "3"));
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + ("3" + "</span>")));
-        自定義::上載Instance數據();
-    }
-    checks {
-    }
-}
-block 野獸死亡一級鹿 {
-    __repeat__ = -1;
-    triggers {
-        角色死亡(actor = ActorMatch(id = "monster_deer_lv01"), varName = "instance");
-    }
-    actions {
-        新增放置可拾取道具(itemCode = "deer_exp_01", x = (公式::InstanceX坐標 + "-0.5"), y = (公式::InstanceY坐標 + "-0.5"), type = "sariraFire");
-    }
-    checks {
-    }
-}
-block 野獸死亡三級鹿 {
-    __repeat__ = -1;
-    triggers {
-        角色死亡(actor = ActorMatch(id = "monster_deer_lv03"), varName = "instance");
-    }
-    actions {
-        新增放置可拾取道具(itemCode = "deer_exp_03", x = (公式::InstanceX坐標 + "-0.5"), y = (公式::InstanceY坐標 + "-0.5"), type = "sariraFire");
-    }
-    checks {
-    }
-}
-block 野獸重生一級鹿 {
-    __repeat__ = -1;
-    __repeatInterval__ = 8000;
-    checks {
-        計算人數(actor = ActorMatch(id = "monster_deer_lv01", matchKind = "contain"), op = "<", value = 4);
-    }
-    actions {
-        新增角色(name = "鹿(60)", id = ("monster_deer_lv01" + "*"), camp = "第三", hp = 60, x = 30, y = 10, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 10, role = "鹿");
-        跟隨人物(actorId = "actor", type = "跟隨自己");
-    }
-    triggers {
-    }
-}
-block 野獸重生三級鹿 {
-    __repeat__ = -1;
-    __repeatInterval__ = 12000;
-    checks {
-        計算人數(actor = ActorMatch(id = "monster_deer_lv03", matchKind = "contain"), op = "<", value = 3);
-    }
-    actions {
-        新增角色(name = "鹿(150)", id = ("monster_deer_lv03" + "*"), camp = "第三", hp = 150, x = 30, y = 30, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 25, role = "鹿");
-        跟隨人物(actorId = "actor", type = "跟隨自己");
-    }
-    triggers {
     }
 }
 block 等級提升 {
@@ -2566,6 +2566,236 @@ block 下載新玩家數據 {
             角色加減血(actorCode = "instance", type = "heal", value = 9999);
         }
         角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
+    }
+    triggers {
+    }
+}
+block 點擊裝備武器風杖 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "WindStaff"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = 別名::武器風杖, hand = 1);
+        人物裝備武器(actorCode = "instance", type = 別名::武器風杖, hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器鐵劍 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "IronSword"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = 別名::武器鐵劍, hand = 1);
+        人物裝備武器(actorCode = "instance", type = 別名::武器鐵劍, hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器匕首 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "Dagger"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = 別名::武器匕首, hand = 1);
+        人物裝備武器(actorCode = "instance", type = 別名::武器匕首, hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器拳頭 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = ("wear" + "None"));
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+    }
+    checks {
+    }
+}
+block 釋放技能風杖 {
+    __repeat__ = -1;
+    triggers {
+        發動技能(varName = "instance", weapon = 別名::武器風杖);
+    }
+    actions {
+        if((別名::武器風杖 == 別名::武器風杖)) {
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
+        }
+        if((別名::武器風杖 == 別名::武器鐵劍)) {
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
+        }
+    }
+    checks {
+    }
+}
+block 釋放技能鐵劍 {
+    __repeat__ = -1;
+    triggers {
+        發動技能(varName = "instance", weapon = 別名::武器鐵劍);
+    }
+    actions {
+        if((別名::武器鐵劍 == 別名::武器風杖)) {
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
+        }
+        if((別名::武器鐵劍 == 別名::武器鐵劍)) {
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
+        }
+    }
+    checks {
+    }
+}
+block 風杖物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器風杖);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::風杖物理傷害);
+    }
+    checks {
+    }
+}
+block 鐵劍物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器鐵劍);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::鐵劍物理傷害);
+    }
+    checks {
+    }
+}
+block 匕首物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器匕首);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
+    }
+    checks {
+    }
+}
+block 匕首物理連擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器匕首);
+    }
+    checks {
+        比較數字(lhs = 公式::匕首連擊機率, op = ">=", rhs = "random(0, 100)");
+    }
+    actions {
+        等待(duration = 100);
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
+    }
+}
+block 拾取經驗一級鹿 {
+    __repeat__ = -1;
+    triggers {
+        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_01");
+    }
+    actions {
+        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = ("{instance.Exp}+" + "1"));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + ("1" + "</span>")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+    checks {
+    }
+}
+block 拾取經驗三級鹿 {
+    __repeat__ = -1;
+    triggers {
+        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_03");
+    }
+    actions {
+        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = ("{instance.Exp}+" + "3"));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + ("3" + "</span>")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
+        儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+    checks {
+    }
+}
+block 野獸死亡一級鹿 {
+    __repeat__ = -1;
+    triggers {
+        角色死亡(actor = ActorMatch(id = "monster_deer_lv01"), varName = "instance");
+    }
+    actions {
+        新增放置可拾取道具(itemCode = "deer_exp_01", x = (公式::InstanceX坐標 + "-0.5"), y = (公式::InstanceY坐標 + "-0.5"), type = "sariraFire");
+    }
+    checks {
+    }
+}
+block 野獸死亡三級鹿 {
+    __repeat__ = -1;
+    triggers {
+        角色死亡(actor = ActorMatch(id = "monster_deer_lv03"), varName = "instance");
+    }
+    actions {
+        新增放置可拾取道具(itemCode = "deer_exp_03", x = (公式::InstanceX坐標 + "-0.5"), y = (公式::InstanceY坐標 + "-0.5"), type = "sariraFire");
+    }
+    checks {
+    }
+}
+block 野獸重生一級鹿 {
+    __repeat__ = -1;
+    __repeatInterval__ = 8000;
+    checks {
+        計算人數(actor = ActorMatch(id = "monster_deer_lv01", matchKind = "contain"), op = "<", value = 4);
+    }
+    actions {
+        新增角色(name = "鹿(60)", id = ("monster_deer_lv01" + "*"), camp = "第三", hp = 60, x = 30, y = 10, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 10, role = "鹿");
+        跟隨人物(actorId = "actor", type = "跟隨自己");
+    }
+    triggers {
+    }
+}
+block 野獸重生三級鹿 {
+    __repeat__ = -1;
+    __repeatInterval__ = 12000;
+    checks {
+        計算人數(actor = ActorMatch(id = "monster_deer_lv03", matchKind = "contain"), op = "<", value = 3);
+    }
+    actions {
+        新增角色(name = "鹿(150)", id = ("monster_deer_lv03" + "*"), camp = "第三", hp = 150, x = 30, y = 30, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 25, role = "鹿");
+        跟隨人物(actorId = "actor", type = "跟隨自己");
     }
     triggers {
     }
@@ -2940,142 +3170,6 @@ block 點擊提升十點精神 {
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊裝備武器風杖 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("wear" + "WindStaff"));
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = 別名::武器風杖, hand = 1);
-        人物裝備武器(actorCode = "instance", type = 別名::武器風杖, hand = 2);
-    }
-    checks {
-    }
-}
-block 點擊裝備武器鐵劍 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("wear" + "IronSword"));
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = 別名::武器鐵劍, hand = 1);
-        人物裝備武器(actorCode = "instance", type = 別名::武器鐵劍, hand = 2);
-    }
-    checks {
-    }
-}
-block 點擊裝備武器匕首 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("wear" + "Dagger"));
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = 別名::武器匕首, hand = 1);
-        人物裝備武器(actorCode = "instance", type = 別名::武器匕首, hand = 2);
-    }
-    checks {
-    }
-}
-block 點擊裝備武器拳頭 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = ("wear" + "None"));
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
-        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
-    }
-    checks {
-    }
-}
-block 釋放技能風杖 {
-    __repeat__ = -1;
-    triggers {
-        發動技能(varName = "instance", weapon = 別名::武器風杖);
-    }
-    actions {
-        if((別名::武器風杖 == 別名::武器風杖)) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
-        }
-        if((別名::武器風杖 == 別名::武器鐵劍)) {
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
-        }
-    }
-    checks {
-    }
-}
-block 釋放技能鐵劍 {
-    __repeat__ = -1;
-    triggers {
-        發動技能(varName = "instance", weapon = 別名::武器鐵劍);
-    }
-    actions {
-        if((別名::武器鐵劍 == 別名::武器風杖)) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
-        }
-        if((別名::武器鐵劍 == 別名::武器鐵劍)) {
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
-        }
-    }
-    checks {
-    }
-}
-block 風杖物理攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器風杖);
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::風杖物理傷害);
-    }
-    checks {
-    }
-}
-block 鐵劍物理攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器鐵劍);
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::鐵劍物理傷害);
-    }
-    checks {
-    }
-}
-block 匕首物理攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器匕首);
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
-    }
-    checks {
-    }
-}
-block 匕首物理連擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = 別名::武器匕首);
-    }
-    checks {
-        比較數字(lhs = 公式::匕首連擊機率, op = ">=", rhs = "random(0, 100)");
-    }
-    actions {
-        等待(duration = 100);
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = 公式::匕首物理傷害);
-    }
-}
 block 點擊重置能力 {
     __repeat__ = -1;
     triggers {
@@ -3106,100 +3200,6 @@ block 點擊重置能力 {
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
     checks {
-    }
-}
-block 提升經驗一級鹿 {
-    __repeat__ = -1;
-    triggers {
-        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_01");
-    }
-    actions {
-        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = ("{instance.Exp}+" + "1"));
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + ("1" + "</span>")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
-    }
-    checks {
-    }
-}
-block 提升經驗三級鹿 {
-    __repeat__ = -1;
-    triggers {
-        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_03");
-    }
-    actions {
-        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = ("{instance.Exp}+" + "3"));
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + ("3" + "</span>")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "STR", playerId = "{instance}", type = "string", value = ("{{instance}." + ("STR" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "CON", playerId = "{instance}", type = "string", value = ("{{instance}." + ("CON" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "AGI", playerId = "{instance}", type = "string", value = ("{{instance}." + ("AGI" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "INT", playerId = "{instance}", type = "string", value = ("{{instance}." + ("INT" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "PSY", playerId = "{instance}", type = "string", value = ("{{instance}." + ("PSY" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "Exp", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Exp" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "HP", playerId = "{instance}", type = "string", value = ("{{instance}." + ("HP" + "}")));
-        儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
-    }
-    checks {
-    }
-}
-block 野獸死亡一級鹿 {
-    __repeat__ = -1;
-    triggers {
-        角色死亡(actor = ActorMatch(id = "monster_deer_lv01"), varName = "instance");
-    }
-    actions {
-        新增放置可拾取道具(itemCode = "deer_exp_01", x = (公式::InstanceX坐標 + "-0.5"), y = (公式::InstanceY坐標 + "-0.5"), type = "sariraFire");
-    }
-    checks {
-    }
-}
-block 野獸死亡三級鹿 {
-    __repeat__ = -1;
-    triggers {
-        角色死亡(actor = ActorMatch(id = "monster_deer_lv03"), varName = "instance");
-    }
-    actions {
-        新增放置可拾取道具(itemCode = "deer_exp_03", x = (公式::InstanceX坐標 + "-0.5"), y = (公式::InstanceY坐標 + "-0.5"), type = "sariraFire");
-    }
-    checks {
-    }
-}
-block 野獸重生一級鹿 {
-    __repeat__ = -1;
-    __repeatInterval__ = 8000;
-    checks {
-        計算人數(actor = ActorMatch(id = "monster_deer_lv01", matchKind = "contain"), op = "<", value = 4);
-    }
-    actions {
-        新增角色(name = "鹿(60)", id = ("monster_deer_lv01" + "*"), camp = "第三", hp = 60, x = 30, y = 10, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 10, role = "鹿");
-        跟隨人物(actorId = "actor", type = "跟隨自己");
-    }
-    triggers {
-    }
-}
-block 野獸重生三級鹿 {
-    __repeat__ = -1;
-    __repeatInterval__ = 12000;
-    checks {
-        計算人數(actor = ActorMatch(id = "monster_deer_lv03", matchKind = "contain"), op = "<", value = 3);
-    }
-    actions {
-        新增角色(name = "鹿(150)", id = ("monster_deer_lv03" + "*"), camp = "第三", hp = 150, x = 30, y = 30, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 25, role = "鹿");
-        跟隨人物(actorId = "actor", type = "跟隨自己");
-    }
-    triggers {
     }
 }
 block 等級提升 {
@@ -3483,6 +3483,236 @@ block 下載新玩家數據 {
     triggers {
     }
 }
+block 點擊裝備武器風杖 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearWindStaff");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "custom_wind_staff", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "custom_wind_staff", hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器鐵劍 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearIronSword");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "custom_iron_sword", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "custom_iron_sword", hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器匕首 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearDagger");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "custom_dagger", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "custom_dagger", hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器拳頭 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearNone");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+    }
+    checks {
+    }
+}
+block 釋放技能風杖 {
+    __repeat__ = -1;
+    triggers {
+        發動技能(varName = "instance", weapon = "custom_wind_staff");
+    }
+    actions {
+        if(true) {
+            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+32)");
+            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+16)");
+            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14");
+            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-16)");
+            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-32)");
+        }
+        if(false) {
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = 128, duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = "1 + {instance.CON}", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = 128, duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = "1 + {instance.STR}/2 + {instance.CON}/2", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
+        }
+    }
+    checks {
+    }
+}
+block 釋放技能鐵劍 {
+    __repeat__ = -1;
+    triggers {
+        發動技能(varName = "instance", weapon = "custom_iron_sword");
+    }
+    actions {
+        if(false) {
+            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+32)");
+            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+16)");
+            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14");
+            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-16)");
+            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-32)");
+        }
+        if(true) {
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = 128, duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = "1 + {instance.CON}", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = 128, duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = "1 + {instance.STR}/2 + {instance.CON}/2", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
+        }
+    }
+    checks {
+    }
+}
+block 風杖物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_wind_staff");
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "5+{attacker.STR}/2");
+    }
+    checks {
+    }
+}
+block 鐵劍物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "30+{attacker.STR}*3");
+    }
+    checks {
+    }
+}
+block 匕首物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_dagger");
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}*2+{attacker.AGI}");
+    }
+    checks {
+    }
+}
+block 匕首物理連擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_dagger");
+    }
+    checks {
+        比較數字(lhs = "10+{attacker.AGI}*2", op = ">=", rhs = "random(0, 100)");
+    }
+    actions {
+        等待(duration = 100);
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}*2+{attacker.AGI}");
+    }
+}
+block 拾取經驗一級鹿 {
+    __repeat__ = -1;
+    triggers {
+        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_01");
+    }
+    actions {
+        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}+1");
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>EXP+1</span>");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+    checks {
+    }
+}
+block 拾取經驗三級鹿 {
+    __repeat__ = -1;
+    triggers {
+        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_03");
+    }
+    actions {
+        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}+3");
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>EXP+3</span>");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+    checks {
+    }
+}
+block 野獸死亡一級鹿 {
+    __repeat__ = -1;
+    triggers {
+        角色死亡(actor = ActorMatch(id = "monster_deer_lv01"), varName = "instance");
+    }
+    actions {
+        新增放置可拾取道具(itemCode = "deer_exp_01", x = "{instance.gamePosition.x}/32-0.5", y = "{instance.gamePosition.y}/32-0.5", type = "sariraFire");
+    }
+    checks {
+    }
+}
+block 野獸死亡三級鹿 {
+    __repeat__ = -1;
+    triggers {
+        角色死亡(actor = ActorMatch(id = "monster_deer_lv03"), varName = "instance");
+    }
+    actions {
+        新增放置可拾取道具(itemCode = "deer_exp_03", x = "{instance.gamePosition.x}/32-0.5", y = "{instance.gamePosition.y}/32-0.5", type = "sariraFire");
+    }
+    checks {
+    }
+}
+block 野獸重生一級鹿 {
+    __repeat__ = -1;
+    __repeatInterval__ = 8000;
+    checks {
+        計算人數(actor = ActorMatch(id = "monster_deer_lv01", matchKind = "contain"), op = "<", value = 4);
+    }
+    actions {
+        新增角色(name = "鹿(60)", id = "monster_deer_lv01*", camp = "第三", hp = 60, x = 30, y = 10, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 10, role = "鹿");
+        跟隨人物(actorId = "actor", type = "跟隨自己");
+    }
+    triggers {
+    }
+}
+block 野獸重生三級鹿 {
+    __repeat__ = -1;
+    __repeatInterval__ = 12000;
+    checks {
+        計算人數(actor = ActorMatch(id = "monster_deer_lv03", matchKind = "contain"), op = "<", value = 3);
+    }
+    actions {
+        新增角色(name = "鹿(150)", id = "monster_deer_lv03*", camp = "第三", hp = 150, x = 30, y = 30, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 25, role = "鹿");
+        跟隨人物(actorId = "actor", type = "跟隨自己");
+    }
+    triggers {
+    }
+}
 block 點擊提升一點力量 {
     __repeat__ = -1;
     triggers {
@@ -3853,142 +4083,6 @@ block 點擊提升十點精神 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊裝備武器風杖 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = "wearWindStaff");
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = "custom_wind_staff", hand = 1);
-        人物裝備武器(actorCode = "instance", type = "custom_wind_staff", hand = 2);
-    }
-    checks {
-    }
-}
-block 點擊裝備武器鐵劍 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = "wearIronSword");
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = "custom_iron_sword", hand = 1);
-        人物裝備武器(actorCode = "instance", type = "custom_iron_sword", hand = 2);
-    }
-    checks {
-    }
-}
-block 點擊裝備武器匕首 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = "wearDagger");
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = "custom_dagger", hand = 1);
-        人物裝備武器(actorCode = "instance", type = "custom_dagger", hand = 2);
-    }
-    checks {
-    }
-}
-block 點擊裝備武器拳頭 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = "wearNone");
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
-        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
-    }
-    checks {
-    }
-}
-block 釋放技能風杖 {
-    __repeat__ = -1;
-    triggers {
-        發動技能(varName = "instance", weapon = "custom_wind_staff");
-    }
-    actions {
-        if(true) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+32)");
-            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+16)");
-            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14");
-            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-16)");
-            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-32)");
-        }
-        if(false) {
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = 128, duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = "1 + {instance.CON}", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = 128, duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = "1 + {instance.STR}/2 + {instance.CON}/2", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
-        }
-    }
-    checks {
-    }
-}
-block 釋放技能鐵劍 {
-    __repeat__ = -1;
-    triggers {
-        發動技能(varName = "instance", weapon = "custom_iron_sword");
-    }
-    actions {
-        if(false) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+32)");
-            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+16)");
-            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14");
-            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-16)");
-            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-32)");
-        }
-        if(true) {
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = 128, duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = "1 + {instance.CON}", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
-            EnhFF::廣義圓形範圍(actorId = "instance", radius = 128, duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = "1 + {instance.STR}/2 + {instance.CON}/2", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
-        }
-    }
-    checks {
-    }
-}
-block 風杖物理攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_wind_staff");
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "5+{attacker.STR}/2");
-    }
-    checks {
-    }
-}
-block 鐵劍物理攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "30+{attacker.STR}*3");
-    }
-    checks {
-    }
-}
-block 匕首物理攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_dagger");
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}*2+{attacker.AGI}");
-    }
-    checks {
-    }
-}
-block 匕首物理連擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_dagger");
-    }
-    checks {
-        比較數字(lhs = "10+{attacker.AGI}*2", op = ">=", rhs = "random(0, 100)");
-    }
-    actions {
-        等待(duration = 100);
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}*2+{attacker.AGI}");
-    }
-}
 block 點擊重置能力 {
     __repeat__ = -1;
     triggers {
@@ -4019,100 +4113,6 @@ block 點擊重置能力 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
     checks {
-    }
-}
-block 提升經驗一級鹿 {
-    __repeat__ = -1;
-    triggers {
-        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_01");
-    }
-    actions {
-        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}+1");
-        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>EXP+1</span>");
-        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
-    }
-    checks {
-    }
-}
-block 提升經驗三級鹿 {
-    __repeat__ = -1;
-    triggers {
-        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_03");
-    }
-    actions {
-        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}+3");
-        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>EXP+3</span>");
-        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
-    }
-    checks {
-    }
-}
-block 野獸死亡一級鹿 {
-    __repeat__ = -1;
-    triggers {
-        角色死亡(actor = ActorMatch(id = "monster_deer_lv01"), varName = "instance");
-    }
-    actions {
-        新增放置可拾取道具(itemCode = "deer_exp_01", x = "{instance.gamePosition.x}/32-0.5", y = "{instance.gamePosition.y}/32-0.5", type = "sariraFire");
-    }
-    checks {
-    }
-}
-block 野獸死亡三級鹿 {
-    __repeat__ = -1;
-    triggers {
-        角色死亡(actor = ActorMatch(id = "monster_deer_lv03"), varName = "instance");
-    }
-    actions {
-        新增放置可拾取道具(itemCode = "deer_exp_03", x = "{instance.gamePosition.x}/32-0.5", y = "{instance.gamePosition.y}/32-0.5", type = "sariraFire");
-    }
-    checks {
-    }
-}
-block 野獸重生一級鹿 {
-    __repeat__ = -1;
-    __repeatInterval__ = 8000;
-    checks {
-        計算人數(actor = ActorMatch(id = "monster_deer_lv01", matchKind = "contain"), op = "<", value = 4);
-    }
-    actions {
-        新增角色(name = "鹿(60)", id = "monster_deer_lv01*", camp = "第三", hp = 60, x = 30, y = 10, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 10, role = "鹿");
-        跟隨人物(actorId = "actor", type = "跟隨自己");
-    }
-    triggers {
-    }
-}
-block 野獸重生三級鹿 {
-    __repeat__ = -1;
-    __repeatInterval__ = 12000;
-    checks {
-        計算人數(actor = ActorMatch(id = "monster_deer_lv03", matchKind = "contain"), op = "<", value = 3);
-    }
-    actions {
-        新增角色(name = "鹿(150)", id = "monster_deer_lv03*", camp = "第三", hp = 150, x = 30, y = 30, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 25, role = "鹿");
-        跟隨人物(actorId = "actor", type = "跟隨自己");
-    }
-    triggers {
     }
 }
 block 等級提升 {
@@ -4359,6 +4359,221 @@ block 下載新玩家數據 {
     triggers {
     }
 }
+block 點擊裝備武器風杖 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearWindStaff");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "custom_wind_staff", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "custom_wind_staff", hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器鐵劍 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearIronSword");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "custom_iron_sword", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "custom_iron_sword", hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器匕首 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearDagger");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "custom_dagger", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "custom_dagger", hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器拳頭 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearNone");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+    }
+    checks {
+    }
+}
+block 釋放技能風杖 {
+    __repeat__ = -1;
+    triggers {
+        發動技能(varName = "instance", weapon = "custom_wind_staff");
+    }
+    actions {
+        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+32)");
+        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+16)");
+        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14");
+        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-16)");
+        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-32)");
+    }
+    checks {
+    }
+}
+block 釋放技能鐵劍 {
+    __repeat__ = -1;
+    triggers {
+        發動技能(varName = "instance", weapon = "custom_iron_sword");
+    }
+    actions {
+        EnhFF::廣義圓形範圍(actorId = "instance", radius = 128, duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = "1 + {instance.CON}", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+        EnhFF::廣義圓形範圍(actorId = "instance", radius = 128, duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = "1 + {instance.STR}/2 + {instance.CON}/2", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
+    }
+    checks {
+    }
+}
+block 風杖物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_wind_staff");
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "5+{attacker.STR}/2");
+    }
+    checks {
+    }
+}
+block 鐵劍物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "30+{attacker.STR}*3");
+    }
+    checks {
+    }
+}
+block 匕首物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_dagger");
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}*2+{attacker.AGI}");
+    }
+    checks {
+    }
+}
+block 匕首物理連擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_dagger");
+    }
+    checks {
+        比較數字(lhs = "10+{attacker.AGI}*2", op = ">=", rhs = "random(0, 100)");
+    }
+    actions {
+        等待(duration = 100);
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}*2+{attacker.AGI}");
+    }
+}
+block 拾取經驗一級鹿 {
+    __repeat__ = -1;
+    triggers {
+        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_01");
+    }
+    actions {
+        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}+1");
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>EXP+1</span>");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+    checks {
+    }
+}
+block 拾取經驗三級鹿 {
+    __repeat__ = -1;
+    triggers {
+        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_03");
+    }
+    actions {
+        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}+3");
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>EXP+3</span>");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+    checks {
+    }
+}
+block 野獸死亡一級鹿 {
+    __repeat__ = -1;
+    triggers {
+        角色死亡(actor = ActorMatch(id = "monster_deer_lv01"), varName = "instance");
+    }
+    actions {
+        新增放置可拾取道具(itemCode = "deer_exp_01", x = "{instance.gamePosition.x}/32-0.5", y = "{instance.gamePosition.y}/32-0.5", type = "sariraFire");
+    }
+    checks {
+    }
+}
+block 野獸死亡三級鹿 {
+    __repeat__ = -1;
+    triggers {
+        角色死亡(actor = ActorMatch(id = "monster_deer_lv03"), varName = "instance");
+    }
+    actions {
+        新增放置可拾取道具(itemCode = "deer_exp_03", x = "{instance.gamePosition.x}/32-0.5", y = "{instance.gamePosition.y}/32-0.5", type = "sariraFire");
+    }
+    checks {
+    }
+}
+block 野獸重生一級鹿 {
+    __repeat__ = -1;
+    __repeatInterval__ = 8000;
+    checks {
+        計算人數(actor = ActorMatch(id = "monster_deer_lv01", matchKind = "contain"), op = "<", value = 4);
+    }
+    actions {
+        新增角色(name = "鹿(60)", id = "monster_deer_lv01*", camp = "第三", hp = 60, x = 30, y = 10, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 10, role = "鹿");
+        跟隨人物(actorId = "actor", type = "跟隨自己");
+    }
+    triggers {
+    }
+}
+block 野獸重生三級鹿 {
+    __repeat__ = -1;
+    __repeatInterval__ = 12000;
+    checks {
+        計算人數(actor = ActorMatch(id = "monster_deer_lv03", matchKind = "contain"), op = "<", value = 3);
+    }
+    actions {
+        新增角色(name = "鹿(150)", id = "monster_deer_lv03*", camp = "第三", hp = 150, x = 30, y = 30, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 25, role = "鹿");
+        跟隨人物(actorId = "actor", type = "跟隨自己");
+    }
+    triggers {
+    }
+}
 block 點擊提升一點力量 {
     __repeat__ = -1;
     triggers {
@@ -4649,127 +4864,6 @@ block 點擊提升十點精神 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊裝備武器風杖 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = "wearWindStaff");
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = "custom_wind_staff", hand = 1);
-        人物裝備武器(actorCode = "instance", type = "custom_wind_staff", hand = 2);
-    }
-    checks {
-    }
-}
-block 點擊裝備武器鐵劍 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = "wearIronSword");
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = "custom_iron_sword", hand = 1);
-        人物裝備武器(actorCode = "instance", type = "custom_iron_sword", hand = 2);
-    }
-    checks {
-    }
-}
-block 點擊裝備武器匕首 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = "wearDagger");
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = "custom_dagger", hand = 1);
-        人物裝備武器(actorCode = "instance", type = "custom_dagger", hand = 2);
-    }
-    checks {
-    }
-}
-block 點擊裝備武器拳頭 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = "wearNone");
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
-        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
-    }
-    checks {
-    }
-}
-block 釋放技能風杖 {
-    __repeat__ = -1;
-    triggers {
-        發動技能(varName = "instance", weapon = "custom_wind_staff");
-    }
-    actions {
-        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+32)");
-        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+16)");
-        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14");
-        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-16)");
-        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-32)");
-    }
-    checks {
-    }
-}
-block 釋放技能鐵劍 {
-    __repeat__ = -1;
-    triggers {
-        發動技能(varName = "instance", weapon = "custom_iron_sword");
-    }
-    actions {
-        EnhFF::廣義圓形範圍(actorId = "instance", radius = 128, duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = "1 + {instance.CON}", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
-        EnhFF::廣義圓形範圍(actorId = "instance", radius = 128, duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = "1 + {instance.STR}/2 + {instance.CON}/2", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
-    }
-    checks {
-    }
-}
-block 風杖物理攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_wind_staff");
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "5+{attacker.STR}/2");
-    }
-    checks {
-    }
-}
-block 鐵劍物理攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "30+{attacker.STR}*3");
-    }
-    checks {
-    }
-}
-block 匕首物理攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_dagger");
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}*2+{attacker.AGI}");
-    }
-    checks {
-    }
-}
-block 匕首物理連擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_dagger");
-    }
-    checks {
-        比較數字(lhs = "10+{attacker.AGI}*2", op = ">=", rhs = "random(0, 100)");
-    }
-    actions {
-        等待(duration = 100);
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}*2+{attacker.AGI}");
-    }
-}
 block 點擊重置能力 {
     __repeat__ = -1;
     triggers {
@@ -4800,100 +4894,6 @@ block 點擊重置能力 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
     checks {
-    }
-}
-block 提升經驗一級鹿 {
-    __repeat__ = -1;
-    triggers {
-        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_01");
-    }
-    actions {
-        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}+1");
-        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>EXP+1</span>");
-        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
-    }
-    checks {
-    }
-}
-block 提升經驗三級鹿 {
-    __repeat__ = -1;
-    triggers {
-        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_03");
-    }
-    actions {
-        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}+3");
-        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>EXP+3</span>");
-        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
-    }
-    checks {
-    }
-}
-block 野獸死亡一級鹿 {
-    __repeat__ = -1;
-    triggers {
-        角色死亡(actor = ActorMatch(id = "monster_deer_lv01"), varName = "instance");
-    }
-    actions {
-        新增放置可拾取道具(itemCode = "deer_exp_01", x = "{instance.gamePosition.x}/32-0.5", y = "{instance.gamePosition.y}/32-0.5", type = "sariraFire");
-    }
-    checks {
-    }
-}
-block 野獸死亡三級鹿 {
-    __repeat__ = -1;
-    triggers {
-        角色死亡(actor = ActorMatch(id = "monster_deer_lv03"), varName = "instance");
-    }
-    actions {
-        新增放置可拾取道具(itemCode = "deer_exp_03", x = "{instance.gamePosition.x}/32-0.5", y = "{instance.gamePosition.y}/32-0.5", type = "sariraFire");
-    }
-    checks {
-    }
-}
-block 野獸重生一級鹿 {
-    __repeat__ = -1;
-    __repeatInterval__ = 8000;
-    checks {
-        計算人數(actor = ActorMatch(id = "monster_deer_lv01", matchKind = "contain"), op = "<", value = 4);
-    }
-    actions {
-        新增角色(name = "鹿(60)", id = "monster_deer_lv01*", camp = "第三", hp = 60, x = 30, y = 10, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 10, role = "鹿");
-        跟隨人物(actorId = "actor", type = "跟隨自己");
-    }
-    triggers {
-    }
-}
-block 野獸重生三級鹿 {
-    __repeat__ = -1;
-    __repeatInterval__ = 12000;
-    checks {
-        計算人數(actor = ActorMatch(id = "monster_deer_lv03", matchKind = "contain"), op = "<", value = 3);
-    }
-    actions {
-        新增角色(name = "鹿(150)", id = "monster_deer_lv03*", camp = "第三", hp = 150, x = 30, y = 30, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 25, role = "鹿");
-        跟隨人物(actorId = "actor", type = "跟隨自己");
-    }
-    triggers {
     }
 }
 block 等級提升 {
@@ -5080,6 +5080,221 @@ block 下載新玩家數據 {
     triggers {
     }
 }
+block 點擊裝備武器風杖 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearWindStaff");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "custom_wind_staff", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "custom_wind_staff", hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器鐵劍 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearIronSword");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "custom_iron_sword", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "custom_iron_sword", hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器匕首 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearDagger");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "custom_dagger", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "custom_dagger", hand = 2);
+    }
+    checks {
+    }
+}
+block 點擊裝備武器拳頭 {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wearNone");
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
+        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
+    }
+    checks {
+    }
+}
+block 釋放技能風杖 {
+    __repeat__ = -1;
+    triggers {
+        發動技能(varName = "instance", weapon = "custom_wind_staff");
+    }
+    actions {
+        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+32)");
+        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+16)");
+        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14");
+        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-16)");
+        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-32)");
+    }
+    checks {
+    }
+}
+block 釋放技能鐵劍 {
+    __repeat__ = -1;
+    triggers {
+        發動技能(varName = "instance", weapon = "custom_iron_sword");
+    }
+    actions {
+        EnhFF::廣義圓形範圍(actorId = "instance", radius = 128, duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = "1 + {instance.CON}", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
+        EnhFF::廣義圓形範圍(actorId = "instance", radius = 128, duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = "1 + {instance.STR}/2 + {instance.CON}/2", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
+    }
+    checks {
+    }
+}
+block 風杖物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_wind_staff");
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "5+{attacker.STR}/2");
+    }
+    checks {
+    }
+}
+block 鐵劍物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "30+{attacker.STR}*3");
+    }
+    checks {
+    }
+}
+block 匕首物理攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_dagger");
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}*2+{attacker.AGI}");
+    }
+    checks {
+    }
+}
+block 匕首物理連擊 {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_dagger");
+    }
+    checks {
+        比較數字(lhs = "10+{attacker.AGI}*2", op = ">=", rhs = "random(0, 100)");
+    }
+    actions {
+        等待(duration = 100);
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}*2+{attacker.AGI}");
+    }
+}
+block 拾取經驗一級鹿 {
+    __repeat__ = -1;
+    triggers {
+        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_01");
+    }
+    actions {
+        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}+1");
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>EXP+1</span>");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+    checks {
+    }
+}
+block 拾取經驗三級鹿 {
+    __repeat__ = -1;
+    triggers {
+        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_03");
+    }
+    actions {
+        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}+3");
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>EXP+3</span>");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
+        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+    }
+    checks {
+    }
+}
+block 野獸死亡一級鹿 {
+    __repeat__ = -1;
+    triggers {
+        角色死亡(actor = ActorMatch(id = "monster_deer_lv01"), varName = "instance");
+    }
+    actions {
+        新增放置可拾取道具(itemCode = "deer_exp_01", x = "{instance.gamePosition.x}/32-0.5", y = "{instance.gamePosition.y}/32-0.5", type = "sariraFire");
+    }
+    checks {
+    }
+}
+block 野獸死亡三級鹿 {
+    __repeat__ = -1;
+    triggers {
+        角色死亡(actor = ActorMatch(id = "monster_deer_lv03"), varName = "instance");
+    }
+    actions {
+        新增放置可拾取道具(itemCode = "deer_exp_03", x = "{instance.gamePosition.x}/32-0.5", y = "{instance.gamePosition.y}/32-0.5", type = "sariraFire");
+    }
+    checks {
+    }
+}
+block 野獸重生一級鹿 {
+    __repeat__ = -1;
+    __repeatInterval__ = 8000;
+    checks {
+        計算人數(actor = ActorMatch(id = "monster_deer_lv01", matchKind = "contain"), op = "<", value = 4);
+    }
+    actions {
+        新增角色(name = "鹿(60)", id = "monster_deer_lv01*", camp = "第三", hp = 60, x = 30, y = 10, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 10, role = "鹿");
+        跟隨人物(actorId = "actor", type = "跟隨自己");
+    }
+    triggers {
+    }
+}
+block 野獸重生三級鹿 {
+    __repeat__ = -1;
+    __repeatInterval__ = 12000;
+    checks {
+        計算人數(actor = ActorMatch(id = "monster_deer_lv03", matchKind = "contain"), op = "<", value = 3);
+    }
+    actions {
+        新增角色(name = "鹿(150)", id = "monster_deer_lv03*", camp = "第三", hp = 150, x = 30, y = 30, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 25, role = "鹿");
+        跟隨人物(actorId = "actor", type = "跟隨自己");
+    }
+    triggers {
+    }
+}
 block 點擊提升一點力量 {
     __repeat__ = -1;
     triggers {
@@ -5370,127 +5585,6 @@ block 點擊提升十點精神 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
 }
-block 點擊裝備武器風杖 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = "wearWindStaff");
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = "custom_wind_staff", hand = 1);
-        人物裝備武器(actorCode = "instance", type = "custom_wind_staff", hand = 2);
-    }
-    checks {
-    }
-}
-block 點擊裝備武器鐵劍 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = "wearIronSword");
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = "custom_iron_sword", hand = 1);
-        人物裝備武器(actorCode = "instance", type = "custom_iron_sword", hand = 2);
-    }
-    checks {
-    }
-}
-block 點擊裝備武器匕首 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = "wearDagger");
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = "custom_dagger", hand = 1);
-        人物裝備武器(actorCode = "instance", type = "custom_dagger", hand = 2);
-    }
-    checks {
-    }
-}
-block 點擊裝備武器拳頭 {
-    __repeat__ = -1;
-    triggers {
-        告示牌按鈕(varName = "instance", buttonId = "wearNone");
-    }
-    actions {
-        人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
-        人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
-    }
-    checks {
-    }
-}
-block 釋放技能風杖 {
-    __repeat__ = -1;
-    triggers {
-        發動技能(varName = "instance", weapon = "custom_wind_staff");
-    }
-    actions {
-        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+32)");
-        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+16)");
-        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14");
-        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-16)");
-        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-32)");
-    }
-    checks {
-    }
-}
-block 釋放技能鐵劍 {
-    __repeat__ = -1;
-    triggers {
-        發動技能(varName = "instance", weapon = "custom_iron_sword");
-    }
-    actions {
-        EnhFF::廣義圓形範圍(actorId = "instance", radius = 128, duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = "1 + {instance.CON}", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
-        EnhFF::廣義圓形範圍(actorId = "instance", radius = 128, duration = 10000, color = "#D16500", deltaHpType = "damage", deltaHpValue = "1 + {instance.STR}/2 + {instance.CON}/2", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"), lineWidth = 2);
-    }
-    checks {
-    }
-}
-block 風杖物理攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_wind_staff");
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "5+{attacker.STR}/2");
-    }
-    checks {
-    }
-}
-block 鐵劍物理攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_iron_sword");
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "30+{attacker.STR}*3");
-    }
-    checks {
-    }
-}
-block 匕首物理攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_dagger");
-    }
-    actions {
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}*2+{attacker.AGI}");
-    }
-    checks {
-    }
-}
-block 匕首物理連擊 {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = ActorMatch(), actorVarName = "instance", hitter = ActorMatch(), hitterVarName = "attacker", weapon = "custom_dagger");
-    }
-    checks {
-        比較數字(lhs = "10+{attacker.AGI}*2", op = ">=", rhs = "random(0, 100)");
-    }
-    actions {
-        等待(duration = 100);
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = "10+{attacker.STR}*2+{attacker.AGI}");
-    }
-}
 block 點擊重置能力 {
     __repeat__ = -1;
     triggers {
@@ -5521,100 +5615,6 @@ block 點擊重置能力 {
         儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
     }
     checks {
-    }
-}
-block 提升經驗一級鹿 {
-    __repeat__ = -1;
-    triggers {
-        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_01");
-    }
-    actions {
-        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}+1");
-        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>EXP+1</span>");
-        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
-    }
-    checks {
-    }
-}
-block 提升經驗三級鹿 {
-    __repeat__ = -1;
-    triggers {
-        拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_03");
-    }
-    actions {
-        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}+3");
-        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>EXP+3</span>");
-        儲存玩家狀態(category = "simple-rpg-test", key = "Point", playerId = "{instance}", type = "string", value = "{{instance}.Point}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "ExpNeeded", playerId = "{instance}", type = "string", value = "{{instance}.ExpNeeded}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "Level", playerId = "{instance}", type = "string", value = "{{instance}.Level}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "STR", playerId = "{instance}", type = "string", value = "{{instance}.STR}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "CON", playerId = "{instance}", type = "string", value = "{{instance}.CON}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "AGI", playerId = "{instance}", type = "string", value = "{{instance}.AGI}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "INT", playerId = "{instance}", type = "string", value = "{{instance}.INT}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "PSY", playerId = "{instance}", type = "string", value = "{{instance}.PSY}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "Exp", playerId = "{instance}", type = "string", value = "{{instance}.Exp}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "HP", playerId = "{instance}", type = "string", value = "{{instance}.HP}");
-        儲存玩家狀態(category = "simple-rpg-test", key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
-    }
-    checks {
-    }
-}
-block 野獸死亡一級鹿 {
-    __repeat__ = -1;
-    triggers {
-        角色死亡(actor = ActorMatch(id = "monster_deer_lv01"), varName = "instance");
-    }
-    actions {
-        新增放置可拾取道具(itemCode = "deer_exp_01", x = "{instance.gamePosition.x}/32-0.5", y = "{instance.gamePosition.y}/32-0.5", type = "sariraFire");
-    }
-    checks {
-    }
-}
-block 野獸死亡三級鹿 {
-    __repeat__ = -1;
-    triggers {
-        角色死亡(actor = ActorMatch(id = "monster_deer_lv03"), varName = "instance");
-    }
-    actions {
-        新增放置可拾取道具(itemCode = "deer_exp_03", x = "{instance.gamePosition.x}/32-0.5", y = "{instance.gamePosition.y}/32-0.5", type = "sariraFire");
-    }
-    checks {
-    }
-}
-block 野獸重生一級鹿 {
-    __repeat__ = -1;
-    __repeatInterval__ = 8000;
-    checks {
-        計算人數(actor = ActorMatch(id = "monster_deer_lv01", matchKind = "contain"), op = "<", value = 4);
-    }
-    actions {
-        新增角色(name = "鹿(60)", id = "monster_deer_lv01*", camp = "第三", hp = 60, x = 30, y = 10, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 10, role = "鹿");
-        跟隨人物(actorId = "actor", type = "跟隨自己");
-    }
-    triggers {
-    }
-}
-block 野獸重生三級鹿 {
-    __repeat__ = -1;
-    __repeatInterval__ = 12000;
-    checks {
-        計算人數(actor = ActorMatch(id = "monster_deer_lv03", matchKind = "contain"), op = "<", value = 3);
-    }
-    actions {
-        新增角色(name = "鹿(150)", id = "monster_deer_lv03*", camp = "第三", hp = 150, x = 30, y = 30, range = 10, localVarname = "actor", weapon1 = "fist", weapon2 = "fist", strength = 25, role = "鹿");
-        跟隨人物(actorId = "actor", type = "跟隨自己");
-    }
-    triggers {
     }
 }
 block 等級提升 {

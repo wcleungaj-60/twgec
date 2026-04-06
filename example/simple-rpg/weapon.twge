@@ -1,0 +1,71 @@
+def 自定義::點擊裝備武器泛型(button, weapon) : block {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "wear" + button);
+    }
+    actions {
+        人物裝備武器(actorCode = "instance", type = weapon, hand = 1);
+        人物裝備武器(actorCode = "instance", type = weapon, hand = 2);
+    }
+}
+
+block 點擊裝備武器風杖 = 自定義::點擊裝備武器泛型("WindStaff", 別名::武器風杖);
+block 點擊裝備武器鐵劍 = 自定義::點擊裝備武器泛型("IronSword", 別名::武器鐵劍);
+block 點擊裝備武器匕首 = 自定義::點擊裝備武器泛型("Dagger", 別名::武器匕首);
+block 點擊裝備武器拳頭 = 自定義::點擊裝備武器泛型("None", "fist");
+
+def 自定義::釋放技能泛型(weapon) : block {
+    __repeat__ = -1;
+    triggers {
+        發動技能(varName = "instance", weapon = weapon);
+    }
+    actions {
+        if(weapon == 別名::武器風杖) {
+        光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度 + 32);
+        光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度 + 16);
+        光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
+        光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度 - 16);
+        光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度 - 32);
+        }
+        if(weapon == 別名::武器鐵劍) {
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = 4*32, duration = 10000,
+                color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復,
+                deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
+            EnhFF::廣義圓形範圍(actorId = "instance", radius = 4*32, duration = 10000,
+                color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害,
+                deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
+        }
+    }
+}
+
+block 釋放技能風杖 = 自定義::釋放技能泛型(別名::武器風杖);
+block 釋放技能鐵劍 = 自定義::釋放技能泛型(別名::武器鐵劍);
+
+def 自定義::武器物理攻擊泛型(weapon, value) : block  {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = weapon);
+    }
+    actions {
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
+    }
+}
+
+def 自定義::武器物理連擊泛型(weapon, value, comboRate) : block  {
+    __repeat__ = -1;
+    triggers {
+        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = weapon);
+    }
+    checks {
+        比較數字(lhs = comboRate, op = ">=", rhs = "random(0, 100)");
+    }
+    actions {
+        等待(duration = 100);
+        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
+    }
+}
+
+block 風杖物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器風杖, 公式::風杖物理傷害);
+block 鐵劍物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器鐵劍, 公式::鐵劍物理傷害);
+block 匕首物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器匕首, 公式::匕首物理傷害);
+block 匕首物理連擊 = 自定義::武器物理連擊泛型(別名::武器匕首, 公式::匕首物理傷害, 公式::匕首連擊機率);

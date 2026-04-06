@@ -1,0 +1,100 @@
+//------------------- 自定義常量 -------------------//
+const 公式::Instance角度 = "{instance.bodyRotation}*180/3.14";
+const 公式::Instance血量 = "98 + 10*{instance.CON} + 2*{instance.Level}";
+const 公式::Instance恢復量 = "1 + {instance.PSY} + {instance.CON}/2";
+const 公式::風杖物理傷害 = "5+{attacker.STR}/2";
+const 公式::風杖光彈傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
+const 公式::鐵劍物理傷害 = "30+{attacker.STR}*3";
+const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
+const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
+const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
+const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
+const 公式::InstanceX坐標 = "{instance.gamePosition.x}/32";
+const 公式::InstanceY坐標 = "{instance.gamePosition.y}/32";
+
+const 文字::Instance訊息 =
+"【Lv{{instance.id}.Level}】\n" +
+"Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" +
+"尚餘能力點：{{instance.id}.Point}\n" +
+"力量：{{instance.id}.STR}\n" +
+"體質：{{instance.id}.CON}\n" +
+"敏捷：{{instance.id}.AGI}\n" +
+"智慧：{{instance.id}.INT}\n" +
+"精神：{{instance.id}.PSY}";
+const 文字::風杖描述 =
+"【風杖】\n" + 
+"【普通攻擊】\n" + 
+" - 武器傷害: 5+力量÷2\n" + 
+" - 光彈傷害: 10+智慧+精神÷2\n"+
+"【技能】散射釋出五發光彈\n" +
+" - 光彈傷害: 10+智慧+精神÷2";
+const 文字::鐵劍描述 =
+"【鐵劍】\n" + 
+"【普通攻擊】\n" + 
+" - 武器傷害: 30+力量×3\n" + 
+"【技能】對範圍内的角色造成三次傷害及治療\n"+
+" - 對敵軍傷害量: 1+力量÷2+體質÷2 \n"+
+" - 對友軍回復量: 1+體質";
+const 文字::匕首描述 =
+"【匕首】\n" + 
+"【普通攻擊】\n" + 
+" - 武器傷害: 10+力量×2+敏捷\n" +
+" - 連擊率: 10%+敏捷×2%，上限100%\n";
+const 文字::力量描述 = "【力量】\n每一點可提升若干的武器物理傷害\n詳細見各武器描述";
+const 文字::體質描述 = "【體質】\n每一點可提升半點恢復力\n及增加十點血量上限";
+const 文字::敏捷描述 = "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度";
+const 文字::智慧描述 = "【智慧】\n每一點可提升若干的杖類傷害\n詳細見各武器描述";
+const 文字::精神描述 = "【精神】\n每一點可提升一點恢復力\n及提升小量的杖類傷害";
+const 文字::HTML等級提升 = "<span style='color: green'>Level Up</span>";
+
+const 角色::任何 = ActorMatch();
+const 角色::任何玩家 = ActorMatch(controller = "player");
+const 角色::任何電腦 = ActorMatch(controller = "ai");
+
+const 別名::武器風杖 = "custom_wind_staff";
+const 別名::武器鐵劍 = "custom_iron_sword";
+const 別名::武器匕首 = "custom_dagger";
+
+const 出生點 = Point(10,10);
+const 除錯模式 = false;
+const 狀態讀寫密鑰 = "simple-rpg-test";
+
+//------------------- Metadata設定 -------------------//
+__skydowLocs__ = 出生點;
+__royalLocs__ = 出生點;
+__thirdLocs__ = 出生點;
+__lives__ = 9999;
+__title__ = "RPG試驗";
+__useDefaultItems__ = true;
+__useCustomWeapons__ = true;
+__customWeapons__ = [
+    CustomWeapon(reference = "TWilightGameEventCompiler.weapon_wind_staff", code = "wind_staff", damage = 0, fireType = "單手橫劈",
+    pivotOnHandDegree = 58, pivotOnHandX = 2, pivotOnHandY = 9, pivotOnHandXScale = "1.3", pivotOnHandYScale = "1.5",
+    pivotOnIconDegree = -40, pivotOnIconX = 20, pivotOnIconY = 20),
+    CustomWeapon(reference = "TWilightGameEventCompiler.weapon_iron_sword", code = "iron_sword", damage = 0, fireType = "大刀砍劈",
+    pivotOnHandDegree = 35, pivotOnHandX = -12,
+    pivotOnIconDegree = -40, pivotOnIconX = 27, pivotOnIconY = 14),
+    CustomWeapon(reference = "TWilightGameEventCompiler.weapon_dagger", code = "dagger", damage = 0, fireType = "小刀前刺",
+    pivotOnHandDegree = -92, pivotOnHandX = 34, pivotOnHandY = 24, pivotOnHandXScale = "0.7", pivotOnHandYScale = "0.8",
+    pivotOnIconDegree = -140, pivotOnIconX = 34, pivotOnIconY = 16, weight = 3)
+];
+__map__ = "CG.TWilightGameEventCompiler/rpg/simple_rpg.twmap";
+__roomSize__ = 8;
+
+//------------------- 自定義功能 -------------------//
+def 自定義::除錯(text): actions {
+    if(除錯模式) {
+        print(type = "error", text = text);
+    }
+}
+
+def 自定義::儲存Instance整數(key, value): actions {
+    儲存物件變數(key = key, object = "instance", type = "integer", value = value);
+}
+
+def 自定義::更新角色屬性(actorId): actions {
+    儲存物件變數(key = "HP", object = actorId, type = "integer", value = "98 + 10*{"+actorId+".CON} + 2*{"+actorId+".Level}");
+    設定角色屬性(actorId = actorId, attr = "maxHp", value = "{"+actorId+".HP}");
+    設定角色屬性(actorId = actorId, attr = "closeWeaponSpeed", value = "4-3/(1+0.01*{"+actorId+".AGI})");
+    設定角色屬性(actorId = actorId, attr = "weight", value = "3*pow(0.97,{"+actorId+".AGI})");
+}

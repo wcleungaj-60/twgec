@@ -1,0 +1,56 @@
+def 自定義::輔助::下載Instance數據(key) : actions {
+    取得玩家狀態(category = 狀態讀寫密鑰, key = key, playerId = "{instance}", varName = "{instance}_"+key);
+    自定義::儲存Instance整數(key, "{{instance}_"+key+"}");
+}
+
+def 自定義::輔助::上載Instance數據(key) : actions {
+    儲存玩家狀態(category = 狀態讀寫密鑰, key = key, playerId = "{instance}", type = "string", value = "{{instance}."+key+"}");
+}
+
+def 自定義::上載Instance數據() : actions {
+    自定義::輔助::上載Instance數據("Point");
+    自定義::輔助::上載Instance數據("ExpNeeded");
+    自定義::輔助::上載Instance數據("Level");
+    自定義::輔助::上載Instance數據("STR");
+    自定義::輔助::上載Instance數據("CON");
+    自定義::輔助::上載Instance數據("AGI");
+    自定義::輔助::上載Instance數據("INT");
+    自定義::輔助::上載Instance數據("PSY");
+    自定義::輔助::上載Instance數據("Exp");
+    自定義::輔助::上載Instance數據("HP");
+    儲存玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", type = "integer", value = "1");
+}
+
+def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
+    __repeat__ = -1;
+    checks {
+        找出所有角色(actor = 角色::任何玩家, varname = "instance");
+        比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);
+        if(hasSavedBefore) {
+            比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "1");
+        } else {
+            比對字串(str = "{{instance}_savedBefore}", matchKind = "equal", value = "undefined");
+        } 
+    }
+    actions {
+        儲存物件變數(key = "completedInit", object = "instance", type = "string", value = 2);
+        if(hasSavedBefore) {
+            自定義::輔助::下載Instance數據("Point");
+            自定義::輔助::下載Instance數據("ExpNeeded");
+            自定義::輔助::下載Instance數據("Level");
+            自定義::輔助::下載Instance數據("STR");
+            自定義::輔助::下載Instance數據("CON");
+            自定義::輔助::下載Instance數據("AGI");
+            自定義::輔助::下載Instance數據("INT");
+            自定義::輔助::下載Instance數據("PSY");
+            自定義::輔助::下載Instance數據("Exp");
+            自定義::輔助::下載Instance數據("HP");
+            自定義::更新角色屬性("instance");
+            角色加減血(actorCode = "instance", type = "heal", value = 9999);
+        }
+        角色說話(actorId = "instance", cleanTalk = true, text = "初始化完畢");
+    }
+}
+
+block 下載老玩家數據 = 自定義::下載玩家數據泛型(hasSavedBefore = true);
+block 下載新玩家數據 = 自定義::下載玩家數據泛型(hasSavedBefore = false);
