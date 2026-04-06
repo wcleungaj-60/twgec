@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
                     (std::istreambuf_iterator<char>()));
   inputFile.close();
   // Lexer
-  Lexer lexer(input);
+  Lexer lexer(option.argFilePath, input);
   std::vector<Token> tokens = lexer.getTokens();
   if (Lexer::raiseLexicalError(tokens))
     return 1;
@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
   transform::PassManager passManager(moduleNode, option);
   if (!passManager.execute())
     return 1;
-  if(!option.runOnly.empty())
+  if (!option.runOnly.empty())
     return 0;
   // Codegen
   codegen::CodeGenerator generator(moduleNode);

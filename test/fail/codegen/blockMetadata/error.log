@@ -1,4 +1,4 @@
-Codegen Warnings: Undefined key "test" at 2:16
+Codegen Warnings: Undefined key "test" at test/fail/codegen/blockMetadata/test.twge:2:16
 Please following this available metadata list:
 block metadata(
     int|string       __delay__ = 0, 

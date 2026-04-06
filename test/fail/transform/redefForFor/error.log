@@ -1,5 +1,5 @@
-Compilation Error: iteration variable 'x' is redefined at 4:13.
-Compilation Error: iteration variable 'x' is redefined at 4:13.
-Compilation Error: iteration variable 'x' is redefined at 4:13.
-Compilation Error: iteration variable 'x' is redefined at 4:13.
-Compilation Error: iteration variable 'x' is redefined at 4:13.
+Compilation Error: iteration variable 'x' is redefined at test/fail/transform/redefForFor/test.twge:4:13
+Compilation Error: iteration variable 'x' is redefined at test/fail/transform/redefForFor/test.twge:4:13
+Compilation Error: iteration variable 'x' is redefined at test/fail/transform/redefForFor/test.twge:4:13
+Compilation Error: iteration variable 'x' is redefined at test/fail/transform/redefForFor/test.twge:4:13
+Compilation Error: iteration variable 'x' is redefined at test/fail/transform/redefForFor/test.twge:4:13

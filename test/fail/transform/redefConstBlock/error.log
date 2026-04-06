@@ -1,1 +1,1 @@
-Compilation Error: Redefinition of `x` found at 1:7 and 2:7
+Compilation Error: Redefinition of `x` found at test/fail/transform/redefConstBlock/test.twge:1:7 and test/fail/transform/redefConstBlock/test.twge:2:7

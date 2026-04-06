@@ -1,1 +1,1 @@
-Compilation Error: Redefinition of `x` found at 1:5 and 2:5
+Compilation Error: Redefinition of `x` found at test/fail/transform/redefFuncFunc/test.twge:1:5 and test/fail/transform/redefFuncFunc/test.twge:2:5

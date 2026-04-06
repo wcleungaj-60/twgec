@@ -1,1 +1,1 @@
-Syntax Error: Unmatched number of arguments of function `addSolider`. Expected: 5 arguments defined at 1:5. Found 4 arguments passed at 8:9.
+Syntax Error: Unmatched number of arguments of function `addSolider`. Expected: 5 arguments defined at test/fail/transform/unmatchParamNum/test.twge:1:5. Found 4 arguments passed at test/fail/transform/unmatchParamNum/test.twge:8:9.

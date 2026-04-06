@@ -373,7 +373,7 @@ bool ForNode::propagateExp(
   bool ret = true;
   if (varExpMap.find(iterArg) != varExpMap.end()) {
     std::cerr << "Compilation Error: iteration variable \'" << iterArg
-              << "\' is redefined at " << loc << ".\n";
+              << "\' is redefined at " << loc << "\n";
     return false;
   }
   ret &= fromExp->propagateExp(varExpMap);

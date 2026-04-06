@@ -1,1 +1,1 @@
-Compilation Error: iteration variable 'x' is redefined at 5:9.
+Compilation Error: iteration variable 'x' is redefined at test/fail/transform/redefConstFor/test.twge:5:9

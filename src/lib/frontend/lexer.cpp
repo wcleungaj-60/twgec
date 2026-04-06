@@ -117,113 +117,136 @@ Token Lexer::nextToken() {
     } else if (current == '=' && next('=')) {
       Lexer::column += 2;
       pos += 2;
-      return Token(TokenType::EQUAL, Lexer::line, Lexer::column - 2, "==");
+      return Token(TokenType::EQUAL, filename, Lexer::line, Lexer::column - 2,
+                   "==");
     } else if (current == '=') {
       Lexer::column++;
       pos++;
-      return Token(TokenType::ASSIGN, Lexer::line, Lexer::column - 1, "=");
+      return Token(TokenType::ASSIGN, filename, Lexer::line, Lexer::column - 1,
+                   "=");
     } else if (current == '>' && next('=')) {
       Lexer::column += 2;
       pos += 2;
-      return Token(TokenType::GREATER_THAN_EQUAL, Lexer::line,
+      return Token(TokenType::GREATER_THAN_EQUAL, filename, Lexer::line,
                    Lexer::column - 2, ">=");
     } else if (current == '>') {
       Lexer::column++;
       pos++;
-      return Token(TokenType::GREATER_THAN, Lexer::line, Lexer::column - 1,
-                   ">");
+      return Token(TokenType::GREATER_THAN, filename, Lexer::line,
+                   Lexer::column - 1, ">");
     } else if (current == '<' && next('=')) {
       Lexer::column += 2;
       pos += 2;
-      return Token(TokenType::LESS_THAN_EQUAL, Lexer::line, Lexer::column - 2,
-                   "<=");
+      return Token(TokenType::LESS_THAN_EQUAL, filename, Lexer::line,
+                   Lexer::column - 2, "<=");
     } else if (current == '<') {
       Lexer::column++;
       pos++;
-      return Token(TokenType::LESS_THAN, Lexer::line, Lexer::column - 1, "<");
+      return Token(TokenType::LESS_THAN, filename, Lexer::line,
+                   Lexer::column - 1, "<");
     } else if (current == '!' && next('=')) {
       // TODO: Support not operation
       Lexer::column += 2;
       pos += 2;
-      return Token(TokenType::NOT_EQUAL, Lexer::line, Lexer::column - 2, "!=");
+      return Token(TokenType::NOT_EQUAL, filename, Lexer::line,
+                   Lexer::column - 2, "!=");
     } else if (current == '&' && next('&')) {
       Lexer::column += 2;
       pos += 2;
-      return Token(TokenType::AND, Lexer::line, Lexer::column - 2, "&&");
+      return Token(TokenType::AND, filename, Lexer::line, Lexer::column - 2,
+                   "&&");
     } else if (current == '|' && next('|')) {
       Lexer::column += 2;
       pos += 2;
-      return Token(TokenType::OR, Lexer::line, Lexer::column - 2, "||");
+      return Token(TokenType::OR, filename, Lexer::line, Lexer::column - 2,
+                   "||");
     } else if (current == '{') {
       Lexer::column++;
       pos++;
-      return Token(TokenType::OPENCUR, Lexer::line, Lexer::column - 1, "{");
+      return Token(TokenType::OPENCUR, filename, Lexer::line, Lexer::column - 1,
+                   "{");
     } else if (current == '}') {
       Lexer::column++;
       pos++;
-      return Token(TokenType::CLOSECUR, Lexer::line, Lexer::column - 1, "}");
+      return Token(TokenType::CLOSECUR, filename, Lexer::line,
+                   Lexer::column - 1, "}");
     } else if (current == '(') {
       Lexer::column++;
       pos++;
-      return Token(TokenType::OPENPAR, Lexer::line, Lexer::column - 1, "(");
+      return Token(TokenType::OPENPAR, filename, Lexer::line, Lexer::column - 1,
+                   "(");
     } else if (current == ')') {
       Lexer::column++;
       pos++;
-      return Token(TokenType::CLOSEPAR, Lexer::line, Lexer::column - 1, ")");
+      return Token(TokenType::CLOSEPAR, filename, Lexer::line,
+                   Lexer::column - 1, ")");
     } else if (current == '[') {
       Lexer::column++;
       pos++;
-      return Token(TokenType::OPENSQR, Lexer::line, Lexer::column - 1, "[");
+      return Token(TokenType::OPENSQR, filename, Lexer::line, Lexer::column - 1,
+                   "[");
     } else if (current == ']') {
       Lexer::column++;
       pos++;
-      return Token(TokenType::CLOSESQR, Lexer::line, Lexer::column - 1, "]");
+      return Token(TokenType::CLOSESQR, filename, Lexer::line,
+                   Lexer::column - 1, "]");
     } else if (current == '.' && next('.') && next('.', 2)) {
       Lexer::column += 3;
       pos += 3;
-      return Token(TokenType::ELLIPSIS, Lexer::line, Lexer::column - 3, "...");
+      return Token(TokenType::ELLIPSIS, filename, Lexer::line,
+                   Lexer::column - 3, "...");
     } else if (current == '.') {
       Lexer::column++;
       pos++;
-      return Token(TokenType::DOT, Lexer::line, Lexer::column - 1, ".");
+      return Token(TokenType::DOT, filename, Lexer::line, Lexer::column - 1,
+                   ".");
     } else if (current == ',') {
       Lexer::column++;
       pos++;
-      return Token(TokenType::COMMA, Lexer::line, Lexer::column - 1, ",");
+      return Token(TokenType::COMMA, filename, Lexer::line, Lexer::column - 1,
+                   ",");
     } else if (current == ';') {
       Lexer::column++;
       pos++;
-      return Token(TokenType::SEMICOLON, Lexer::line, Lexer::column - 1, ";");
+      return Token(TokenType::SEMICOLON, filename, Lexer::line,
+                   Lexer::column - 1, ";");
     } else if (current == ':' && next(':')) {
       Lexer::column += 2;
       pos += 2;
-      return Token(TokenType::SCOPE, Lexer::line, Lexer::column - 2, "::");
+      return Token(TokenType::SCOPE, filename, Lexer::line, Lexer::column - 2,
+                   "::");
     } else if (current == ':') {
       Lexer::column++;
       pos++;
-      return Token(TokenType::COLON, Lexer::line, Lexer::column - 1, ":");
+      return Token(TokenType::COLON, filename, Lexer::line, Lexer::column - 1,
+                   ":");
     } else if (current == '+') {
       Lexer::column++;
       pos++;
-      return Token(TokenType::ADD, Lexer::line, Lexer::column - 1, "+");
+      return Token(TokenType::ADD, filename, Lexer::line, Lexer::column - 1,
+                   "+");
     } else if (current == '-') {
       Lexer::column++;
       pos++;
-      return Token(TokenType::SUB, Lexer::line, Lexer::column - 1, "-");
+      return Token(TokenType::SUB, filename, Lexer::line, Lexer::column - 1,
+                   "-");
     } else if (current == '*') {
       Lexer::column++;
       pos++;
-      return Token(TokenType::MUL, Lexer::line, Lexer::column - 1, "*");
+      return Token(TokenType::MUL, filename, Lexer::line, Lexer::column - 1,
+                   "*");
     } else if (current == '/' && next('/')) {
       return commentToken();
     } else if (current == '/') {
       Lexer::column++;
       pos++;
-      return Token(TokenType::DIV, Lexer::line, Lexer::column - 1, "/");
+      return Token(TokenType::DIV, filename, Lexer::line, Lexer::column - 1,
+                   "/");
     } else if (current == '%') {
       Lexer::column++;
       pos++;
-      return Token(TokenType::MOD, Lexer::line, Lexer::column - 1, "%");
+      return Token(TokenType::MOD, filename, Lexer::line, Lexer::column - 1,
+                   "%");
     } else if (current == '_' && next('_')) {
       return metadataToken();
     } else if (std::isdigit(current)) {
@@ -250,11 +273,11 @@ Token Lexer::nextToken() {
       return identifierToken();
     }
     else {
-      return Token(TokenType::UNKNOWN, Lexer::line, Lexer::column++,
+      return Token(TokenType::UNKNOWN, filename, Lexer::line, Lexer::column++,
                    std::string(1, input[pos++]));
     }
   }
-  return Token(TokenType::END, Lexer::line, Lexer::column - 1);
+  return Token(TokenType::END, filename, Lexer::line, Lexer::column - 1);
 }
 
 Token Lexer::metadataToken() {
@@ -262,7 +285,7 @@ Token Lexer::metadataToken() {
   size_t start = pos;
   if (pos + 1 >= input.length() || input[pos++] != '_' || input[pos++] != '_') {
     column += 3;
-    return Token(TokenType::UNKNOWN, Lexer::line, startColumn,
+    return Token(TokenType::UNKNOWN, filename, Lexer::line, startColumn,
                  input.substr(start, (pos++) - start));
   }
   column += 2;
@@ -272,11 +295,11 @@ Token Lexer::metadataToken() {
   }
   if (pos + 1 >= input.length() || input[pos++] != '_' || input[pos++] != '_') {
     column += 3;
-    return Token(TokenType::UNKNOWN, Lexer::line, startColumn,
+    return Token(TokenType::UNKNOWN, filename, Lexer::line, startColumn,
                  input.substr(start, (pos++) - start));
   }
   column += 2;
-  return Token(TokenType::METADATA, Lexer::line, startColumn,
+  return Token(TokenType::METADATA, filename, Lexer::line, startColumn,
                input.substr(start, pos - start));
 }
 
@@ -293,7 +316,7 @@ Token Lexer::stringToken() {
     column++;
     pos++; // Skip closing quote
   }
-  return Token(TokenType::STRING, Lexer::line, startColumn,
+  return Token(TokenType::STRING, filename, Lexer::line, startColumn,
                input.substr(start, pos - start));
 }
 
@@ -318,10 +341,10 @@ Token Lexer::identifierToken() {
       isValid = false;
     }
     if (!isValid)
-      return Token(TokenType::UNKNOWN, Lexer::line, Lexer::column++,
+      return Token(TokenType::UNKNOWN, filename, Lexer::line, Lexer::column++,
                    input.substr(start, (pos++) - start));
   }
-  return Token(TokenType::IDENTIFIER, Lexer::line, startColumn,
+  return Token(TokenType::IDENTIFIER, filename, Lexer::line, startColumn,
                input.substr(start, pos - start));
 }
 
@@ -332,7 +355,7 @@ Token Lexer::integerToken() {
     column++;
     pos++;
   }
-  return Token(TokenType::INT, Lexer::line, startColumn,
+  return Token(TokenType::INT, filename, Lexer::line, startColumn,
                input.substr(start, pos - start));
 }
 
@@ -343,7 +366,7 @@ Token Lexer::commentToken() {
   while (pos < input.length() && input[pos++] != '\n')
     column++;
   column = 1;
-  return Token(TokenType::COMMENT, Lexer::line++, startColumn,
+  return Token(TokenType::COMMENT, filename, Lexer::line++, startColumn,
                input.substr(start, pos - start));
 }
 
@@ -351,7 +374,8 @@ Token Lexer::keywordToken(std::string keyword) {
   int startColumn = Lexer::column;
   Lexer::column += (keyword).length();
   (pos) += (keyword).length();
-  return Token(keyword::initMap.at(keyword), Lexer::line, startColumn, keyword);
+  return Token(keyword::initMap.at(keyword), filename, Lexer::line, startColumn,
+               keyword);
 }
 
 inline bool Lexer::matchKeyword(std::string keyword) {

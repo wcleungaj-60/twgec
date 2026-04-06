@@ -1,1 +1,1 @@
-Syntax Error: Unmatched function type. checks-typed function cannot be called inside the actions scope. Found at 7:9.
+Syntax Error: Unmatched function type. checks-typed function cannot be called inside the actions scope. Found at test/fail/transform/unmatchType/test.twge:7:9.

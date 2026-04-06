@@ -1,9 +1,9 @@
 ===== Print Tokens =====
-2:1 def
-2:5 identifier@測試
-2:7 (
-2:8 )
-2:10 :
-2:12 actions
-2:20 {
-2:21 }
+test/pass/frontend/multibyte/test.twge:2:1 def
+test/pass/frontend/multibyte/test.twge:2:5 identifier@測試
+test/pass/frontend/multibyte/test.twge:2:7 (
+test/pass/frontend/multibyte/test.twge:2:8 )
+test/pass/frontend/multibyte/test.twge:2:10 :
+test/pass/frontend/multibyte/test.twge:2:12 actions
+test/pass/frontend/multibyte/test.twge:2:20 {
+test/pass/frontend/multibyte/test.twge:2:21 }

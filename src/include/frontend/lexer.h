@@ -8,7 +8,8 @@
 
 class Lexer {
 public:
-  Lexer(const std::string &input) : input(input), pos(0) {}
+  Lexer(std::string filename, const std::string &input)
+      : filename(filename), input(input), pos(0) {}
   std::vector<Token> getTokens();
   static bool raiseLexicalError(std::vector<Token> tokens);
   static void print(std::vector<Token> tokens);
@@ -17,6 +18,7 @@ private:
   static int line;
   static int column;
   std::string input;
+  std::string filename;
   size_t pos;
 
   Token nextToken();

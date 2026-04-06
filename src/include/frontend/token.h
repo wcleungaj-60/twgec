@@ -140,8 +140,9 @@ struct Token {
   std::string value;
   Location location;
 
-  Token(TokenType t, int line, int column, const std::string &v = "")
-      : type(t), value(v), location(line, column) {}
+  Token(TokenType t, std::string filename, int line, int column,
+        const std::string &v = "")
+      : type(t), value(v), location(filename, line, column) {}
 
   friend std::ostream &operator<<(std::ostream &os, const Token &token) {
 #define LEXER_PRINTER(output) os << token.location << " " << output

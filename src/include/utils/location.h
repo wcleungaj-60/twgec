@@ -4,13 +4,15 @@
 #include <iostream>
 
 struct Location {
+  std::string filename;
   int line;
   int column;
 
-  Location(int line, int column) : line(line), column(column) {}
+  Location(std::string filename, int line, int column)
+      : filename(filename), line(line), column(column) {}
 
   friend std::ostream &operator<<(std::ostream &os, const Location &location) {
-    os << location.line << ":" << location.column;
+    os << location.filename << ":" << location.line << ":" << location.column;
     return os;
   }
 };
