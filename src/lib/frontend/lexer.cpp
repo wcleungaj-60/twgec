@@ -58,6 +58,20 @@ int Lexer::line = 1;
 int Lexer::column = 1;
 
 std::vector<Token> Lexer::getTokens() {
+  std::vector<Token> output;
+  for (const auto &file : inputFiles) {
+    filename = file.first;
+    input = file.second;
+    pos = 0;
+    line = 1;
+    column = 1;
+    std::vector<Token> tokens = getSingleFileTokens();
+    output.insert(output.end(), tokens.begin(), tokens.end());
+  }
+  return output;
+}
+
+std::vector<Token> Lexer::getSingleFileTokens() {
   std::vector<Token> tokens;
   Token token = nextToken();
 

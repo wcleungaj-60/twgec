@@ -1,0 +1,5 @@
+// OPTION: --print-token
+#include "utils.twge"
+__skydowLocs__ = spawnPoint;
+__royalLocs__ = spawnPoint;
+__thirdLocs__ = spawnPoint;

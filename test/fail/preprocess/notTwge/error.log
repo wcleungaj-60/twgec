@@ -1,0 +1,1 @@
+SyntaxError: include path must end with '.twge' in test/fail/preprocess/notTwge/test.twge:1

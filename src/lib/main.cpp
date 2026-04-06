@@ -1,6 +1,7 @@
 #include "codegen/codegen.h"
 #include "frontend/lexer.h"
 #include "frontend/parser.h"
+#include "frontend/preprocessor.h"
 #include "option/option.h"
 #include "transform/transform.h"
 #include <fstream>
@@ -19,8 +20,13 @@ int main(int argc, char *argv[]) {
   std::string input((std::istreambuf_iterator<char>(inputFile)),
                     (std::istreambuf_iterator<char>()));
   inputFile.close();
+  // Preprocessor
+  Preprocessor preprocessor(option.argFilePath, input);
+  std::vector<std::pair<std::string, std::string>> sourceFiles;
+  if (!preprocessor.preprocess(sourceFiles))
+    return 1;
   // Lexer
-  Lexer lexer(option.argFilePath, input);
+  Lexer lexer(sourceFiles);
   std::vector<Token> tokens = lexer.getTokens();
   if (Lexer::raiseLexicalError(tokens))
     return 1;

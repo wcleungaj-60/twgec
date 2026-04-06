@@ -1,0 +1,1 @@
+Compilation Error: Redefinition of `x` found at test/fail/preprocess/redefinition/src1.twge:1:7 and test/fail/preprocess/redefinition/src2.twge:1:7

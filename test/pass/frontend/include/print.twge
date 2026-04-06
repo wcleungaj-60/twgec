@@ -1,0 +1,23 @@
+===== Print Tokens =====
+test/pass/frontend/include/utils.twge:1:1 const
+test/pass/frontend/include/utils.twge:1:7 identifier@spawnPoint
+test/pass/frontend/include/utils.twge:1:18 =
+test/pass/frontend/include/utils.twge:1:20 Point
+test/pass/frontend/include/utils.twge:1:25 (
+test/pass/frontend/include/utils.twge:1:26 int@10
+test/pass/frontend/include/utils.twge:1:28 ,
+test/pass/frontend/include/utils.twge:1:29 int@10
+test/pass/frontend/include/utils.twge:1:31 )
+test/pass/frontend/include/utils.twge:1:32 ;
+test/pass/frontend/include/test.twge:3:1 metadata@__skydowLocs__
+test/pass/frontend/include/test.twge:3:16 =
+test/pass/frontend/include/test.twge:3:18 identifier@spawnPoint
+test/pass/frontend/include/test.twge:3:28 ;
+test/pass/frontend/include/test.twge:4:1 metadata@__royalLocs__
+test/pass/frontend/include/test.twge:4:15 =
+test/pass/frontend/include/test.twge:4:17 identifier@spawnPoint
+test/pass/frontend/include/test.twge:4:27 ;
+test/pass/frontend/include/test.twge:5:1 metadata@__thirdLocs__
+test/pass/frontend/include/test.twge:5:15 =
+test/pass/frontend/include/test.twge:5:17 identifier@spawnPoint
+test/pass/frontend/include/test.twge:5:27 ;

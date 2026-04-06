@@ -4,6 +4,7 @@ add_executable(twgec
     lib/frontend/ast.cpp
     lib/frontend/lexer.cpp
     lib/frontend/parser.cpp
+    lib/frontend/preprocessor.cpp
     lib/transform/argBinding.cpp
     lib/transform/blockInlining.cpp
     lib/transform/blockLegalization.cpp

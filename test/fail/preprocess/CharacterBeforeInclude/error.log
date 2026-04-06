@@ -1,0 +1,1 @@
+SyntaxError: '#include "' must be at the beginning of the line in test/fail/preprocess/CharacterBeforeInclude/test.twge:1
