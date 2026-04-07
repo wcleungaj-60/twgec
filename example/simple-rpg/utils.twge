@@ -9,6 +9,7 @@ const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
 const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
+const 公式::火星領域傷害 = "{instance.INT}/4+{instance.PSY}/6";
 const 公式::InstanceX坐標 = "{instance.gamePosition.x}/32";
 const 公式::InstanceY坐標 = "{instance.gamePosition.y}/32";
 

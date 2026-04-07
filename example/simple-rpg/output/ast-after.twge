@@ -11,6 +11,7 @@ const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
 const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
+const 公式::火星領域傷害 = "{instance.INT}/4+{instance.PSY}/6";
 const 公式::InstanceX坐標 = "{instance.gamePosition.x}/32";
 const 公式::InstanceY坐標 = "{instance.gamePosition.y}/32";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
@@ -315,6 +316,43 @@ block 查看面板 {
         角色說話(actorId = "{instance.id}", text = 文字::Instance訊息);
     }
 }
+block 技能火星領域 {
+    __repeat__ = -1;
+    triggers {
+        鍵盤按鍵(varName = "clicker", key = "X");
+    }
+    checks {
+        比較數字(lhs = "{{clicker.id}.INT}+{{clicker.id}.PSY}", op = ">=", rhs = 5);
+        比較數字(lhs = "{{clicker.id}.skillXCD}", op = "!=", rhs = 1);
+    }
+    actions {
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: #912B2B'>火星領域</span>");
+        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
+        自定義::儲存Instance整數("skillXCD", 1);
+        EnhFF::玩家滑鼠座標(actorId = "{instance}", varX = "x", varY = "y");
+        EnhFF::廣義圓形範圍(x = "{x}", y = "{y}", radius = (2 * 64), duration = 10000, color = "#912B2B", lineWidth = 3);
+        for(i in 1...30) {
+            wait(duration = 300);
+            EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = 公式::火星領域傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦);
+        }
+        wait(duration = 2000);
+        自定義::儲存Instance整數("skillXCD", 0);
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: #912B2B'>火星領域冷卻完畢</span>");
+    }
+}
+block 技能火星領域無效 {
+    __repeat__ = -1;
+    triggers {
+        鍵盤按鍵(varName = "clicker", key = "X");
+    }
+    checks {
+        比較數字(lhs = "{{clicker.id}.INT}+{{clicker.id}.PSY}", op = "<", rhs = 5);
+    }
+    actions {
+        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: #912B2B'>智慧及精神之和大於等於5才可發動技能</span>");
+    }
+}
 block 風杖光彈攻擊 {
     __repeat__ = -1;
     triggers {
@@ -382,6 +420,7 @@ const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
 const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
+const 公式::火星領域傷害 = "{instance.INT}/4+{instance.PSY}/6";
 const 公式::InstanceX坐標 = "{instance.gamePosition.x}/32";
 const 公式::InstanceY坐標 = "{instance.gamePosition.y}/32";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
@@ -686,6 +725,43 @@ block 查看面板 {
         角色說話(actorId = "{instance.id}", text = 文字::Instance訊息);
     }
 }
+block 技能火星領域 {
+    __repeat__ = -1;
+    triggers {
+        鍵盤按鍵(varName = "clicker", key = "X");
+    }
+    checks {
+        比較數字(lhs = "{{clicker.id}.INT}+{{clicker.id}.PSY}", op = ">=", rhs = 5);
+        比較數字(lhs = "{{clicker.id}.skillXCD}", op = "!=", rhs = 1);
+    }
+    actions {
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: #912B2B'>火星領域</span>");
+        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
+        自定義::儲存Instance整數(key = "skillXCD", value = 1);
+        EnhFF::玩家滑鼠座標(actorId = "{instance}", varX = "x", varY = "y");
+        EnhFF::廣義圓形範圍(x = "{x}", y = "{y}", radius = (2 * 64), duration = 10000, color = "#912B2B", lineWidth = 3);
+        for(i in 1...30) {
+            wait(duration = 300);
+            EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = 公式::火星領域傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦);
+        }
+        wait(duration = 2000);
+        自定義::儲存Instance整數(key = "skillXCD", value = 0);
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: #912B2B'>火星領域冷卻完畢</span>");
+    }
+}
+block 技能火星領域無效 {
+    __repeat__ = -1;
+    triggers {
+        鍵盤按鍵(varName = "clicker", key = "X");
+    }
+    checks {
+        比較數字(lhs = "{{clicker.id}.INT}+{{clicker.id}.PSY}", op = "<", rhs = 5);
+    }
+    actions {
+        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: #912B2B'>智慧及精神之和大於等於5才可發動技能</span>");
+    }
+}
 block 風杖光彈攻擊 {
     __repeat__ = -1;
     triggers {
@@ -753,6 +829,7 @@ const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
 const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
+const 公式::火星領域傷害 = "{instance.INT}/4+{instance.PSY}/6";
 const 公式::InstanceX坐標 = "{instance.gamePosition.x}/32";
 const 公式::InstanceY坐標 = "{instance.gamePosition.y}/32";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
@@ -1507,6 +1584,43 @@ block 查看面板 {
     }
     actions {
         角色說話(actorId = "{instance.id}", text = 文字::Instance訊息);
+    }
+}
+block 技能火星領域 {
+    __repeat__ = -1;
+    triggers {
+        鍵盤按鍵(varName = "clicker", key = "X");
+    }
+    checks {
+        比較數字(lhs = "{{clicker.id}.INT}+{{clicker.id}.PSY}", op = ">=", rhs = 5);
+        比較數字(lhs = "{{clicker.id}.skillXCD}", op = "!=", rhs = 1);
+    }
+    actions {
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: #912B2B'>火星領域</span>");
+        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
+        自定義::儲存Instance整數(key = "skillXCD", value = 1);
+        EnhFF::玩家滑鼠座標(actorId = "{instance}", varX = "x", varY = "y");
+        EnhFF::廣義圓形範圍(x = "{x}", y = "{y}", radius = (2 * 64), duration = 10000, color = "#912B2B", lineWidth = 3);
+        for(i in 1...30) {
+            wait(duration = 300);
+            EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = 公式::火星領域傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦);
+        }
+        wait(duration = 2000);
+        自定義::儲存Instance整數(key = "skillXCD", value = 0);
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: #912B2B'>火星領域冷卻完畢</span>");
+    }
+}
+block 技能火星領域無效 {
+    __repeat__ = -1;
+    triggers {
+        鍵盤按鍵(varName = "clicker", key = "X");
+    }
+    checks {
+        比較數字(lhs = "{{clicker.id}.INT}+{{clicker.id}.PSY}", op = "<", rhs = 5);
+    }
+    actions {
+        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: #912B2B'>智慧及精神之和大於等於5才可發動技能</span>");
     }
 }
 block 風杖光彈攻擊 {
@@ -1576,6 +1690,7 @@ const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
 const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
+const 公式::火星領域傷害 = "{instance.INT}/4+{instance.PSY}/6";
 const 公式::InstanceX坐標 = "{instance.gamePosition.x}/32";
 const 公式::InstanceY坐標 = "{instance.gamePosition.y}/32";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
@@ -2372,6 +2487,43 @@ block 查看面板 {
         角色說話(actorId = "{instance.id}", text = 文字::Instance訊息);
     }
     checks {
+    }
+}
+block 技能火星領域 {
+    __repeat__ = -1;
+    triggers {
+        鍵盤按鍵(varName = "clicker", key = "X");
+    }
+    checks {
+        比較數字(lhs = "{{clicker.id}.INT}+{{clicker.id}.PSY}", op = ">=", rhs = 5);
+        比較數字(lhs = "{{clicker.id}.skillXCD}", op = "!=", rhs = 1);
+    }
+    actions {
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: #912B2B'>火星領域</span>");
+        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
+        自定義::儲存Instance整數(key = "skillXCD", value = 1);
+        EnhFF::玩家滑鼠座標(actorId = "{instance}", varX = "x", varY = "y");
+        EnhFF::廣義圓形範圍(x = "{x}", y = "{y}", radius = (2 * 64), duration = 10000, color = "#912B2B", lineWidth = 3);
+        for(i in 1...30) {
+            wait(duration = 300);
+            EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = 公式::火星領域傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦);
+        }
+        wait(duration = 2000);
+        自定義::儲存Instance整數(key = "skillXCD", value = 0);
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: #912B2B'>火星領域冷卻完畢</span>");
+    }
+}
+block 技能火星領域無效 {
+    __repeat__ = -1;
+    triggers {
+        鍵盤按鍵(varName = "clicker", key = "X");
+    }
+    checks {
+        比較數字(lhs = "{{clicker.id}.INT}+{{clicker.id}.PSY}", op = "<", rhs = 5);
+    }
+    actions {
+        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: #912B2B'>智慧及精神之和大於等於5才可發動技能</span>");
     }
 }
 block 風杖光彈攻擊 {
@@ -2449,6 +2601,7 @@ const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
 const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
+const 公式::火星領域傷害 = "{instance.INT}/4+{instance.PSY}/6";
 const 公式::InstanceX坐標 = "{instance.gamePosition.x}/32";
 const 公式::InstanceY坐標 = "{instance.gamePosition.y}/32";
 const 文字::Instance訊息 = ("【Lv{{instance.id}.Level}】\n" + ("Exp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n" + ("尚餘能力點：{{instance.id}.Point}\n" + ("力量：{{instance.id}.STR}\n" + ("體質：{{instance.id}.CON}\n" + ("敏捷：{{instance.id}.AGI}\n" + ("智慧：{{instance.id}.INT}\n" + "精神：{{instance.id}.PSY}")))))));
@@ -3252,6 +3405,43 @@ block 查看面板 {
         角色說話(actorId = "{instance.id}", text = 文字::Instance訊息);
     }
     checks {
+    }
+}
+block 技能火星領域 {
+    __repeat__ = -1;
+    triggers {
+        鍵盤按鍵(varName = "clicker", key = "X");
+    }
+    checks {
+        比較數字(lhs = "{{clicker.id}.INT}+{{clicker.id}.PSY}", op = ">=", rhs = 5);
+        比較數字(lhs = "{{clicker.id}.skillXCD}", op = "!=", rhs = 1);
+    }
+    actions {
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: #912B2B'>火星領域</span>");
+        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
+        儲存物件變數(key = "skillXCD", object = "instance", type = "integer", value = 1);
+        EnhFF::玩家滑鼠座標(actorId = "{instance}", varX = "x", varY = "y");
+        EnhFF::廣義圓形範圍(x = "{x}", y = "{y}", radius = (2 * 64), duration = 10000, color = "#912B2B", lineWidth = 3);
+        for(i in 1...30) {
+            wait(duration = 300);
+            EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = 公式::火星領域傷害, deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦);
+        }
+        wait(duration = 2000);
+        儲存物件變數(key = "skillXCD", object = "instance", type = "integer", value = 0);
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: #912B2B'>火星領域冷卻完畢</span>");
+    }
+}
+block 技能火星領域無效 {
+    __repeat__ = -1;
+    triggers {
+        鍵盤按鍵(varName = "clicker", key = "X");
+    }
+    checks {
+        比較數字(lhs = "{{clicker.id}.INT}+{{clicker.id}.PSY}", op = "<", rhs = 5);
+    }
+    actions {
+        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: #912B2B'>智慧及精神之和大於等於5才可發動技能</span>");
     }
 }
 block 風杖光彈攻擊 {
@@ -4167,6 +4357,99 @@ block 查看面板 {
     checks {
     }
 }
+block 技能火星領域 {
+    __repeat__ = -1;
+    triggers {
+        鍵盤按鍵(varName = "clicker", key = "X");
+    }
+    checks {
+        比較數字(lhs = "{{clicker.id}.INT}+{{clicker.id}.PSY}", op = ">=", rhs = 5);
+        比較數字(lhs = "{{clicker.id}.skillXCD}", op = "!=", rhs = 1);
+    }
+    actions {
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: #912B2B'>火星領域</span>");
+        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
+        儲存物件變數(key = "skillXCD", object = "instance", type = "integer", value = 1);
+        EnhFF::玩家滑鼠座標(actorId = "{instance}", varX = "x", varY = "y");
+        EnhFF::廣義圓形範圍(x = "{x}", y = "{y}", radius = 128, duration = 10000, color = "#912B2B", lineWidth = 3);
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 2000);
+        儲存物件變數(key = "skillXCD", object = "instance", type = "integer", value = 0);
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: #912B2B'>火星領域冷卻完畢</span>");
+    }
+}
+block 技能火星領域無效 {
+    __repeat__ = -1;
+    triggers {
+        鍵盤按鍵(varName = "clicker", key = "X");
+    }
+    checks {
+        比較數字(lhs = "{{clicker.id}.INT}+{{clicker.id}.PSY}", op = "<", rhs = 5);
+    }
+    actions {
+        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: #912B2B'>智慧及精神之和大於等於5才可發動技能</span>");
+    }
+}
 block 風杖光彈攻擊 {
     __repeat__ = -1;
     triggers {
@@ -4948,6 +5231,99 @@ block 查看面板 {
     checks {
     }
 }
+block 技能火星領域 {
+    __repeat__ = -1;
+    triggers {
+        鍵盤按鍵(varName = "clicker", key = "X");
+    }
+    checks {
+        比較數字(lhs = "{{clicker.id}.INT}+{{clicker.id}.PSY}", op = ">=", rhs = 5);
+        比較數字(lhs = "{{clicker.id}.skillXCD}", op = "!=", rhs = 1);
+    }
+    actions {
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: #912B2B'>火星領域</span>");
+        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
+        儲存物件變數(key = "skillXCD", object = "instance", type = "integer", value = 1);
+        EnhFF::玩家滑鼠座標(actorId = "{instance}", varX = "x", varY = "y");
+        EnhFF::廣義圓形範圍(x = "{x}", y = "{y}", radius = 128, duration = 10000, color = "#912B2B", lineWidth = 3);
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 2000);
+        儲存物件變數(key = "skillXCD", object = "instance", type = "integer", value = 0);
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: #912B2B'>火星領域冷卻完畢</span>");
+    }
+}
+block 技能火星領域無效 {
+    __repeat__ = -1;
+    triggers {
+        鍵盤按鍵(varName = "clicker", key = "X");
+    }
+    checks {
+        比較數字(lhs = "{{clicker.id}.INT}+{{clicker.id}.PSY}", op = "<", rhs = 5);
+    }
+    actions {
+        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: #912B2B'>智慧及精神之和大於等於5才可發動技能</span>");
+    }
+}
 block 風杖光彈攻擊 {
     __repeat__ = -1;
     triggers {
@@ -5667,6 +6043,99 @@ block 查看面板 {
         角色說話(actorId = "{instance.id}", text = "【Lv{{instance.id}.Level}】\nExp:{{instance.id}.Exp}/{{instance.id}.ExpNeeded}\n尚餘能力點：{{instance.id}.Point}\n力量：{{instance.id}.STR}\n體質：{{instance.id}.CON}\n敏捷：{{instance.id}.AGI}\n智慧：{{instance.id}.INT}\n精神：{{instance.id}.PSY}");
     }
     checks {
+    }
+}
+block 技能火星領域 {
+    __repeat__ = -1;
+    triggers {
+        鍵盤按鍵(varName = "clicker", key = "X");
+    }
+    checks {
+        比較數字(lhs = "{{clicker.id}.INT}+{{clicker.id}.PSY}", op = ">=", rhs = 5);
+        比較數字(lhs = "{{clicker.id}.skillXCD}", op = "!=", rhs = 1);
+    }
+    actions {
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: #912B2B'>火星領域</span>");
+        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
+        儲存物件變數(key = "skillXCD", object = "instance", type = "integer", value = 1);
+        EnhFF::玩家滑鼠座標(actorId = "{instance}", varX = "x", varY = "y");
+        EnhFF::廣義圓形範圍(x = "{x}", y = "{y}", radius = 128, duration = 10000, color = "#912B2B", lineWidth = 3);
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y = "{y}+random(-64,64)", radius = 40, duration = 500, color = "#FF0F0F", deltaHpType = "damage", deltaHpValue = "{instance.INT}/4+{instance.PSY}/6", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "ai"));
+        wait(duration = 2000);
+        儲存物件變數(key = "skillXCD", object = "instance", type = "integer", value = 0);
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: #912B2B'>火星領域冷卻完畢</span>");
+    }
+}
+block 技能火星領域無效 {
+    __repeat__ = -1;
+    triggers {
+        鍵盤按鍵(varName = "clicker", key = "X");
+    }
+    checks {
+        比較數字(lhs = "{{clicker.id}.INT}+{{clicker.id}.PSY}", op = "<", rhs = 5);
+    }
+    actions {
+        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
+        地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: #912B2B'>智慧及精神之和大於等於5才可發動技能</span>");
     }
 }
 block 風杖光彈攻擊 {
