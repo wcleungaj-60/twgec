@@ -110,8 +110,13 @@ void IfRegionNode::print(int indent) {
 }
 
 void ForNode::print(int indent) {
-  std::cout << inden(indent) << "for(" << iterArg << " in " << *fromExp << "..."
-            << *toExp << ") {\n";
+  std::cout << inden(indent) << "for(" << iterArg << " in ";
+  if (fromExp && toExp) {
+    std::cout << *fromExp << "..." << *toExp;
+  } else {
+    std::cout << *listExp;
+  }
+  std::cout << ") {\n";
   region->print(indent + 4);
   std::cout << inden(indent) << "}\n";
 }
@@ -217,8 +222,11 @@ std::unique_ptr<IfRegionNode> IfRegionNode::clone() {
 }
 
 std::unique_ptr<ForNode> ForNode::clone() {
-  return std::make_unique<ForNode>(iterArg, fromExp->clone(), toExp->clone(),
-                                   region->clone(), loc);
+  if (fromExp && toExp)
+    return std::make_unique<ForNode>(iterArg, fromExp->clone(), toExp->clone(),
+                                     region->clone(), loc);
+  return std::make_unique<ForNode>(iterArg, listExp->clone(), region->clone(),
+                                   loc);
 }
 
 std::unique_ptr<InstructionNode> InstructionNode::clone() {
@@ -377,8 +385,12 @@ bool ForNode::propagateExp(
               << "\' is redefined at " << loc << "\n";
     return false;
   }
-  ret &= fromExp->propagateExp(varExpMap);
-  ret &= toExp->propagateExp(varExpMap);
+  if (fromExp && toExp) {
+    ret &= fromExp->propagateExp(varExpMap);
+    ret &= toExp->propagateExp(varExpMap);
+  } else {
+    ret &= listExp->propagateExp(varExpMap);
+  }
   ret &= region->propagateExp(varExpMap);
   return ret;
 }
@@ -422,7 +434,7 @@ bool ExpressionNode::propagateExp(
         value = nullptr;
         isValue = false;
         lhs = constExp->lhs->clone();
-        if(constExp->rhs)
+        if (constExp->rhs)
           rhs = constExp->rhs->clone();
         op = constExp->op;
       }
@@ -507,8 +519,12 @@ bool IfRegionNode::foldValue() {
 
 bool ForNode::foldValue() {
   bool ret = true;
-  ret &= fromExp->foldValue();
-  ret &= toExp->foldValue();
+  if (fromExp && toExp) {
+    ret &= fromExp->foldValue();
+    ret &= toExp->foldValue();
+  } else {
+    ret &= listExp->foldValue();
+  }
   ret &= region->foldValue();
   return ret;
 }
@@ -767,8 +783,12 @@ bool IfRegionNode::hasUnresolvedValue(std::set<std::string> except) {
 bool ForNode::hasUnresolvedValue(std::set<std::string> except) {
   bool ret = false;
   except.insert(iterArg);
-  ret |= fromExp->hasUnresolvedValue(except);
-  ret |= toExp->hasUnresolvedValue(except);
+  if (fromExp && toExp) {
+    ret |= fromExp->hasUnresolvedValue(except);
+    ret |= toExp->hasUnresolvedValue(except);
+  } else {
+    ret |= listExp->hasUnresolvedValue(except);
+  }
   ret |= region->hasUnresolvedValue(except);
   return ret;
 }

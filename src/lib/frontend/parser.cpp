@@ -323,18 +323,28 @@ std::unique_ptr<ForNode> Parser::parseFor() {
   auto fromExp = parseExp();
   if (!fromExp)
     return nullptr;
-  if (!consume(TokenType::ELLIPSIS))
-    return nullptr;
-  auto toExp = parseExp();
-  if (!toExp)
-    return nullptr;
+  std::unique_ptr<ExpressionNode> toExp = nullptr;
+  if (tokens.front().type != TokenType::CLOSEPAR) {
+    if (!consume(TokenType::ELLIPSIS))
+      return nullptr;
+    toExp = parseExp();
+    if (!toExp)
+      return nullptr;
+  }
   if (!consume(TokenType::CLOSEPAR))
     return nullptr;
   auto region = parseInstrSet();
   if (!region)
     return nullptr;
-  return std::make_unique<ForNode>(iterArg, std::move(fromExp),
-                                   std::move(toExp), std::move(region), loc);
+  if (toExp) {
+    // Range semantics
+    return std::make_unique<ForNode>(iterArg, std::move(fromExp),
+                                     std::move(toExp), std::move(region), loc);
+  } else {
+    // List semantics
+    return std::make_unique<ForNode>(iterArg, std::move(fromExp),
+                                     std::move(region), loc);
+  }
 }
 
 /**

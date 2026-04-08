@@ -291,16 +291,22 @@ public:
   // Variable
   Location loc;
   std::string iterArg;
+  std::unique_ptr<ExpressionNode> listExp;
   std::unique_ptr<ExpressionNode> fromExp;
   std::unique_ptr<ExpressionNode> toExp;
   std::unique_ptr<InstrSetNode> region;
 
-  // Constructor
+  // Range Semantics Constructor `for i in exp...exp`
   ForNode(std::string iterArg, std::unique_ptr<ExpressionNode> fromExp,
           std::unique_ptr<ExpressionNode> toExp,
           std::unique_ptr<InstrSetNode> region, Location loc)
       : loc(loc), iterArg(iterArg), fromExp(std::move(fromExp)),
         toExp(std::move(toExp)), region(std::move(region)) {}
+  // List Semantics Constructor `for i in list`
+  ForNode(std::string iterArg, std::unique_ptr<ExpressionNode> listExp,
+          std::unique_ptr<InstrSetNode> region, Location loc)
+      : loc(loc), iterArg(iterArg), listExp(std::move(listExp)),
+        region(std::move(region)) {}
 
   // Function
   void print(int indent = 0);

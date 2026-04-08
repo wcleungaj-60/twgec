@@ -1,0 +1,14 @@
+// OPTION: --print-ast-after --run-only=constantFolding,forLoopUnrolling
+
+const y = 10;
+
+block b3 {
+    actions {
+        for(x in [1,2,3,y,y+10,y*y]) {
+            addActor(x = x);
+        }
+        for(x in ["abc","dce","fgh"]) {
+            addActor(name = x);
+        }
+    }
+}

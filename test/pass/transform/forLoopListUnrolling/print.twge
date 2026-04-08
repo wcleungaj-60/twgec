@@ -1,0 +1,29 @@
+//---------------------------------//
+//--- AST After constantFolding ---//
+//---------------------------------//
+block b3 {
+    actions {
+        for(x in [1,2,3,10,20,100]) {
+            addActor(x = x);
+        }
+        for(x in ["abc","dce","fgh"]) {
+            addActor(name = x);
+        }
+    }
+}
+//----------------------------------//
+//--- AST After forLoopUnrolling ---//
+//----------------------------------//
+block b3 {
+    actions {
+        addActor(x = 1);
+        addActor(x = 2);
+        addActor(x = 3);
+        addActor(x = 10);
+        addActor(x = 20);
+        addActor(x = 100);
+        addActor(name = "abc");
+        addActor(name = "dce");
+        addActor(name = "fgh");
+    }
+}
