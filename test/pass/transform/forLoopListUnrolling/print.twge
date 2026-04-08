@@ -7,7 +7,9 @@ block b3 {
             addActor(x = x);
         }
         for(x in ["abc","dce","fgh"]) {
-            addActor(name = x);
+            for(z in x) {
+                addActor(name = z);
+            }
         }
     }
 }
@@ -22,8 +24,14 @@ block b3 {
         addActor(x = 10);
         addActor(x = 20);
         addActor(x = 100);
-        addActor(name = "abc");
-        addActor(name = "dce");
-        addActor(name = "fgh");
+        addActor(name = "a");
+        addActor(name = "b");
+        addActor(name = "c");
+        addActor(name = "d");
+        addActor(name = "c");
+        addActor(name = "e");
+        addActor(name = "f");
+        addActor(name = "g");
+        addActor(name = "h");
     }
 }

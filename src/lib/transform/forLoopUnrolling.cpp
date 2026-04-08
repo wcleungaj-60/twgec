@@ -15,23 +15,43 @@ PropagationResult unrollingList(std::unique_ptr<ForNode> &forNode,
                                 std::unique_ptr<InstrSetNode> &regionToInsert) {
   // Step 2: Verify the for loop
   if (!forNode->listExp->isValue ||
-      !dynamic_cast<ListValueNode *>(forNode->listExp->value.get())) {
-    std::cerr << "Syntax Error: list value is expected in the for "
+      (!dynamic_cast<ListValueNode *>(forNode->listExp->value.get()) &&
+       !dynamic_cast<StringValueNode *>(forNode->listExp->value.get()))) {
+    std::cerr << "Syntax Error: list or string value is expected in the for "
                  "statment range. Found at "
               << forNode->listExp->loc << ".\n";
     return PropagationResult::ERROR;
   }
   // Step 3: Get the region to be inserted
-  auto listValue = dynamic_cast<ListValueNode *>(forNode->listExp->value.get());
-  for (auto &item : listValue->items) {
-    auto iterRegion = forNode->region->clone();
-    std::map<std::string, std::unique_ptr<ExpressionNode>> constDefMap;
-    constDefMap.insert({forNode->iterArg, item->clone()});
-    iterRegion->propagateExp(constDefMap);
-    iterRegion->foldValue();
-    std::move(iterRegion->instructions.begin(), iterRegion->instructions.end(),
-              std::back_inserter(regionToInsert->instructions));
-  }
+  Location loc = forNode->loc;
+  if (auto listValue =
+          dynamic_cast<ListValueNode *>(forNode->listExp->value.get()))
+    for (auto &item : listValue->items) {
+      auto iterRegion = forNode->region->clone();
+      std::map<std::string, std::unique_ptr<ExpressionNode>> constDefMap;
+      constDefMap.insert({forNode->iterArg, item->clone()});
+      iterRegion->propagateExp(constDefMap);
+      iterRegion->foldValue();
+      std::move(iterRegion->instructions.begin(),
+                iterRegion->instructions.end(),
+                std::back_inserter(regionToInsert->instructions));
+    }
+  // TODO: Be able to handle UTF-8
+  else if (auto stringValue =
+               dynamic_cast<StringValueNode *>(forNode->listExp->value.get()))
+    for (size_t i = 0; i < stringValue->value.length(); i++) {
+      auto iterRegion = forNode->region->clone();
+      auto iterValue = std::make_unique<StringValueNode>(
+          stringValue->value.substr(i, 1), loc);
+      std::map<std::string, std::unique_ptr<ExpressionNode>> constDefMap;
+      constDefMap.insert({forNode->iterArg,
+                          ExpressionNode(std::move(iterValue), loc).clone()});
+      iterRegion->propagateExp(constDefMap);
+      iterRegion->foldValue();
+      std::move(iterRegion->instructions.begin(),
+                iterRegion->instructions.end(),
+                std::back_inserter(regionToInsert->instructions));
+    }
   return PropagationResult::PROPAGATED;
 }
 

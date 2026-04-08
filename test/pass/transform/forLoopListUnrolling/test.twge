@@ -8,7 +8,9 @@ block b3 {
             addActor(x = x);
         }
         for(x in ["abc","dce","fgh"]) {
-            addActor(name = x);
+            for(z in x) {
+                addActor(name = z);
+            }
         }
     }
 }
