@@ -513,6 +513,28 @@ std::unique_ptr<ExpressionNode> Parser::parseExpMultiplicative() {
 }
 
 std::unique_ptr<ExpressionNode> Parser::parseExpPrimivite() {
+  // Intrinsic call
+  if (tokens.front().type == TokenType::INTRINSIC_TO_STRING ||
+      tokens.front().type == TokenType::INTRINSIC_TO_INT ||
+      tokens.front().type == TokenType::INTRINSIC_TO_BOOL) {
+    ExpOpType op = EXP_OP_TYPE_VOID;
+    if (consume(TokenType::INTRINSIC_TO_STRING, /* errorThrowing */ false))
+      op = EXP_OP_TYPE_INTRINSIC_TO_STRING;
+    else if (consume(TokenType::INTRINSIC_TO_INT, /* errorThrowing */ false))
+      op = EXP_OP_TYPE_INTRINSIC_TO_INT;
+    else if (consume(TokenType::INTRINSIC_TO_BOOL))
+      op = EXP_OP_TYPE_INTRINSIC_TO_BOOL;
+    else
+      return nullptr;
+    if (!consume(TokenType::OPENPAR))
+      return nullptr;
+    auto lhsExp = parseExpLogicalOr();
+    if (!consume(TokenType::CLOSEPAR))
+      return nullptr;
+    return std::make_unique<ExpressionNode>(std::move(lhsExp), op, nullptr,
+                                            lhsExp->loc);
+  }
+  // Parentheses
   if (tokens.front().type == TokenType::OPENPAR) {
     if (!consume(TokenType::OPENPAR))
       return nullptr;
@@ -520,10 +542,11 @@ std::unique_ptr<ExpressionNode> Parser::parseExpPrimivite() {
     if (!consume(TokenType::CLOSEPAR))
       return nullptr;
     return expNode;
-  } else if (auto valueNode = parseValue()) {
+  }
+  // Value
+  if (auto valueNode = parseValue())
     return std::make_unique<ExpressionNode>(std::move(valueNode),
                                             (valueNode->loc));
-  }
   return nullptr;
 }
 

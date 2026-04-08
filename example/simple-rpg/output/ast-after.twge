@@ -124,11 +124,11 @@ def 自定義::釋放技能泛型(weapon) : block {
     }
     actions {
         if((weapon == 別名::武器風杖)) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+32"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+16"));
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-16"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-32"));
         }
         if((weapon == 別名::武器鐵劍)) {
             EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
@@ -158,14 +158,14 @@ def 自定義::武器物理連擊泛型(weapon, value, comboRate) : block {
         角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
     }
 }
-def 自定義::拾取經驗泛型(drop_item_code, exp_string) : block {
+def 自定義::拾取經驗泛型(drop_item_code, exp) : block {
     __repeat__ = -1;
     triggers {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = drop_item_code);
     }
     actions {
-        自定義::儲存Instance整數("Exp", ("{instance.Exp}+" + exp_string));
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + (exp_string + "</span>")));
+        自定義::儲存Instance整數("Exp", ("{instance.Exp}+" + twge::to_string(exp)));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + (twge::to_string(exp) + "</span>")));
         自定義::上載Instance數據();
     }
 }
@@ -192,18 +192,14 @@ def 自定義::野獸重生泛型(interval, max_num, actor_id, name, x, y, hp, s
 def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
     __repeat__ = -1;
     triggers {
-        if((value == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "1")));
-        } else if((value == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + twge::to_string(value))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = value);
     }
     actions {
-        自定義::儲存Instance整數("Point", ("{instance.Point}" - value));
-        自定義::儲存Instance整數(type, (("{instance." + (type + "}")) + value));
+        自定義::儲存Instance整數("Point", ("{instance.Point} - " + twge::to_string(value)));
+        自定義::儲存Instance整數(type, ("{instance." + (type + ("} + " + twge::to_string(value)))));
         if((value == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
         } else if((value == 10)) {
@@ -247,8 +243,8 @@ block 風杖物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器風
 block 鐵劍物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器鐵劍, 公式::鐵劍物理傷害);
 block 匕首物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器匕首, 公式::匕首物理傷害);
 block 匕首物理連擊 = 自定義::武器物理連擊泛型(別名::武器匕首, 公式::匕首物理傷害, 公式::匕首連擊機率);
-block 拾取經驗一級鹿 = 自定義::拾取經驗泛型("deer_exp_01", "1");
-block 拾取經驗三級鹿 = 自定義::拾取經驗泛型("deer_exp_03", "3");
+block 拾取經驗一級鹿 = 自定義::拾取經驗泛型("deer_exp_01", 1);
+block 拾取經驗三級鹿 = 自定義::拾取經驗泛型("deer_exp_03", 3);
 block 野獸死亡一級鹿 = 自定義::野獸死亡泛型("monster_deer_lv01", "deer_exp_01", "sariraFire");
 block 野獸死亡三級鹿 = 自定義::野獸死亡泛型("monster_deer_lv03", "deer_exp_03", "sariraFire");
 block 野獸重生一級鹿 = 自定義::野獸重生泛型(8000, 4, "monster_deer_lv01", "鹿(60)", 30, 10, 60, 10, "鹿");
@@ -289,8 +285,8 @@ block 等級提升 {
     actions {
         地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = 文字::HTML等級提升, duration = 6000);
         自定義::儲存Instance整數("Exp", "{instance.Exp}-{instance.ExpNeeded}");
-        自定義::儲存Instance整數("Level", ("{instance.Level}" + 1));
-        自定義::儲存Instance整數("Point", ("{instance.Point}" + 2));
+        自定義::儲存Instance整數("Level", "{instance.Level}+1");
+        自定義::儲存Instance整數("Point", "{instance.Point}+2");
         自定義::儲存Instance整數("ExpNeeded", "{instance.Level}*2+4");
         自定義::儲存Instance整數("HP", 公式::Instance血量);
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -533,11 +529,11 @@ def 自定義::釋放技能泛型(weapon) : block {
     }
     actions {
         if((weapon == 別名::武器風杖)) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+32"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+16"));
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-16"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-32"));
         }
         if((weapon == 別名::武器鐵劍)) {
             EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
@@ -567,14 +563,14 @@ def 自定義::武器物理連擊泛型(weapon, value, comboRate) : block {
         角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
     }
 }
-def 自定義::拾取經驗泛型(drop_item_code, exp_string) : block {
+def 自定義::拾取經驗泛型(drop_item_code, exp) : block {
     __repeat__ = -1;
     triggers {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = drop_item_code);
     }
     actions {
-        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + exp_string));
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + (exp_string + "</span>")));
+        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + twge::to_string(exp)));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + (twge::to_string(exp) + "</span>")));
         自定義::上載Instance數據();
     }
 }
@@ -601,18 +597,14 @@ def 自定義::野獸重生泛型(interval, max_num, actor_id, name, x, y, hp, s
 def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
     __repeat__ = -1;
     triggers {
-        if((value == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "1")));
-        } else if((value == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + twge::to_string(value))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = value);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - value));
-        自定義::儲存Instance整數(key = type, value = (("{instance." + (type + "}")) + value));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(value)));
+        自定義::儲存Instance整數(key = type, value = ("{instance." + (type + ("} + " + twge::to_string(value)))));
         if((value == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
         } else if((value == 10)) {
@@ -656,8 +648,8 @@ block 風杖物理攻擊 = 自定義::武器物理攻擊泛型(weapon = 別名::
 block 鐵劍物理攻擊 = 自定義::武器物理攻擊泛型(weapon = 別名::武器鐵劍, value = 公式::鐵劍物理傷害);
 block 匕首物理攻擊 = 自定義::武器物理攻擊泛型(weapon = 別名::武器匕首, value = 公式::匕首物理傷害);
 block 匕首物理連擊 = 自定義::武器物理連擊泛型(weapon = 別名::武器匕首, value = 公式::匕首物理傷害, comboRate = 公式::匕首連擊機率);
-block 拾取經驗一級鹿 = 自定義::拾取經驗泛型(drop_item_code = "deer_exp_01", exp_string = "1");
-block 拾取經驗三級鹿 = 自定義::拾取經驗泛型(drop_item_code = "deer_exp_03", exp_string = "3");
+block 拾取經驗一級鹿 = 自定義::拾取經驗泛型(drop_item_code = "deer_exp_01", exp = 1);
+block 拾取經驗三級鹿 = 自定義::拾取經驗泛型(drop_item_code = "deer_exp_03", exp = 3);
 block 野獸死亡一級鹿 = 自定義::野獸死亡泛型(actor_id = "monster_deer_lv01", drop_item_code = "deer_exp_01", drop_item_type = "sariraFire");
 block 野獸死亡三級鹿 = 自定義::野獸死亡泛型(actor_id = "monster_deer_lv03", drop_item_code = "deer_exp_03", drop_item_type = "sariraFire");
 block 野獸重生一級鹿 = 自定義::野獸重生泛型(interval = 8000, max_num = 4, actor_id = "monster_deer_lv01", name = "鹿(60)", x = 30, y = 10, hp = 60, strength = 10, role = "鹿");
@@ -698,8 +690,8 @@ block 等級提升 {
     actions {
         地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = 文字::HTML等級提升, duration = 6000);
         自定義::儲存Instance整數(key = "Exp", value = "{instance.Exp}-{instance.ExpNeeded}");
-        自定義::儲存Instance整數(key = "Level", value = ("{instance.Level}" + 1));
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" + 2));
+        自定義::儲存Instance整數(key = "Level", value = "{instance.Level}+1");
+        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}+2");
         自定義::儲存Instance整數(key = "ExpNeeded", value = "{instance.Level}*2+4");
         自定義::儲存Instance整數(key = "HP", value = 公式::Instance血量);
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -942,11 +934,11 @@ def 自定義::釋放技能泛型(weapon) : block {
     }
     actions {
         if((weapon == 別名::武器風杖)) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+32"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+16"));
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-16"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-32"));
         }
         if((weapon == 別名::武器鐵劍)) {
             EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
@@ -976,14 +968,14 @@ def 自定義::武器物理連擊泛型(weapon, value, comboRate) : block {
         角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
     }
 }
-def 自定義::拾取經驗泛型(drop_item_code, exp_string) : block {
+def 自定義::拾取經驗泛型(drop_item_code, exp) : block {
     __repeat__ = -1;
     triggers {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = drop_item_code);
     }
     actions {
-        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + exp_string));
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + (exp_string + "</span>")));
+        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + twge::to_string(exp)));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + (twge::to_string(exp) + "</span>")));
         自定義::上載Instance數據();
     }
 }
@@ -1010,18 +1002,14 @@ def 自定義::野獸重生泛型(interval, max_num, actor_id, name, x, y, hp, s
 def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
     __repeat__ = -1;
     triggers {
-        if((value == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "1")));
-        } else if((value == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + twge::to_string(value))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = value);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - value));
-        自定義::儲存Instance整數(key = type, value = (("{instance." + (type + "}")) + value));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(value)));
+        自定義::儲存Instance整數(key = type, value = ("{instance." + (type + ("} + " + twge::to_string(value)))));
         if((value == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
         } else if((value == 10)) {
@@ -1160,11 +1148,11 @@ block 釋放技能風杖 {
     }
     actions {
         if((別名::武器風杖 == 別名::武器風杖)) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+32"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+16"));
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-16"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-32"));
         }
         if((別名::武器風杖 == 別名::武器鐵劍)) {
             EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
@@ -1179,11 +1167,11 @@ block 釋放技能鐵劍 {
     }
     actions {
         if((別名::武器鐵劍 == 別名::武器風杖)) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+32"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+16"));
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-16"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-32"));
         }
         if((別名::武器鐵劍 == 別名::武器鐵劍)) {
             EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
@@ -1237,8 +1225,8 @@ block 拾取經驗一級鹿 {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_01");
     }
     actions {
-        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + "1"));
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + ("1" + "</span>")));
+        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + twge::to_string(1)));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + (twge::to_string(1) + "</span>")));
         自定義::上載Instance數據();
     }
 }
@@ -1248,8 +1236,8 @@ block 拾取經驗三級鹿 {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_03");
     }
     actions {
-        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + "3"));
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + ("3" + "</span>")));
+        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + twge::to_string(3)));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + (twge::to_string(3) + "</span>")));
         自定義::上載Instance數據();
     }
 }
@@ -1296,18 +1284,14 @@ block 野獸重生三級鹿 {
 block 點擊提升一點力量 {
     __repeat__ = -1;
     triggers {
-        if((1 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "1")));
-        } else if((1 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + twge::to_string(1))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
-        自定義::儲存Instance整數(key = "STR", value = (("{instance." + ("STR" + "}")) + 1));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(1)));
+        自定義::儲存Instance整數(key = "STR", value = ("{instance." + ("STR" + ("} + " + twge::to_string(1)))));
         if((1 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("力量" + "，尚餘{instance.Point}點能力點")));
         } else if((1 == 10)) {
@@ -1320,18 +1304,14 @@ block 點擊提升一點力量 {
 block 點擊提升一點體質 {
     __repeat__ = -1;
     triggers {
-        if((1 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "1")));
-        } else if((1 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + twge::to_string(1))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
-        自定義::儲存Instance整數(key = "CON", value = (("{instance." + ("CON" + "}")) + 1));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(1)));
+        自定義::儲存Instance整數(key = "CON", value = ("{instance." + ("CON" + ("} + " + twge::to_string(1)))));
         if((1 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("體質" + "，尚餘{instance.Point}點能力點")));
         } else if((1 == 10)) {
@@ -1344,18 +1324,14 @@ block 點擊提升一點體質 {
 block 點擊提升一點敏捷 {
     __repeat__ = -1;
     triggers {
-        if((1 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "1")));
-        } else if((1 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + twge::to_string(1))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
-        自定義::儲存Instance整數(key = "AGI", value = (("{instance." + ("AGI" + "}")) + 1));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(1)));
+        自定義::儲存Instance整數(key = "AGI", value = ("{instance." + ("AGI" + ("} + " + twge::to_string(1)))));
         if((1 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
         } else if((1 == 10)) {
@@ -1368,18 +1344,14 @@ block 點擊提升一點敏捷 {
 block 點擊提升一點智慧 {
     __repeat__ = -1;
     triggers {
-        if((1 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "1")));
-        } else if((1 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + twge::to_string(1))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
-        自定義::儲存Instance整數(key = "INT", value = (("{instance." + ("INT" + "}")) + 1));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(1)));
+        自定義::儲存Instance整數(key = "INT", value = ("{instance." + ("INT" + ("} + " + twge::to_string(1)))));
         if((1 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
         } else if((1 == 10)) {
@@ -1392,18 +1364,14 @@ block 點擊提升一點智慧 {
 block 點擊提升一點精神 {
     __repeat__ = -1;
     triggers {
-        if((1 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "1")));
-        } else if((1 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + twge::to_string(1))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
-        自定義::儲存Instance整數(key = "PSY", value = (("{instance." + ("PSY" + "}")) + 1));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(1)));
+        自定義::儲存Instance整數(key = "PSY", value = ("{instance." + ("PSY" + ("} + " + twge::to_string(1)))));
         if((1 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("精神" + "，尚餘{instance.Point}點能力點")));
         } else if((1 == 10)) {
@@ -1416,18 +1384,14 @@ block 點擊提升一點精神 {
 block 點擊提升十點力量 {
     __repeat__ = -1;
     triggers {
-        if((10 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "1")));
-        } else if((10 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + twge::to_string(10))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
-        自定義::儲存Instance整數(key = "STR", value = (("{instance." + ("STR" + "}")) + 10));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(10)));
+        自定義::儲存Instance整數(key = "STR", value = ("{instance." + ("STR" + ("} + " + twge::to_string(10)))));
         if((10 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("力量" + "，尚餘{instance.Point}點能力點")));
         } else if((10 == 10)) {
@@ -1440,18 +1404,14 @@ block 點擊提升十點力量 {
 block 點擊提升十點體質 {
     __repeat__ = -1;
     triggers {
-        if((10 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "1")));
-        } else if((10 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + twge::to_string(10))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
-        自定義::儲存Instance整數(key = "CON", value = (("{instance." + ("CON" + "}")) + 10));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(10)));
+        自定義::儲存Instance整數(key = "CON", value = ("{instance." + ("CON" + ("} + " + twge::to_string(10)))));
         if((10 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("體質" + "，尚餘{instance.Point}點能力點")));
         } else if((10 == 10)) {
@@ -1464,18 +1424,14 @@ block 點擊提升十點體質 {
 block 點擊提升十點敏捷 {
     __repeat__ = -1;
     triggers {
-        if((10 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "1")));
-        } else if((10 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + twge::to_string(10))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
-        自定義::儲存Instance整數(key = "AGI", value = (("{instance." + ("AGI" + "}")) + 10));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(10)));
+        自定義::儲存Instance整數(key = "AGI", value = ("{instance." + ("AGI" + ("} + " + twge::to_string(10)))));
         if((10 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
         } else if((10 == 10)) {
@@ -1488,18 +1444,14 @@ block 點擊提升十點敏捷 {
 block 點擊提升十點智慧 {
     __repeat__ = -1;
     triggers {
-        if((10 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "1")));
-        } else if((10 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + twge::to_string(10))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
-        自定義::儲存Instance整數(key = "INT", value = (("{instance." + ("INT" + "}")) + 10));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(10)));
+        自定義::儲存Instance整數(key = "INT", value = ("{instance." + ("INT" + ("} + " + twge::to_string(10)))));
         if((10 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
         } else if((10 == 10)) {
@@ -1512,18 +1464,14 @@ block 點擊提升十點智慧 {
 block 點擊提升十點精神 {
     __repeat__ = -1;
     triggers {
-        if((10 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "1")));
-        } else if((10 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + twge::to_string(10))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
-        自定義::儲存Instance整數(key = "PSY", value = (("{instance." + ("PSY" + "}")) + 10));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(10)));
+        自定義::儲存Instance整數(key = "PSY", value = ("{instance." + ("PSY" + ("} + " + twge::to_string(10)))));
         if((10 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("精神" + "，尚餘{instance.Point}點能力點")));
         } else if((10 == 10)) {
@@ -1559,8 +1507,8 @@ block 等級提升 {
     actions {
         地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = 文字::HTML等級提升, duration = 6000);
         自定義::儲存Instance整數(key = "Exp", value = "{instance.Exp}-{instance.ExpNeeded}");
-        自定義::儲存Instance整數(key = "Level", value = ("{instance.Level}" + 1));
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" + 2));
+        自定義::儲存Instance整數(key = "Level", value = "{instance.Level}+1");
+        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}+2");
         自定義::儲存Instance整數(key = "ExpNeeded", value = "{instance.Level}*2+4");
         自定義::儲存Instance整數(key = "HP", value = 公式::Instance血量);
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -1803,11 +1751,11 @@ def 自定義::釋放技能泛型(weapon) : block {
     }
     actions {
         if((weapon == 別名::武器風杖)) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+32"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+16"));
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-16"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-32"));
         }
         if((weapon == 別名::武器鐵劍)) {
             EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
@@ -1837,14 +1785,14 @@ def 自定義::武器物理連擊泛型(weapon, value, comboRate) : block {
         角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
     }
 }
-def 自定義::拾取經驗泛型(drop_item_code, exp_string) : block {
+def 自定義::拾取經驗泛型(drop_item_code, exp) : block {
     __repeat__ = -1;
     triggers {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = drop_item_code);
     }
     actions {
-        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + exp_string));
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + (exp_string + "</span>")));
+        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + twge::to_string(exp)));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + (twge::to_string(exp) + "</span>")));
         自定義::上載Instance數據();
     }
 }
@@ -1871,18 +1819,14 @@ def 自定義::野獸重生泛型(interval, max_num, actor_id, name, x, y, hp, s
 def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
     __repeat__ = -1;
     triggers {
-        if((value == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "1")));
-        } else if((value == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + (type + twge::to_string(value))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = value);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - value));
-        自定義::儲存Instance整數(key = type, value = (("{instance." + (type + "}")) + value));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(value)));
+        自定義::儲存Instance整數(key = type, value = ("{instance." + (type + ("} + " + twge::to_string(value)))));
         if((value == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + (typeZh + "，尚餘{instance.Point}點能力點")));
         } else if((value == 10)) {
@@ -2033,11 +1977,11 @@ block 釋放技能風杖 {
     }
     actions {
         if((別名::武器風杖 == 別名::武器風杖)) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+32"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+16"));
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-16"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-32"));
         }
         if((別名::武器風杖 == 別名::武器鐵劍)) {
             EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
@@ -2054,11 +1998,11 @@ block 釋放技能鐵劍 {
     }
     actions {
         if((別名::武器鐵劍 == 別名::武器風杖)) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+32"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+16"));
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-16"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-32"));
         }
         if((別名::武器鐵劍 == 別名::武器鐵劍)) {
             EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
@@ -2120,8 +2064,8 @@ block 拾取經驗一級鹿 {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_01");
     }
     actions {
-        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + "1"));
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + ("1" + "</span>")));
+        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + twge::to_string(1)));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + (twge::to_string(1) + "</span>")));
         自定義::上載Instance數據();
     }
     checks {
@@ -2133,8 +2077,8 @@ block 拾取經驗三級鹿 {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_03");
     }
     actions {
-        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + "3"));
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + ("3" + "</span>")));
+        自定義::儲存Instance整數(key = "Exp", value = ("{instance.Exp}+" + twge::to_string(3)));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + (twge::to_string(3) + "</span>")));
         自定義::上載Instance數據();
     }
     checks {
@@ -2191,18 +2135,14 @@ block 野獸重生三級鹿 {
 block 點擊提升一點力量 {
     __repeat__ = -1;
     triggers {
-        if((1 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "1")));
-        } else if((1 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + twge::to_string(1))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
-        自定義::儲存Instance整數(key = "STR", value = (("{instance." + ("STR" + "}")) + 1));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(1)));
+        自定義::儲存Instance整數(key = "STR", value = ("{instance." + ("STR" + ("} + " + twge::to_string(1)))));
         if((1 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("力量" + "，尚餘{instance.Point}點能力點")));
         } else if((1 == 10)) {
@@ -2215,18 +2155,14 @@ block 點擊提升一點力量 {
 block 點擊提升一點體質 {
     __repeat__ = -1;
     triggers {
-        if((1 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "1")));
-        } else if((1 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + twge::to_string(1))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
-        自定義::儲存Instance整數(key = "CON", value = (("{instance." + ("CON" + "}")) + 1));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(1)));
+        自定義::儲存Instance整數(key = "CON", value = ("{instance." + ("CON" + ("} + " + twge::to_string(1)))));
         if((1 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("體質" + "，尚餘{instance.Point}點能力點")));
         } else if((1 == 10)) {
@@ -2239,18 +2175,14 @@ block 點擊提升一點體質 {
 block 點擊提升一點敏捷 {
     __repeat__ = -1;
     triggers {
-        if((1 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "1")));
-        } else if((1 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + twge::to_string(1))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
-        自定義::儲存Instance整數(key = "AGI", value = (("{instance." + ("AGI" + "}")) + 1));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(1)));
+        自定義::儲存Instance整數(key = "AGI", value = ("{instance." + ("AGI" + ("} + " + twge::to_string(1)))));
         if((1 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
         } else if((1 == 10)) {
@@ -2263,18 +2195,14 @@ block 點擊提升一點敏捷 {
 block 點擊提升一點智慧 {
     __repeat__ = -1;
     triggers {
-        if((1 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "1")));
-        } else if((1 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + twge::to_string(1))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
-        自定義::儲存Instance整數(key = "INT", value = (("{instance." + ("INT" + "}")) + 1));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(1)));
+        自定義::儲存Instance整數(key = "INT", value = ("{instance." + ("INT" + ("} + " + twge::to_string(1)))));
         if((1 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
         } else if((1 == 10)) {
@@ -2287,18 +2215,14 @@ block 點擊提升一點智慧 {
 block 點擊提升一點精神 {
     __repeat__ = -1;
     triggers {
-        if((1 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "1")));
-        } else if((1 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + twge::to_string(1))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 1));
-        自定義::儲存Instance整數(key = "PSY", value = (("{instance." + ("PSY" + "}")) + 1));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(1)));
+        自定義::儲存Instance整數(key = "PSY", value = ("{instance." + ("PSY" + ("} + " + twge::to_string(1)))));
         if((1 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("精神" + "，尚餘{instance.Point}點能力點")));
         } else if((1 == 10)) {
@@ -2311,18 +2235,14 @@ block 點擊提升一點精神 {
 block 點擊提升十點力量 {
     __repeat__ = -1;
     triggers {
-        if((10 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "1")));
-        } else if((10 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + twge::to_string(10))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
-        自定義::儲存Instance整數(key = "STR", value = (("{instance." + ("STR" + "}")) + 10));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(10)));
+        自定義::儲存Instance整數(key = "STR", value = ("{instance." + ("STR" + ("} + " + twge::to_string(10)))));
         if((10 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("力量" + "，尚餘{instance.Point}點能力點")));
         } else if((10 == 10)) {
@@ -2335,18 +2255,14 @@ block 點擊提升十點力量 {
 block 點擊提升十點體質 {
     __repeat__ = -1;
     triggers {
-        if((10 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "1")));
-        } else if((10 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + twge::to_string(10))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
-        自定義::儲存Instance整數(key = "CON", value = (("{instance." + ("CON" + "}")) + 10));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(10)));
+        自定義::儲存Instance整數(key = "CON", value = ("{instance." + ("CON" + ("} + " + twge::to_string(10)))));
         if((10 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("體質" + "，尚餘{instance.Point}點能力點")));
         } else if((10 == 10)) {
@@ -2359,18 +2275,14 @@ block 點擊提升十點體質 {
 block 點擊提升十點敏捷 {
     __repeat__ = -1;
     triggers {
-        if((10 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "1")));
-        } else if((10 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + twge::to_string(10))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
-        自定義::儲存Instance整數(key = "AGI", value = (("{instance." + ("AGI" + "}")) + 10));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(10)));
+        自定義::儲存Instance整數(key = "AGI", value = ("{instance." + ("AGI" + ("} + " + twge::to_string(10)))));
         if((10 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
         } else if((10 == 10)) {
@@ -2383,18 +2295,14 @@ block 點擊提升十點敏捷 {
 block 點擊提升十點智慧 {
     __repeat__ = -1;
     triggers {
-        if((10 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "1")));
-        } else if((10 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + twge::to_string(10))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
-        自定義::儲存Instance整數(key = "INT", value = (("{instance." + ("INT" + "}")) + 10));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(10)));
+        自定義::儲存Instance整數(key = "INT", value = ("{instance." + ("INT" + ("} + " + twge::to_string(10)))));
         if((10 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
         } else if((10 == 10)) {
@@ -2407,18 +2315,14 @@ block 點擊提升十點智慧 {
 block 點擊提升十點精神 {
     __repeat__ = -1;
     triggers {
-        if((10 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "1")));
-        } else if((10 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + twge::to_string(10))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" - 10));
-        自定義::儲存Instance整數(key = "PSY", value = (("{instance." + ("PSY" + "}")) + 10));
+        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point} - " + twge::to_string(10)));
+        自定義::儲存Instance整數(key = "PSY", value = ("{instance." + ("PSY" + ("} + " + twge::to_string(10)))));
         if((10 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("精神" + "，尚餘{instance.Point}點能力點")));
         } else if((10 == 10)) {
@@ -2456,8 +2360,8 @@ block 等級提升 {
     actions {
         地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = 文字::HTML等級提升, duration = 6000);
         自定義::儲存Instance整數(key = "Exp", value = "{instance.Exp}-{instance.ExpNeeded}");
-        自定義::儲存Instance整數(key = "Level", value = ("{instance.Level}" + 1));
-        自定義::儲存Instance整數(key = "Point", value = ("{instance.Point}" + 2));
+        自定義::儲存Instance整數(key = "Level", value = "{instance.Level}+1");
+        自定義::儲存Instance整數(key = "Point", value = "{instance.Point}+2");
         自定義::儲存Instance整數(key = "ExpNeeded", value = "{instance.Level}*2+4");
         自定義::儲存Instance整數(key = "HP", value = 公式::Instance血量);
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -2778,11 +2682,11 @@ block 釋放技能風杖 {
     }
     actions {
         if((別名::武器風杖 == 別名::武器風杖)) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+32"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+16"));
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-16"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-32"));
         }
         if((別名::武器風杖 == 別名::武器鐵劍)) {
             EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
@@ -2799,11 +2703,11 @@ block 釋放技能鐵劍 {
     }
     actions {
         if((別名::武器鐵劍 == 別名::武器風杖)) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 32));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + 16));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+32"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "+16"));
             光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = 公式::Instance角度);
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 16));
-            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 - 32));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-16"));
+            光彈特效(fromActor = "instance", scale = "0.5", damage = 公式::風杖光彈傷害, toAngle = (公式::Instance角度 + "-32"));
         }
         if((別名::武器鐵劍 == 別名::武器鐵劍)) {
             EnhFF::廣義圓形範圍(actorId = "instance", radius = (4 * 32), duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復, deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
@@ -2865,8 +2769,8 @@ block 拾取經驗一級鹿 {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_01");
     }
     actions {
-        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = ("{instance.Exp}+" + "1"));
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + ("1" + "</span>")));
+        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = ("{instance.Exp}+" + twge::to_string(1)));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + (twge::to_string(1) + "</span>")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
@@ -2888,8 +2792,8 @@ block 拾取經驗三級鹿 {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = "deer_exp_03");
     }
     actions {
-        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = ("{instance.Exp}+" + "3"));
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + ("3" + "</span>")));
+        儲存物件變數(key = "Exp", object = "instance", type = "integer", value = ("{instance.Exp}+" + twge::to_string(3)));
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = ("<span style='color: green'>EXP+" + (twge::to_string(3) + "</span>")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "Point", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Point" + "}")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "ExpNeeded", playerId = "{instance}", type = "string", value = ("{{instance}." + ("ExpNeeded" + "}")));
         儲存玩家狀態(category = 狀態讀寫密鑰, key = "Level", playerId = "{instance}", type = "string", value = ("{{instance}." + ("Level" + "}")));
@@ -2956,18 +2860,14 @@ block 野獸重生三級鹿 {
 block 點擊提升一點力量 {
     __repeat__ = -1;
     triggers {
-        if((1 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "1")));
-        } else if((1 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + twge::to_string(1))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 1));
-        儲存物件變數(key = "STR", object = "instance", type = "integer", value = (("{instance." + ("STR" + "}")) + 1));
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point} - " + twge::to_string(1)));
+        儲存物件變數(key = "STR", object = "instance", type = "integer", value = ("{instance." + ("STR" + ("} + " + twge::to_string(1)))));
         if((1 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("力量" + "，尚餘{instance.Point}點能力點")));
         } else if((1 == 10)) {
@@ -2993,18 +2893,14 @@ block 點擊提升一點力量 {
 block 點擊提升一點體質 {
     __repeat__ = -1;
     triggers {
-        if((1 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "1")));
-        } else if((1 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + twge::to_string(1))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 1));
-        儲存物件變數(key = "CON", object = "instance", type = "integer", value = (("{instance." + ("CON" + "}")) + 1));
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point} - " + twge::to_string(1)));
+        儲存物件變數(key = "CON", object = "instance", type = "integer", value = ("{instance." + ("CON" + ("} + " + twge::to_string(1)))));
         if((1 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("體質" + "，尚餘{instance.Point}點能力點")));
         } else if((1 == 10)) {
@@ -3030,18 +2926,14 @@ block 點擊提升一點體質 {
 block 點擊提升一點敏捷 {
     __repeat__ = -1;
     triggers {
-        if((1 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "1")));
-        } else if((1 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + twge::to_string(1))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 1));
-        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = (("{instance." + ("AGI" + "}")) + 1));
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point} - " + twge::to_string(1)));
+        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = ("{instance." + ("AGI" + ("} + " + twge::to_string(1)))));
         if((1 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
         } else if((1 == 10)) {
@@ -3067,18 +2959,14 @@ block 點擊提升一點敏捷 {
 block 點擊提升一點智慧 {
     __repeat__ = -1;
     triggers {
-        if((1 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "1")));
-        } else if((1 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + twge::to_string(1))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 1));
-        儲存物件變數(key = "INT", object = "instance", type = "integer", value = (("{instance." + ("INT" + "}")) + 1));
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point} - " + twge::to_string(1)));
+        儲存物件變數(key = "INT", object = "instance", type = "integer", value = ("{instance." + ("INT" + ("} + " + twge::to_string(1)))));
         if((1 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
         } else if((1 == 10)) {
@@ -3104,18 +2992,14 @@ block 點擊提升一點智慧 {
 block 點擊提升一點精神 {
     __repeat__ = -1;
     triggers {
-        if((1 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "1")));
-        } else if((1 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + twge::to_string(1))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 1));
-        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = (("{instance." + ("PSY" + "}")) + 1));
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point} - " + twge::to_string(1)));
+        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = ("{instance." + ("PSY" + ("} + " + twge::to_string(1)))));
         if((1 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("精神" + "，尚餘{instance.Point}點能力點")));
         } else if((1 == 10)) {
@@ -3141,18 +3025,14 @@ block 點擊提升一點精神 {
 block 點擊提升十點力量 {
     __repeat__ = -1;
     triggers {
-        if((10 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "1")));
-        } else if((10 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("STR" + twge::to_string(10))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 10));
-        儲存物件變數(key = "STR", object = "instance", type = "integer", value = (("{instance." + ("STR" + "}")) + 10));
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point} - " + twge::to_string(10)));
+        儲存物件變數(key = "STR", object = "instance", type = "integer", value = ("{instance." + ("STR" + ("} + " + twge::to_string(10)))));
         if((10 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("力量" + "，尚餘{instance.Point}點能力點")));
         } else if((10 == 10)) {
@@ -3178,18 +3058,14 @@ block 點擊提升十點力量 {
 block 點擊提升十點體質 {
     __repeat__ = -1;
     triggers {
-        if((10 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "1")));
-        } else if((10 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("CON" + twge::to_string(10))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 10));
-        儲存物件變數(key = "CON", object = "instance", type = "integer", value = (("{instance." + ("CON" + "}")) + 10));
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point} - " + twge::to_string(10)));
+        儲存物件變數(key = "CON", object = "instance", type = "integer", value = ("{instance." + ("CON" + ("} + " + twge::to_string(10)))));
         if((10 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("體質" + "，尚餘{instance.Point}點能力點")));
         } else if((10 == 10)) {
@@ -3215,18 +3091,14 @@ block 點擊提升十點體質 {
 block 點擊提升十點敏捷 {
     __repeat__ = -1;
     triggers {
-        if((10 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "1")));
-        } else if((10 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("AGI" + twge::to_string(10))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 10));
-        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = (("{instance." + ("AGI" + "}")) + 10));
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point} - " + twge::to_string(10)));
+        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = ("{instance." + ("AGI" + ("} + " + twge::to_string(10)))));
         if((10 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("敏捷" + "，尚餘{instance.Point}點能力點")));
         } else if((10 == 10)) {
@@ -3252,18 +3124,14 @@ block 點擊提升十點敏捷 {
 block 點擊提升十點智慧 {
     __repeat__ = -1;
     triggers {
-        if((10 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "1")));
-        } else if((10 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("INT" + twge::to_string(10))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 10));
-        儲存物件變數(key = "INT", object = "instance", type = "integer", value = (("{instance." + ("INT" + "}")) + 10));
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point} - " + twge::to_string(10)));
+        儲存物件變數(key = "INT", object = "instance", type = "integer", value = ("{instance." + ("INT" + ("} + " + twge::to_string(10)))));
         if((10 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("智慧" + "，尚餘{instance.Point}點能力點")));
         } else if((10 == 10)) {
@@ -3289,18 +3157,14 @@ block 點擊提升十點智慧 {
 block 點擊提升十點精神 {
     __repeat__ = -1;
     triggers {
-        if((10 == 1)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "1")));
-        } else if((10 == 10)) {
-            告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + "10")));
-        }
+        告示牌按鈕(varName = "instance", buttonId = ("increase" + ("PSY" + twge::to_string(10))));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" - 10));
-        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = (("{instance." + ("PSY" + "}")) + 10));
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point} - " + twge::to_string(10)));
+        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = ("{instance." + ("PSY" + ("} + " + twge::to_string(10)))));
         if((10 == 1)) {
             角色說話(actorId = "instance", text = ("成功提升一點" + ("精神" + "，尚餘{instance.Point}點能力點")));
         } else if((10 == 10)) {
@@ -3364,8 +3228,8 @@ block 等級提升 {
     actions {
         地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = 文字::HTML等級提升, duration = 6000);
         儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}-{instance.ExpNeeded}");
-        儲存物件變數(key = "Level", object = "instance", type = "integer", value = ("{instance.Level}" + 1));
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = ("{instance.Point}" + 2));
+        儲存物件變數(key = "Level", object = "instance", type = "integer", value = "{instance.Level}+1");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}+2");
         儲存物件變數(key = "ExpNeeded", object = "instance", type = "integer", value = "{instance.Level}*2+4");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = 公式::Instance血量);
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -3728,11 +3592,11 @@ block 釋放技能風杖 {
     }
     actions {
         if(true) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+32)");
-            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+16)");
+            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14+32");
+            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14+16");
             光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14");
-            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-16)");
-            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-32)");
+            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14-16");
+            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14-32");
         }
         if(false) {
             EnhFF::廣義圓形範圍(actorId = "instance", radius = 128, duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = "1 + {instance.CON}", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
@@ -3749,11 +3613,11 @@ block 釋放技能鐵劍 {
     }
     actions {
         if(false) {
-            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+32)");
-            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+16)");
+            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14+32");
+            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14+16");
             光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14");
-            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-16)");
-            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-32)");
+            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14-16");
+            光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14-32");
         }
         if(true) {
             EnhFF::廣義圓形範圍(actorId = "instance", radius = 128, duration = 10000, color = "#D16500", deltaHpType = "heal", deltaHpValue = "1 + {instance.CON}", deltaHpCD = 4000, deltaHpTarget = ActorMatch(controller = "player"), lineWidth = 2);
@@ -3906,18 +3770,14 @@ block 野獸重生三級鹿 {
 block 點擊提升一點力量 {
     __repeat__ = -1;
     triggers {
-        if(true) {
-            告示牌按鈕(varName = "instance", buttonId = "increaseSTR1");
-        } else if(false) {
-            告示牌按鈕(varName = "instance", buttonId = "increaseSTR10");
-        }
+        告示牌按鈕(varName = "instance", buttonId = "increaseSTR1");
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
-        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "({instance.STR}+1)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 1");
+        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "{instance.STR} + 1");
         if(true) {
             角色說話(actorId = "instance", text = "成功提升一點力量，尚餘{instance.Point}點能力點");
         } else if(false) {
@@ -3943,18 +3803,14 @@ block 點擊提升一點力量 {
 block 點擊提升一點體質 {
     __repeat__ = -1;
     triggers {
-        if(true) {
-            告示牌按鈕(varName = "instance", buttonId = "increaseCON1");
-        } else if(false) {
-            告示牌按鈕(varName = "instance", buttonId = "increaseCON10");
-        }
+        告示牌按鈕(varName = "instance", buttonId = "increaseCON1");
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
-        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "({instance.CON}+1)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 1");
+        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "{instance.CON} + 1");
         if(true) {
             角色說話(actorId = "instance", text = "成功提升一點體質，尚餘{instance.Point}點能力點");
         } else if(false) {
@@ -3980,18 +3836,14 @@ block 點擊提升一點體質 {
 block 點擊提升一點敏捷 {
     __repeat__ = -1;
     triggers {
-        if(true) {
-            告示牌按鈕(varName = "instance", buttonId = "increaseAGI1");
-        } else if(false) {
-            告示牌按鈕(varName = "instance", buttonId = "increaseAGI10");
-        }
+        告示牌按鈕(varName = "instance", buttonId = "increaseAGI1");
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
-        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "({instance.AGI}+1)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 1");
+        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "{instance.AGI} + 1");
         if(true) {
             角色說話(actorId = "instance", text = "成功提升一點敏捷，尚餘{instance.Point}點能力點");
         } else if(false) {
@@ -4017,18 +3869,14 @@ block 點擊提升一點敏捷 {
 block 點擊提升一點智慧 {
     __repeat__ = -1;
     triggers {
-        if(true) {
-            告示牌按鈕(varName = "instance", buttonId = "increaseINT1");
-        } else if(false) {
-            告示牌按鈕(varName = "instance", buttonId = "increaseINT10");
-        }
+        告示牌按鈕(varName = "instance", buttonId = "increaseINT1");
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
-        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "({instance.INT}+1)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 1");
+        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "{instance.INT} + 1");
         if(true) {
             角色說話(actorId = "instance", text = "成功提升一點智慧，尚餘{instance.Point}點能力點");
         } else if(false) {
@@ -4054,18 +3902,14 @@ block 點擊提升一點智慧 {
 block 點擊提升一點精神 {
     __repeat__ = -1;
     triggers {
-        if(true) {
-            告示牌按鈕(varName = "instance", buttonId = "increasePSY1");
-        } else if(false) {
-            告示牌按鈕(varName = "instance", buttonId = "increasePSY10");
-        }
+        告示牌按鈕(varName = "instance", buttonId = "increasePSY1");
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
-        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "({instance.PSY}+1)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 1");
+        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "{instance.PSY} + 1");
         if(true) {
             角色說話(actorId = "instance", text = "成功提升一點精神，尚餘{instance.Point}點能力點");
         } else if(false) {
@@ -4091,18 +3935,14 @@ block 點擊提升一點精神 {
 block 點擊提升十點力量 {
     __repeat__ = -1;
     triggers {
-        if(false) {
-            告示牌按鈕(varName = "instance", buttonId = "increaseSTR1");
-        } else if(true) {
-            告示牌按鈕(varName = "instance", buttonId = "increaseSTR10");
-        }
+        告示牌按鈕(varName = "instance", buttonId = "increaseSTR10");
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
-        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "({instance.STR}+10)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 10");
+        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "{instance.STR} + 10");
         if(false) {
             角色說話(actorId = "instance", text = "成功提升一點力量，尚餘{instance.Point}點能力點");
         } else if(true) {
@@ -4128,18 +3968,14 @@ block 點擊提升十點力量 {
 block 點擊提升十點體質 {
     __repeat__ = -1;
     triggers {
-        if(false) {
-            告示牌按鈕(varName = "instance", buttonId = "increaseCON1");
-        } else if(true) {
-            告示牌按鈕(varName = "instance", buttonId = "increaseCON10");
-        }
+        告示牌按鈕(varName = "instance", buttonId = "increaseCON10");
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
-        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "({instance.CON}+10)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 10");
+        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "{instance.CON} + 10");
         if(false) {
             角色說話(actorId = "instance", text = "成功提升一點體質，尚餘{instance.Point}點能力點");
         } else if(true) {
@@ -4165,18 +4001,14 @@ block 點擊提升十點體質 {
 block 點擊提升十點敏捷 {
     __repeat__ = -1;
     triggers {
-        if(false) {
-            告示牌按鈕(varName = "instance", buttonId = "increaseAGI1");
-        } else if(true) {
-            告示牌按鈕(varName = "instance", buttonId = "increaseAGI10");
-        }
+        告示牌按鈕(varName = "instance", buttonId = "increaseAGI10");
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
-        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "({instance.AGI}+10)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 10");
+        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "{instance.AGI} + 10");
         if(false) {
             角色說話(actorId = "instance", text = "成功提升一點敏捷，尚餘{instance.Point}點能力點");
         } else if(true) {
@@ -4202,18 +4034,14 @@ block 點擊提升十點敏捷 {
 block 點擊提升十點智慧 {
     __repeat__ = -1;
     triggers {
-        if(false) {
-            告示牌按鈕(varName = "instance", buttonId = "increaseINT1");
-        } else if(true) {
-            告示牌按鈕(varName = "instance", buttonId = "increaseINT10");
-        }
+        告示牌按鈕(varName = "instance", buttonId = "increaseINT10");
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
-        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "({instance.INT}+10)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 10");
+        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "{instance.INT} + 10");
         if(false) {
             角色說話(actorId = "instance", text = "成功提升一點智慧，尚餘{instance.Point}點能力點");
         } else if(true) {
@@ -4239,18 +4067,14 @@ block 點擊提升十點智慧 {
 block 點擊提升十點精神 {
     __repeat__ = -1;
     triggers {
-        if(false) {
-            告示牌按鈕(varName = "instance", buttonId = "increasePSY1");
-        } else if(true) {
-            告示牌按鈕(varName = "instance", buttonId = "increasePSY10");
-        }
+        告示牌按鈕(varName = "instance", buttonId = "increasePSY10");
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
-        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "({instance.PSY}+10)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 10");
+        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "{instance.PSY} + 10");
         if(false) {
             角色說話(actorId = "instance", text = "成功提升一點精神，尚餘{instance.Point}點能力點");
         } else if(true) {
@@ -4314,8 +4138,8 @@ block 等級提升 {
     actions {
         地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>Level Up</span>", duration = 6000);
         儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}-{instance.ExpNeeded}");
-        儲存物件變數(key = "Level", object = "instance", type = "integer", value = "({instance.Level}+1)");
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}+2)");
+        儲存物件變數(key = "Level", object = "instance", type = "integer", value = "{instance.Level}+1");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}+2");
         儲存物件變數(key = "ExpNeeded", object = "instance", type = "integer", value = "{instance.Level}*2+4");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -4696,11 +4520,11 @@ block 釋放技能風杖 {
         發動技能(varName = "instance", weapon = "custom_wind_staff");
     }
     actions {
-        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+32)");
-        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+16)");
+        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14+32");
+        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14+16");
         光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14");
-        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-16)");
-        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-32)");
+        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14-16");
+        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14-32");
     }
     checks {
     }
@@ -4866,8 +4690,8 @@ block 點擊提升一點力量 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
-        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "({instance.STR}+1)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 1");
+        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "{instance.STR} + 1");
         角色說話(actorId = "instance", text = "成功提升一點力量，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -4895,8 +4719,8 @@ block 點擊提升一點體質 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
-        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "({instance.CON}+1)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 1");
+        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "{instance.CON} + 1");
         角色說話(actorId = "instance", text = "成功提升一點體質，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -4924,8 +4748,8 @@ block 點擊提升一點敏捷 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
-        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "({instance.AGI}+1)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 1");
+        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "{instance.AGI} + 1");
         角色說話(actorId = "instance", text = "成功提升一點敏捷，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -4953,8 +4777,8 @@ block 點擊提升一點智慧 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
-        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "({instance.INT}+1)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 1");
+        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "{instance.INT} + 1");
         角色說話(actorId = "instance", text = "成功提升一點智慧，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -4982,8 +4806,8 @@ block 點擊提升一點精神 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
-        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "({instance.PSY}+1)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 1");
+        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "{instance.PSY} + 1");
         角色說話(actorId = "instance", text = "成功提升一點精神，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -5011,8 +4835,8 @@ block 點擊提升十點力量 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
-        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "({instance.STR}+10)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 10");
+        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "{instance.STR} + 10");
         角色說話(actorId = "instance", text = "成功提升十點力量，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -5040,8 +4864,8 @@ block 點擊提升十點體質 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
-        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "({instance.CON}+10)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 10");
+        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "{instance.CON} + 10");
         角色說話(actorId = "instance", text = "成功提升十點體質，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -5069,8 +4893,8 @@ block 點擊提升十點敏捷 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
-        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "({instance.AGI}+10)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 10");
+        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "{instance.AGI} + 10");
         角色說話(actorId = "instance", text = "成功提升十點敏捷，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -5098,8 +4922,8 @@ block 點擊提升十點智慧 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
-        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "({instance.INT}+10)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 10");
+        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "{instance.INT} + 10");
         角色說話(actorId = "instance", text = "成功提升十點智慧，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -5127,8 +4951,8 @@ block 點擊提升十點精神 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
-        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "({instance.PSY}+10)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 10");
+        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "{instance.PSY} + 10");
         角色說話(actorId = "instance", text = "成功提升十點精神，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -5188,8 +5012,8 @@ block 等級提升 {
     actions {
         地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>Level Up</span>", duration = 6000);
         儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}-{instance.ExpNeeded}");
-        儲存物件變數(key = "Level", object = "instance", type = "integer", value = "({instance.Level}+1)");
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}+2)");
+        儲存物件變數(key = "Level", object = "instance", type = "integer", value = "{instance.Level}+1");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}+2");
         儲存物件變數(key = "ExpNeeded", object = "instance", type = "integer", value = "{instance.Level}*2+4");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -5510,11 +5334,11 @@ block 釋放技能風杖 {
         發動技能(varName = "instance", weapon = "custom_wind_staff");
     }
     actions {
-        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+32)");
-        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14+16)");
+        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14+32");
+        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14+16");
         光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14");
-        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-16)");
-        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "({instance.bodyRotation}*180/3.14-32)");
+        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14-16");
+        光彈特效(fromActor = "instance", scale = "0.5", damage = "{instance.INT} + {instance.PSY}/2 + 10", toAngle = "{instance.bodyRotation}*180/3.14-32");
     }
     checks {
     }
@@ -5680,8 +5504,8 @@ block 點擊提升一點力量 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
-        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "({instance.STR}+1)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 1");
+        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "{instance.STR} + 1");
         角色說話(actorId = "instance", text = "成功提升一點力量，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -5709,8 +5533,8 @@ block 點擊提升一點體質 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
-        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "({instance.CON}+1)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 1");
+        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "{instance.CON} + 1");
         角色說話(actorId = "instance", text = "成功提升一點體質，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -5738,8 +5562,8 @@ block 點擊提升一點敏捷 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
-        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "({instance.AGI}+1)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 1");
+        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "{instance.AGI} + 1");
         角色說話(actorId = "instance", text = "成功提升一點敏捷，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -5767,8 +5591,8 @@ block 點擊提升一點智慧 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
-        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "({instance.INT}+1)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 1");
+        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "{instance.INT} + 1");
         角色說話(actorId = "instance", text = "成功提升一點智慧，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -5796,8 +5620,8 @@ block 點擊提升一點精神 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 1);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-1)");
-        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "({instance.PSY}+1)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 1");
+        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "{instance.PSY} + 1");
         角色說話(actorId = "instance", text = "成功提升一點精神，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -5825,8 +5649,8 @@ block 點擊提升十點力量 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
-        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "({instance.STR}+10)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 10");
+        儲存物件變數(key = "STR", object = "instance", type = "integer", value = "{instance.STR} + 10");
         角色說話(actorId = "instance", text = "成功提升十點力量，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -5854,8 +5678,8 @@ block 點擊提升十點體質 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
-        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "({instance.CON}+10)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 10");
+        儲存物件變數(key = "CON", object = "instance", type = "integer", value = "{instance.CON} + 10");
         角色說話(actorId = "instance", text = "成功提升十點體質，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -5883,8 +5707,8 @@ block 點擊提升十點敏捷 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
-        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "({instance.AGI}+10)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 10");
+        儲存物件變數(key = "AGI", object = "instance", type = "integer", value = "{instance.AGI} + 10");
         角色說話(actorId = "instance", text = "成功提升十點敏捷，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -5912,8 +5736,8 @@ block 點擊提升十點智慧 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
-        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "({instance.INT}+10)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 10");
+        儲存物件變數(key = "INT", object = "instance", type = "integer", value = "{instance.INT} + 10");
         角色說話(actorId = "instance", text = "成功提升十點智慧，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -5941,8 +5765,8 @@ block 點擊提升十點精神 {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = 10);
     }
     actions {
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}-10)");
-        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "({instance.PSY}+10)");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point} - 10");
+        儲存物件變數(key = "PSY", object = "instance", type = "integer", value = "{instance.PSY} + 10");
         角色說話(actorId = "instance", text = "成功提升十點精神，尚餘{instance.Point}點能力點");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
@@ -6002,8 +5826,8 @@ block 等級提升 {
     actions {
         地圖標示文字(x = "{instance.gamePosition.x}/32", y = "{instance.gamePosition.y}/32", html = true, text = "<span style='color: green'>Level Up</span>", duration = 6000);
         儲存物件變數(key = "Exp", object = "instance", type = "integer", value = "{instance.Exp}-{instance.ExpNeeded}");
-        儲存物件變數(key = "Level", object = "instance", type = "integer", value = "({instance.Level}+1)");
-        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "({instance.Point}+2)");
+        儲存物件變數(key = "Level", object = "instance", type = "integer", value = "{instance.Level}+1");
+        儲存物件變數(key = "Point", object = "instance", type = "integer", value = "{instance.Point}+2");
         儲存物件變數(key = "ExpNeeded", object = "instance", type = "integer", value = "{instance.Level}*2+4");
         儲存物件變數(key = "HP", object = "instance", type = "integer", value = "98 + 10*{instance.CON} + 2*{instance.Level}");
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");

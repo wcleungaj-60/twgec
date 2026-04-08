@@ -1,0 +1,30 @@
+// OPTION: --print-ast-after --run-only=constantFolding
+def testBool(v) : actions {
+    actorTalk(cleanTalk = v);
+}
+def testInt(v) : actions {
+    actorTalk(duration = v);
+}
+def testString(v) : actions {
+    actorTalk(text = v);
+}
+
+block init {
+    actions {
+        testBool(v = twge::to_bool(1));
+        testBool(twge::to_bool(0));
+        testBool(twge::to_bool(-3));
+        testBool(twge::to_bool(true));
+        testBool(twge::to_bool(false));
+        testInt(twge::to_int("10"));
+        testInt(twge::to_int("10"+"10"));
+        testInt(twge::to_int(10*10));
+        testInt(twge::to_int(true));
+        testInt(twge::to_int(false));
+        testString(twge::to_string("abc"));
+        testString(twge::to_string(123));
+        testString(twge::to_string(twge::to_int(true)));
+        testString(twge::to_string(twge::to_int(false)));
+        testString(twge::to_string(twge::to_int(twge::to_string(twge::to_int(true))) + 20));
+    }
+}

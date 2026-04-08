@@ -1,6 +1,7 @@
 #include "frontend/ast.h"
 #include "utils/utils.h"
 #include <iostream>
+#include <sstream>
 #include <string>
 
 //------------ print ------------//
@@ -247,8 +248,8 @@ std::unique_ptr<ExpressionNode> ExpressionNode::clone() {
   if (isValue)
     return std::make_unique<ExpressionNode>(value->clone(), loc);
   else
-    return std::make_unique<ExpressionNode>(lhs->clone(), op, rhs->clone(),
-                                            loc);
+    return std::make_unique<ExpressionNode>(lhs->clone(), op,
+                                            rhs ? rhs->clone() : nullptr, loc);
 }
 
 std::unique_ptr<ValueNode> ValueNode::clone() {
@@ -421,7 +422,8 @@ bool ExpressionNode::propagateExp(
         value = nullptr;
         isValue = false;
         lhs = constExp->lhs->clone();
-        rhs = constExp->rhs->clone();
+        if(constExp->rhs)
+          rhs = constExp->rhs->clone();
         op = constExp->op;
       }
     } else if (auto *listNode = dynamic_cast<ListValueNode *>(value.get())) {
@@ -439,7 +441,8 @@ bool ExpressionNode::propagateExp(
     }
   } else {
     ret &= lhs->propagateExp(varExpMap);
-    ret &= rhs->propagateExp(varExpMap);
+    if (rhs)
+      ret &= rhs->propagateExp(varExpMap);
   }
   return ret;
 }
@@ -550,7 +553,7 @@ bool ExpressionNode::foldValue() {
   }
   if (!lhs->foldValue() || !lhs->isValue)
     return false;
-  if (!rhs->foldValue() || !rhs->isValue)
+  if (rhs && (!rhs->foldValue() || !rhs->isValue))
     return false;
   auto isAnd = op == EXP_OP_TYPE_AND;
   auto isOr = op == EXP_OP_TYPE_OR;
@@ -565,12 +568,18 @@ bool ExpressionNode::foldValue() {
   auto isMul = op == EXP_OP_TYPE_MUL;
   auto isDiv = op == EXP_OP_TYPE_DIV;
   auto isMod = op == EXP_OP_TYPE_MOD;
+  auto isToString = op == EXP_OP_TYPE_INTRINSIC_TO_STRING;
+  auto isToInt = op == EXP_OP_TYPE_INTRINSIC_TO_INT;
+  auto isToBool = op == EXP_OP_TYPE_INTRINSIC_TO_BOOL;
+
+  assert(lhs->value.get());
   auto lhsStr = dynamic_cast<StringValueNode *>(lhs->value.get());
-  auto rhsStr = dynamic_cast<StringValueNode *>(rhs->value.get());
   auto lhsInt = dynamic_cast<IntValueNode *>(lhs->value.get());
-  auto rhsInt = dynamic_cast<IntValueNode *>(rhs->value.get());
   auto lhsBool = dynamic_cast<BoolValueNode *>(lhs->value.get());
-  auto rhsBool = dynamic_cast<BoolValueNode *>(rhs->value.get());
+  auto rhsValue = rhs ? rhs->value.get() : nullptr;
+  auto rhsStr = dynamic_cast<StringValueNode *>(rhsValue);
+  auto rhsInt = dynamic_cast<IntValueNode *>(rhsValue);
+  auto rhsBool = dynamic_cast<BoolValueNode *>(rhsValue);
   bool isFolded = false;
   if (lhsStr && rhsStr) {
     if (isAdd) {
@@ -650,58 +659,36 @@ bool ExpressionNode::foldValue() {
                                               lhsBool->loc);
       isFolded = true;
     }
-  } else if (lhsStr && rhsInt) {
-    if (isAdd) {
-      value = std::make_unique<StringValueNode>(
-          "(" + lhsStr->value + "+" + std::to_string(rhsInt->value) + ")",
-          lhsStr->loc);
+  } else if (lhsStr && !rhs) {
+    if (isToString) {
+      value = std::make_unique<StringValueNode>(lhsStr->value, lhsStr->loc);
       isFolded = true;
-    } else if (isSub) {
-      value = std::make_unique<StringValueNode>(
-          "(" + lhsStr->value + "-" + std::to_string(rhsInt->value) + ")",
-          lhsStr->loc);
+    } else if (isToInt) {
+      std::istringstream iss(lhsStr->value);
+      int res;
+      if (iss >> res) {
+        value = std::make_unique<IntValueNode>(res, lhsStr->loc);
+        isFolded = true;
+      }
+    }
+  } else if (lhsInt && !rhs) {
+    if (isToString) {
+      value = std::make_unique<StringValueNode>(std::to_string(lhsInt->value),
+                                                lhsInt->loc);
       isFolded = true;
-    } else if (isMul) {
-      value = std::make_unique<StringValueNode>(
-          "(" + lhsStr->value + "*" + std::to_string(rhsInt->value) + ")",
-          lhsStr->loc);
+    } else if (isToInt) {
+      value = std::make_unique<IntValueNode>(lhsInt->value, lhsInt->loc);
       isFolded = true;
-    } else if (isDiv) {
-      value = std::make_unique<StringValueNode>(
-          "(" + lhsStr->value + "/" + std::to_string(rhsInt->value) + ")",
-          lhsStr->loc);
-      isFolded = true;
-    } else if (isMod) {
-      value = std::make_unique<StringValueNode>(
-          "(" + lhsStr->value + "%" + std::to_string(rhsInt->value) + ")",
-          lhsStr->loc);
+    } else if (isToBool) {
+      value = std::make_unique<BoolValueNode>(lhsInt->value, lhsInt->loc);
       isFolded = true;
     }
-  } else if (lhsInt && rhsStr) {
-    if (isAdd) {
-      value = std::make_unique<StringValueNode>(
-          "(" + std::to_string(lhsInt->value) + "+" + rhsStr->value + ")",
-          lhsInt->loc);
+  } else if (lhsBool && !rhs) {
+    if (isToInt) {
+      value = std::make_unique<IntValueNode>(lhsBool->value, lhsBool->loc);
       isFolded = true;
-    } else if (isSub) {
-      value = std::make_unique<StringValueNode>(
-          "(" + std::to_string(lhsInt->value) + "-" + rhsStr->value + ")",
-          lhsInt->loc);
-      isFolded = true;
-    } else if (isMul) {
-      value = std::make_unique<StringValueNode>(
-          "(" + std::to_string(lhsInt->value) + "*" + rhsStr->value + ")",
-          lhsInt->loc);
-      isFolded = true;
-    } else if (isDiv) {
-      value = std::make_unique<StringValueNode>(
-          "(" + std::to_string(lhsInt->value) + "/" + rhsStr->value + ")",
-          lhsInt->loc);
-      isFolded = true;
-    } else if (isMod) {
-      value = std::make_unique<StringValueNode>(
-          "(" + std::to_string(lhsInt->value) + "%" + rhsStr->value + ")",
-          lhsInt->loc);
+    } else if (isToBool) {
+      value = std::make_unique<BoolValueNode>(lhsBool->value, lhsBool->loc);
       isFolded = true;
     }
   }

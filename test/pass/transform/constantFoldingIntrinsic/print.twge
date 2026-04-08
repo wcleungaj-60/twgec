@@ -1,0 +1,31 @@
+//---------------------------------//
+//--- AST After constantFolding ---//
+//---------------------------------//
+def testBool(v) : actions {
+    actorTalk(cleanTalk = v);
+}
+def testInt(v) : actions {
+    actorTalk(duration = v);
+}
+def testString(v) : actions {
+    actorTalk(text = v);
+}
+block init {
+    actions {
+        testBool(v = true);
+        testBool(false);
+        testBool(true);
+        testBool(true);
+        testBool(false);
+        testInt(10);
+        testInt(1010);
+        testInt(100);
+        testInt(1);
+        testInt(0);
+        testString("abc");
+        testString("123");
+        testString("1");
+        testString("0");
+        testString("21");
+    }
+}

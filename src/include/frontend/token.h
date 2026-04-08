@@ -23,6 +23,9 @@
   LEXER_PRINT_SWTICH_CASE(TokenType::ACTOR_MATCH, "ActorMatch");               \
   LEXER_PRINT_SWTICH_CASE(TokenType::BUTTON, "Button");                        \
   LEXER_PRINT_SWTICH_CASE(TokenType::CUSTOM_WEAPON, "CustomWeapon");           \
+  LEXER_PRINT_SWTICH_CASE(TokenType::INTRINSIC_TO_STRING, "twge::to_string");  \
+  LEXER_PRINT_SWTICH_CASE(TokenType::INTRINSIC_TO_INT, "twge::to_int");        \
+  LEXER_PRINT_SWTICH_CASE(TokenType::INTRINSIC_TO_BOOL, "twge::to_bool");      \
   /* operation */                                                              \
   LEXER_PRINT_SWTICH_CASE(TokenType::OPENCUR, "{");                            \
   LEXER_PRINT_SWTICH_CASE(TokenType::CLOSECUR, "}");                           \
@@ -87,6 +90,10 @@ enum class TokenType {
   ACTOR_MATCH,   // ActorMatch
   BUTTON,        // button
   CUSTOM_WEAPON, // CustomWeapon
+  /* Intrinsic Function */
+  INTRINSIC_TO_STRING, // twge::to_string
+  INTRINSIC_TO_INT,    // twge::to_int
+  INTRINSIC_TO_BOOL,   // twge::to_bool
   /* Speical Character */
   OPENCUR,            // {
   CLOSECUR,           // }

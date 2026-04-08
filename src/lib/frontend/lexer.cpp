@@ -24,6 +24,9 @@ std::string Point = "Point";
 std::string ActorMatch = "ActorMatch";
 std::string Button = "Button";
 std::string CustomWeapon = "CustomWeapon";
+std::string IntrinsicToString = "twge::to_string";
+std::string IntrinsicToInt = "twge::to_int";
+std::string IntrinsicToBool = "twge::to_bool";
 
 const std::map<std::string, TokenType> initMap = {
     {_true, TokenType::TRUE},
@@ -42,6 +45,9 @@ const std::map<std::string, TokenType> initMap = {
     {ActorMatch, TokenType::ACTOR_MATCH},
     {Button, TokenType::BUTTON},
     {CustomWeapon, TokenType::CUSTOM_WEAPON},
+    {IntrinsicToString, TokenType::INTRINSIC_TO_STRING},
+    {IntrinsicToInt, TokenType::INTRINSIC_TO_INT},
+    {IntrinsicToBool, TokenType::INTRINSIC_TO_BOOL},
 };
 } // namespace keyword
 
@@ -283,6 +289,9 @@ Token Lexer::nextToken() {
     LEXER_MATCH_KEYWORD_AND_RETURN(keyword::ActorMatch)
     LEXER_MATCH_KEYWORD_AND_RETURN(keyword::Button)
     LEXER_MATCH_KEYWORD_AND_RETURN(keyword::CustomWeapon)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::IntrinsicToString)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::IntrinsicToInt)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::IntrinsicToBool)
     else if (isValidIdentifierLeadingCharacter(current)) {
       return identifierToken();
     }

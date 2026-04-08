@@ -836,7 +836,7 @@
                             "alive": true
                         },
                         "toType": "angle",
-                        "toAngle": "({instance.bodyRotation}*180/3.14+32)",
+                        "toAngle": "{instance.bodyRotation}*180/3.14+32",
                         "damage": "{instance.INT} + {instance.PSY}/2 + 10",
                         "scale": "0.5",
                         "speed": "0.7"
@@ -851,7 +851,7 @@
                             "alive": true
                         },
                         "toType": "angle",
-                        "toAngle": "({instance.bodyRotation}*180/3.14+16)",
+                        "toAngle": "{instance.bodyRotation}*180/3.14+16",
                         "damage": "{instance.INT} + {instance.PSY}/2 + 10",
                         "scale": "0.5",
                         "speed": "0.7"
@@ -881,7 +881,7 @@
                             "alive": true
                         },
                         "toType": "angle",
-                        "toAngle": "({instance.bodyRotation}*180/3.14-16)",
+                        "toAngle": "{instance.bodyRotation}*180/3.14-16",
                         "damage": "{instance.INT} + {instance.PSY}/2 + 10",
                         "scale": "0.5",
                         "speed": "0.7"
@@ -896,7 +896,7 @@
                             "alive": true
                         },
                         "toType": "angle",
-                        "toAngle": "({instance.bodyRotation}*180/3.14-32)",
+                        "toAngle": "{instance.bodyRotation}*180/3.14-32",
                         "damage": "{instance.INT} + {instance.PSY}/2 + 10",
                         "scale": "0.5",
                         "speed": "0.7"
@@ -2017,7 +2017,7 @@
                         "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "({instance.Point}-1)"
+                        "value": "{instance.Point} - 1"
                     }
                 },
                 {
@@ -2026,7 +2026,7 @@
                         "objectId": "instance",
                         "key": "STR",
                         "valueType": "integer",
-                        "value": "({instance.STR}+1)"
+                        "value": "{instance.STR} + 1"
                     }
                 },
                 {
@@ -2260,7 +2260,7 @@
                         "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "({instance.Point}-1)"
+                        "value": "{instance.Point} - 1"
                     }
                 },
                 {
@@ -2269,7 +2269,7 @@
                         "objectId": "instance",
                         "key": "CON",
                         "valueType": "integer",
-                        "value": "({instance.CON}+1)"
+                        "value": "{instance.CON} + 1"
                     }
                 },
                 {
@@ -2503,7 +2503,7 @@
                         "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "({instance.Point}-1)"
+                        "value": "{instance.Point} - 1"
                     }
                 },
                 {
@@ -2512,7 +2512,7 @@
                         "objectId": "instance",
                         "key": "AGI",
                         "valueType": "integer",
-                        "value": "({instance.AGI}+1)"
+                        "value": "{instance.AGI} + 1"
                     }
                 },
                 {
@@ -2746,7 +2746,7 @@
                         "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "({instance.Point}-1)"
+                        "value": "{instance.Point} - 1"
                     }
                 },
                 {
@@ -2755,7 +2755,7 @@
                         "objectId": "instance",
                         "key": "INT",
                         "valueType": "integer",
-                        "value": "({instance.INT}+1)"
+                        "value": "{instance.INT} + 1"
                     }
                 },
                 {
@@ -2989,7 +2989,7 @@
                         "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "({instance.Point}-1)"
+                        "value": "{instance.Point} - 1"
                     }
                 },
                 {
@@ -2998,7 +2998,7 @@
                         "objectId": "instance",
                         "key": "PSY",
                         "valueType": "integer",
-                        "value": "({instance.PSY}+1)"
+                        "value": "{instance.PSY} + 1"
                     }
                 },
                 {
@@ -3232,7 +3232,7 @@
                         "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "({instance.Point}-10)"
+                        "value": "{instance.Point} - 10"
                     }
                 },
                 {
@@ -3241,7 +3241,7 @@
                         "objectId": "instance",
                         "key": "STR",
                         "valueType": "integer",
-                        "value": "({instance.STR}+10)"
+                        "value": "{instance.STR} + 10"
                     }
                 },
                 {
@@ -3475,7 +3475,7 @@
                         "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "({instance.Point}-10)"
+                        "value": "{instance.Point} - 10"
                     }
                 },
                 {
@@ -3484,7 +3484,7 @@
                         "objectId": "instance",
                         "key": "CON",
                         "valueType": "integer",
-                        "value": "({instance.CON}+10)"
+                        "value": "{instance.CON} + 10"
                     }
                 },
                 {
@@ -3718,7 +3718,7 @@
                         "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "({instance.Point}-10)"
+                        "value": "{instance.Point} - 10"
                     }
                 },
                 {
@@ -3727,7 +3727,7 @@
                         "objectId": "instance",
                         "key": "AGI",
                         "valueType": "integer",
-                        "value": "({instance.AGI}+10)"
+                        "value": "{instance.AGI} + 10"
                     }
                 },
                 {
@@ -3961,7 +3961,7 @@
                         "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "({instance.Point}-10)"
+                        "value": "{instance.Point} - 10"
                     }
                 },
                 {
@@ -3970,7 +3970,7 @@
                         "objectId": "instance",
                         "key": "INT",
                         "valueType": "integer",
-                        "value": "({instance.INT}+10)"
+                        "value": "{instance.INT} + 10"
                     }
                 },
                 {
@@ -4204,7 +4204,7 @@
                         "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "({instance.Point}-10)"
+                        "value": "{instance.Point} - 10"
                     }
                 },
                 {
@@ -4213,7 +4213,7 @@
                         "objectId": "instance",
                         "key": "PSY",
                         "valueType": "integer",
-                        "value": "({instance.PSY}+10)"
+                        "value": "{instance.PSY} + 10"
                     }
                 },
                 {
@@ -4743,7 +4743,7 @@
                         "objectId": "instance",
                         "key": "Level",
                         "valueType": "integer",
-                        "value": "({instance.Level}+1)"
+                        "value": "{instance.Level}+1"
                     }
                 },
                 {
@@ -4752,7 +4752,7 @@
                         "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "({instance.Point}+2)"
+                        "value": "{instance.Point}+2"
                     }
                 },
                 {

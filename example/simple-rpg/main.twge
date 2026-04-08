@@ -6,20 +6,14 @@
 def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
     __repeat__ = -1;
     triggers {
-        if(value == 1) {
-            // TODO: Support twge::int_to_str
-            告示牌按鈕(varName = "instance", buttonId = "increase" + type + "1");
-        } else if (value == 10) {
-            告示牌按鈕(varName = "instance", buttonId = "increase" + type + "10");
-        }
-        // TODO: Support error throwing
+        告示牌按鈕(varName = "instance", buttonId = "increase" + type + twge::to_string(value));
     }
     checks {
         比較數字(lhs = "{instance.Point}", op = ">=", rhs = value);
     }
     actions {
-        自定義::儲存Instance整數("Point", "{instance.Point}" - value);
-        自定義::儲存Instance整數(type, ("{instance."+type+"}") + value);
+        自定義::儲存Instance整數("Point", "{instance.Point} - " + twge::to_string(value));
+        自定義::儲存Instance整數(type, "{instance."+type+"} + " + twge::to_string(value));
         if(value == 1) {
             角色說話(actorId = "instance", text = "成功提升一點" + typeZh + "，尚餘{instance.Point}點能力點");
         } else if (value == 10) {
@@ -68,8 +62,8 @@ block 等級提升 {
     actions {
         地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = 文字::HTML等級提升, duration = 6000);
         自定義::儲存Instance整數("Exp", "{instance.Exp}-{instance.ExpNeeded}");
-        自定義::儲存Instance整數("Level", "{instance.Level}"+1);
-        自定義::儲存Instance整數("Point", "{instance.Point}"+2);
+        自定義::儲存Instance整數("Level", "{instance.Level}+1");
+        自定義::儲存Instance整數("Point", "{instance.Point}+2");
         自定義::儲存Instance整數("ExpNeeded", "{instance.Level}*2+4");
         自定義::儲存Instance整數("HP", 公式::Instance血量);
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");

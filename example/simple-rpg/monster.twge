@@ -1,19 +1,19 @@
-def 自定義::拾取經驗泛型(drop_item_code, exp_string) : block {
+def 自定義::拾取經驗泛型(drop_item_code, exp) : block {
     __repeat__ = -1;
     triggers {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = drop_item_code);
     }
     actions {
-        自定義::儲存Instance整數("Exp", "{instance.Exp}+"+exp_string);
+        自定義::儲存Instance整數("Exp", "{instance.Exp}+"+twge::to_string(exp));
         // TODO: Support return string type function
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: green'>EXP+"+exp_string+"</span>");
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: green'>EXP+"+twge::to_string(exp)+"</span>");
         // TODO: Support Call event
         自定義::上載Instance數據();
     }
 }
 
-block 拾取經驗一級鹿 = 自定義::拾取經驗泛型("deer_exp_01", "1");
-block 拾取經驗三級鹿 = 自定義::拾取經驗泛型("deer_exp_03", "3");
+block 拾取經驗一級鹿 = 自定義::拾取經驗泛型("deer_exp_01", 1);
+block 拾取經驗三級鹿 = 自定義::拾取經驗泛型("deer_exp_03", 3);
 
 def 自定義::野獸死亡泛型(actor_id, drop_item_code, drop_item_type) : block {
     __repeat__ = -1;

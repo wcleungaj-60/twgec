@@ -64,6 +64,9 @@ enum ExpOpType {
   EXP_OP_TYPE_MUL,
   EXP_OP_TYPE_DIV,
   EXP_OP_TYPE_MOD,
+  EXP_OP_TYPE_INTRINSIC_TO_STRING,
+  EXP_OP_TYPE_INTRINSIC_TO_INT,
+  EXP_OP_TYPE_INTRINSIC_TO_BOOL,
 };
 
 //------------ Global level definition ------------//
@@ -625,6 +628,15 @@ inline std::ostream &operator<<(std::ostream &os, ExpOpType type) {
   case EXP_OP_TYPE_MOD:
     os << "%";
     break;
+  case EXP_OP_TYPE_INTRINSIC_TO_STRING:
+    os << "twge::to_string";
+    break;
+  case EXP_OP_TYPE_INTRINSIC_TO_INT:
+    os << "twge::to_int";
+    break;
+  case EXP_OP_TYPE_INTRINSIC_TO_BOOL:
+    os << "twge::to_bool";
+    break;
   default:
     os << "";
     break;
@@ -745,12 +757,13 @@ inline std::ostream &operator<<(std::ostream &os,
 
 inline std::ostream &operator<<(std::ostream &os,
                                 const ExpressionNode &expNode) {
-  if (expNode.isValue) {
+  if (expNode.isValue)
     os << expNode.value->clone();
-  } else {
+  else if (!expNode.rhs)
+    os << expNode.op << "(" << *expNode.lhs.get() << ")";
+  else
     os << "(" << *expNode.lhs.get() << " " << expNode.op << " "
        << *expNode.rhs.get() << ")";
-  }
   return os;
 }
 
