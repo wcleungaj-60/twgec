@@ -526,23 +526,41 @@ std::unique_ptr<ExpressionNode> Parser::parseExpPrimivite() {
   // Intrinsic call
   if (tokens.front().type == TokenType::INTRINSIC_TO_STRING ||
       tokens.front().type == TokenType::INTRINSIC_TO_INT ||
-      tokens.front().type == TokenType::INTRINSIC_TO_BOOL) {
+      tokens.front().type == TokenType::INTRINSIC_TO_BOOL ||
+      tokens.front().type == TokenType::INTRINSIC_GET_INDEX ||
+      tokens.front().type == TokenType::INTRINSIC_GET_LENGTH) {
     ExpOpType op = EXP_OP_TYPE_VOID;
     if (consume(TokenType::INTRINSIC_TO_STRING, /* errorThrowing */ false))
       op = EXP_OP_TYPE_INTRINSIC_TO_STRING;
     else if (consume(TokenType::INTRINSIC_TO_INT, /* errorThrowing */ false))
       op = EXP_OP_TYPE_INTRINSIC_TO_INT;
-    else if (consume(TokenType::INTRINSIC_TO_BOOL))
+    else if (consume(TokenType::INTRINSIC_TO_BOOL, /* errorThrowing */ false))
       op = EXP_OP_TYPE_INTRINSIC_TO_BOOL;
+    else if (consume(TokenType::INTRINSIC_GET_INDEX, /* errorThrowing */ false))
+      op = EXP_OP_TYPE_INTRINSIC_GET_INDEX;
+    else if (consume(TokenType::INTRINSIC_GET_LENGTH,
+                     /* errorThrowing */ false))
+      op = EXP_OP_TYPE_INTRINSIC_GET_LENGTH;
     else
       return nullptr;
+
     if (!consume(TokenType::OPENPAR))
       return nullptr;
     auto lhsExp = parseExpLogicalOr();
-    if (!consume(TokenType::CLOSEPAR))
-      return nullptr;
-    return std::make_unique<ExpressionNode>(std::move(lhsExp), op, nullptr,
-                                            lhsExp->loc);
+    if (op == EXP_OP_TYPE_INTRINSIC_GET_INDEX) {
+      if (!consume(TokenType::COMMA))
+        return nullptr;
+      auto rhsExp = parseExpLogicalOr();
+      if (!consume(TokenType::CLOSEPAR))
+        return nullptr;
+      return std::make_unique<ExpressionNode>(std::move(lhsExp), op,
+                                              std::move(rhsExp), lhsExp->loc);
+    } else {
+      if (!consume(TokenType::CLOSEPAR))
+        return nullptr;
+      return std::make_unique<ExpressionNode>(std::move(lhsExp), op, nullptr,
+                                              lhsExp->loc);
+    }
   }
   // Parentheses
   if (tokens.front().type == TokenType::OPENPAR) {

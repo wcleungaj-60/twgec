@@ -1,0 +1,26 @@
+// OPTION: --print-ast-after --run-only=forLoopUnrolling,constantFolding
+
+const x = ["abcd","efgh","ijkl"];
+
+def testBool(v) : actions {
+    actorTalk(cleanTalk = v);
+}
+def testInt(v) : actions {
+    actorTalk(duration = v);
+}
+def testString(v) : actions {
+    actorTalk(text = v);
+}
+
+block init {
+    actions {
+        testInt(twge::get_length(x));
+        for (i in 0...2) {
+            testString(twge::get_index(x,i));
+            testInt(twge::get_length(twge::get_index(x,i)));
+            for (j in 0...3) {
+                testString(twge::get_index(twge::get_index(x,i),j));
+            }
+        }
+    }
+}

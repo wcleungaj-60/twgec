@@ -27,6 +27,8 @@ std::string CustomWeapon = "CustomWeapon";
 std::string IntrinsicToString = "twge::to_string";
 std::string IntrinsicToInt = "twge::to_int";
 std::string IntrinsicToBool = "twge::to_bool";
+std::string IntrinsicGetIndex = "twge::get_index";
+std::string IntrinsicGetLength = "twge::get_length";
 
 const std::map<std::string, TokenType> initMap = {
     {_true, TokenType::TRUE},
@@ -48,6 +50,8 @@ const std::map<std::string, TokenType> initMap = {
     {IntrinsicToString, TokenType::INTRINSIC_TO_STRING},
     {IntrinsicToInt, TokenType::INTRINSIC_TO_INT},
     {IntrinsicToBool, TokenType::INTRINSIC_TO_BOOL},
+    {IntrinsicGetIndex, TokenType::INTRINSIC_GET_INDEX},
+    {IntrinsicGetLength, TokenType::INTRINSIC_GET_LENGTH},
 };
 } // namespace keyword
 
@@ -292,6 +296,8 @@ Token Lexer::nextToken() {
     LEXER_MATCH_KEYWORD_AND_RETURN(keyword::IntrinsicToString)
     LEXER_MATCH_KEYWORD_AND_RETURN(keyword::IntrinsicToInt)
     LEXER_MATCH_KEYWORD_AND_RETURN(keyword::IntrinsicToBool)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::IntrinsicGetIndex)
+    LEXER_MATCH_KEYWORD_AND_RETURN(keyword::IntrinsicGetLength)
     else if (isValidIdentifierLeadingCharacter(current)) {
       return identifierToken();
     }

@@ -587,11 +587,14 @@ bool ExpressionNode::foldValue() {
   auto isToString = op == EXP_OP_TYPE_INTRINSIC_TO_STRING;
   auto isToInt = op == EXP_OP_TYPE_INTRINSIC_TO_INT;
   auto isToBool = op == EXP_OP_TYPE_INTRINSIC_TO_BOOL;
+  auto isGetIndex = op == EXP_OP_TYPE_INTRINSIC_GET_INDEX;
+  auto isGetLength = op == EXP_OP_TYPE_INTRINSIC_GET_LENGTH;
 
   assert(lhs->value.get());
   auto lhsStr = dynamic_cast<StringValueNode *>(lhs->value.get());
   auto lhsInt = dynamic_cast<IntValueNode *>(lhs->value.get());
   auto lhsBool = dynamic_cast<BoolValueNode *>(lhs->value.get());
+  auto lhsList = dynamic_cast<ListValueNode *>(lhs->value.get());
   auto rhsValue = rhs ? rhs->value.get() : nullptr;
   auto rhsStr = dynamic_cast<StringValueNode *>(rhsValue);
   auto rhsInt = dynamic_cast<IntValueNode *>(rhsValue);
@@ -675,6 +678,23 @@ bool ExpressionNode::foldValue() {
                                               lhsBool->loc);
       isFolded = true;
     }
+  } else if (lhsList && rhsInt) {
+    if (isGetIndex) {
+      auto idx = rhsInt->value;
+      if (idx > 0 || idx < lhsList->items.size()) {
+        value = lhsList->items.at(idx)->value->clone();
+        isFolded = true;
+      }
+    }
+  } else if (lhsStr && rhsInt) {
+    if (isGetIndex) {
+      auto idx = rhsInt->value;
+      if (idx > 0 || idx < lhsStr->value.size()) {
+        value = std::make_unique<StringValueNode>(lhsStr->value.substr(idx, 1),
+                                                  lhsStr->loc);
+        isFolded = true;
+      }
+    }
   } else if (lhsStr && !rhs) {
     if (isToString) {
       value = std::make_unique<StringValueNode>(lhsStr->value, lhsStr->loc);
@@ -686,6 +706,10 @@ bool ExpressionNode::foldValue() {
         value = std::make_unique<IntValueNode>(res, lhsStr->loc);
         isFolded = true;
       }
+    } else if (isGetLength) {
+      value =
+          std::make_unique<IntValueNode>(lhsStr->value.length(), lhsStr->loc);
+      isFolded = true;
     }
   } else if (lhsInt && !rhs) {
     if (isToString) {
@@ -705,6 +729,12 @@ bool ExpressionNode::foldValue() {
       isFolded = true;
     } else if (isToBool) {
       value = std::make_unique<BoolValueNode>(lhsBool->value, lhsBool->loc);
+      isFolded = true;
+    }
+  } else if (lhsList && !rhs) {
+    if (isGetLength) {
+      value =
+          std::make_unique<IntValueNode>(lhsList->items.size(), lhsList->loc);
       isFolded = true;
     }
   }

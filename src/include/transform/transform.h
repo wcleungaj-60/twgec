@@ -114,6 +114,7 @@ public:
   bool execute() {
     if (opt.runOnly.empty())
       return pipeline();
+    // TODO: Allow loopUnrolling with constandFolding OTF
     PassConfig config = {.hidden = false, .allowUnresolvedExpression = false};
     for (std::string pass : opt.runOnly)
       if (!singlePass(pass, config))

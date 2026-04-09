@@ -14,11 +14,16 @@ enum PropagationResult { ERROR = 0, PROPAGATED = 1, UNCHANGED = 2 };
 PropagationResult unrollingList(std::unique_ptr<ForNode> &forNode,
                                 std::unique_ptr<InstrSetNode> &regionToInsert) {
   // Step 2: Verify the for loop
-  if (!forNode->listExp->isValue ||
-      (!dynamic_cast<ListValueNode *>(forNode->listExp->value.get()) &&
-       !dynamic_cast<StringValueNode *>(forNode->listExp->value.get()))) {
+  if (!forNode->listExp->isValue) {
+    std::cerr << "Syntax Error: Value is not propagated in the for "
+                 "statment list. Found at "
+              << forNode->listExp->loc << ".\n";
+    return PropagationResult::ERROR;
+  }
+  if (!dynamic_cast<ListValueNode *>(forNode->listExp->value.get()) &&
+      !dynamic_cast<StringValueNode *>(forNode->listExp->value.get())) {
     std::cerr << "Syntax Error: list or string value is expected in the for "
-                 "statment range. Found at "
+                 "statment list. Found at "
               << forNode->listExp->loc << ".\n";
     return PropagationResult::ERROR;
   }
@@ -59,16 +64,26 @@ PropagationResult
 unrollingRange(std::unique_ptr<ForNode> &forNode,
                std::unique_ptr<InstrSetNode> &regionToInsert) {
   // Step 2: Verify the for loop
-  if (!forNode->fromExp->isValue ||
-      !dynamic_cast<IntValueNode *>(forNode->fromExp->value.get())) {
-    std::cerr << "Syntax Error: Integer value is expected in the for "
+  if (!forNode->fromExp->isValue) {
+    std::cerr << "Syntax Error: Value is not propagated in the if "
                  "statment range. Found at "
               << forNode->fromExp->loc << ".\n";
     return PropagationResult::ERROR;
   }
-  if (!forNode->toExp->isValue ||
-      !dynamic_cast<IntValueNode *>(forNode->toExp->value.get())) {
-    std::cerr << "Syntax Error: Integer value is expected in the for "
+  if (!dynamic_cast<IntValueNode *>(forNode->fromExp->value.get())) {
+    std::cerr << "Syntax Error: Integer value is expected in the if "
+                 "statment range. Found at "
+              << forNode->fromExp->loc << ".\n";
+    return PropagationResult::ERROR;
+  }
+  if (!forNode->toExp->isValue) {
+    std::cerr << "Syntax Error: Value is not propagated in the if "
+                 "statment range. Found at "
+              << forNode->toExp->loc << ".\n";
+    return PropagationResult::ERROR;
+  }
+  if (!dynamic_cast<IntValueNode *>(forNode->toExp->value.get())) {
+    std::cerr << "Syntax Error: Integer value is expected in the if "
                  "statment range. Found at "
               << forNode->toExp->loc << ".\n";
     return PropagationResult::ERROR;

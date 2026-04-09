@@ -67,6 +67,8 @@ enum ExpOpType {
   EXP_OP_TYPE_INTRINSIC_TO_STRING,
   EXP_OP_TYPE_INTRINSIC_TO_INT,
   EXP_OP_TYPE_INTRINSIC_TO_BOOL,
+  EXP_OP_TYPE_INTRINSIC_GET_INDEX,
+  EXP_OP_TYPE_INTRINSIC_GET_LENGTH,
 };
 
 //------------ Global level definition ------------//
@@ -643,6 +645,12 @@ inline std::ostream &operator<<(std::ostream &os, ExpOpType type) {
   case EXP_OP_TYPE_INTRINSIC_TO_BOOL:
     os << "twge::to_bool";
     break;
+  case EXP_OP_TYPE_INTRINSIC_GET_INDEX:
+    os << "twge::get_index";
+    break;
+  case EXP_OP_TYPE_INTRINSIC_GET_LENGTH:
+    os << "twge::get_length";
+    break;
   default:
     os << "";
     break;
@@ -767,6 +775,9 @@ inline std::ostream &operator<<(std::ostream &os,
     os << expNode.value->clone();
   else if (!expNode.rhs)
     os << expNode.op << "(" << *expNode.lhs.get() << ")";
+  else if (expNode.op == EXP_OP_TYPE_INTRINSIC_GET_INDEX)
+    os << expNode.op << "(" << *expNode.lhs.get() << ", " << *expNode.rhs.get()
+       << ")";
   else
     os << "(" << *expNode.lhs.get() << " " << expNode.op << " "
        << *expNode.rhs.get() << ")";

@@ -26,6 +26,9 @@
   LEXER_PRINT_SWTICH_CASE(TokenType::INTRINSIC_TO_STRING, "twge::to_string");  \
   LEXER_PRINT_SWTICH_CASE(TokenType::INTRINSIC_TO_INT, "twge::to_int");        \
   LEXER_PRINT_SWTICH_CASE(TokenType::INTRINSIC_TO_BOOL, "twge::to_bool");      \
+  LEXER_PRINT_SWTICH_CASE(TokenType::INTRINSIC_GET_INDEX, "twge::get_index");  \
+  LEXER_PRINT_SWTICH_CASE(TokenType::INTRINSIC_GET_LENGTH,                     \
+                          "twge::get_length");                                 \
   /* operation */                                                              \
   LEXER_PRINT_SWTICH_CASE(TokenType::OPENCUR, "{");                            \
   LEXER_PRINT_SWTICH_CASE(TokenType::CLOSECUR, "}");                           \
@@ -91,9 +94,11 @@ enum class TokenType {
   BUTTON,        // button
   CUSTOM_WEAPON, // CustomWeapon
   /* Intrinsic Function */
-  INTRINSIC_TO_STRING, // twge::to_string
-  INTRINSIC_TO_INT,    // twge::to_int
-  INTRINSIC_TO_BOOL,   // twge::to_bool
+  INTRINSIC_TO_STRING,  // twge::to_string
+  INTRINSIC_TO_INT,     // twge::to_int
+  INTRINSIC_TO_BOOL,    // twge::to_bool
+  INTRINSIC_GET_INDEX,  // twge::get_index
+  INTRINSIC_GET_LENGTH, // twge::get_length
   /* Speical Character */
   OPENCUR,            // {
   CLOSECUR,           // }

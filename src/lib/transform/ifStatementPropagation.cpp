@@ -28,8 +28,13 @@ ifStatementPropagation(std::unique_ptr<InstrSetNode> &instrSet) {
     // Step 2: Get the region to be inserted
     std::unique_ptr<InstrSetNode> regionToInsert = nullptr;
     for (auto &ifRegion : branchNode->ifRegions) {
-      if (!ifRegion->condition->isValue ||
-          !dynamic_cast<BoolValueNode *>(ifRegion->condition->value.get())) {
+      if (!ifRegion->condition->isValue) {
+        std::cerr << "Syntax Error: Value is not propagated in the if "
+                     "statment condition. Found at "
+                  << ifRegion->condition->loc << ".\n";
+        return PropagationResult::ERROR;
+      }
+      if (!dynamic_cast<BoolValueNode *>(ifRegion->condition->value.get())) {
         std::cerr << "Syntax Error: Boolean value is expected in the if "
                      "statment condition. Found at "
                   << ifRegion->loc << ".\n";
