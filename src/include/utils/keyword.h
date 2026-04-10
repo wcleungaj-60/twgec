@@ -787,6 +787,10 @@ const string keywordBox0Zh = "大箱子";
 const string keywordBox1 = "box1";
 const string keywordBox1Zh = "小箱子";
 const string keywordHouse0 = "house0";
+const string keywordChair0 = "chair0";
+const string keywordChair0Zh = "石椅";
+const string keywordChair1 = "chair1";
+const string keywordChair1Zh = "木椅";
 const string keywordHouse0Zh = "5x4橫向房子";
 const string keywordHouse1 = "house1";
 const string keywordHouse1Zh = "5x4縱向房子";
@@ -808,6 +812,8 @@ static KeywordEnum keywordEnum(
         {keywordBox0, keywordBox0},     {keywordBox0Zh, keywordBox0},
         {keywordBox1, keywordBox1},     {keywordBox1Zh, keywordBox1},
         {keywordHouse0, keywordHouse0}, {keywordHouse0Zh, keywordHouse0},
+        {keywordChair0, keywordChair0}, {keywordChair0Zh, keywordChair0},
+        {keywordChair1, keywordChair1}, {keywordChair1Zh, keywordChair1},
         {keywordHouse1, keywordHouse1}, {keywordHouse1Zh, keywordHouse1},
         {keywordHouse2, keywordHouse2}, {keywordHouse2Zh, keywordHouse2},
         {keywordHouse3, keywordHouse3}, {keywordHouse3Zh, keywordHouse3},
