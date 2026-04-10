@@ -7620,6 +7620,38 @@
                         "localVarname": "",
                         "locs": [
                             {
+                                "x": "1",
+                                "y": "15",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "0",
+                        "speech": "【重置能力點分配】",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "ResetPoint",
+                                    "close": true,
+                                    "label": "確認",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
                                 "x": "3",
                                 "y": "17",
                                 "range": "0"
@@ -7798,38 +7830,6 @@
                                     "buttonCode": "increasePSY10",
                                     "close": true,
                                     "label": "提升十點",
-                                    "icon": ""
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "type": "AddMapSIgn",
-                    "data": {
-                        "localVarname": "",
-                        "locs": [
-                            {
-                                "x": "1",
-                                "y": "15",
-                                "range": "0"
-                            }
-                        ],
-                        "shape": "wood",
-                        "rotation": "0",
-                        "speech": "【重置能力點分配】",
-                        "parsePolicy": "view",
-                        "showButtons": true,
-                        "btnsGroup": {
-                            "rowSize": "1",
-                            "btnMinWidth": "1",
-                            "textAlign": "center",
-                            "varnameButton": "",
-                            "btns": [
-                                {
-                                    "buttonCode": "ResetPoint",
-                                    "close": true,
-                                    "label": "確認",
                                     "icon": ""
                                 }
                             ]

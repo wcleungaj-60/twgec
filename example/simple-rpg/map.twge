@@ -1,0 +1,48 @@
+const 地圖::新手村 = [
+"            ",
+"            ",
+"            ",
+"            ",
+"            ",
+"            ",
+"            ",
+"            ",
+"            ",
+"            ",
+"            ",
+"            ",
+"            ",
+"            ",
+"            ",
+" 0          ",
+"            ",
+"   1 2 3 4 5"
+];
+
+def 地圖::新增能力點告示牌(x, y, text, type) : actions {
+    新增告示牌(x = x, y = y, rotation = 270, text = text, buttons = [
+        Button(id = "increase" + type + "1", text = "提升一點"),
+        Button(id = "increase" + type + "10", text = "提升十點")
+    ]);
+}
+
+def 地圖::生成新手村地圖(xOffset, yOffset) : actions {
+    for(map_row in 0...(twge::get_length(地圖::新手村) - 1)) {
+        for(map_col in 0...(twge::get_length(twge::get_index(地圖::新手村, map_row)) - 1)) {
+            // 生成木板
+            if(((twge::get_index(twge::get_index(地圖::新手村, map_row), map_col))) == "0") {
+                新增告示牌(x = map_col + xOffset, y = map_row + yOffset, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
+            } else if(((twge::get_index(twge::get_index(地圖::新手村, map_row), map_col))) == "1") {
+                地圖::新增能力點告示牌(map_col + xOffset, map_row + yOffset, 文字::力量描述, "STR");
+            } else if(((twge::get_index(twge::get_index(地圖::新手村, map_row), map_col))) == "2") {
+                地圖::新增能力點告示牌(map_col + xOffset, map_row + yOffset, 文字::體質描述, "CON");
+            } else if(((twge::get_index(twge::get_index(地圖::新手村, map_row), map_col))) == "3") {
+                地圖::新增能力點告示牌(map_col + xOffset, map_row + yOffset, 文字::敏捷描述, "AGI");
+            } else if(((twge::get_index(twge::get_index(地圖::新手村, map_row), map_col))) == "4") {
+                地圖::新增能力點告示牌(map_col + xOffset, map_row + yOffset, 文字::智慧描述, "INT");
+            } else if(((twge::get_index(twge::get_index(地圖::新手村, map_row), map_col))) == "5") {
+                地圖::新增能力點告示牌(map_col + xOffset, map_row + yOffset, 文字::精神描述, "PSY");
+            }
+        }
+    }
+}
