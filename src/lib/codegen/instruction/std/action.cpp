@@ -201,6 +201,25 @@ action::ActionAddMapSign::method(DefaultMap defaultMap,
 }
 
 JsonObjectNode
+action::ActionAddMapObject::method(DefaultMap defaultMap,
+                                   UserDefinedMetadata userDefinedMeta) {
+  JsonObjectNode locNode = JsonObjectNode({
+      {"x", defaultMap.get("x")},
+      {"y", defaultMap.get("y")},
+      {"range", defaultMap.get("range")},
+  });
+  JsonArrayNode locsNode =
+      JsonArrayNode(std::make_shared<JsonObjectNode>(locNode));
+  return JsonObjectNode({
+      {"locType", "\"locs\""},
+      {"pick", "\"random\""},
+      {"locs", locsNode.to_string(24)},
+      {"resource", defaultMap.get("object", MapObjectKind::keywordEnum)},
+      {"autoLayer", defaultMap.get("autoTuneHeight")},
+  });
+}
+
+JsonObjectNode
 action::ActionAddStuff::method(DefaultMap defaultMap,
                                UserDefinedMetadata userDefinedMeta) {
   JsonObjectNode locationNode = JsonObjectNode({

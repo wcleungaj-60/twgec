@@ -781,6 +781,43 @@ static KeywordEnum keywordEnum("custom weapon attack kind",
                                });
 } // namespace CustomWeaponAttackKind
 
+namespace MapObjectKind {
+const string keywordBox0 = "box0";
+const string keywordBox0Zh = "大箱子";
+const string keywordBox1 = "box1";
+const string keywordBox1Zh = "小箱子";
+const string keywordHouse0 = "house0";
+const string keywordHouse0Zh = "5x4橫向房子";
+const string keywordHouse1 = "house1";
+const string keywordHouse1Zh = "5x4縱向房子";
+const string keywordHouse2 = "house2";
+const string keywordHouse2Zh = "4x4橫向房子";
+const string keywordHouse3 = "house3";
+const string keywordHouse3Zh = "4x4縱向房子";
+const string keywordSky12 = "sky012";
+const string keywordSky12Zh = "草地";
+const string keywordTree0 = "tree0";
+const string keywordTree0Zh = "3x3綠樹";
+const string keywordTree1 = "tree1";
+const string keywordTree1Zh = "3x3淺綠樹";
+const string keywordTree5 = "tree5";
+const string keywordTree5Zh = "3x3棕樹";
+static KeywordEnum keywordEnum(
+    "map object kind",
+    {
+        {keywordBox0, keywordBox0},     {keywordBox0Zh, keywordBox0},
+        {keywordBox1, keywordBox1},     {keywordBox1Zh, keywordBox1},
+        {keywordHouse0, keywordHouse0}, {keywordHouse0Zh, keywordHouse0},
+        {keywordHouse1, keywordHouse1}, {keywordHouse1Zh, keywordHouse1},
+        {keywordHouse2, keywordHouse2}, {keywordHouse2Zh, keywordHouse2},
+        {keywordHouse3, keywordHouse3}, {keywordHouse3Zh, keywordHouse3},
+        {keywordSky12, keywordSky12},   {keywordSky12Zh, keywordSky12},
+        {keywordTree0, keywordTree0},   {keywordTree0Zh, keywordTree0},
+        {keywordTree1, keywordTree1},   {keywordTree1Zh, keywordTree1},
+        {keywordTree5, keywordTree5},   {keywordTree5Zh, keywordTree5},
+    });
+} // namespace MapObjectKind
+
 namespace MapWarpKind {
 const string keywordLeft = "left";
 const string keywordLeftZh = "左";

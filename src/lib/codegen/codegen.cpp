@@ -143,6 +143,8 @@ void CodeGenerator::codegenAction(std::ofstream &of,
     of << action::ActionAddDropItem::CODEGEN_FUNC;
   if (identifier == "addMapSign" || identifier == "新增告示牌")
     of << action::ActionAddMapSign::CODEGEN_FUNC;
+  if (identifier == "addMapObject" || identifier == "新增地圖物件")
+    of << action::ActionAddMapObject::CODEGEN_FUNC;
   if (identifier == "addStuff" || identifier == "新增武器道具")
     of << action::ActionAddStuff::CODEGEN_FUNC;
   if (identifier == "deltaHp" || identifier == "角色加減血")

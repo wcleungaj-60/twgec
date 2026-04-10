@@ -1,0 +1,6 @@
+block init {
+    actions {
+        addMapObject(x = 1, y = 2, object = "大箱子");
+        addMapObject(x = 5, y = 7, object = "3x3淺綠樹");
+    }
+}

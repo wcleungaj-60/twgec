@@ -198,6 +198,13 @@ const InstructionConfig addDropItemConfig =
         .addParam("scale", AST_INT, CODEGEN_STRING, "1")
         .addParam("type", AST_STRING, CODEGEN_STRING, "paper")
         .addParam("localVarname", AST_STRING, CODEGEN_STRING, "");
+const InstructionConfig addMapObjectConfig =
+    InstructionConfig("addMapObject", "新增地圖物件")
+        .addParam("x", AST_INT, CODEGEN_STRING, "0")
+        .addParam("y", AST_INT, CODEGEN_STRING, "0")
+        .addParam("range", AST_INT, CODEGEN_STRING, "0")
+        .addParam("object", AST_STRING, CODEGEN_STRING, "tree0")
+        .addParam("autoTuneHeight", AST_BOOL, CODEGEN_BOOL, "true");
 const InstructionConfig addMapSignConfig =
     InstructionConfig("addMapSign", "新增告示牌")
         .addParam("text", AST_STRING, CODEGEN_STRING, "")
@@ -344,6 +351,7 @@ const std::vector<InstructionConfig> actionList = {
     actorTalkConfig,
     addActorConfig,
     addDropItemConfig,
+    addMapObjectConfig,
     addMapSignConfig,
     addStuffConfig,
     deltaHpConfig,
