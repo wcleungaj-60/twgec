@@ -7357,120 +7357,6 @@
                     }
                 },
                 {
-                    "type": "AddMapSIgn",
-                    "data": {
-                        "localVarname": "",
-                        "locs": [
-                            {
-                                "x": "4",
-                                "y": "7",
-                                "range": "0"
-                            }
-                        ],
-                        "shape": "wood",
-                        "rotation": "90",
-                        "speech": "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】散射釋出五發光彈\n - 光彈傷害: 10+智慧+精神÷2",
-                        "parsePolicy": "view",
-                        "showButtons": true,
-                        "btnsGroup": {
-                            "rowSize": "1",
-                            "btnMinWidth": "1",
-                            "textAlign": "center",
-                            "varnameButton": "",
-                            "btns": [
-                                {
-                                    "buttonCode": "wearWindStaff",
-                                    "close": true,
-                                    "label": "裝備",
-                                    "icon": ""
-                                },
-                                {
-                                    "buttonCode": "wearNone",
-                                    "close": true,
-                                    "label": "卸下",
-                                    "icon": ""
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "type": "AddMapSIgn",
-                    "data": {
-                        "localVarname": "",
-                        "locs": [
-                            {
-                                "x": "5",
-                                "y": "7",
-                                "range": "0"
-                            }
-                        ],
-                        "shape": "wood",
-                        "rotation": "90",
-                        "speech": "【匕首】\n【普通攻擊】\n - 武器傷害: 10+力量×2+敏捷\n - 連擊率: 10%+敏捷×2%，上限100%\n",
-                        "parsePolicy": "view",
-                        "showButtons": true,
-                        "btnsGroup": {
-                            "rowSize": "1",
-                            "btnMinWidth": "1",
-                            "textAlign": "center",
-                            "varnameButton": "",
-                            "btns": [
-                                {
-                                    "buttonCode": "wearDagger",
-                                    "close": true,
-                                    "label": "裝備",
-                                    "icon": ""
-                                },
-                                {
-                                    "buttonCode": "wearNone",
-                                    "close": true,
-                                    "label": "卸下",
-                                    "icon": ""
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "type": "AddMapSIgn",
-                    "data": {
-                        "localVarname": "",
-                        "locs": [
-                            {
-                                "x": "6",
-                                "y": "7",
-                                "range": "0"
-                            }
-                        ],
-                        "shape": "wood",
-                        "rotation": "90",
-                        "speech": "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質",
-                        "parsePolicy": "view",
-                        "showButtons": true,
-                        "btnsGroup": {
-                            "rowSize": "1",
-                            "btnMinWidth": "1",
-                            "textAlign": "center",
-                            "varnameButton": "",
-                            "btns": [
-                                {
-                                    "buttonCode": "wearIronSword",
-                                    "close": true,
-                                    "label": "裝備",
-                                    "icon": ""
-                                },
-                                {
-                                    "buttonCode": "wearNone",
-                                    "close": true,
-                                    "label": "卸下",
-                                    "icon": ""
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
                     "type": "MapWarp",
                     "data": {
                         "location": {
@@ -7887,6 +7773,44 @@
                     }
                 },
                 {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "4",
+                                "y": "7",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "90",
+                        "speech": "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】散射釋出五發光彈\n - 光彈傷害: 10+智慧+精神÷2",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "wearWindStaff",
+                                    "close": true,
+                                    "label": "裝備",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "wearNone",
+                                    "close": true,
+                                    "label": "卸下",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
                     "type": "AddMapObject",
                     "data": {
                         "locType": "locs",
@@ -7903,6 +7827,44 @@
                     }
                 },
                 {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "5",
+                                "y": "7",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "90",
+                        "speech": "【匕首】\n【普通攻擊】\n - 武器傷害: 10+力量×2+敏捷\n - 連擊率: 10%+敏捷×2%，上限100%\n",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "wearDagger",
+                                    "close": true,
+                                    "label": "裝備",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "wearNone",
+                                    "close": true,
+                                    "label": "卸下",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
                     "type": "AddMapObject",
                     "data": {
                         "locType": "locs",
@@ -7916,6 +7878,44 @@
                         ],
                         "resource": "box1",
                         "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "6",
+                                "y": "7",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "90",
+                        "speech": "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "wearIronSword",
+                                    "close": true,
+                                    "label": "裝備",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "wearNone",
+                                    "close": true,
+                                    "label": "卸下",
+                                    "icon": ""
+                                }
+                            ]
+                        }
                     }
                 },
                 {

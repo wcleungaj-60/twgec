@@ -1,24 +1,24 @@
 const 地圖::新手村 = [
-"     **             ",
-"             ***    ",
-"  .....      ***    ",
-"  ..H..      ***    ",
-"  .....**           ",
-"  .....*            ",
-"  B.                ",
-"  ..bbb         *   ",
-"     **        ***  ",
-"   ****       ***** ",
-"   ****        ***  ",
-"   ***          *   ",
-"                    ",
-"**      *           ",
-"*      ***          ",
-" 0      *           ",
-"                    ",
-"   1 2 3 4 5        ",
-"                  **",
-"       ***       ***"
+" .  .  .  .  . ****** .  .  .  .  .  .  .  .  .  .  .  .  . ",
+" .  .  .  .  .  .  .  .  .  .  .  .  . ********* .  .  .  . ",
+" .  . --------------- .  .  .  .  .  . ********* .  .  .  . ",
+" .  . ------H00------ .  .  .  .  .  . ********* .  .  .  . ",
+" .  . ---------------****** .  .  .  .  .  .  .  .  .  .  . ",
+" .  . ---------------*** .  .  .  .  .  .  .  .  .  .  .  . ",
+" .  . LBx--- .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . ",
+" .  . ------S06S07S08 .  .  .  .  .  .  .  .  . *** .  .  . ",
+" .  .  .  .  . ****** .  .  .  .  .  .  .  . ********* .  . ",
+" .  .  . ************ .  .  .  .  .  .  . *************** . ",
+" .  .  . ************ .  .  .  .  .  .  .  . ********* .  . ",
+" .  .  . ********* .  .  .  .  .  .  .  .  .  . *** .  .  . ",
+" .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . ",
+"****** .  .  .  .  .  . *** .  .  .  .  .  .  .  .  .  .  . ",
+"*** .  .  .  .  .  . ********* .  .  .  .  .  .  .  .  .  . ",
+" . S00 .  .  .  .  .  . *** .  .  .  .  .  .  .  .  .  .  . ",
+" .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . ",
+" .  .  . S01 . S02 . S03 . S04 . S05 .  .  .  .  .  .  .  . ",
+" .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . ******",
+" .  .  .  .  .  .  . ********* .  .  .  .  .  .  . *********"
 ];
 
 def 地圖::新增能力點告示牌(x, y, text, type) : actions {
@@ -29,36 +29,54 @@ def 地圖::新增能力點告示牌(x, y, text, type) : actions {
     ]);
 }
 
+def 地圖::生成新手村地圖配置(x, y, object) : actions {
+    // '---' 用作padding
+    if(object == "---" || object == " . ") {}
+    // 生成木板
+    else if(object == "S00") {
+        新增地圖物件(x = x, y = y, object = "石椅");
+        新增告示牌(x = x, y = y, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
+    } else if(object == "S01") {
+        地圖::新增能力點告示牌(x, y, 文字::力量描述, "STR");
+    } else if(object == "S02") {
+        地圖::新增能力點告示牌(x, y, 文字::體質描述, "CON");
+    } else if(object == "S03") {
+        地圖::新增能力點告示牌(x, y, 文字::敏捷描述, "AGI");
+    } else if(object == "S04") {
+        地圖::新增能力點告示牌(x, y, 文字::智慧描述, "INT");
+    } else if(object == "S05") {
+        地圖::新增能力點告示牌(x, y, 文字::精神描述, "PSY");
+    } else if(object == "S06") {
+        新增地圖物件(x = x, y = y, object = "小箱子");
+        新增告示牌(x = x, y = y, rotation = 90, text = 文字::風杖描述, buttons = [Button(id = "wearWindStaff", text = "裝備"), Button(id = "wearNone", text = "卸下")]);
+    } else if(object == "S07") {
+        新增地圖物件(x = x, y = y, object = "小箱子");
+        新增告示牌(x = 5, y = 7, rotation = 90, text = 文字::匕首描述, buttons = [Button(id = "wearDagger", text = "裝備"), Button(id = "wearNone", text = "卸下")]);
+    } else if(object == "S08") {
+        新增地圖物件(x = x, y = y, object = "小箱子");
+        新增告示牌(x = 6, y = 7, rotation = 90, text = 文字::鐵劍描述, buttons = [Button(id = "wearIronSword", text = "裝備"), Button(id = "wearNone", text = "卸下")]);
+    }
+    // 生成地圖物件
+    else if(object == "LBx") {
+        新增地圖物件(x = x, y = y, object = "大箱子");
+    } else if(object == "SBx") {
+        新增地圖物件(x = x, y = y, object = "小箱子");
+    } else if(object == "H00") {
+        新增地圖物件(x = x, y = y, object = "5x4橫向房子");
+    } else if(object == "***") {
+        新增地圖物件(x = x, y = y, object = "草地");
+    } else {
+        print(text = "無效Object:" + object, type = "error");
+    }
+}
+
 def 地圖::生成新手村地圖(xOffset, yOffset) : actions {
     for(map_row in 0...(twge::get_length(地圖::新手村) - 1)) {
-        for(map_col in 0...(twge::get_length(twge::get_index(地圖::新手村, map_row)) - 1)) {
-            // '.' 用作padding
-            if(((twge::get_index(twge::get_index(地圖::新手村, map_row), map_col))) == ".") {}
-            // 生成木板
-            else if(((twge::get_index(twge::get_index(地圖::新手村, map_row), map_col))) == "0") {
-                新增地圖物件(x = map_col + xOffset, y = map_row + yOffset, object = "石椅");
-                新增告示牌(x = map_col + xOffset, y = map_row + yOffset, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
-            } else if(((twge::get_index(twge::get_index(地圖::新手村, map_row), map_col))) == "1") {
-                地圖::新增能力點告示牌(map_col + xOffset, map_row + yOffset, 文字::力量描述, "STR");
-            } else if(((twge::get_index(twge::get_index(地圖::新手村, map_row), map_col))) == "2") {
-                地圖::新增能力點告示牌(map_col + xOffset, map_row + yOffset, 文字::體質描述, "CON");
-            } else if(((twge::get_index(twge::get_index(地圖::新手村, map_row), map_col))) == "3") {
-                地圖::新增能力點告示牌(map_col + xOffset, map_row + yOffset, 文字::敏捷描述, "AGI");
-            } else if(((twge::get_index(twge::get_index(地圖::新手村, map_row), map_col))) == "4") {
-                地圖::新增能力點告示牌(map_col + xOffset, map_row + yOffset, 文字::智慧描述, "INT");
-            } else if(((twge::get_index(twge::get_index(地圖::新手村, map_row), map_col))) == "5") {
-                地圖::新增能力點告示牌(map_col + xOffset, map_row + yOffset, 文字::精神描述, "PSY");
-            }
-            // 生成地圖物件
-            else if(((twge::get_index(twge::get_index(地圖::新手村, map_row), map_col))) == "B") {
-                新增地圖物件(x = map_col + xOffset, y = map_row + yOffset, object = "大箱子");
-            } else if(((twge::get_index(twge::get_index(地圖::新手村, map_row), map_col))) == "b") {
-                新增地圖物件(x = map_col + xOffset, y = map_row + yOffset, object = "小箱子");
-            } else if(((twge::get_index(twge::get_index(地圖::新手村, map_row), map_col))) == "H") {
-                新增地圖物件(x = map_col + xOffset, y = map_row + yOffset, object = "5x4橫向房子");
-            } else if(((twge::get_index(twge::get_index(地圖::新手村, map_row), map_col))) == "*") {
-                新增地圖物件(x = map_col + xOffset, y = map_row + yOffset, object = "草地");
-            }
+        for(map_col in 0...(twge::get_length(twge::get_index(地圖::新手村, map_row))/3 - 1)) {
+            地圖::生成新手村地圖配置(map_col + xOffset, map_row + yOffset,
+            twge::get_index(twge::get_index(地圖::新手村, map_row), map_col*3 + 0) + 
+            twge::get_index(twge::get_index(地圖::新手村, map_row), map_col*3 + 1) + 
+            twge::get_index(twge::get_index(地圖::新手村, map_row), map_col*3 + 2));
         }
     }
 }

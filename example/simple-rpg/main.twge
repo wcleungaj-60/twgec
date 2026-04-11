@@ -197,9 +197,6 @@ block 遊戲初始化 {
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = 別名::武器風杖);
         設定武器技能(weapon = 別名::武器鐵劍);
-        新增告示牌(x = 4, y = 7, rotation = 90, text = 文字::風杖描述, buttons = [Button(id = "wearWindStaff", text = "裝備"), Button(id = "wearNone", text = "卸下")]);
-        新增告示牌(x = 5, y = 7, rotation = 90, text = 文字::匕首描述, buttons = [Button(id = "wearDagger", text = "裝備"), Button(id = "wearNone", text = "卸下")]);
-        新增告示牌(x = 6, y = 7, rotation = 90, text = 文字::鐵劍描述, buttons = [Button(id = "wearIronSword", text = "裝備"), Button(id = "wearNone", text = "卸下")]);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
         自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
         自定義::設定雙向地圖傳送點(x1 = 30, y1 = 19, x2 = 30, y2 = 21);
