@@ -184,7 +184,7 @@ const InstructionConfig addActorConfig =
         .addParam("x", AST_INT, CODEGEN_STRING, "0")
         .addParam("y", AST_INT, CODEGEN_STRING, "0")
         .addParam("hp", AST_INT, CODEGEN_STRING, "100")
-        .addParam("range", AST_INT, CODEGEN_STRING, "10000")
+        .addParam("range", AST_INT, CODEGEN_STRING, "0")
         .addParam("role", AST_STRING, CODEGEN_INT, "0")
         .addParam("externRole", AST_STRING, CODEGEN_STRING, "")
         .addParam("strength", AST_INT, CODEGEN_STRING, "1")

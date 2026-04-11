@@ -107,7 +107,7 @@ action::ActionAddActor::method(DefaultMap defaultMap,
   JsonObjectNode locationNode = JsonObjectNode({
       {"x", defaultMap.get("x")},
       {"y", defaultMap.get("y")},
-      {"range", "\"0\""},
+      {"range", defaultMap.get("range")},
   });
   return JsonObjectNode({
       {"actorCode", defaultMap.get("id")},
@@ -132,7 +132,7 @@ action::ActionAddActor::method(DefaultMap defaultMap,
       {"weight", "\"4\""},
       {"strength", defaultMap.get("strength")},
       {"vision", "\"300\""},
-      {"range", defaultMap.get("range")},
+      {"range", "\"10000\""},
       {"score", "\"10\""},
       {"bloodType", "\"default\""},
       {"unbrokenArmor", "true"},

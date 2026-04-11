@@ -9,7 +9,7 @@ addActor(
     string           localVarname = "actor", 
     string           name = "", 
     list[Point]      patrol = [], 
-    int|string       range = "10000", 
+    int|string       range = "0", 
     string           role = 0, 
     int|string       strength = "1", 
     int|string       teamId = "0", 

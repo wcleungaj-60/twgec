@@ -1,4 +1,4 @@
-const 地圖::新手村 = [
+const 地圖::新手村100n100 = [
 " .  .  .  .  . ****** .  .  .  .  .  .  .  .  .  .  .  .  . ",
 " .  .  .  .  .  .  .  .  .  .  .  .  . ********* .  .  .  . ",
 " .  . --------------- .  .  .  .  .  . ********* .  .  .  . ",
@@ -21,6 +21,29 @@ const 地圖::新手村 = [
 " .  .  .  .  .  .  . ********* .  .  .  .  .  .  . *********"
 ];
 
+const 地圖::新手村近郊101n100 = [
+" .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . ",
+" .  .  .  .  .  .  .  .  .  . *** .  .  .  .  .  .  .  .  . ",
+" .  .  .  .  .  .  .  .  . ********* .  .  .  .  .  . *** . ",
+" .  .  .  .  .  .  .  .  .  . *** .  .  .  .  .  .  . *** . ",
+" .  . *** .  .  .  .  .  .  .  .  .  .  .  .  .  .  . ******",
+" .  . ****** .  .  .  .  .  .  .  .  .  . t00 .  .  .  . ***",
+" .  . ****** .  .  .  .  .  .  .  .  .  .  .  .  .  .  . ***",
+" .  . ****** .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . ",
+" .  .  . *** .  .  .  .  .  .  . *** .  .  .  .  .  .  .  . ",
+" .  .  .  .  .  .  .  .  .  . ********* .  .  .  .  .  .  . ",
+" .  .  .  .  .  .  .  .  . ***t00********* .  .  .  .  .  . ",
+" .  .  .  .  .  .  . ****************** .  .  .  .  .  .  . ",
+" .  .  .  .  .  . ********************* .  .  .  .  .  .  . ",
+" .  .  .  .  .  .  . ********* .  .  .  .  .  .  .  .  .  . ",
+" .  . t00 .  .  .  .  . *** .  .  .  .  .  .  .  .  .  .  . ",
+" .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . ******",
+" .  .  .  . ****** .  .  .  .  .  .  .  .  .  .  . *********",
+" .  .  .  . ********* .  .  .  .  .  .  .  .  .  .  . ******",
+" .  .  .  .  . ****** .  .  .  .  .  .  .  .  .  .  .  .  . ",
+" .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . "
+];
+
 def 地圖::新增能力點告示牌(x, y, text, type) : actions {
     新增地圖物件(x = x, y = y, object = "石椅");
     新增告示牌(x = x, y = y, rotation = 270, text = text, buttons = [
@@ -29,7 +52,7 @@ def 地圖::新增能力點告示牌(x, y, text, type) : actions {
     ]);
 }
 
-def 地圖::生成新手村地圖配置(x, y, object) : actions {
+def 地圖::生成地圖配置(x, y, object) : actions {
     // '---' 用作padding
     if(object == "---" || object == " . ") {}
     // 生成木板
@@ -65,18 +88,31 @@ def 地圖::生成新手村地圖配置(x, y, object) : actions {
         新增地圖物件(x = x, y = y, object = "5x4橫向房子");
     } else if(object == "***") {
         新增地圖物件(x = x, y = y, object = "草地");
+    } else if(object == "t00") {
+        新增地圖物件(x = x, y = y, object = "3x3綠樹");
     } else {
         print(text = "無效Object:" + object, type = "error");
     }
 }
 
-def 地圖::生成新手村地圖(xOffset, yOffset) : actions {
-    for(map_row in 0...(twge::get_length(地圖::新手村) - 1)) {
-        for(map_col in 0...(twge::get_length(twge::get_index(地圖::新手村, map_row))/3 - 1)) {
-            地圖::生成新手村地圖配置(map_col + xOffset, map_row + yOffset,
-            twge::get_index(twge::get_index(地圖::新手村, map_row), map_col*3 + 0) + 
-            twge::get_index(twge::get_index(地圖::新手村, map_row), map_col*3 + 1) + 
-            twge::get_index(twge::get_index(地圖::新手村, map_row), map_col*3 + 2));
+def 地圖::生成地圖100n100(xOffset, yOffset) : actions {
+    for(map_row in 0...(twge::get_length(地圖::新手村100n100) - 1)) {
+        for(map_col in 0...(twge::get_length(twge::get_index(地圖::新手村100n100, map_row))/3 - 1)) {
+            地圖::生成地圖配置(map_col + xOffset, map_row + yOffset,
+            twge::get_index(twge::get_index(地圖::新手村100n100, map_row), map_col*3 + 0) + 
+            twge::get_index(twge::get_index(地圖::新手村100n100, map_row), map_col*3 + 1) + 
+            twge::get_index(twge::get_index(地圖::新手村100n100, map_row), map_col*3 + 2));
+        }
+    }
+}
+
+def 地圖::生成地圖101n100(xOffset, yOffset) : actions {
+    for(map_row in 0...(twge::get_length(地圖::新手村近郊101n100) - 1)) {
+        for(map_col in 0...(twge::get_length(twge::get_index(地圖::新手村近郊101n100, map_row))/3 - 1)) {
+            地圖::生成地圖配置(map_col + xOffset, map_row + yOffset,
+            twge::get_index(twge::get_index(地圖::新手村近郊101n100, map_row), map_col*3 + 0) + 
+            twge::get_index(twge::get_index(地圖::新手村近郊101n100, map_row), map_col*3 + 1) + 
+            twge::get_index(twge::get_index(地圖::新手村近郊101n100, map_row), map_col*3 + 2));
         }
     }
 }
