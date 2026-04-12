@@ -806,21 +806,57 @@ const string keywordTree1 = "tree1";
 const string keywordTree1Zh = "3x3淺綠樹";
 const string keywordTree5 = "tree5";
 const string keywordTree5Zh = "3x3棕樹";
+const string keywordShine1E = "shine1_e";
+const string keywordShine1EZh = "白光(弱左)";
+const string keywordShine1N = "shine1_n";
+const string keywordShine1NZh = "白光(弱下)";
+const string keywordShine1S = "shine1_s";
+const string keywordShine1SZh = "白光(弱上)";
+const string keywordShine1W = "shine1_w";
+const string keywordShine1WZh = "白光(弱右)";
+const string keywordShine2E = "shine2_e";
+const string keywordShine2EZh = "白光(長左)";
+const string keywordShine2N = "shine2_n";
+const string keywordShine2NZh = "白光(長下)";
+const string keywordShine2S = "shine2_s";
+const string keywordShine2SZh = "白光(長上)";
+const string keywordShine2W = "shine2_w";
+const string keywordShine2WZh = "白光(長右)";
+const string keywordShine3E = "shine3_e";
+const string keywordShine3EZh = "白光(左)";
+const string keywordShine3N = "shine3_n";
+const string keywordShine3NZh = "白光(下)";
+const string keywordShine3S = "shine3_s";
+const string keywordShine3SZh = "白光(上)";
+const string keywordShine3W = "shine3_w";
+const string keywordShine3WZh = "白光(右)";
 static KeywordEnum keywordEnum(
     "map object kind",
     {
-        {keywordBox0, keywordBox0},     {keywordBox0Zh, keywordBox0},
-        {keywordBox1, keywordBox1},     {keywordBox1Zh, keywordBox1},
-        {keywordHouse0, keywordHouse0}, {keywordHouse0Zh, keywordHouse0},
-        {keywordChair0, keywordChair0}, {keywordChair0Zh, keywordChair0},
-        {keywordChair1, keywordChair1}, {keywordChair1Zh, keywordChair1},
-        {keywordHouse1, keywordHouse1}, {keywordHouse1Zh, keywordHouse1},
-        {keywordHouse2, keywordHouse2}, {keywordHouse2Zh, keywordHouse2},
-        {keywordHouse3, keywordHouse3}, {keywordHouse3Zh, keywordHouse3},
-        {keywordSky12, keywordSky12},   {keywordSky12Zh, keywordSky12},
-        {keywordTree0, keywordTree0},   {keywordTree0Zh, keywordTree0},
-        {keywordTree1, keywordTree1},   {keywordTree1Zh, keywordTree1},
-        {keywordTree5, keywordTree5},   {keywordTree5Zh, keywordTree5},
+        {keywordBox0, keywordBox0},       {keywordBox0Zh, keywordBox0},
+        {keywordBox1, keywordBox1},       {keywordBox1Zh, keywordBox1},
+        {keywordHouse0, keywordHouse0},   {keywordHouse0Zh, keywordHouse0},
+        {keywordChair0, keywordChair0},   {keywordChair0Zh, keywordChair0},
+        {keywordChair1, keywordChair1},   {keywordChair1Zh, keywordChair1},
+        {keywordHouse1, keywordHouse1},   {keywordHouse1Zh, keywordHouse1},
+        {keywordHouse2, keywordHouse2},   {keywordHouse2Zh, keywordHouse2},
+        {keywordHouse3, keywordHouse3},   {keywordHouse3Zh, keywordHouse3},
+        {keywordSky12, keywordSky12},     {keywordSky12Zh, keywordSky12},
+        {keywordTree0, keywordTree0},     {keywordTree0Zh, keywordTree0},
+        {keywordTree1, keywordTree1},     {keywordTree1Zh, keywordTree1},
+        {keywordTree5, keywordTree5},     {keywordTree5Zh, keywordTree5},
+        {keywordShine1E, keywordShine1E}, {keywordShine1EZh, keywordShine1E},
+        {keywordShine1N, keywordShine1N}, {keywordShine1NZh, keywordShine1N},
+        {keywordShine1S, keywordShine1S}, {keywordShine1SZh, keywordShine1S},
+        {keywordShine1W, keywordShine1W}, {keywordShine1WZh, keywordShine1W},
+        {keywordShine2E, keywordShine2E}, {keywordShine2EZh, keywordShine2E},
+        {keywordShine2N, keywordShine2N}, {keywordShine2NZh, keywordShine2N},
+        {keywordShine2S, keywordShine2S}, {keywordShine2SZh, keywordShine2S},
+        {keywordShine2W, keywordShine2W}, {keywordShine2WZh, keywordShine2W},
+        {keywordShine3E, keywordShine3E}, {keywordShine3EZh, keywordShine3E},
+        {keywordShine3N, keywordShine3N}, {keywordShine3NZh, keywordShine3N},
+        {keywordShine3S, keywordShine3S}, {keywordShine3SZh, keywordShine3S},
+        {keywordShine3W, keywordShine3W}, {keywordShine3WZh, keywordShine3W},
     });
 } // namespace MapObjectKind
 
