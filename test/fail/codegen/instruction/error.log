@@ -7,6 +7,7 @@ addActor(
     int|string       hp = "100", 
     string           id = "ai*", 
     string           localVarname = "actor", 
+    int|string       movableRange = "10000", 
     string           name = "", 
     list[Point]      patrol = [], 
     int|string       range = "0", 
