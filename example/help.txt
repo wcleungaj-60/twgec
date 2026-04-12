@@ -98,6 +98,8 @@ Supported Actions:
         buttons: list[Button], range: int|string, rotation: int|string, showButtons: bool, text: string, x: int|string, y: int|string
     addStuff                    新增武器道具
         code: string, item: string, range: int|string, refill: bool, refillInterval: int|string, rotation: int|string, x: int|string, y: int|string
+    avoidFriendFire             迴避友軍攻擊
+        value: bool
     deltaHp                     角色加減血
         actorCode: string, casterCode: string, type: string, value: int|string
     enblastEffect               光彈特效

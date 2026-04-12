@@ -447,6 +447,7 @@ block 玩家初始化 {
 }
 block 遊戲初始化 {
     actions {
+        迴避友軍攻擊();
         設定武器技能(weapon = "小刀", operation = "無技能", level = 1);
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = 別名::武器風杖);
@@ -908,6 +909,7 @@ block 玩家初始化 {
 }
 block 遊戲初始化 {
     actions {
+        迴避友軍攻擊();
         設定武器技能(weapon = "小刀", operation = "無技能", level = 1);
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = 別名::武器風杖);
@@ -1781,6 +1783,7 @@ block 玩家初始化 {
 }
 block 遊戲初始化 {
     actions {
+        迴避友軍攻擊();
         設定武器技能(weapon = "小刀", operation = "無技能", level = 1);
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = 別名::武器風杖);
@@ -2700,6 +2703,7 @@ block 玩家初始化 {
 }
 block 遊戲初始化 {
     actions {
+        迴避友軍攻擊();
         設定武器技能(weapon = "小刀", operation = "無技能", level = 1);
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = 別名::武器風杖);
@@ -3573,6 +3577,7 @@ block 玩家初始化 {
 }
 block 遊戲初始化 {
     actions {
+        迴避友軍攻擊();
         設定武器技能(weapon = "小刀", operation = "無技能", level = 1);
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = 別名::武器風杖);
@@ -4636,6 +4641,7 @@ block 玩家初始化 {
 }
 block 遊戲初始化 {
     actions {
+        迴避友軍攻擊();
         設定武器技能(weapon = "小刀", operation = "無技能", level = 1);
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = "custom_wind_staff");
@@ -44701,6 +44707,7 @@ block 玩家初始化 {
 }
 block 遊戲初始化 {
     actions {
+        迴避友軍攻擊();
         設定武器技能(weapon = "小刀", operation = "無技能", level = 1);
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = "custom_wind_staff");
@@ -45649,6 +45656,7 @@ block 玩家初始化 {
 }
 block 遊戲初始化 {
     actions {
+        迴避友軍攻擊();
         設定武器技能(weapon = "小刀", operation = "無技能", level = 1);
         設定武器技能(weapon = "小刀", operation = "無技能", level = 2);
         設定武器技能(weapon = "custom_wind_staff");

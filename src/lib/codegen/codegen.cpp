@@ -147,6 +147,8 @@ void CodeGenerator::codegenAction(std::ofstream &of,
     of << action::ActionAddMapObject::CODEGEN_FUNC;
   if (identifier == "addStuff" || identifier == "新增武器道具")
     of << action::ActionAddStuff::CODEGEN_FUNC;
+  if (identifier == "avoidFriendFire" || identifier == "迴避友軍攻擊")
+    of << action::ActionAvoidFriendFire::CODEGEN_FUNC;
   if (identifier == "deltaHp" || identifier == "角色加減血")
     of << action::ActionDeltaHp::CODEGEN_FUNC;
   if (identifier == "enblastEffect" || identifier == "光彈特效")

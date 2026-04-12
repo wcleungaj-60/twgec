@@ -240,6 +240,15 @@ action::ActionAddStuff::method(DefaultMap defaultMap,
 }
 
 JsonObjectNode
+action::ActionAvoidFriendFire::method(DefaultMap defaultMap,
+                               UserDefinedMetadata userDefinedMeta) {
+  return JsonObjectNode({
+      {"avoidFriendFire", defaultMap.get("value")},
+      {"avoidFriendFireValue", "\"y\""},
+  });
+}
+
+JsonObjectNode
 action::ActionConsole::method(DefaultMap defaultMap,
                               UserDefinedMetadata userDefinedMeta) {
   return JsonObjectNode({

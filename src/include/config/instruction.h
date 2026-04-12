@@ -226,6 +226,10 @@ const InstructionConfig addStuffConfig =
         .addParam("y", AST_INT, CODEGEN_STRING, "0")
         .addParam("range", AST_INT, CODEGEN_STRING, "0")
         .addParam("rotation", AST_INT, CODEGEN_STRING, "0");
+const InstructionConfig avoidFriendFireConfig =
+    InstructionConfig("avoidFriendFire", "迴避友軍攻擊")
+        .addParam("value", AST_BOOL, CODEGEN_BOOL, "true")
+        .setCodegenName("GameRule");
 const InstructionConfig deltaHpConfig =
     InstructionConfig("deltaHp", "角色加減血")
         .addParam("actorCode", AST_STRING, CODEGEN_STRING, "")
@@ -355,6 +359,7 @@ const std::vector<InstructionConfig> actionList = {
     addMapObjectConfig,
     addMapSignConfig,
     addStuffConfig,
+    avoidFriendFireConfig,
     deltaHpConfig,
     enblastEffectConfig,
     equipWeaponConfig,

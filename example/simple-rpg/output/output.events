@@ -7301,6 +7301,13 @@
             "devOnly": false,
             "actions": [
                 {
+                    "type": "GameRule",
+                    "data": {
+                        "avoidFriendFire": true,
+                        "avoidFriendFireValue": "y"
+                    }
+                },
+                {
                     "type": "SetWeaponAbility",
                     "data": {
                         "weaponType": "knife",
