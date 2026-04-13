@@ -9,6 +9,7 @@ const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
 const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
 const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
+const 公式::匕首技能傷害 = "10 + {instance.AGI}*2";
 const 公式::火星領域傷害 = "{instance.INT}/4+{instance.PSY}/6";
 const 公式::InstanceX坐標 = "{instance.gamePosition.x}/32";
 const 公式::InstanceY坐標 = "{instance.gamePosition.y}/32";
@@ -40,7 +41,9 @@ const 文字::匕首描述 =
 "【匕首】\n" + 
 "【普通攻擊】\n" + 
 " - 武器傷害: 10+力量×2+敏捷\n" +
-" - 連擊率: 10%+敏捷×2%，上限100%\n";
+" - 連擊率: 10%+敏捷×2%，上限100%\n" +
+"【技能】移動至滑鼠指定位置，並在目的範圍內造成傷害\n" +
+" - 範圍傷害：10+敏捷×2";
 const 文字::力量描述 = "【力量】\n每一點可提升若干的武器物理傷害\n詳細見各武器描述";
 const 文字::體質描述 = "【體質】\n每一點可提升半點恢復力\n及增加十點血量上限";
 const 文字::敏捷描述 = "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度";
