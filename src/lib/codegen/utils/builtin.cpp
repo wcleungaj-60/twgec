@@ -271,7 +271,7 @@ getEnhFFActorMatchesNode(const std::shared_ptr<ValueNode> &valueNode) {
         JsonArrayNode(std::make_shared<JsonObjectNode>(facSubNode));
     maNode.addNode("cac", "true").addNode("fac", facNode.to_string(40));
   }
-  if (actorMatchDefaultMap.get("id") != "\"\"") {
+  if (actorMatchDefaultMap.get("group") != "\"\"") {
     JsonObjectNode compSubNode = JsonObjectNode({
         {"op", "\"==\""},
         {"val", actorMatchDefaultMap.get("group")},

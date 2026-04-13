@@ -30,10 +30,10 @@ def 自定義::釋放技能泛型(weapon) : block {
         if(weapon == 別名::武器鐵劍) {
             EnhFF::廣義圓形範圍(actorId = "instance", radius = 4*32, duration = 10000,
                 color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復,
-                deltaHpCD = 4000, deltaHpTarget = 角色::任何玩家, lineWidth = 2);
+                deltaHpCD = 4000, deltaHpTarget = 角色::任何友軍, lineWidth = 2);
             EnhFF::廣義圓形範圍(actorId = "instance", radius = 4*32, duration = 10000,
                 color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害,
-                deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦, lineWidth = 2);
+                deltaHpCD = 4000, deltaHpTarget = 角色::任何敵軍, lineWidth = 2);
         }
     }
 }

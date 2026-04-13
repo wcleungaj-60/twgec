@@ -51,6 +51,8 @@ const 文字::HTML等級提升 = "<span style='color: green'>Level Up</span>";
 const 角色::任何 = ActorMatch();
 const 角色::任何玩家 = ActorMatch(controller = "player");
 const 角色::任何電腦 = ActorMatch(controller = "ai");
+const 角色::任何友軍 = ActorMatch(group = 100);
+const 角色::任何敵軍 = ActorMatch(group = 101);
 
 const 別名::武器風杖 = "custom_wind_staff";
 const 別名::武器鐵劍 = "custom_iron_sword";

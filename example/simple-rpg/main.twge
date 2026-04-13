@@ -114,7 +114,7 @@ block 技能火星領域 {
             EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y="{y}+random(-64,64)", 
                     radius = 40, duration = 500, color = "#FF0F0F", 
                     deltaHpType = "damage", deltaHpValue = 公式::火星領域傷害,
-                    deltaHpCD = 4000, deltaHpTarget = 角色::任何電腦);
+                    deltaHpCD = 4000, deltaHpTarget = 角色::任何敵軍);
         }
         wait(duration = 2000);
         自定義::儲存Instance整數("skillXCD", 0);
@@ -166,6 +166,7 @@ block 玩家初始化 {
         人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
         人物裝備武器(actorCode = "instance", type = "fist", hand = 2);
         角色說話(actorId = "instance", cleanTalk = true, text = "玩家初始中");
+        設定角色屬性(actorId = "instance", attr = "group", value = "100");
         等待(duration = 500);
         自定義::儲存Instance整數("completedInit", 1);
     }

@@ -41,7 +41,7 @@ def 自定義::野獸重生泛型(interval, max_num, actor_id, name, x, y, hp, s
     actions {
         新增角色(name = name, id = actor_id + "*", camp = "第三", 
                 hp = hp, x = x, y = y, range = 10, localVarname = "actor", 
-                weapon1 = "fist", weapon2 = "fist", strength = strength, role = role);
+                weapon1 = "fist", weapon2 = "fist", teamId = 101, strength = strength, role = role);
         跟隨人物(actorId = "actor", type = "跟隨自己");
     }
 }

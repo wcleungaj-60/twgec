@@ -973,9 +973,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "2",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "100"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -1025,9 +1037,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -1819,7 +1843,7 @@
                             "w1Type": "kongfu"
                         },
                         "camp": "third",
-                        "group": "0",
+                        "group": "101",
                         "location": {
                             "x": "30",
                             "y": "10",
@@ -1923,7 +1947,7 @@
                             "w1Type": "kongfu"
                         },
                         "camp": "third",
-                        "group": "0",
+                        "group": "101",
                         "location": {
                             "x": "30",
                             "y": "30",
@@ -5172,9 +5196,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -5232,9 +5268,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -5292,9 +5340,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -5352,9 +5412,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -5412,9 +5484,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -5472,9 +5556,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -5532,9 +5628,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -5592,9 +5700,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -5652,9 +5772,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -5712,9 +5844,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -5772,9 +5916,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -5832,9 +5988,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -5892,9 +6060,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -5952,9 +6132,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -6012,9 +6204,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -6072,9 +6276,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -6132,9 +6348,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -6192,9 +6420,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -6252,9 +6492,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -6312,9 +6564,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -6372,9 +6636,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -6432,9 +6708,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -6492,9 +6780,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -6552,9 +6852,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -6612,9 +6924,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -6672,9 +6996,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -6732,9 +7068,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -6792,9 +7140,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -6852,9 +7212,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -6912,9 +7284,21 @@
                                 {
                                     "op": "in",
                                     "ma": {
-                                        "brain": "1",
+                                        "brain": "0",
                                         "relship": "0",
-                                        "survival": "1"
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -7247,6 +7631,25 @@
                         "wait": false,
                         "waitMore": "100",
                         "actorCode": "instance"
+                    }
+                },
+                {
+                    "type": "ActorAttributes",
+                    "data": {
+                        "actorCode": "instance",
+                        "ops": [
+                            {
+                                "attr": "group",
+                                "operation": "set",
+                                "value": "100"
+                            }
+                        ],
+                        "takeFriendAIFire": "u",
+                        "takeFriendPlayerFire": "u",
+                        "exitWormhole": "u",
+                        "setStatic": "u",
+                        "setTornadoRes": "u",
+                        "bloodType": "u"
                     }
                 },
                 {
