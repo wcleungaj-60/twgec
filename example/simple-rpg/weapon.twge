@@ -1,11 +1,10 @@
 const 公式::風杖物理傷害 = "5+{attacker.STR}/2";
 const 公式::風杖光彈傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
 const 公式::鐵劍物理傷害 = "30+{attacker.STR}*3";
-const 公式::鐵劍技能恢復 = "1 + {instance.CON}";
-const 公式::鐵劍技能傷害 = "1 + {instance.STR}/2 + {instance.CON}/2";
+const 公式::鐵劍技能恢復 = "1 + {instance.STR}/6 + {instance.CON}/3";
+const 公式::鐵劍技能傷害 = "1 + {instance.STR}/3 + {instance.CON}/6";
 const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
 const 公式::匕首技能傷害 = "10 + {instance.AGI}*2";
-const 公式::匕首連擊機率 = "10+{attacker.AGI}*2";
 
 const 文字::風杖描述 =
 "【風杖】\n" + 
@@ -18,14 +17,13 @@ const 文字::鐵劍描述 =
 "【鐵劍】\n" + 
 "【普通攻擊】\n" + 
 " - 武器傷害: 30+力量×3\n" + 
-"【技能】對範圍内的角色造成三次傷害及治療\n"+
-" - 對敵軍傷害量: 1+力量÷2+體質÷2 \n"+
-" - 對友軍回復量: 1+體質";
+"【技能】對範圍内的角色造成十次傷害及治療\n"+
+" - 對敵軍傷害量: 1+力量÷3+體質÷6\n"+
+" - 對友軍回復量: 1+力量÷6+體質÷3";
 const 文字::匕首描述 =
 "【匕首】\n" + 
 "【普通攻擊】\n" + 
 " - 武器傷害: 10+力量×2+敏捷\n" +
-" - 連擊率: 10%+敏捷×2%，上限100%\n" +
 "【技能】移動至滑鼠指定位置，並在目的範圍內造成傷害\n" +
 " - 範圍傷害：10+敏捷×2";
 
@@ -65,10 +63,10 @@ def 自定義::釋放技能泛型(weapon) : block {
         if(weapon == 別名::武器鐵劍) {
             EnhFF::廣義圓形範圍(actorId = "instance", radius = 4*32, duration = 10000,
                 color = "#D16500", deltaHpType = "heal", deltaHpValue = 公式::鐵劍技能恢復,
-                deltaHpCD = 4000, deltaHpTarget = 角色::任何友軍, lineWidth = 2);
+                deltaHpCD = 1100, deltaHpTarget = 角色::任何友軍, lineWidth = 2);
             EnhFF::廣義圓形範圍(actorId = "instance", radius = 4*32, duration = 10000,
                 color = "#D16500", deltaHpType = "damage", deltaHpValue = 公式::鐵劍技能傷害,
-                deltaHpCD = 4000, deltaHpTarget = 角色::任何敵軍, lineWidth = 2);
+                deltaHpCD = 1100, deltaHpTarget = 角色::任何敵軍, lineWidth = 2);
         }
         if(weapon == 別名::武器匕首) {
         EnhFF::玩家滑鼠座標(actorId = "{instance}", varX = "x", varY = "y");
@@ -94,24 +92,9 @@ def 自定義::武器物理攻擊泛型(weapon, value) : block  {
     }
 }
 
-def 自定義::武器物理連擊泛型(weapon, value, comboRate) : block  {
-    __repeat__ = -1;
-    triggers {
-        角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = weapon);
-    }
-    checks {
-        比較數字(lhs = comboRate, op = ">=", rhs = "random(0, 100)");
-    }
-    actions {
-        等待(duration = 100);
-        角色加減血(actorCode = "instance", casterCode = "attacker", type = "流血受傷", value = value);
-    }
-}
-
 block 風杖物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器風杖, 公式::風杖物理傷害);
 block 鐵劍物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器鐵劍, 公式::鐵劍物理傷害);
 block 匕首物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器匕首, 公式::匕首物理傷害);
-block 匕首物理連擊 = 自定義::武器物理連擊泛型(別名::武器匕首, 公式::匕首物理傷害, 公式::匕首連擊機率);
 
 block 武器初始化 {
     actions {
