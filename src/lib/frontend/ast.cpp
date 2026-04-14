@@ -503,8 +503,28 @@ bool CompositeInstrNode::foldValue() {
 
 bool BranchNode::foldValue() {
   bool ret = true;
-  for (auto &ifRegion : ifRegions)
-    ret &= ifRegion->foldValue();
+  int consecutiveFalseCount = 0;
+  int firstTrueIdx = -1;
+  for (auto idx = 0; idx < ifRegions.size(); idx++) {
+    ret &= ifRegions.at(idx)->foldValue();
+    if (auto boolValue = dynamic_cast<BoolValueNode *>(
+            ifRegions.at(idx)->condition->value.get())) {
+      if (boolValue->value) {
+        firstTrueIdx = idx;
+        break;
+      } else if (consecutiveFalseCount == idx) {
+        consecutiveFalseCount++;
+      }
+    }
+  }
+  if (firstTrueIdx != -1) {
+    elseRegion = nullptr;
+    if (firstTrueIdx + 1 < ifRegions.size())
+      ifRegions.erase(ifRegions.begin() + firstTrueIdx + 1, ifRegions.end());
+  }
+  if (0 < consecutiveFalseCount && consecutiveFalseCount < ifRegions.size())
+    ifRegions.erase(ifRegions.begin(),
+                    ifRegions.begin() + consecutiveFalseCount);
   if (elseRegion)
     ret &= elseRegion->foldValue();
   return ret;
