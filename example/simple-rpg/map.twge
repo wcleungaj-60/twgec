@@ -125,3 +125,34 @@ def 地圖::生成地圖101n100(xOffset, yOffset) : actions {
         }
     }
 }
+
+def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2): actions {
+    if (x1 == x2 && y1 < y2) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "下");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "上");
+    } else if (x1 == x2 && y1 > y2) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "上");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "下");
+    } else if (x1 > x2 && y1 == y2) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "左");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "右");
+    } else if (x1 < x2 && y1 == y2) {
+        設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "右");
+        設定地圖傳送點(fromX = x2, fromY = y2, toX = x1, toY = y1, direction = "左");
+    } else if (x1 == x2 && y1 == y2) {
+        print(type = "error", text = "Cannot set the same point as the mapWarp src and dst");
+    } else {
+        print(type = "error", text = "Bidirectional mapWarp requires x or y to be the same value");
+    }
+}
+
+block 地圖初始化 {
+    actions {
+        自定義::設定雙向地圖傳送點(x1 = 19, y1 = 9, x2 = 21, y2 = 9);
+        自定義::設定雙向地圖傳送點(x1 = 19, y1 = 10, x2 = 21, y2 = 10);
+        自定義::設定雙向地圖傳送點(x1 = 30, y1 = 19, x2 = 30, y2 = 21);
+        自定義::設定雙向地圖傳送點(x1 = 31, y1 = 19, x2 = 31, y2 = 21);
+        地圖::生成地圖100n100(0,0);
+        地圖::生成地圖101n100(21,0);
+    }
+}

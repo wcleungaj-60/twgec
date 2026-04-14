@@ -1489,6 +1489,62 @@
             ]
         },
         {
+            "id": "武器初始化",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": 0,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetWeaponAbility",
+                    "data": {
+                        "weaponType": "custom_wind_staff",
+                        "camp": {
+                            "campAll": true
+                        },
+                        "abilityLevel": 1,
+                        "operation": "set",
+                        "ability": {
+                            "value": "sounded"
+                        }
+                    }
+                },
+                {
+                    "type": "SetWeaponAbility",
+                    "data": {
+                        "weaponType": "custom_iron_sword",
+                        "camp": {
+                            "campAll": true
+                        },
+                        "abilityLevel": 1,
+                        "operation": "set",
+                        "ability": {
+                            "value": "sounded"
+                        }
+                    }
+                },
+                {
+                    "type": "SetWeaponAbility",
+                    "data": {
+                        "weaponType": "custom_dagger",
+                        "camp": {
+                            "campAll": true
+                        },
+                        "abilityLevel": 1,
+                        "operation": "set",
+                        "ability": {
+                            "value": "sounded"
+                        }
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": []
+        },
+        {
             "id": "拾取經驗一級鹿",
             "disabled": false,
             "folder": "",
@@ -2142,6 +2198,2644 @@
                     }
                 }
             ],
+            "triggers": []
+        },
+        {
+            "id": "地圖初始化",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": 0,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "MapWarp",
+                    "data": {
+                        "location": {
+                            "x": "19",
+                            "y": "9",
+                            "range": "0"
+                        },
+                        "op": "add",
+                        "direction": "right",
+                        "warpSpeed": "imme",
+                        "target": {
+                            "x": "21",
+                            "y": "9",
+                            "range": "0"
+                        }
+                    }
+                },
+                {
+                    "type": "MapWarp",
+                    "data": {
+                        "location": {
+                            "x": "21",
+                            "y": "9",
+                            "range": "0"
+                        },
+                        "op": "add",
+                        "direction": "left",
+                        "warpSpeed": "imme",
+                        "target": {
+                            "x": "19",
+                            "y": "9",
+                            "range": "0"
+                        }
+                    }
+                },
+                {
+                    "type": "MapWarp",
+                    "data": {
+                        "location": {
+                            "x": "19",
+                            "y": "10",
+                            "range": "0"
+                        },
+                        "op": "add",
+                        "direction": "right",
+                        "warpSpeed": "imme",
+                        "target": {
+                            "x": "21",
+                            "y": "10",
+                            "range": "0"
+                        }
+                    }
+                },
+                {
+                    "type": "MapWarp",
+                    "data": {
+                        "location": {
+                            "x": "21",
+                            "y": "10",
+                            "range": "0"
+                        },
+                        "op": "add",
+                        "direction": "left",
+                        "warpSpeed": "imme",
+                        "target": {
+                            "x": "19",
+                            "y": "10",
+                            "range": "0"
+                        }
+                    }
+                },
+                {
+                    "type": "MapWarp",
+                    "data": {
+                        "location": {
+                            "x": "30",
+                            "y": "19",
+                            "range": "0"
+                        },
+                        "op": "add",
+                        "direction": "down",
+                        "warpSpeed": "imme",
+                        "target": {
+                            "x": "30",
+                            "y": "21",
+                            "range": "0"
+                        }
+                    }
+                },
+                {
+                    "type": "MapWarp",
+                    "data": {
+                        "location": {
+                            "x": "30",
+                            "y": "21",
+                            "range": "0"
+                        },
+                        "op": "add",
+                        "direction": "up",
+                        "warpSpeed": "imme",
+                        "target": {
+                            "x": "30",
+                            "y": "19",
+                            "range": "0"
+                        }
+                    }
+                },
+                {
+                    "type": "MapWarp",
+                    "data": {
+                        "location": {
+                            "x": "31",
+                            "y": "19",
+                            "range": "0"
+                        },
+                        "op": "add",
+                        "direction": "down",
+                        "warpSpeed": "imme",
+                        "target": {
+                            "x": "31",
+                            "y": "21",
+                            "range": "0"
+                        }
+                    }
+                },
+                {
+                    "type": "MapWarp",
+                    "data": {
+                        "location": {
+                            "x": "31",
+                            "y": "21",
+                            "range": "0"
+                        },
+                        "op": "add",
+                        "direction": "up",
+                        "warpSpeed": "imme",
+                        "target": {
+                            "x": "31",
+                            "y": "19",
+                            "range": "0"
+                        }
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "5",
+                                "y": "0",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "6",
+                                "y": "0",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "13",
+                                "y": "1",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "14",
+                                "y": "1",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "15",
+                                "y": "1",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "13",
+                                "y": "2",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "14",
+                                "y": "2",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "15",
+                                "y": "2",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "4",
+                                "y": "3",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "house0",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "13",
+                                "y": "3",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "14",
+                                "y": "3",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "15",
+                                "y": "3",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "7",
+                                "y": "4",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "8",
+                                "y": "4",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "7",
+                                "y": "5",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "2",
+                                "y": "6",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "box0",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "4",
+                                "y": "7",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "box1",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "4",
+                                "y": "7",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "90",
+                        "speech": "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】散射釋出五發光彈\n - 光彈傷害: 10+智慧+精神÷2",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "wearWindStaff",
+                                    "close": true,
+                                    "label": "裝備",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "wearNone",
+                                    "close": true,
+                                    "label": "卸下",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "5",
+                                "y": "7",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "box1",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "5",
+                                "y": "7",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "90",
+                        "speech": "【匕首】\n【普通攻擊】\n - 武器傷害: 10+力量×2+敏捷\n - 連擊率: 10%+敏捷×2%，上限100%\n【技能】移動至滑鼠指定位置，並在目的範圍內造成傷害\n - 範圍傷害：10+敏捷×2",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "wearDagger",
+                                    "close": true,
+                                    "label": "裝備",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "wearNone",
+                                    "close": true,
+                                    "label": "卸下",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "6",
+                                "y": "7",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "box1",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "6",
+                                "y": "7",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "90",
+                        "speech": "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "wearIronSword",
+                                    "close": true,
+                                    "label": "裝備",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "wearNone",
+                                    "close": true,
+                                    "label": "卸下",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "16",
+                                "y": "7",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "5",
+                                "y": "8",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "6",
+                                "y": "8",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "15",
+                                "y": "8",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "16",
+                                "y": "8",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "17",
+                                "y": "8",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "3",
+                                "y": "9",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "4",
+                                "y": "9",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "5",
+                                "y": "9",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "6",
+                                "y": "9",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "14",
+                                "y": "9",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "15",
+                                "y": "9",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "16",
+                                "y": "9",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "17",
+                                "y": "9",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "18",
+                                "y": "9",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "19",
+                                "y": "9",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "shine3_w",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "3",
+                                "y": "10",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "4",
+                                "y": "10",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "5",
+                                "y": "10",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "6",
+                                "y": "10",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "15",
+                                "y": "10",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "16",
+                                "y": "10",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "17",
+                                "y": "10",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "19",
+                                "y": "10",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "shine3_w",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "3",
+                                "y": "11",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "4",
+                                "y": "11",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "5",
+                                "y": "11",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "16",
+                                "y": "11",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "0",
+                                "y": "13",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "1",
+                                "y": "13",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "8",
+                                "y": "13",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "0",
+                                "y": "14",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "7",
+                                "y": "14",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "8",
+                                "y": "14",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "9",
+                                "y": "14",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "1",
+                                "y": "15",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "chair0",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "1",
+                                "y": "15",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "0",
+                        "speech": "【重置能力點分配】",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "ResetPoint",
+                                    "close": true,
+                                    "label": "確認",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "8",
+                                "y": "15",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "3",
+                                "y": "17",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "chair0",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "3",
+                                "y": "17",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "270",
+                        "speech": "【力量】\n每一點可提升若干的武器物理傷害\n詳細見各武器描述",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "increaseSTR1",
+                                    "close": true,
+                                    "label": "提升一點",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "increaseSTR10",
+                                    "close": true,
+                                    "label": "提升十點",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "5",
+                                "y": "17",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "chair0",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "5",
+                                "y": "17",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "270",
+                        "speech": "【體質】\n每一點可提升半點恢復力\n及增加十點血量上限",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "increaseCON1",
+                                    "close": true,
+                                    "label": "提升一點",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "increaseCON10",
+                                    "close": true,
+                                    "label": "提升十點",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "7",
+                                "y": "17",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "chair0",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "7",
+                                "y": "17",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "270",
+                        "speech": "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "increaseAGI1",
+                                    "close": true,
+                                    "label": "提升一點",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "increaseAGI10",
+                                    "close": true,
+                                    "label": "提升十點",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "9",
+                                "y": "17",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "chair0",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "9",
+                                "y": "17",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "270",
+                        "speech": "【智慧】\n每一點可提升若干的杖類傷害\n詳細見各武器描述",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "increaseINT1",
+                                    "close": true,
+                                    "label": "提升一點",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "increaseINT10",
+                                    "close": true,
+                                    "label": "提升十點",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "11",
+                                "y": "17",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "chair0",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "11",
+                                "y": "17",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "270",
+                        "speech": "【精神】\n每一點可提升一點恢復力\n及提升小量的杖類傷害",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "increasePSY1",
+                                    "close": true,
+                                    "label": "提升一點",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "increasePSY10",
+                                    "close": true,
+                                    "label": "提升十點",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "18",
+                                "y": "18",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "19",
+                                "y": "18",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "7",
+                                "y": "19",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "8",
+                                "y": "19",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "9",
+                                "y": "19",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "17",
+                                "y": "19",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "18",
+                                "y": "19",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "19",
+                                "y": "19",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "31",
+                                "y": "1",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "30",
+                                "y": "2",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "31",
+                                "y": "2",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "32",
+                                "y": "2",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "39",
+                                "y": "2",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "31",
+                                "y": "3",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "39",
+                                "y": "3",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "23",
+                                "y": "4",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "39",
+                                "y": "4",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "40",
+                                "y": "4",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "23",
+                                "y": "5",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "24",
+                                "y": "5",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "35",
+                                "y": "5",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "tree0",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "40",
+                                "y": "5",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "23",
+                                "y": "6",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "24",
+                                "y": "6",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "40",
+                                "y": "6",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "23",
+                                "y": "7",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "24",
+                                "y": "7",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "24",
+                                "y": "8",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "32",
+                                "y": "8",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "21",
+                                "y": "9",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "shine3_e",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "31",
+                                "y": "9",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "32",
+                                "y": "9",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "33",
+                                "y": "9",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "21",
+                                "y": "10",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "shine3_e",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "30",
+                                "y": "10",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "31",
+                                "y": "10",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "tree0",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "32",
+                                "y": "10",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "33",
+                                "y": "10",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "34",
+                                "y": "10",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "28",
+                                "y": "11",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "29",
+                                "y": "11",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "30",
+                                "y": "11",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "31",
+                                "y": "11",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "32",
+                                "y": "11",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "33",
+                                "y": "11",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "27",
+                                "y": "12",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "28",
+                                "y": "12",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "29",
+                                "y": "12",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "30",
+                                "y": "12",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "31",
+                                "y": "12",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "32",
+                                "y": "12",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "33",
+                                "y": "12",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "28",
+                                "y": "13",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "29",
+                                "y": "13",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "30",
+                                "y": "13",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "23",
+                                "y": "14",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "tree0",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "29",
+                                "y": "14",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "39",
+                                "y": "15",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "40",
+                                "y": "15",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "25",
+                                "y": "16",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "26",
+                                "y": "16",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "38",
+                                "y": "16",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "39",
+                                "y": "16",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "40",
+                                "y": "16",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "25",
+                                "y": "17",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "26",
+                                "y": "17",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "27",
+                                "y": "17",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "39",
+                                "y": "17",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "40",
+                                "y": "17",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "26",
+                                "y": "18",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "27",
+                                "y": "18",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "30",
+                                "y": "19",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "shine3_n",
+                        "autoLayer": true
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "31",
+                                "y": "19",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "shine3_n",
+                        "autoLayer": true
+                    }
+                }
+            ],
+            "checks": [],
             "triggers": []
         },
         {
@@ -7827,2672 +10521,6 @@
                     "data": {
                         "avoidFriendFire": true,
                         "avoidFriendFireValue": "y"
-                    }
-                },
-                {
-                    "type": "SetWeaponAbility",
-                    "data": {
-                        "weaponType": "custom_wind_staff",
-                        "camp": {
-                            "campAll": true
-                        },
-                        "abilityLevel": 1,
-                        "operation": "set",
-                        "ability": {
-                            "value": "sounded"
-                        }
-                    }
-                },
-                {
-                    "type": "SetWeaponAbility",
-                    "data": {
-                        "weaponType": "custom_iron_sword",
-                        "camp": {
-                            "campAll": true
-                        },
-                        "abilityLevel": 1,
-                        "operation": "set",
-                        "ability": {
-                            "value": "sounded"
-                        }
-                    }
-                },
-                {
-                    "type": "SetWeaponAbility",
-                    "data": {
-                        "weaponType": "custom_dagger",
-                        "camp": {
-                            "campAll": true
-                        },
-                        "abilityLevel": 1,
-                        "operation": "set",
-                        "ability": {
-                            "value": "sounded"
-                        }
-                    }
-                },
-                {
-                    "type": "MapWarp",
-                    "data": {
-                        "location": {
-                            "x": "19",
-                            "y": "9",
-                            "range": "0"
-                        },
-                        "op": "add",
-                        "direction": "right",
-                        "warpSpeed": "imme",
-                        "target": {
-                            "x": "21",
-                            "y": "9",
-                            "range": "0"
-                        }
-                    }
-                },
-                {
-                    "type": "MapWarp",
-                    "data": {
-                        "location": {
-                            "x": "21",
-                            "y": "9",
-                            "range": "0"
-                        },
-                        "op": "add",
-                        "direction": "left",
-                        "warpSpeed": "imme",
-                        "target": {
-                            "x": "19",
-                            "y": "9",
-                            "range": "0"
-                        }
-                    }
-                },
-                {
-                    "type": "MapWarp",
-                    "data": {
-                        "location": {
-                            "x": "19",
-                            "y": "10",
-                            "range": "0"
-                        },
-                        "op": "add",
-                        "direction": "right",
-                        "warpSpeed": "imme",
-                        "target": {
-                            "x": "21",
-                            "y": "10",
-                            "range": "0"
-                        }
-                    }
-                },
-                {
-                    "type": "MapWarp",
-                    "data": {
-                        "location": {
-                            "x": "21",
-                            "y": "10",
-                            "range": "0"
-                        },
-                        "op": "add",
-                        "direction": "left",
-                        "warpSpeed": "imme",
-                        "target": {
-                            "x": "19",
-                            "y": "10",
-                            "range": "0"
-                        }
-                    }
-                },
-                {
-                    "type": "MapWarp",
-                    "data": {
-                        "location": {
-                            "x": "30",
-                            "y": "19",
-                            "range": "0"
-                        },
-                        "op": "add",
-                        "direction": "down",
-                        "warpSpeed": "imme",
-                        "target": {
-                            "x": "30",
-                            "y": "21",
-                            "range": "0"
-                        }
-                    }
-                },
-                {
-                    "type": "MapWarp",
-                    "data": {
-                        "location": {
-                            "x": "30",
-                            "y": "21",
-                            "range": "0"
-                        },
-                        "op": "add",
-                        "direction": "up",
-                        "warpSpeed": "imme",
-                        "target": {
-                            "x": "30",
-                            "y": "19",
-                            "range": "0"
-                        }
-                    }
-                },
-                {
-                    "type": "MapWarp",
-                    "data": {
-                        "location": {
-                            "x": "31",
-                            "y": "19",
-                            "range": "0"
-                        },
-                        "op": "add",
-                        "direction": "down",
-                        "warpSpeed": "imme",
-                        "target": {
-                            "x": "31",
-                            "y": "21",
-                            "range": "0"
-                        }
-                    }
-                },
-                {
-                    "type": "MapWarp",
-                    "data": {
-                        "location": {
-                            "x": "31",
-                            "y": "21",
-                            "range": "0"
-                        },
-                        "op": "add",
-                        "direction": "up",
-                        "warpSpeed": "imme",
-                        "target": {
-                            "x": "31",
-                            "y": "19",
-                            "range": "0"
-                        }
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "5",
-                                "y": "0",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "6",
-                                "y": "0",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "13",
-                                "y": "1",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "14",
-                                "y": "1",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "15",
-                                "y": "1",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "13",
-                                "y": "2",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "14",
-                                "y": "2",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "15",
-                                "y": "2",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "4",
-                                "y": "3",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "house0",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "13",
-                                "y": "3",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "14",
-                                "y": "3",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "15",
-                                "y": "3",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "7",
-                                "y": "4",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "8",
-                                "y": "4",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "7",
-                                "y": "5",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "2",
-                                "y": "6",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "box0",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "4",
-                                "y": "7",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "box1",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapSIgn",
-                    "data": {
-                        "localVarname": "",
-                        "locs": [
-                            {
-                                "x": "4",
-                                "y": "7",
-                                "range": "0"
-                            }
-                        ],
-                        "shape": "wood",
-                        "rotation": "90",
-                        "speech": "【風杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 光彈傷害: 10+智慧+精神÷2\n【技能】散射釋出五發光彈\n - 光彈傷害: 10+智慧+精神÷2",
-                        "parsePolicy": "view",
-                        "showButtons": true,
-                        "btnsGroup": {
-                            "rowSize": "1",
-                            "btnMinWidth": "1",
-                            "textAlign": "center",
-                            "varnameButton": "",
-                            "btns": [
-                                {
-                                    "buttonCode": "wearWindStaff",
-                                    "close": true,
-                                    "label": "裝備",
-                                    "icon": ""
-                                },
-                                {
-                                    "buttonCode": "wearNone",
-                                    "close": true,
-                                    "label": "卸下",
-                                    "icon": ""
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "5",
-                                "y": "7",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "box1",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapSIgn",
-                    "data": {
-                        "localVarname": "",
-                        "locs": [
-                            {
-                                "x": "5",
-                                "y": "7",
-                                "range": "0"
-                            }
-                        ],
-                        "shape": "wood",
-                        "rotation": "90",
-                        "speech": "【匕首】\n【普通攻擊】\n - 武器傷害: 10+力量×2+敏捷\n - 連擊率: 10%+敏捷×2%，上限100%\n【技能】移動至滑鼠指定位置，並在目的範圍內造成傷害\n - 範圍傷害：10+敏捷×2",
-                        "parsePolicy": "view",
-                        "showButtons": true,
-                        "btnsGroup": {
-                            "rowSize": "1",
-                            "btnMinWidth": "1",
-                            "textAlign": "center",
-                            "varnameButton": "",
-                            "btns": [
-                                {
-                                    "buttonCode": "wearDagger",
-                                    "close": true,
-                                    "label": "裝備",
-                                    "icon": ""
-                                },
-                                {
-                                    "buttonCode": "wearNone",
-                                    "close": true,
-                                    "label": "卸下",
-                                    "icon": ""
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "6",
-                                "y": "7",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "box1",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapSIgn",
-                    "data": {
-                        "localVarname": "",
-                        "locs": [
-                            {
-                                "x": "6",
-                                "y": "7",
-                                "range": "0"
-                            }
-                        ],
-                        "shape": "wood",
-                        "rotation": "90",
-                        "speech": "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質",
-                        "parsePolicy": "view",
-                        "showButtons": true,
-                        "btnsGroup": {
-                            "rowSize": "1",
-                            "btnMinWidth": "1",
-                            "textAlign": "center",
-                            "varnameButton": "",
-                            "btns": [
-                                {
-                                    "buttonCode": "wearIronSword",
-                                    "close": true,
-                                    "label": "裝備",
-                                    "icon": ""
-                                },
-                                {
-                                    "buttonCode": "wearNone",
-                                    "close": true,
-                                    "label": "卸下",
-                                    "icon": ""
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "16",
-                                "y": "7",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "5",
-                                "y": "8",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "6",
-                                "y": "8",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "15",
-                                "y": "8",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "16",
-                                "y": "8",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "17",
-                                "y": "8",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "3",
-                                "y": "9",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "4",
-                                "y": "9",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "5",
-                                "y": "9",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "6",
-                                "y": "9",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "14",
-                                "y": "9",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "15",
-                                "y": "9",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "16",
-                                "y": "9",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "17",
-                                "y": "9",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "18",
-                                "y": "9",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "19",
-                                "y": "9",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "shine3_w",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "3",
-                                "y": "10",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "4",
-                                "y": "10",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "5",
-                                "y": "10",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "6",
-                                "y": "10",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "15",
-                                "y": "10",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "16",
-                                "y": "10",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "17",
-                                "y": "10",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "19",
-                                "y": "10",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "shine3_w",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "3",
-                                "y": "11",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "4",
-                                "y": "11",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "5",
-                                "y": "11",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "16",
-                                "y": "11",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "0",
-                                "y": "13",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "1",
-                                "y": "13",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "8",
-                                "y": "13",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "0",
-                                "y": "14",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "7",
-                                "y": "14",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "8",
-                                "y": "14",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "9",
-                                "y": "14",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "1",
-                                "y": "15",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "chair0",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapSIgn",
-                    "data": {
-                        "localVarname": "",
-                        "locs": [
-                            {
-                                "x": "1",
-                                "y": "15",
-                                "range": "0"
-                            }
-                        ],
-                        "shape": "wood",
-                        "rotation": "0",
-                        "speech": "【重置能力點分配】",
-                        "parsePolicy": "view",
-                        "showButtons": true,
-                        "btnsGroup": {
-                            "rowSize": "1",
-                            "btnMinWidth": "1",
-                            "textAlign": "center",
-                            "varnameButton": "",
-                            "btns": [
-                                {
-                                    "buttonCode": "ResetPoint",
-                                    "close": true,
-                                    "label": "確認",
-                                    "icon": ""
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "8",
-                                "y": "15",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "3",
-                                "y": "17",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "chair0",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapSIgn",
-                    "data": {
-                        "localVarname": "",
-                        "locs": [
-                            {
-                                "x": "3",
-                                "y": "17",
-                                "range": "0"
-                            }
-                        ],
-                        "shape": "wood",
-                        "rotation": "270",
-                        "speech": "【力量】\n每一點可提升若干的武器物理傷害\n詳細見各武器描述",
-                        "parsePolicy": "view",
-                        "showButtons": true,
-                        "btnsGroup": {
-                            "rowSize": "1",
-                            "btnMinWidth": "1",
-                            "textAlign": "center",
-                            "varnameButton": "",
-                            "btns": [
-                                {
-                                    "buttonCode": "increaseSTR1",
-                                    "close": true,
-                                    "label": "提升一點",
-                                    "icon": ""
-                                },
-                                {
-                                    "buttonCode": "increaseSTR10",
-                                    "close": true,
-                                    "label": "提升十點",
-                                    "icon": ""
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "5",
-                                "y": "17",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "chair0",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapSIgn",
-                    "data": {
-                        "localVarname": "",
-                        "locs": [
-                            {
-                                "x": "5",
-                                "y": "17",
-                                "range": "0"
-                            }
-                        ],
-                        "shape": "wood",
-                        "rotation": "270",
-                        "speech": "【體質】\n每一點可提升半點恢復力\n及增加十點血量上限",
-                        "parsePolicy": "view",
-                        "showButtons": true,
-                        "btnsGroup": {
-                            "rowSize": "1",
-                            "btnMinWidth": "1",
-                            "textAlign": "center",
-                            "varnameButton": "",
-                            "btns": [
-                                {
-                                    "buttonCode": "increaseCON1",
-                                    "close": true,
-                                    "label": "提升一點",
-                                    "icon": ""
-                                },
-                                {
-                                    "buttonCode": "increaseCON10",
-                                    "close": true,
-                                    "label": "提升十點",
-                                    "icon": ""
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "7",
-                                "y": "17",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "chair0",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapSIgn",
-                    "data": {
-                        "localVarname": "",
-                        "locs": [
-                            {
-                                "x": "7",
-                                "y": "17",
-                                "range": "0"
-                            }
-                        ],
-                        "shape": "wood",
-                        "rotation": "270",
-                        "speech": "【敏捷】\n每一點可提升若干的匕首物理傷害\n並降低重量及提升武器攻擊速度",
-                        "parsePolicy": "view",
-                        "showButtons": true,
-                        "btnsGroup": {
-                            "rowSize": "1",
-                            "btnMinWidth": "1",
-                            "textAlign": "center",
-                            "varnameButton": "",
-                            "btns": [
-                                {
-                                    "buttonCode": "increaseAGI1",
-                                    "close": true,
-                                    "label": "提升一點",
-                                    "icon": ""
-                                },
-                                {
-                                    "buttonCode": "increaseAGI10",
-                                    "close": true,
-                                    "label": "提升十點",
-                                    "icon": ""
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "9",
-                                "y": "17",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "chair0",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapSIgn",
-                    "data": {
-                        "localVarname": "",
-                        "locs": [
-                            {
-                                "x": "9",
-                                "y": "17",
-                                "range": "0"
-                            }
-                        ],
-                        "shape": "wood",
-                        "rotation": "270",
-                        "speech": "【智慧】\n每一點可提升若干的杖類傷害\n詳細見各武器描述",
-                        "parsePolicy": "view",
-                        "showButtons": true,
-                        "btnsGroup": {
-                            "rowSize": "1",
-                            "btnMinWidth": "1",
-                            "textAlign": "center",
-                            "varnameButton": "",
-                            "btns": [
-                                {
-                                    "buttonCode": "increaseINT1",
-                                    "close": true,
-                                    "label": "提升一點",
-                                    "icon": ""
-                                },
-                                {
-                                    "buttonCode": "increaseINT10",
-                                    "close": true,
-                                    "label": "提升十點",
-                                    "icon": ""
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "11",
-                                "y": "17",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "chair0",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapSIgn",
-                    "data": {
-                        "localVarname": "",
-                        "locs": [
-                            {
-                                "x": "11",
-                                "y": "17",
-                                "range": "0"
-                            }
-                        ],
-                        "shape": "wood",
-                        "rotation": "270",
-                        "speech": "【精神】\n每一點可提升一點恢復力\n及提升小量的杖類傷害",
-                        "parsePolicy": "view",
-                        "showButtons": true,
-                        "btnsGroup": {
-                            "rowSize": "1",
-                            "btnMinWidth": "1",
-                            "textAlign": "center",
-                            "varnameButton": "",
-                            "btns": [
-                                {
-                                    "buttonCode": "increasePSY1",
-                                    "close": true,
-                                    "label": "提升一點",
-                                    "icon": ""
-                                },
-                                {
-                                    "buttonCode": "increasePSY10",
-                                    "close": true,
-                                    "label": "提升十點",
-                                    "icon": ""
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "18",
-                                "y": "18",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "19",
-                                "y": "18",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "7",
-                                "y": "19",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "8",
-                                "y": "19",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "9",
-                                "y": "19",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "17",
-                                "y": "19",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "18",
-                                "y": "19",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "19",
-                                "y": "19",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "31",
-                                "y": "1",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "30",
-                                "y": "2",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "31",
-                                "y": "2",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "32",
-                                "y": "2",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "39",
-                                "y": "2",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "31",
-                                "y": "3",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "39",
-                                "y": "3",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "23",
-                                "y": "4",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "39",
-                                "y": "4",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "40",
-                                "y": "4",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "23",
-                                "y": "5",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "24",
-                                "y": "5",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "35",
-                                "y": "5",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "tree0",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "40",
-                                "y": "5",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "23",
-                                "y": "6",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "24",
-                                "y": "6",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "40",
-                                "y": "6",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "23",
-                                "y": "7",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "24",
-                                "y": "7",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "24",
-                                "y": "8",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "32",
-                                "y": "8",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "21",
-                                "y": "9",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "shine3_e",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "31",
-                                "y": "9",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "32",
-                                "y": "9",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "33",
-                                "y": "9",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "21",
-                                "y": "10",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "shine3_e",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "30",
-                                "y": "10",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "31",
-                                "y": "10",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "tree0",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "32",
-                                "y": "10",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "33",
-                                "y": "10",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "34",
-                                "y": "10",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "28",
-                                "y": "11",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "29",
-                                "y": "11",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "30",
-                                "y": "11",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "31",
-                                "y": "11",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "32",
-                                "y": "11",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "33",
-                                "y": "11",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "27",
-                                "y": "12",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "28",
-                                "y": "12",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "29",
-                                "y": "12",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "30",
-                                "y": "12",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "31",
-                                "y": "12",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "32",
-                                "y": "12",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "33",
-                                "y": "12",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "28",
-                                "y": "13",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "29",
-                                "y": "13",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "30",
-                                "y": "13",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "23",
-                                "y": "14",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "tree0",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "29",
-                                "y": "14",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "39",
-                                "y": "15",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "40",
-                                "y": "15",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "25",
-                                "y": "16",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "26",
-                                "y": "16",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "38",
-                                "y": "16",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "39",
-                                "y": "16",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "40",
-                                "y": "16",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "25",
-                                "y": "17",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "26",
-                                "y": "17",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "27",
-                                "y": "17",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "39",
-                                "y": "17",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "40",
-                                "y": "17",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "26",
-                                "y": "18",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "27",
-                                "y": "18",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "sky012",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "30",
-                                "y": "19",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "shine3_n",
-                        "autoLayer": true
-                    }
-                },
-                {
-                    "type": "AddMapObject",
-                    "data": {
-                        "locType": "locs",
-                        "pick": "random",
-                        "locs": [
-                            {
-                                "x": "31",
-                                "y": "19",
-                                "range": "0"
-                            }
-                        ],
-                        "resource": "shine3_n",
-                        "autoLayer": true
                     }
                 }
             ],
