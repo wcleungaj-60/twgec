@@ -951,10 +951,10 @@
                         "disAnim": "none",
                         "deltaHp": true,
                         "dhRepeat": "cd",
-                        "dhCD": "4000",
+                        "dhCD": "1100",
                         "dhSet": {
                             "deltaType": "heal",
-                            "hp": "1 + {instance.CON}",
+                            "hp": "1 + {instance.STR}/6 + {instance.CON}/3",
                             "casterCode": "",
                             "damageType": {
                                 "damageTypeCode": "none"
@@ -1015,10 +1015,10 @@
                         "disAnim": "none",
                         "deltaHp": true,
                         "dhRepeat": "cd",
-                        "dhCD": "4000",
+                        "dhCD": "1100",
                         "dhSet": {
                             "deltaType": "damage",
-                            "hp": "1 + {instance.STR}/2 + {instance.CON}/2",
+                            "hp": "1 + {instance.STR}/3 + {instance.CON}/6",
                             "casterCode": "",
                             "damageType": {
                                 "damageTypeCode": "none"
@@ -1352,94 +1352,6 @@
                 }
             ],
             "checks": [],
-            "triggers": [
-                {
-                    "type": "ActorHit",
-                    "data": {
-                        "actorMatches": [
-                            {
-                                "actorCodes": [
-                                    {
-                                        "method": "contain",
-                                        "actorCode": ""
-                                    }
-                                ],
-                                "brain": "all",
-                                "camp": {
-                                    "campAll": true
-                                },
-                                "excludeActorCodes": []
-                            }
-                        ],
-                        "varname": "instance",
-                        "hitterMatches": [
-                            {
-                                "actorCodes": [
-                                    {
-                                        "method": "contain",
-                                        "actorCode": ""
-                                    }
-                                ],
-                                "brain": "all",
-                                "camp": {
-                                    "campAll": true
-                                },
-                                "excludeActorCodes": []
-                            }
-                        ],
-                        "hitterVarname": "attacker",
-                        "damageTypes": [],
-                        "damageVarname": "",
-                        "aliveType": "skip",
-                        "checkFallDmg": "a",
-                        "checkDeviceDmg": "a",
-                        "checkWeaponType": true,
-                        "weaponTypeCheck": "include",
-                        "weaponType": "custom_dagger"
-                    }
-                }
-            ]
-        },
-        {
-            "id": "匕首物理連擊",
-            "disabled": false,
-            "folder": "",
-            "startTime": 0,
-            "checkInterval": 10,
-            "repeats": -1,
-            "repeatInterval": 0,
-            "devOnly": false,
-            "actions": [
-                {
-                    "type": "Wait",
-                    "data": {
-                        "duration": "100"
-                    }
-                },
-                {
-                    "type": "DeltaHp",
-                    "data": {
-                        "actorCode": "instance",
-                        "deltaType": "damage",
-                        "hp": "10+{attacker.STR}*2+{attacker.AGI}",
-                        "casterCode": "attacker"
-                    }
-                }
-            ],
-            "checks": [
-                {
-                    "type": "NumberCheck",
-                    "data": {
-                        "value1": "10+{attacker.AGI}*2",
-                        "operator": ">=",
-                        "value2": "random(0, 100)",
-                        "_logi": {
-                            "_and_or": ""
-                        },
-                        "_elseEventId": ""
-                    }
-                }
-            ],
             "triggers": [
                 {
                     "type": "ActorHit",
@@ -2367,7 +2279,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2383,7 +2296,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2399,7 +2313,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2415,7 +2330,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2431,7 +2347,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2447,7 +2364,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2463,7 +2381,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2479,7 +2398,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2495,7 +2415,8 @@
                             }
                         ],
                         "resource": "house0",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": true
                     }
                 },
                 {
@@ -2511,7 +2432,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2527,7 +2449,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2543,7 +2466,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2559,7 +2483,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2575,7 +2500,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2591,7 +2517,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2607,7 +2534,8 @@
                             }
                         ],
                         "resource": "box0",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": true
                     }
                 },
                 {
@@ -2623,7 +2551,8 @@
                             }
                         ],
                         "resource": "box1",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2677,7 +2606,8 @@
                             }
                         ],
                         "resource": "box1",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2693,7 +2623,7 @@
                         ],
                         "shape": "wood",
                         "rotation": "90",
-                        "speech": "【匕首】\n【普通攻擊】\n - 武器傷害: 10+力量×2+敏捷\n - 連擊率: 10%+敏捷×2%，上限100%\n【技能】移動至滑鼠指定位置，並在目的範圍內造成傷害\n - 範圍傷害：10+敏捷×2",
+                        "speech": "【匕首】\n【普通攻擊】\n - 武器傷害: 10+力量×2+敏捷\n【技能】移動至滑鼠指定位置，並在目的範圍內造成傷害\n - 範圍傷害：10+敏捷×2",
                         "parsePolicy": "view",
                         "showButtons": true,
                         "btnsGroup": {
@@ -2731,7 +2661,8 @@
                             }
                         ],
                         "resource": "box1",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2747,7 +2678,7 @@
                         ],
                         "shape": "wood",
                         "rotation": "90",
-                        "speech": "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成三次傷害及治療\n - 對敵軍傷害量: 1+力量÷2+體質÷2 \n - 對友軍回復量: 1+體質",
+                        "speech": "【鐵劍】\n【普通攻擊】\n - 武器傷害: 30+力量×3\n【技能】對範圍内的角色造成十次傷害及治療\n - 對敵軍傷害量: 1+力量÷3+體質÷6\n - 對友軍回復量: 1+力量÷6+體質÷3",
                         "parsePolicy": "view",
                         "showButtons": true,
                         "btnsGroup": {
@@ -2785,7 +2716,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2801,7 +2733,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2817,7 +2750,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2833,7 +2767,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2849,7 +2784,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2865,7 +2801,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2881,7 +2818,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2897,7 +2835,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2913,7 +2852,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2929,7 +2869,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2945,7 +2886,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2961,7 +2903,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2977,7 +2920,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -2993,7 +2937,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3009,7 +2954,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3025,7 +2971,8 @@
                             }
                         ],
                         "resource": "shine3_w",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3041,7 +2988,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3057,7 +3005,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3073,7 +3022,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3089,7 +3039,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3105,7 +3056,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3121,7 +3073,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3137,7 +3090,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3153,7 +3107,8 @@
                             }
                         ],
                         "resource": "shine3_w",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3169,7 +3124,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3185,7 +3141,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3201,7 +3158,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3217,7 +3175,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3233,7 +3192,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3249,7 +3209,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3265,7 +3226,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3281,7 +3243,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3297,7 +3260,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3313,7 +3277,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3329,7 +3294,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3345,7 +3311,8 @@
                             }
                         ],
                         "resource": "chair0",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3393,7 +3360,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3409,7 +3377,8 @@
                             }
                         ],
                         "resource": "chair0",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3463,7 +3432,8 @@
                             }
                         ],
                         "resource": "chair0",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3517,7 +3487,8 @@
                             }
                         ],
                         "resource": "chair0",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3571,7 +3542,8 @@
                             }
                         ],
                         "resource": "chair0",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3625,7 +3597,8 @@
                             }
                         ],
                         "resource": "chair0",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3679,7 +3652,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3695,7 +3669,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3711,7 +3686,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3727,7 +3703,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3743,7 +3720,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3759,7 +3737,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3775,7 +3754,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3791,7 +3771,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3807,7 +3788,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3823,7 +3805,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3839,7 +3822,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3855,7 +3839,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3871,7 +3856,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3887,7 +3873,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3903,7 +3890,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3919,7 +3907,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3935,7 +3924,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3951,7 +3941,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3967,7 +3958,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3983,7 +3975,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -3999,7 +3992,8 @@
                             }
                         ],
                         "resource": "tree0",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4015,7 +4009,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4031,7 +4026,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4047,7 +4043,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4063,7 +4060,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4079,7 +4077,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4095,7 +4094,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4111,7 +4111,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4127,7 +4128,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4143,7 +4145,8 @@
                             }
                         ],
                         "resource": "shine3_e",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4159,7 +4162,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4175,7 +4179,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4191,7 +4196,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4207,7 +4213,8 @@
                             }
                         ],
                         "resource": "shine3_e",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4223,7 +4230,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4239,7 +4247,8 @@
                             }
                         ],
                         "resource": "tree0",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4255,7 +4264,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4271,7 +4281,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4287,7 +4298,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4303,7 +4315,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4319,7 +4332,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4335,7 +4349,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4351,7 +4366,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4367,7 +4383,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4383,7 +4400,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4399,7 +4417,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4415,7 +4434,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4431,7 +4451,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4447,7 +4468,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4463,7 +4485,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4479,7 +4502,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4495,7 +4519,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4511,7 +4536,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4527,7 +4553,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4543,7 +4570,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4559,7 +4587,8 @@
                             }
                         ],
                         "resource": "tree0",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4575,7 +4604,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4591,7 +4621,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4607,7 +4638,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4623,7 +4655,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4639,7 +4672,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4655,7 +4689,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4671,7 +4706,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4687,7 +4723,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4703,7 +4740,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4719,7 +4757,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4735,7 +4774,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4751,7 +4791,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4767,7 +4808,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4783,7 +4825,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4799,7 +4842,8 @@
                             }
                         ],
                         "resource": "sky012",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4815,7 +4859,8 @@
                             }
                         ],
                         "resource": "shine3_n",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -4831,7 +4876,8 @@
                             }
                         ],
                         "resource": "shine3_n",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 }
             ],
