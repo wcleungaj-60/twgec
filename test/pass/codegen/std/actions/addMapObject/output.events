@@ -85,7 +85,8 @@
                             }
                         ],
                         "resource": "box0",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 },
                 {
@@ -101,7 +102,8 @@
                             }
                         ],
                         "resource": "tree1",
-                        "autoLayer": true
+                        "autoLayer": true,
+                        "forceBlock": false
                     }
                 }
             ],

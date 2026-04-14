@@ -205,7 +205,8 @@ const InstructionConfig addMapObjectConfig =
         .addParam("y", AST_INT, CODEGEN_STRING, "0")
         .addParam("range", AST_INT, CODEGEN_STRING, "0")
         .addParam("object", AST_STRING, CODEGEN_STRING, "tree0")
-        .addParam("autoTuneHeight", AST_BOOL, CODEGEN_BOOL, "true");
+        .addParam("autoTuneHeight", AST_BOOL, CODEGEN_BOOL, "true")
+        .addParam("walkable", AST_BOOL, CODEGEN_BOOL, "true");
 const InstructionConfig addMapSignConfig =
     InstructionConfig("addMapSign", "新增告示牌")
         .addParam("text", AST_STRING, CODEGEN_STRING, "")

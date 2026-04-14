@@ -210,12 +210,15 @@ action::ActionAddMapObject::method(DefaultMap defaultMap,
   });
   JsonArrayNode locsNode =
       JsonArrayNode(std::make_shared<JsonObjectNode>(locNode));
+  std::string forceBlock =
+      defaultMap.get("walkable") == "true" ? "false" : "true";
   return JsonObjectNode({
       {"locType", "\"locs\""},
       {"pick", "\"random\""},
       {"locs", locsNode.to_string(24)},
       {"resource", defaultMap.get("object", MapObjectKind::keywordEnum)},
       {"autoLayer", defaultMap.get("autoTuneHeight")},
+      {"forceBlock", forceBlock},
   });
 }
 
@@ -241,7 +244,7 @@ action::ActionAddStuff::method(DefaultMap defaultMap,
 
 JsonObjectNode
 action::ActionAvoidFriendFire::method(DefaultMap defaultMap,
-                               UserDefinedMetadata userDefinedMeta) {
+                                      UserDefinedMetadata userDefinedMeta) {
   return JsonObjectNode({
       {"avoidFriendFire", defaultMap.get("value")},
       {"avoidFriendFireValue", "\"y\""},
