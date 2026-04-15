@@ -222,32 +222,33 @@ const string keywordRole55 = "靈骨";
 const string keywordRole56 = "獵豹";
 const string keywordRole57 = "隱形人";
 const string keywordRole58 = "隱形精靈";
-const string keywordRole59 = "破腦屍怪";
-const string keywordRole60 = "影破腦";
-const string keywordRole61 = "影破腦屍怪";
-const string keywordRole62 = "肥腦屍怪";
-const string keywordRole63 = "影肥腦屍怪";
-const string keywordRole64 = "瘋狗屍";
-const string keywordRole65 = "千年屍妖";
-const string keywordRole66 = "噁吐屍妖";
-const string keywordRole67 = "青面鬼";
-const string keywordRole68 = "屍血蟲";
-const string keywordRole69 = "role71"; // 躺平的阿波羅姐姐
-const string keywordRole70 = "role72"; // 不認識
-const string keywordRole71 = "role73"; // 赤焰精靈 (重複)
-const string keywordRole72 = "熊";
-const string keywordRole73 = "飛魚";
-const string keywordRole74 = "赤焰王女";
-const string keywordRole75 = "赤焰王女(躺下)";
-const string keywordRole76 = "不動佛";
-const string keywordRole77 = "赤焰精靈";
-const string keywordRole78 = "火球";
-const string keywordRole79 = "杭特博士";
-const string keywordRole80 = "杭特博士(低頭)";
-const string keywordRole81 = "崔酒中尉";
-const string keywordRole82 = "role85"; // 老人
-const string keywordRole83 = "role86"; // 白猩猩
-const string keywordRole84 = "蜜蜂";
+// 59 and 60 are missed
+const string keywordRole61 = "破腦屍怪";
+const string keywordRole62 = "影破腦";
+const string keywordRole63 = "影破腦屍怪";
+const string keywordRole64 = "肥腦屍怪";
+const string keywordRole65 = "影肥腦屍怪";
+const string keywordRole66 = "瘋狗屍";
+const string keywordRole67 = "千年屍妖";
+const string keywordRole68 = "噁吐屍妖";
+const string keywordRole69 = "青面鬼";
+const string keywordRole70 = "屍血蟲";
+const string keywordRole71 = "role71"; // 躺平的阿波羅姐姐
+const string keywordRole72 = "role72"; // 不認識
+const string keywordRole73 = "role73"; // 赤焰精靈 (重複)
+const string keywordRole74 = "熊";
+const string keywordRole75 = "飛魚";
+const string keywordRole76 = "赤焰王女";
+const string keywordRole77 = "赤焰王女(躺下)";
+const string keywordRole78 = "不動佛";
+const string keywordRole79 = "赤焰精靈";
+const string keywordRole80 = "火球";
+const string keywordRole81 = "杭特博士";
+const string keywordRole82 = "杭特博士(低頭)";
+const string keywordRole83 = "崔酒中尉";
+const string keywordRole84 = "role85"; // 老人
+const string keywordRole85 = "role86"; // 白猩猩
+const string keywordRole86 = "蜜蜂";
 static KeywordEnum keywordEnum(
     "role kind",
     {
@@ -270,16 +271,16 @@ static KeywordEnum keywordEnum(
         {keywordRole48, "48"}, {keywordRole49, "49"}, {keywordRole50, "50"},
         {keywordRole51, "51"}, {keywordRole52, "52"}, {keywordRole53, "53"},
         {keywordRole54, "54"}, {keywordRole55, "55"}, {keywordRole56, "56"},
-        {keywordRole57, "57"}, {keywordRole58, "58"}, {keywordRole59, "59"},
-        {keywordRole60, "60"}, {keywordRole61, "61"}, {keywordRole62, "62"},
-        {keywordRole63, "63"}, {keywordRole64, "64"}, {keywordRole65, "65"},
-        {keywordRole66, "66"}, {keywordRole67, "67"}, {keywordRole68, "68"},
-        {keywordRole69, "69"}, {keywordRole70, "70"}, {keywordRole71, "71"},
-        {keywordRole72, "72"}, {keywordRole73, "73"}, {keywordRole74, "74"},
-        {keywordRole75, "75"}, {keywordRole76, "76"}, {keywordRole77, "77"},
-        {keywordRole78, "78"}, {keywordRole79, "79"}, {keywordRole80, "80"},
-        {keywordRole81, "81"}, {keywordRole82, "82"}, {keywordRole83, "83"},
-        {keywordRole84, "84"},
+        {keywordRole57, "57"}, {keywordRole58, "58"}, {keywordRole61, "61"},
+        {keywordRole62, "62"}, {keywordRole63, "63"}, {keywordRole64, "64"},
+        {keywordRole65, "65"}, {keywordRole66, "66"}, {keywordRole67, "67"},
+        {keywordRole68, "68"}, {keywordRole69, "69"}, {keywordRole70, "70"},
+        {keywordRole71, "71"}, {keywordRole72, "72"}, {keywordRole73, "73"},
+        {keywordRole74, "74"}, {keywordRole75, "75"}, {keywordRole76, "76"},
+        {keywordRole77, "77"}, {keywordRole78, "78"}, {keywordRole79, "79"},
+        {keywordRole80, "80"}, {keywordRole81, "81"}, {keywordRole82, "82"},
+        {keywordRole83, "83"}, {keywordRole84, "84"}, {keywordRole85, "85"},
+        {keywordRole86, "86"},
     });
 } // namespace roleKind
 

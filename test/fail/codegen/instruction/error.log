@@ -12,6 +12,7 @@ addActor(
     list[Point]      patrol = [], 
     int|string       range = "0", 
     string           role = 0, 
+    int|string       rotation = "0", 
     int|string       strength = "1", 
     int|string       teamId = "0", 
     string           weapon1 = "default", 

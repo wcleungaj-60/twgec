@@ -185,6 +185,7 @@ const InstructionConfig addActorConfig =
         .addParam("y", AST_INT, CODEGEN_STRING, "0")
         .addParam("hp", AST_INT, CODEGEN_STRING, "100")
         .addParam("range", AST_INT, CODEGEN_STRING, "0")
+        .addParam("rotation", AST_INT, CODEGEN_STRING, "0")
         .addParam("movableRange", AST_INT, CODEGEN_STRING, "10000")
         .addParam("role", AST_STRING, CODEGEN_INT, "0")
         .addParam("externRole", AST_STRING, CODEGEN_STRING, "")
