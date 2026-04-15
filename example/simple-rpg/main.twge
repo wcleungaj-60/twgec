@@ -2,6 +2,7 @@
 #include "load-store.twge"
 #include "weapon.twge"
 #include "monster.twge"
+#include "skill.twge"
 #include "map.twge"
 
 def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
@@ -93,59 +94,6 @@ block 查看面板 {
     }
 }
 
-block 技能火星領域 {
-    __repeat__ = -1;
-    triggers {
-        鍵盤按鍵(varName = "clicker", key = "X");
-    }
-    checks {
-        比較數字(lhs = "{{clicker.id}.INT}+{{clicker.id}.PSY}", op = ">=", rhs = 5);
-        比較數字(lhs = "{{clicker.id}.skillXCD}", op = "!=", rhs = 1);
-    }
-    actions {
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: #912B2B'>火星領域</span>");
-        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
-        自定義::儲存Instance整數("skillXCD", 1);
-        EnhFF::玩家滑鼠座標(actorId = "{instance}", varX = "x", varY = "y");
-        EnhFF::廣義圓形範圍(x = "{x}", y="{y}", radius = 2*64, duration = 10000,
-                color = "#912B2B", lineWidth = 3);
-        for(i in 1...30) {
-            wait(duration = 300);
-            EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y="{y}+random(-64,64)", 
-                    radius = 40, duration = 500, color = "#FF0F0F", 
-                    deltaHpType = "damage", deltaHpValue = 公式::火星領域傷害,
-                    deltaHpCD = 4000, deltaHpTarget = 角色::任何敵軍);
-        }
-        wait(duration = 2000);
-        自定義::儲存Instance整數("skillXCD", 0);
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: #912B2B'>火星領域冷卻完畢</span>");
-    }
-}
-
-block 技能火星領域無效 {
-    __repeat__ = -1;
-    triggers {
-        鍵盤按鍵(varName = "clicker", key = "X");
-    }
-    checks {
-        比較數字(lhs = "{{clicker.id}.INT}+{{clicker.id}.PSY}", op = "<", rhs = 5);
-    }
-    actions {
-        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
-        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: #912B2B'>智慧及精神之和大於等於5才可發動技能</span>");
-    }
-}
-
-block 風杖光彈攻擊 {
-    __repeat__ = -1;
-    triggers {
-        角色發動攻擊(weapon = 別名::武器風杖, varName = "instance");
-    }
-    actions {
-        光彈特效(fromActor = "instance", toAngle = 公式::Instance角度, scale = "0.5", damage = 公式::風杖光彈傷害);
-    }
-}
-
 block 玩家初始化 {
     __repeat__ = -1;
     triggers {
@@ -162,6 +110,7 @@ block 玩家初始化 {
         自定義::儲存Instance整數("Exp", 0);
         自定義::儲存Instance整數("ExpNeeded", 6);
         自定義::儲存Instance整數("HP", 100);
+        儲存物件變數(key = "XSkill", object = "instance", type = "string", value = "無");
         取得玩家狀態(category = 狀態讀寫密鑰, key = "savedBefore", playerId = "{instance}", varName = "{instance}_savedBefore");
         人物裝備武器(actorCode = "instance", type = "fist", hand = 1);
         人物裝備武器(actorCode = "instance", type = "fist", hand = 2);

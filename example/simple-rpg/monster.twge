@@ -35,6 +35,7 @@ block 野獸死亡三級鹿 = 自定義::野獸死亡泛型("monster_deer_lv03",
 def 自定義::野獸重生泛型(interval, max_num, actor_id, name, x, y, hp, strength, role) : block {
     __repeat__ = -1;
     __repeatInterval__ = interval;
+    __delay__ = 1000;
     checks {
         計算人數(actor = ActorMatch(id = actor_id, matchKind = "contain"), op = "<", value = max_num);
     }

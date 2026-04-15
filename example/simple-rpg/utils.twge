@@ -2,7 +2,6 @@
 const 公式::Instance角度 = "{instance.bodyRotation}*180/3.14";
 const 公式::Instance血量 = "98 + 10*{instance.CON} + 2*{instance.Level}";
 const 公式::Instance恢復量 = "1 + {instance.PSY} + {instance.CON}/2";
-const 公式::火星領域傷害 = "{instance.INT}/4+{instance.PSY}/6";
 const 公式::InstanceX坐標 = "{instance.gamePosition.x}/32";
 const 公式::InstanceY坐標 = "{instance.gamePosition.y}/32";
 
@@ -14,7 +13,8 @@ const 文字::Instance訊息 =
 "體質：{{instance.id}.CON}\n" +
 "敏捷：{{instance.id}.AGI}\n" +
 "智慧：{{instance.id}.INT}\n" +
-"精神：{{instance.id}.PSY}";
+"精神：{{instance.id}.PSY}\n\n" +
+"按鍵X技能: 【{{instance.id}.XSkill}】";
 
 const 文字::力量描述 = "【力量】\n每一點可提升若干的武器物理傷害\n詳細見各武器描述";
 const 文字::體質描述 = "【體質】\n每一點可提升半點恢復力\n及增加十點血量上限";

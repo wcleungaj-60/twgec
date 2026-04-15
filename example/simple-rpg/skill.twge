@@ -1,0 +1,81 @@
+const 公式::火星領域傷害 = "{instance.INT}/4+{instance.PSY}/6";
+const 公式::震撼傷害 = "1+{instance.CON}/3";
+const 公式::震撼範圍 = "60+10*{instance.CON}^0.5";
+
+const 文字::火星領域描述 = 
+"【火星領域】\n" + 
+"在滑鼠指定範圍內持續出現星火\n" + 
+" - 星火傷害: 智慧÷4+精神÷6\n" +
+"冷卻10秒";
+
+const 文字::震撼描述 = 
+"【震撼】\n" + 
+"對自身附近的敵人造成傷害\n" +
+"體質越高，威力及範圍越大\n" + 
+" - 震撼傷害: 1+體質÷3\n" +
+" - 震撼範圍: 60+10×體質^0.5\n" +
+"冷卻10秒";
+
+const 別名::技能火星領域EN = "SparkArea";
+const 別名::技能火星領域ZH = "火星領域";
+const 別名::技能震撼EN = "Shocked";
+const 別名::技能震撼ZH = "震撼";
+
+def 自定義::點擊設定技能泛型(name, nameZh) : block {
+    __repeat__ = -1;
+    triggers {
+        告示牌按鈕(varName = "instance", buttonId = "setX" + name);
+    }
+    actions {
+        儲存物件變數(key = "XSkill", object = "instance", type = "string", value = nameZh);
+    }
+}
+
+block 點擊設定技能火星領域 = 自定義::點擊設定技能泛型(別名::技能火星領域EN, 別名::技能火星領域ZH);
+block 點擊設定技能震撼 = 自定義::點擊設定技能泛型(別名::技能震撼EN, 別名::技能震撼ZH);
+block 點擊設定技能無 = 自定義::點擊設定技能泛型("None","無");
+
+def 火星領域技能() : actions {
+EnhFF::玩家滑鼠座標(actorId = "{instance}", varX = "x", varY = "y");
+    EnhFF::廣義圓形範圍(x = "{x}", y="{y}", radius = 2*64, duration = 10000,
+            color = "#912B2B", lineWidth = 3);
+    for(i in 1...30) {
+        wait(duration = 300);
+        EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y="{y}+random(-64,64)", 
+                radius = 40, duration = 500, color = "#FF0F0F", 
+                deltaHpType = "damage", deltaHpValue = 公式::火星領域傷害,
+                deltaHpCD = 4000, deltaHpTarget = 角色::任何敵軍);
+    }
+    wait(duration = 10000);
+}
+
+def 震撼技能() : actions {
+    EnhFF::廣義圓形範圍(actorId = "instance", 
+            radius = 公式::震撼範圍, duration = 2000, color = "#CC7700", 
+            deltaHpType = "damage", lineWidth = 3, deltaHpValue = 公式::震撼傷害,
+            deltaHpCD = 4000, deltaHpTarget = 角色::任何敵軍);
+    wait(duration = 12000);
+}
+
+def 自定義::觸發技能泛型(name, nameZh, color) : block {
+    __repeat__ = -1;
+    triggers {
+        鍵盤按鍵(varName = "clicker", key = "X");
+    }
+    checks {
+        比對字串(matchKind = "equal", str = nameZh, value = "{{clicker.id}.XSkill}");
+        比較數字(lhs = "{{clicker.id}.skill"+name+"CD}", op = "!=", rhs = 1);
+    }
+    actions {
+        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: "+color+"'>"+nameZh+"</span>");
+        自定義::儲存Instance整數("skill"+name+"CD", 1);
+        if(name == 別名::技能火星領域EN) {火星領域技能();}
+        if(name == 別名::技能震撼EN) {震撼技能();}
+        自定義::儲存Instance整數("skill"+name+"CD", 0);
+        地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: "+color+"'>"+nameZh+"冷卻完畢</span>");
+    }
+}
+
+block 觸發技能火星領域 = 自定義::觸發技能泛型(別名::技能火星領域EN, 別名::技能火星領域ZH, "#912B2B");
+block 觸發技能震撼 = 自定義::觸發技能泛型(別名::技能震撼EN, 別名::技能震撼ZH, "#CC7700");

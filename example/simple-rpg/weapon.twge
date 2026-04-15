@@ -96,6 +96,16 @@ block 風杖物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器風
 block 鐵劍物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器鐵劍, 公式::鐵劍物理傷害);
 block 匕首物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器匕首, 公式::匕首物理傷害);
 
+block 風杖光彈攻擊 {
+    __repeat__ = -1;
+    triggers {
+        角色發動攻擊(weapon = 別名::武器風杖, varName = "instance");
+    }
+    actions {
+        光彈特效(fromActor = "instance", toAngle = 公式::Instance角度, scale = "0.5", damage = 公式::風杖光彈傷害);
+    }
+}
+
 block 武器初始化 {
     actions {
         設定武器技能(weapon = 別名::武器風杖);

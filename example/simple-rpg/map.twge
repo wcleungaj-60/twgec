@@ -1,12 +1,12 @@
 const 地圖::新手村100n100 = [
 " .  .  .  .  . ****** .  .  .  .  .  .  .  .  .  .  .  .  . ",
 " .  .  .  .  .  .  .  .  .  .  .  .  . ********* .  .  .  . ",
-" .  . --------------- .  .  .  .  .  . ********* .  .  .  . ",
-" .  . ------H00------ .  .  .  .  .  . ********* .  .  .  . ",
-" .  . ---------------****** .  .  .  .  .  .  .  .  .  .  . ",
-" .  . ---------------*** .  .  .  .  .  .  .  .  .  .  .  . ",
-" .  . LBx--- .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . ",
-" .  . ------S06S07S08 .  .  .  .  .  .  .  .  . *** .  .  . ",
+" .  . --------------- .  .  .  .  . LBx--------------- .  . ",
+" .  . ------H00------ .  .  .  .  . ------------------ .  . ",
+" .  . ---------------****** .  .  . SS1 . ---H01------ .  . ",
+" .  . ---------------*** .  .  .  . SS2NP2------------ .  . ",
+" .  . LBx--- . NP1 .  .  .  .  .  . SBx . ------------ .  . ",
+" .  . ------SW1SW2SW3 .  .  .  .  .  .  .  .  . *** .  .  . ",
 " .  .  .  .  . ****** .  .  .  .  .  .  .  . ********* .  . ",
 " .  .  . ************ .  .  .  .  .  .  . ***************ExE",
 " .  .  . ************ .  .  .  .  .  .  .  . ********* . ExE",
@@ -14,9 +14,9 @@ const 地圖::新手村100n100 = [
 " .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . ",
 "****** .  .  .  .  .  . *** .  .  .  .  .  .  .  .  .  .  . ",
 "*** .  .  .  .  .  . ********* .  .  .  .  .  .  .  .  .  . ",
-" . S00 .  .  .  .  .  . *** .  .  .  .  .  .  .  .  .  .  . ",
+" . SP0 .  .  .  .  .  . *** .  .  .  .  .  .  .  .  .  .  . ",
 " .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . ",
-" .  .  . S01 . S02 . S03 . S04 . S05 .  .  .  .  .  .  .  . ",
+" .  .  . SP1 . SP2 . SP3 . SP4 . SP5 .  .  .  .  .  .  .  . ",
 " .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . ******",
 " .  .  .  .  .  .  . ********* .  .  .  .  .  .  . *********"
 ];
@@ -44,6 +44,29 @@ const 地圖::新手村近郊101n100 = [
 " .  .  .  .  .  .  .  .  . ExSExS .  .  .  .  .  .  .  .  . "
 ];
 
+const 地圖::新手村近郊101n101 = [
+" .  .  .  .  .  .  .  .  . ExNExN .  .  .  .  .  .  .  .  . ",
+" .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . ",
+" .  .  .  .  .  .  .  .  .  . ****** .  .  .  .  .  .  .  . ",
+" .  .  .  . t00 .  .  . .  ************ .  .  .  .  .  .  . ",
+" .  .  .  .  .  .  .  .  . ************ .  .  .  .  . *** . ",
+" .  .  .  .  .  .  .  .  .  . ****** .  .  .  .  .  . *** . ",
+" .  .  .  .  . *** .  .  .  .  .  .  .  .  .  .  .  . t00 . ",
+" . t00 .  .  . ****** .  .  .  .  .  .  .  .  .  .  .  .  . ",
+" .  .  .  .  . ********* .  .  .  .  .  .  .  .  .  .  .  . ",
+" .  .  .  .  . ********* .  .  .  .  .  .  .  .  .  .  .  . ",
+" .  .  .  .  .  . *** .  .  .  .  .  .  .  .  .  .  .  .  . ",
+" .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . *** . ",
+" .  .  .  . ****** .  .  .  .  .  .  .  .  .  .  . ****** . ",
+" .  .  .  . ********* .  .  .  .  .  .  .  .  .  .  . *** . ",
+" .  .  .  .  . ****** .  .  .  .  . t00 .  .  .  .  .  .  . ",
+" .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . ",
+" .  .  .  .  .  .  .  .  . ****** .  .  .  .  .  .  .  .  . ",
+" .  . t00 .  .  .  . *************** .  .  .  .  .  .  .  . ",
+" .  .  .  .  .  .  . ************ .  .  .  .  .  .  . t00 . ",
+" .  .  .  .  .  .  .  . ****** .  .  .  .  .  .  .  .  .  . "
+];
+
 def 地圖::新增能力點告示牌(x, y, text, type) : actions {
     新增地圖物件(x = x, y = y, object = "石椅");
     新增告示牌(x = x, y = y, rotation = 270, text = text, buttons = [
@@ -55,29 +78,47 @@ def 地圖::新增能力點告示牌(x, y, text, type) : actions {
 def 地圖::生成地圖配置(x, y, object) : actions {
     // '---' 用作padding
     if(object == "---" || object == " . ") {}
-    // 生成木板
-    else if(object == "S00") {
+    // 生成木板 SP - Point, SW - Weapon, SS - Skill
+    else if(object == "SP0") {
         新增地圖物件(x = x, y = y, object = "石椅");
         新增告示牌(x = x, y = y, rotation = 0, text = "【重置能力點分配】", buttons = [Button(id = "ResetPoint", text = "確認")]);
-    } else if(object == "S01") {
+    } else if(object == "SP1") {
         地圖::新增能力點告示牌(x, y, 文字::力量描述, "STR");
-    } else if(object == "S02") {
+    } else if(object == "SP2") {
         地圖::新增能力點告示牌(x, y, 文字::體質描述, "CON");
-    } else if(object == "S03") {
+    } else if(object == "SP3") {
         地圖::新增能力點告示牌(x, y, 文字::敏捷描述, "AGI");
-    } else if(object == "S04") {
+    } else if(object == "SP4") {
         地圖::新增能力點告示牌(x, y, 文字::智慧描述, "INT");
-    } else if(object == "S05") {
+    } else if(object == "SP5") {
         地圖::新增能力點告示牌(x, y, 文字::精神描述, "PSY");
-    } else if(object == "S06") {
+    } else if(object == "SW1") {
         新增地圖物件(x = x, y = y, object = "小箱子");
         新增告示牌(x = x, y = y, rotation = 90, text = 文字::風杖描述, buttons = [Button(id = "wearWindStaff", text = "裝備"), Button(id = "wearNone", text = "卸下")]);
-    } else if(object == "S07") {
+    } else if(object == "SW2") {
         新增地圖物件(x = x, y = y, object = "小箱子");
         新增告示牌(x = 5, y = 7, rotation = 90, text = 文字::匕首描述, buttons = [Button(id = "wearDagger", text = "裝備"), Button(id = "wearNone", text = "卸下")]);
-    } else if(object == "S08") {
+    } else if(object == "SW3") {
         新增地圖物件(x = x, y = y, object = "小箱子");
         新增告示牌(x = 6, y = 7, rotation = 90, text = 文字::鐵劍描述, buttons = [Button(id = "wearIronSword", text = "裝備"), Button(id = "wearNone", text = "卸下")]);
+    } else if(object == "SS1") {
+        新增地圖物件(x = x, y = y, object = "小箱子");
+        新增告示牌(x = x, y = y, rotation = 180, text = 文字::火星領域描述, buttons = [
+            Button(id = "setX" + 別名::技能火星領域EN, text = "設置於X鍵"), 
+            Button(id = "setXNone", text = "卸下")]);
+    } else if(object == "SS2") {
+        新增地圖物件(x = x, y = y, object = "小箱子");
+        新增告示牌(x = x, y = y, rotation = 180, text = 文字::震撼描述, buttons = [
+            Button(id = "setX" + 別名::技能震撼EN, text = "設置於X鍵"), 
+            Button(id = "setXNone", text = "卸下")]);
+    }
+    // 生成NPC
+    else if(object == "NP1") {
+        新增角色(name = "武器商人", id = "npc01*", camp = "第三", x = x, y = y, rotation = 90,
+                weapon1 = "fist", weapon2 = "fist", teamId = 100, role = "隱居士");
+    } else if(object == "NP2") {
+        新增角色(name = "技能商人", id = "npc02*", camp = "第三", x = x, y = y, rotation = 180,
+                weapon1 = "fist", weapon2 = "fist", teamId = 100, role = "赤焰精靈");
     }
     // 生成地圖物件
     else if(object == "LBx") {
@@ -86,6 +127,8 @@ def 地圖::生成地圖配置(x, y, object) : actions {
         新增地圖物件(x = x, y = y, object = "小箱子", walkable = false);
     } else if(object == "H00") {
         新增地圖物件(x = x, y = y, object = "5x4橫向房子", walkable = false);
+    } else if(object == "H01") {
+        新增地圖物件(x = x, y = y, object = "5x4縱向房子", walkable = false);
     } else if(object == "***") {
         新增地圖物件(x = x, y = y, object = "草地");
     } else if(object == "t00") {
@@ -126,6 +169,17 @@ def 地圖::生成地圖101n100(xOffset, yOffset) : actions {
     }
 }
 
+def 地圖::生成地圖101n101(xOffset, yOffset) : actions {
+    for(map_row in 0...(twge::get_length(地圖::新手村近郊101n101) - 1)) {
+        for(map_col in 0...(twge::get_length(twge::get_index(地圖::新手村近郊101n101, map_row))/3 - 1)) {
+            地圖::生成地圖配置(map_col + xOffset, map_row + yOffset,
+            twge::get_index(twge::get_index(地圖::新手村近郊101n101, map_row), map_col*3 + 0) + 
+            twge::get_index(twge::get_index(地圖::新手村近郊101n101, map_row), map_col*3 + 1) + 
+            twge::get_index(twge::get_index(地圖::新手村近郊101n101, map_row), map_col*3 + 2));
+        }
+    }
+}
+
 def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2): actions {
     if (x1 == x2 && y1 < y2) {
         設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "下");
@@ -154,5 +208,6 @@ block 地圖初始化 {
         自定義::設定雙向地圖傳送點(x1 = 31, y1 = 19, x2 = 31, y2 = 21);
         地圖::生成地圖100n100(0,0);
         地圖::生成地圖101n100(21,0);
+        地圖::生成地圖101n101(21,21);
     }
 }
