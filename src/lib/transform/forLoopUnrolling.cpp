@@ -116,9 +116,18 @@ PropagationResult forLoopUnrolling(std::unique_ptr<InstrSetNode> &instrSet) {
   std::vector<int> forIdxes;
   auto &compositeInstrs = instrSet->instructions;
   // Step 1: Get the for loop node index
-  for (int idx = 0; idx < compositeInstrs.size(); idx++)
+  for (int idx = 0; idx < compositeInstrs.size(); idx++) {
     if (compositeInstrs[idx]->forNode)
       forIdxes.push_back(idx);
+    if (auto& branchNode = compositeInstrs[idx]->branchNode) {
+      for(auto& ifRegion: branchNode->ifRegions)
+        if(PropagationResult::ERROR == forLoopUnrolling(ifRegion->region))
+          return PropagationResult::ERROR;
+      if (branchNode->elseRegion)
+        if(PropagationResult::ERROR == forLoopUnrolling(branchNode->elseRegion))
+          return PropagationResult::ERROR;
+    }
+  }
   if (forIdxes.empty())
     return PropagationResult::UNCHANGED;
   std::reverse(forIdxes.begin(), forIdxes.end());
