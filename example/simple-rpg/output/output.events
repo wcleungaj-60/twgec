@@ -2223,6 +2223,40 @@
             ]
         },
         {
+            "id": "點擊設定技能土靈召喚",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "XSkill",
+                        "valueType": "string",
+                        "value": "土靈召喚"
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "TalkButton",
+                    "data": {
+                        "actorMatches": [],
+                        "varname": "instance",
+                        "checkButtoncode": true,
+                        "buttonCode": "setXSummonEarthSpirit",
+                        "varnameDevice": ""
+                    }
+                }
+            ]
+        },
+        {
             "id": "點擊設定技能無",
             "disabled": false,
             "folder": "",
@@ -4768,6 +4802,217 @@
             ]
         },
         {
+            "id": "觸發技能土靈召喚",
+            "disabled": false,
+            "folder": "",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "instance",
+                        "valueType": "string",
+                        "value": "{clicker.id}"
+                    }
+                },
+                {
+                    "type": "TipOnMap",
+                    "data": {
+                        "locs": [
+                            {
+                                "x": "{instance.gamePosition.x}/32",
+                                "y": "{instance.gamePosition.y}/32",
+                                "range": "0"
+                            }
+                        ],
+                        "shiftX": "0",
+                        "shiftY": "0",
+                        "cleanTalk": false,
+                        "speech": "<span style='color: #A57E00'>土靈召喚</span>",
+                        "html": true,
+                        "align": "center",
+                        "scalePolicy": "withWindowMinOne",
+                        "stay": "time",
+                        "duration": "3000"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "skillSummonEarthSpiritCD",
+                        "valueType": "integer",
+                        "value": "1"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "tmp",
+                        "valueType": "integer",
+                        "value": "100+{instance.PSY}*2"
+                    }
+                },
+                {
+                    "type": "AddActor",
+                    "data": {
+                        "actorCode": "earthSpirit*",
+                        "name": "土靈({tmp})",
+                        "role": {
+                            "dr": 78
+                        },
+                        "actorType": "defaultType",
+                        "weapon0": {
+                            "w0Type": "kongfu"
+                        },
+                        "weapon1": {
+                            "w1Type": "kongfu"
+                        },
+                        "camp": "third",
+                        "group": "100",
+                        "location": {
+                            "x": "{instance.gamePosition.x}/32",
+                            "y": "{instance.gamePosition.y}/32",
+                            "range": "0"
+                        },
+                        "shiftX": 0,
+                        "shiftY": 0,
+                        "spawnLoc": true,
+                        "rotation": "0",
+                        "idleRotate": true,
+                        "maxhp": "100+{instance.PSY}*2",
+                        "manaPower": "0",
+                        "lives": "1",
+                        "preferAbilityLevel": "smart",
+                        "maxAbilityLevel": 1,
+                        "weight": "4",
+                        "strength": "10+{instance.PSY}/5",
+                        "vision": "300",
+                        "range": "10000",
+                        "score": "10",
+                        "bloodType": "default",
+                        "unbrokenArmor": true,
+                        "tornadoRes": "none",
+                        "distractWhenHit": true,
+                        "thinkInterval": 60,
+                        "farAutoLevel": "0",
+                        "patrols": true,
+                        "patrolPath": [],
+                        "bornDelayDuration": "0",
+                        "bornDuration": "1000",
+                        "bornLockDuration": "1000",
+                        "bornEffect": "none",
+                        "bornAnim": "fadein",
+                        "localVarname": "actor",
+                        "globalVarname": ""
+                    }
+                },
+                {
+                    "type": "ActorFollow",
+                    "data": {
+                        "actorCode": "actor",
+                        "followType": "actor",
+                        "targetCode": "{instance}"
+                    }
+                },
+                {
+                    "type": "Wait",
+                    "data": {
+                        "duration": "35000"
+                    }
+                },
+                {
+                    "type": "ActorDisappear",
+                    "data": {
+                        "actorCode": "actor",
+                        "duration": "600",
+                        "delay": "0"
+                    }
+                },
+                {
+                    "type": "Wait",
+                    "data": {
+                        "duration": "5000"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "skillSummonEarthSpiritCD",
+                        "valueType": "integer",
+                        "value": "0"
+                    }
+                },
+                {
+                    "type": "TipOnMap",
+                    "data": {
+                        "locs": [
+                            {
+                                "x": "{instance.gamePosition.x}/32",
+                                "y": "{instance.gamePosition.y}/32",
+                                "range": "0"
+                            }
+                        ],
+                        "shiftX": "0",
+                        "shiftY": "0",
+                        "cleanTalk": false,
+                        "speech": "<span style='color: #A57E00'>土靈召喚冷卻完畢</span>",
+                        "html": true,
+                        "align": "center",
+                        "scalePolicy": "withWindowMinOne",
+                        "stay": "time",
+                        "duration": "3000"
+                    }
+                }
+            ],
+            "checks": [
+                {
+                    "type": "String",
+                    "data": {
+                        "value": "{{clicker.id}.XSkill}",
+                        "method": "equal",
+                        "str": "土靈召喚",
+                        "eventLocal": "",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                },
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{{clicker.id}.skillSummonEarthSpiritCD}",
+                        "operator": "!=",
+                        "value2": "1",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
+            "triggers": [
+                {
+                    "type": "KeyboardPressed",
+                    "data": {
+                        "playerId": "*",
+                        "playerLocal": "clicker",
+                        "timing": "",
+                        "key": 88,
+                        "keyLocal": "",
+                        "ctrl": "",
+                        "shift": ""
+                    }
+                }
+            ]
+        },
+        {
             "id": "地圖初始化",
             "disabled": false,
             "folder": "",
@@ -5357,7 +5602,45 @@
                         ],
                         "resource": "box1",
                         "autoLayer": true,
-                        "forceBlock": true
+                        "forceBlock": false
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "12",
+                                "y": "6",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "180",
+                        "speech": "【土靈召喚】\n生成一直存在35秒的土靈為你戰鬥\n - 土靈血量: 100+精神×2\n - 土靈傷害: 10+精神÷5\n冷卻40秒",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "setXSummonEarthSpirit",
+                                    "close": true,
+                                    "label": "設置於X鍵",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "setXNone",
+                                    "close": true,
+                                    "label": "卸下",
+                                    "icon": ""
+                                }
+                            ]
+                        }
                     }
                 },
                 {
