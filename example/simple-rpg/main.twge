@@ -7,6 +7,7 @@
 
 def 自定義::點擊提升能力泛型(type, typeZh, value) : block {
     __repeat__ = -1;
+    __label__ = "玩家";
     triggers {
         告示牌按鈕(varName = "instance", buttonId = "increase" + type + twge::to_string(value));
     }
@@ -39,6 +40,7 @@ block 點擊提升十點精神 = 自定義::點擊提升能力泛型("PSY", "精
 
 block 點擊重置能力 {
     __repeat__ = -1;
+    __label__ = "玩家";
     triggers {
         告示牌按鈕(varName = "instance", buttonId = "ResetPoint");
     }
@@ -57,6 +59,7 @@ block 點擊重置能力 {
 
 block 等級提升 {
     __repeat__ = -1;
+    __label__ = "玩家";
     checks {
         找出所有角色(actor = 角色::任何玩家, varname = "instance");
         比較數字(lhs = "{instance.Exp}", op = ">=", rhs = "{instance.ExpNeeded}");
@@ -76,6 +79,7 @@ block 等級提升 {
 block 回血 {
     __repeat__ = -1;
     __repeatInterval__ = 10000;
+    __label__ = "玩家";
     checks {
         找出所有角色(actor = 角色::任何玩家, varname = "instance");
     }
@@ -86,6 +90,7 @@ block 回血 {
 
 block 查看面板 {
     __repeat__ = -1;
+    __label__ = "玩家";
     triggers {
         鍵盤按鍵(varName = "instance", key = "Z");
     }
@@ -96,6 +101,7 @@ block 查看面板 {
 
 block 玩家初始化 {
     __repeat__ = -1;
+    __label__ = "玩家";
     triggers {
         角色進入戰場(actor = 角色::任何玩家, varName = "instance");
     }

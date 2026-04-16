@@ -96,6 +96,7 @@ DefaultMap metadata::ConfigSetup::defaultMap = DefaultMap(
 DefaultMap metadata::BlockSetup::defaultMap = DefaultMap(
     {
         {"delay", {config::AST_INT, config::CODEGEN_INT, "0"}},
+        {"label", {config::AST_STRING, config::CODEGEN_STRING, ""}},
         {"repeat", {config::AST_INT, config::CODEGEN_INT, "0"}},
         {"repeatInterval", {config::AST_INT, config::CODEGEN_INT, "0"}},
     },
@@ -255,7 +256,8 @@ void metadata::BlockSetup::setup(
     std::ofstream &of, std::vector<std::unique_ptr<MetadataNode>> &metadatas) {
   defaultMap.addInputMap(metadatas);
   of << inden(12) << "\"disabled\": false," << std::endl;
-  of << inden(12) << "\"folder\": \"\"," << std::endl;
+  of << inden(12) << "\"folder\": " << defaultMap.get("label") << ","
+     << std::endl;
   of << inden(12) << "\"startTime\": " << defaultMap.get("delay") << ","
      << std::endl;
   of << inden(12) << "\"checkInterval\": 10," << std::endl;

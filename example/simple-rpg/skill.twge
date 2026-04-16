@@ -34,6 +34,7 @@ const 別名::技能土靈召喚ZH = "土靈召喚";
 
 def 自定義::點擊設定技能泛型(name, nameZh) : block {
     __repeat__ = -1;
+    __label__ = "技能";
     triggers {
         告示牌按鈕(varName = "instance", buttonId = "setX" + name);
     }
@@ -82,6 +83,7 @@ def 土靈召喚技能() : actions {
 
 def 自定義::觸發技能泛型(name, nameZh, color) : block {
     __repeat__ = -1;
+    __label__ = "技能";
     triggers {
         鍵盤按鍵(varName = "clicker", key = "X");
     }

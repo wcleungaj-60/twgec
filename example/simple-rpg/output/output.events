@@ -207,7 +207,7 @@
         {
             "id": "下載老玩家數據",
             "disabled": false,
-            "folder": "",
+            "folder": "玩家",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -551,7 +551,7 @@
         {
             "id": "下載新玩家數據",
             "disabled": false,
-            "folder": "",
+            "folder": "玩家",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -640,7 +640,7 @@
         {
             "id": "點擊裝備武器風杖",
             "disabled": false,
-            "folder": "",
+            "folder": "武器",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -685,7 +685,7 @@
         {
             "id": "點擊裝備武器鐵劍",
             "disabled": false,
-            "folder": "",
+            "folder": "武器",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -730,7 +730,7 @@
         {
             "id": "點擊裝備武器匕首",
             "disabled": false,
-            "folder": "",
+            "folder": "武器",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -775,7 +775,7 @@
         {
             "id": "點擊裝備武器拳頭",
             "disabled": false,
-            "folder": "",
+            "folder": "武器",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -820,7 +820,7 @@
         {
             "id": "釋放技能風杖",
             "disabled": false,
-            "folder": "",
+            "folder": "武器",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -922,7 +922,7 @@
         {
             "id": "釋放技能鐵劍",
             "disabled": false,
-            "folder": "",
+            "folder": "武器",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -1077,7 +1077,7 @@
         {
             "id": "釋放技能匕首",
             "disabled": false,
-            "folder": "",
+            "folder": "武器",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -1196,7 +1196,7 @@
         {
             "id": "風杖物理攻擊",
             "disabled": false,
-            "folder": "",
+            "folder": "武器",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -1265,7 +1265,7 @@
         {
             "id": "鐵劍物理攻擊",
             "disabled": false,
-            "folder": "",
+            "folder": "武器",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -1334,7 +1334,7 @@
         {
             "id": "匕首物理攻擊",
             "disabled": false,
-            "folder": "",
+            "folder": "武器",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -1403,7 +1403,7 @@
         {
             "id": "風杖光彈攻擊",
             "disabled": false,
-            "folder": "",
+            "folder": "武器",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -1445,7 +1445,7 @@
         {
             "id": "武器初始化",
             "disabled": false,
-            "folder": "",
+            "folder": "武器",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": 0,
@@ -1501,7 +1501,7 @@
         {
             "id": "拾取經驗一級鹿",
             "disabled": false,
-            "folder": "",
+            "folder": "怪物",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -1669,7 +1669,7 @@
         {
             "id": "拾取經驗三級鹿",
             "disabled": false,
-            "folder": "",
+            "folder": "怪物",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -1837,7 +1837,7 @@
         {
             "id": "野獸死亡一級鹿",
             "disabled": false,
-            "folder": "",
+            "folder": "怪物",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -1893,7 +1893,7 @@
         {
             "id": "野獸死亡三級鹿",
             "disabled": false,
-            "folder": "",
+            "folder": "怪物",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -1949,7 +1949,7 @@
         {
             "id": "野獸重生一級鹿",
             "disabled": false,
-            "folder": "",
+            "folder": "怪物",
             "startTime": 1000,
             "checkInterval": 10,
             "repeats": -1,
@@ -2053,7 +2053,7 @@
         {
             "id": "野獸重生三級鹿",
             "disabled": false,
-            "folder": "",
+            "folder": "怪物",
             "startTime": 1000,
             "checkInterval": 10,
             "repeats": -1,
@@ -2157,7 +2157,7 @@
         {
             "id": "點擊設定技能火星領域",
             "disabled": false,
-            "folder": "",
+            "folder": "技能",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -2191,7 +2191,7 @@
         {
             "id": "點擊設定技能震撼",
             "disabled": false,
-            "folder": "",
+            "folder": "技能",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -2225,7 +2225,7 @@
         {
             "id": "點擊設定技能土靈召喚",
             "disabled": false,
-            "folder": "",
+            "folder": "技能",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -2259,7 +2259,7 @@
         {
             "id": "點擊設定技能無",
             "disabled": false,
-            "folder": "",
+            "folder": "技能",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -2293,7 +2293,7 @@
         {
             "id": "觸發技能火星領域",
             "disabled": false,
-            "folder": "",
+            "folder": "技能",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -4613,7 +4613,7 @@
         {
             "id": "觸發技能震撼",
             "disabled": false,
-            "folder": "",
+            "folder": "技能",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -4804,7 +4804,7 @@
         {
             "id": "觸發技能土靈召喚",
             "disabled": false,
-            "folder": "",
+            "folder": "技能",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -5015,7 +5015,7 @@
         {
             "id": "地圖初始化",
             "disabled": false,
-            "folder": "",
+            "folder": "地圖",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": 0,
@@ -8952,7 +8952,7 @@
         {
             "id": "點擊提升一點力量",
             "disabled": false,
-            "folder": "",
+            "folder": "玩家",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -9195,7 +9195,7 @@
         {
             "id": "點擊提升一點體質",
             "disabled": false,
-            "folder": "",
+            "folder": "玩家",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -9438,7 +9438,7 @@
         {
             "id": "點擊提升一點敏捷",
             "disabled": false,
-            "folder": "",
+            "folder": "玩家",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -9681,7 +9681,7 @@
         {
             "id": "點擊提升一點智慧",
             "disabled": false,
-            "folder": "",
+            "folder": "玩家",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -9924,7 +9924,7 @@
         {
             "id": "點擊提升一點精神",
             "disabled": false,
-            "folder": "",
+            "folder": "玩家",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -10167,7 +10167,7 @@
         {
             "id": "點擊提升十點力量",
             "disabled": false,
-            "folder": "",
+            "folder": "玩家",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -10410,7 +10410,7 @@
         {
             "id": "點擊提升十點體質",
             "disabled": false,
-            "folder": "",
+            "folder": "玩家",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -10653,7 +10653,7 @@
         {
             "id": "點擊提升十點敏捷",
             "disabled": false,
-            "folder": "",
+            "folder": "玩家",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -10896,7 +10896,7 @@
         {
             "id": "點擊提升十點智慧",
             "disabled": false,
-            "folder": "",
+            "folder": "玩家",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -11139,7 +11139,7 @@
         {
             "id": "點擊提升十點精神",
             "disabled": false,
-            "folder": "",
+            "folder": "玩家",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -11382,7 +11382,7 @@
         {
             "id": "點擊重置能力",
             "disabled": false,
-            "folder": "",
+            "folder": "玩家",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -11648,7 +11648,7 @@
         {
             "id": "等級提升",
             "disabled": false,
-            "folder": "",
+            "folder": "玩家",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -11899,7 +11899,7 @@
         {
             "id": "回血",
             "disabled": false,
-            "folder": "",
+            "folder": "玩家",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -11952,7 +11952,7 @@
         {
             "id": "查看面板",
             "disabled": false,
-            "folder": "",
+            "folder": "玩家",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,
@@ -11990,7 +11990,7 @@
         {
             "id": "玩家初始化",
             "disabled": false,
-            "folder": "",
+            "folder": "玩家",
             "startTime": 0,
             "checkInterval": 10,
             "repeats": -1,

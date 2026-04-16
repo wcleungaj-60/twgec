@@ -74,6 +74,7 @@ Supported Global Metadata:
 
 Supported Block Metadata:
     __delay__ : int|string
+    __label__ : string
     __repeat__ : int|string
     __repeatInterval__ : int|string
 

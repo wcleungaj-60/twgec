@@ -33,6 +33,7 @@ const 別名::武器匕首 = "custom_dagger";
 
 def 自定義::點擊裝備武器泛型(button, weapon) : block {
     __repeat__ = -1;
+    __label__ = "武器";
     triggers {
         告示牌按鈕(varName = "instance", buttonId = "wear" + button);
     }
@@ -49,6 +50,7 @@ block 點擊裝備武器拳頭 = 自定義::點擊裝備武器泛型("None", "fi
 
 def 自定義::釋放技能泛型(weapon) : block {
     __repeat__ = -1;
+    __label__ = "武器";
     triggers {
         發動技能(varName = "instance", weapon = weapon);
     }
@@ -84,6 +86,7 @@ block 釋放技能匕首 = 自定義::釋放技能泛型(別名::武器匕首);
 
 def 自定義::武器物理攻擊泛型(weapon, value) : block  {
     __repeat__ = -1;
+    __label__ = "武器";
     triggers {
         角色受傷(actor = 角色::任何, actorVarName = "instance", hitter = 角色::任何, hitterVarName = "attacker", weapon = weapon);
     }
@@ -98,6 +101,7 @@ block 匕首物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器匕
 
 block 風杖光彈攻擊 {
     __repeat__ = -1;
+    __label__ = "武器";
     triggers {
         角色發動攻擊(weapon = 別名::武器風杖, varName = "instance");
     }
@@ -107,6 +111,7 @@ block 風杖光彈攻擊 {
 }
 
 block 武器初始化 {
+    __label__ = "武器";
     actions {
         設定武器技能(weapon = 別名::武器風杖);
         設定武器技能(weapon = 別名::武器鐵劍);

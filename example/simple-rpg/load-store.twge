@@ -23,6 +23,7 @@ def 自定義::上載Instance數據() : actions {
 
 def 自定義::下載玩家數據泛型(hasSavedBefore) : block {
     __repeat__ = -1;
+    __label__ = "玩家";
     checks {
         找出所有角色(actor = 角色::任何玩家, varname = "instance");
         比較數字(lhs = "{instance.completedInit}", op = "==", rhs = 1);

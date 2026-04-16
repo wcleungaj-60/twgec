@@ -2,6 +2,7 @@ Codegen Warnings: Undefined key "test" at test/fail/codegen/blockMetadata/test.t
 Please following this available metadata list:
 block metadata(
     int|string       __delay__ = 0, 
+    string           __label__ = "", 
     int|string       __repeat__ = 0, 
     int|string       __repeatInterval__ = 0
 )

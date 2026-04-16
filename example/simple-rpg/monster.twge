@@ -1,5 +1,6 @@
 def 自定義::拾取經驗泛型(drop_item_code, exp) : block {
     __repeat__ = -1;
+    __label__ = "怪物";
     triggers {
         拾取武器道具(actorVarname = "instance", matchKind = "equal", itemMatchCode = drop_item_code);
     }
@@ -17,6 +18,7 @@ block 拾取經驗三級鹿 = 自定義::拾取經驗泛型("deer_exp_03", 3);
 
 def 自定義::野獸死亡泛型(actor_id, drop_item_code, drop_item_type) : block {
     __repeat__ = -1;
+    __label__ = "怪物";
     triggers {
         角色死亡(actor = ActorMatch(id = actor_id), varName = "instance");
     }
@@ -36,6 +38,7 @@ def 自定義::野獸重生泛型(interval, max_num, actor_id, name, x, y, hp, s
     __repeat__ = -1;
     __repeatInterval__ = interval;
     __delay__ = 1000;
+    __label__ = "怪物";
     checks {
         計算人數(actor = ActorMatch(id = actor_id, matchKind = "contain"), op = "<", value = max_num);
     }
