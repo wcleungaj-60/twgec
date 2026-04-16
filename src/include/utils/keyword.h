@@ -624,15 +624,16 @@ const string keywordW = "W";
 const string keywordX = "X";
 const string keywordY = "Y";
 const string keywordZ = "Z";
+const string keywordSpace = "Space";
 static KeywordEnum keywordEnum(
     "key press key kind",
-    {{keywordA, "65"}, {keywordB, "66"}, {keywordC, "67"}, {keywordD, "68"},
-     {keywordE, "69"}, {keywordF, "70"}, {keywordG, "71"}, {keywordH, "72"},
-     {keywordI, "73"}, {keywordJ, "74"}, {keywordK, "75"}, {keywordL, "76"},
-     {keywordM, "77"}, {keywordN, "78"}, {keywordO, "79"}, {keywordP, "80"},
-     {keywordQ, "81"}, {keywordR, "82"}, {keywordS, "83"}, {keywordT, "84"},
-     {keywordU, "85"}, {keywordV, "86"}, {keywordW, "87"}, {keywordX, "88"},
-     {keywordY, "89"}, {keywordZ, "90"}});
+    {{keywordA, "65"}, {keywordB, "66"}, {keywordC, "67"},    {keywordD, "68"},
+     {keywordE, "69"}, {keywordF, "70"}, {keywordG, "71"},    {keywordH, "72"},
+     {keywordI, "73"}, {keywordJ, "74"}, {keywordK, "75"},    {keywordL, "76"},
+     {keywordM, "77"}, {keywordN, "78"}, {keywordO, "79"},    {keywordP, "80"},
+     {keywordQ, "81"}, {keywordR, "82"}, {keywordS, "83"},    {keywordT, "84"},
+     {keywordU, "85"}, {keywordV, "86"}, {keywordW, "87"},    {keywordX, "88"},
+     {keywordY, "89"}, {keywordZ, "90"}, {keywordSpace, "32"}});
 } // namespace keyPressKeyKind
 
 namespace actorAttrKind {
