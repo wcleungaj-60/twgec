@@ -1,6 +1,8 @@
 const 公式::火星領域傷害 = "{instance.INT}/4+{instance.PSY}/6";
 const 公式::震撼傷害 = "1+{instance.CON}/3";
 const 公式::震撼範圍 = "60+10*{instance.CON}^0.5";
+const 公式::土靈召喚血量 = "100+{instance.PSY}*2";
+const 公式::土靈召喚傷害 = "10+{instance.PSY}/5";
 
 const 文字::火星領域描述 = 
 "【火星領域】\n" + 
@@ -16,10 +18,19 @@ const 文字::震撼描述 =
 " - 震撼範圍: 60+10×體質^0.5\n" +
 "冷卻10秒";
 
+const 文字::土靈召喚 = 
+"【土靈召喚】\n" + 
+"生成一直存在35秒的土靈為你戰鬥\n" + 
+" - 土靈血量: 100+精神×2\n" +
+" - 土靈傷害: 10+精神÷5\n" +
+"冷卻40秒";
+
 const 別名::技能火星領域EN = "SparkArea";
 const 別名::技能火星領域ZH = "火星領域";
 const 別名::技能震撼EN = "Shocked";
 const 別名::技能震撼ZH = "震撼";
+const 別名::技能土靈召喚EN = "SummonEarthSpirit";
+const 別名::技能土靈召喚ZH = "土靈召喚";
 
 def 自定義::點擊設定技能泛型(name, nameZh) : block {
     __repeat__ = -1;
@@ -33,6 +44,7 @@ def 自定義::點擊設定技能泛型(name, nameZh) : block {
 
 block 點擊設定技能火星領域 = 自定義::點擊設定技能泛型(別名::技能火星領域EN, 別名::技能火星領域ZH);
 block 點擊設定技能震撼 = 自定義::點擊設定技能泛型(別名::技能震撼EN, 別名::技能震撼ZH);
+block 點擊設定技能土靈召喚 = 自定義::點擊設定技能泛型(別名::技能土靈召喚EN, 別名::技能土靈召喚ZH);
 block 點擊設定技能無 = 自定義::點擊設定技能泛型("None","無");
 
 def 火星領域技能() : actions {
@@ -57,6 +69,17 @@ def 震撼技能() : actions {
     wait(duration = 12000);
 }
 
+def 土靈召喚技能() : actions {
+    儲存全域變數(key = "tmp", type = "int", value = 公式::土靈召喚血量);
+    新增角色(name = "土靈({tmp})", id = "earthSpirit*", camp = "第三", 
+            hp = 公式::土靈召喚血量, x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, localVarname = "actor", 
+            weapon1 = "fist", weapon2 = "fist", teamId = 100, strength = 公式::土靈召喚傷害, role = "不動佛");
+    跟隨人物(actorId = "actor", type = "跟隨人物", targetId = "{instance}");
+    wait(duration = 35000);
+    角色消失(actorId = "actor");
+    wait(duration = 5000);
+}
+
 def 自定義::觸發技能泛型(name, nameZh, color) : block {
     __repeat__ = -1;
     triggers {
@@ -72,6 +95,7 @@ def 自定義::觸發技能泛型(name, nameZh, color) : block {
         自定義::儲存Instance整數("skill"+name+"CD", 1);
         if(name == 別名::技能火星領域EN) {火星領域技能();}
         if(name == 別名::技能震撼EN) {震撼技能();}
+        if(name == 別名::技能土靈召喚EN) {土靈召喚技能();}
         自定義::儲存Instance整數("skill"+name+"CD", 0);
         地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = "<span style='color: "+color+"'>"+nameZh+"冷卻完畢</span>");
     }
@@ -79,3 +103,4 @@ def 自定義::觸發技能泛型(name, nameZh, color) : block {
 
 block 觸發技能火星領域 = 自定義::觸發技能泛型(別名::技能火星領域EN, 別名::技能火星領域ZH, "#912B2B");
 block 觸發技能震撼 = 自定義::觸發技能泛型(別名::技能震撼EN, 別名::技能震撼ZH, "#CC7700");
+block 觸發技能土靈召喚 = 自定義::觸發技能泛型(別名::技能土靈召喚EN, 別名::技能土靈召喚ZH, "#A57E00");
