@@ -165,6 +165,11 @@ const InstructionConfig actorRelocateConfig =
         .addParam("x", AST_INT, CODEGEN_STRING, "0")
         .addParam("y", AST_INT, CODEGEN_STRING, "0")
         .addParam("keepAbility", AST_BOOL, CODEGEN_BOOL, "false");
+const InstructionConfig actorSpawnLocConfig =
+    InstructionConfig("actorSpawnLoc", "角色重生位置")
+        .addParam("actorId", AST_STRING, CODEGEN_STRING, "")
+        .addParam("x", AST_INT, CODEGEN_STRING, "0")
+        .addParam("y", AST_INT, CODEGEN_STRING, "0");
 const InstructionConfig actorTalkConfig =
     InstructionConfig("actorTalk", "角色說話")
         .addParam("cleanTalk", AST_BOOL, CODEGEN_BOOL, "true")
@@ -355,6 +360,7 @@ const std::vector<InstructionConfig> actionList = {
     actorDisappearConfig,
     actorFollowConfig,
     actorRelocateConfig,
+    actorSpawnLocConfig,
     actorTalkConfig,
     addActorConfig,
     addDropItemConfig,

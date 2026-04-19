@@ -135,6 +135,8 @@ void CodeGenerator::codegenAction(std::ofstream &of,
     of << action::ActionActorFollow::CODEGEN_FUNC;
   if (identifier == "actorRelocate" || identifier == "移動角色位置")
     of << action::ActionActorRelocate::CODEGEN_FUNC;
+  if (identifier == "actorSpawnLoc" || identifier == "角色重生位置")
+    of << action::ActionActorSpawnLoc::CODEGEN_FUNC;
   if (identifier == "actorTalk" || identifier == "角色說話")
     of << action::ActionActorTalk::CODEGEN_FUNC;
   if (identifier == "addActor" || identifier == "新增角色")

@@ -1,0 +1,5 @@
+block init {
+    actions {
+        actorSpawnLoc(actorId = "{instance.code}", x = 10, y = 11);
+    }
+}
