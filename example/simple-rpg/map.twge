@@ -198,6 +198,48 @@ def 地圖::生成地圖101n101(xOffset, yOffset) : actions {
     }
 }
 
+def 地圖::儲存地圖變量(x, y, map) : actions {
+    // TODO: Support string slicing
+    if(twge::get_index(twge::get_index(map,0),27) == "E" &&
+       twge::get_index(twge::get_index(map,0),28) == "x" &&
+       twge::get_index(twge::get_index(map,0),29) == "N" &&
+       twge::get_index(twge::get_index(map,0),30) == "E" &&
+       twge::get_index(twge::get_index(map,0),31) == "x" &&
+       twge::get_index(twge::get_index(map,0),32) == "N") {
+        儲存全域變數(key = "map_" + twge::to_string(x) + "_" + twge::to_string(y) + "_ExN", type = "int", value = 1);
+    }
+    if(twge::get_index(twge::get_index(map,19),27) == "E" &&
+       twge::get_index(twge::get_index(map,19),28) == "x" &&
+       twge::get_index(twge::get_index(map,19),29) == "S" &&
+       twge::get_index(twge::get_index(map,19),30) == "E" &&
+       twge::get_index(twge::get_index(map,19),31) == "x" &&
+       twge::get_index(twge::get_index(map,19),32) == "S"){
+        儲存全域變數(key = "map_" + twge::to_string(x) + "_" + twge::to_string(y) + "_ExS", type = "int", value = 1);
+    }
+    if(twge::get_index(twge::get_index(map,9),0) == "E" &&
+       twge::get_index(twge::get_index(map,9),1) == "x" &&
+       twge::get_index(twge::get_index(map,9),2) == "W" &&
+       twge::get_index(twge::get_index(map,10),0) == "E" &&
+       twge::get_index(twge::get_index(map,10),1) == "x" &&
+       twge::get_index(twge::get_index(map,10),2) == "W") {
+        儲存全域變數(key = "map_" + twge::to_string(x) + "_" + twge::to_string(y) + "_ExW", type = "int", value = 1);
+    }
+    if(twge::get_index(twge::get_index(map,9),57) == "E" &&
+       twge::get_index(twge::get_index(map,9),58) == "x" &&
+       twge::get_index(twge::get_index(map,9),59) == "E" &&
+       twge::get_index(twge::get_index(map,10),57) == "E" &&
+       twge::get_index(twge::get_index(map,10),58) == "x" &&
+       twge::get_index(twge::get_index(map,10),59) == "E") {
+        儲存全域變數(key = "map_" + twge::to_string(x) + "_" + twge::to_string(y) + "_ExE", type = "int", value = 1);
+    }
+    儲存全域變數(key = "map_100_100_X", type = "int", value = 0);
+    儲存全域變數(key = "map_100_100_Y", type = "int", value = 0);
+    儲存全域變數(key = "map_101_100_X", type = "int", value = 27);
+    儲存全域變數(key = "map_101_100_Y", type = "int", value = 0);
+    儲存全域變數(key = "map_101_101_X", type = "int", value = 27);
+    儲存全域變數(key = "map_101_101_Y", type = "int", value = 27);
+}
+
 def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2): actions {
     if (x1 == x2 && y1 < y2) {
         設定地圖傳送點(fromX = x1, fromY = y1, toX = x2, toY = y2, direction = "下");
@@ -218,16 +260,85 @@ def 自定義::設定雙向地圖傳送點(x1, y1, x2, y2): actions {
     }
 }
 
+def 地圖::移動泛型(direction) : block {
+    __repeat__ = -1;
+    __label__ = "地圖";
+    triggers {
+        鍵盤按鍵(varName = "clicker", key = "Space");
+    }
+    checks {
+        // 27 is the stride, 32 is the pixel size
+        if(direction == "右") {
+            比較數字(lhs = "{{clicker.id}.gamePosition.x} % (27*32)", op = ">=", rhs = "19*32");
+            比較數字(lhs = "{{clicker.id}.gamePosition.x} % (27*32)", op = "<=", rhs = "20*32");
+            比較數字(lhs = "{{clicker.id}.gamePosition.y} % (27*32)", op = ">=", rhs = "9*32");
+            比較數字(lhs = "{{clicker.id}.gamePosition.y} % (27*32)", op = "<=", rhs = "11*32");
+            比較數字(lhs = "{map_{{clicker.id}.LocX}_{{clicker.id}.LocY}_ExE}", op = "==", rhs = 1);
+        } else if(direction == "左") {
+            比較數字(lhs = "{{clicker.id}.gamePosition.x} % (27*32)", op = ">=", rhs = "0*32");
+            比較數字(lhs = "{{clicker.id}.gamePosition.x} % (27*32)", op = "<=", rhs = "1*32");
+            比較數字(lhs = "{{clicker.id}.gamePosition.y} % (27*32)", op = ">=", rhs = "9*32");
+            比較數字(lhs = "{{clicker.id}.gamePosition.y} % (27*32)", op = "<=", rhs = "11*32");
+            比較數字(lhs = "{map_{{clicker.id}.LocX}_{{clicker.id}.LocY}_ExW}", op = "==", rhs = 1);
+        } else if(direction == "下") {
+            比較數字(lhs = "{{clicker.id}.gamePosition.y} % (27*32)", op = ">=", rhs = "19*32");
+            比較數字(lhs = "{{clicker.id}.gamePosition.y} % (27*32)", op = "<=", rhs = "20*32");
+            比較數字(lhs = "{{clicker.id}.gamePosition.x} % (27*32)", op = ">=", rhs = "9*32");
+            比較數字(lhs = "{{clicker.id}.gamePosition.x} % (27*32)", op = "<=", rhs = "11*32");
+            比較數字(lhs = "{map_{{clicker.id}.LocX}_{{clicker.id}.LocY}_ExS}", op = "==", rhs = 1);
+        } else if(direction == "上") {
+            比較數字(lhs = "{{clicker.id}.gamePosition.y} % (27*32)", op = ">=", rhs = "0*32");
+            比較數字(lhs = "{{clicker.id}.gamePosition.y} % (27*32)", op = "<=", rhs = "1*32");
+            比較數字(lhs = "{{clicker.id}.gamePosition.x} % (27*32)", op = ">=", rhs = "9*32");
+            比較數字(lhs = "{{clicker.id}.gamePosition.x} % (27*32)", op = "<=", rhs = "11*32");
+            比較數字(lhs = "{map_{{clicker.id}.LocX}_{{clicker.id}.LocY}_ExN}", op = "==", rhs = 1);
+        }
+    }
+    actions {
+        setGlobal(key = "instance", type = "string", value = "{clicker.id}");
+        自定義::儲存Instance整數("tmp_X_pos_offset", "({instance.gamePosition.x}%(27*32))/32");
+        自定義::儲存Instance整數("tmp_Y_pos_offset", "({instance.gamePosition.y}%(27*32))/32");
+        if(除錯模式) {
+            print(text = "x: {instance.LocX}, y: {instance.LocY}, direction: " + direction, type = "error");
+            print(text = "x_offset: {instance.tmp_X_pos_offset}, y_offset: {instance.tmp_X_pos_offset}", type = "error");
+        }
+        if(direction == "右") {
+            自定義::儲存Instance整數("LocX", "{instance.LocX}+1");
+        } else if(direction == "左") {
+            自定義::儲存Instance整數("LocX", "{instance.LocX}-1");
+        } else if(direction == "下") {
+            自定義::儲存Instance整數("LocY", "{instance.LocY}+1");
+        } else if(direction == "上") {
+            自定義::儲存Instance整數("LocY", "{instance.LocY}-1");
+        }
+        移動角色位置(actorId = "instance", x = 23, y = 23);
+        // Mocking infinite map UX and logic
+        等待(duration = 100);
+        if(direction == "右") {
+            移動角色位置(actorId = "instance", x = "{map_{instance.LocX}_{instance.LocY}_X}", y = "{map_{instance.LocX}_{instance.LocY}_Y}+{instance.tmp_Y_pos_offset}");
+        } else if(direction == "左") {
+            移動角色位置(actorId = "instance", x = "{map_{instance.LocX}_{instance.LocY}_X}+19", y = "{map_{instance.LocX}_{instance.LocY}_Y}+{instance.tmp_Y_pos_offset}");
+        } else if(direction == "下") {
+            移動角色位置(actorId = "instance", x = "{map_{instance.LocX}_{instance.LocY}_X}+{instance.tmp_X_pos_offset}", y = "{map_{instance.LocX}_{instance.LocY}_Y}");
+        } else if(direction == "上") {
+            移動角色位置(actorId = "instance", x = "{map_{instance.LocX}_{instance.LocY}_X}+{instance.tmp_X_pos_offset}", y = "{map_{instance.LocX}_{instance.LocY}_Y}+19");
+        }
+    }
+}
+
+block 地圖移動往上 = 地圖::移動泛型("上");
+block 地圖移動往下 = 地圖::移動泛型("下");
+block 地圖移動往左 = 地圖::移動泛型("左");
+block 地圖移動往右 = 地圖::移動泛型("右");
+
 block 地圖初始化 {
     __label__ = "地圖";
     actions {
-        // TODO: move with keystroke space
-        自定義::設定雙向地圖傳送點(x1 = 地圖::size - 1, y1 = 地圖::size/2 - 1, x2 = 地圖::stride, y2 = 地圖::size/2 - 1);
-        自定義::設定雙向地圖傳送點(x1 = 地圖::size - 1, y1 = 地圖::size/2, x2 = 地圖::stride, y2 = 地圖::size/2);
-        自定義::設定雙向地圖傳送點(x1 = 地圖::stride + 地圖::size/2 - 1, y1 = 地圖::size - 1, x2 = 地圖::stride + 地圖::size/2 - 1, y2 = 地圖::stride);
-        自定義::設定雙向地圖傳送點(x1 = 地圖::stride + 地圖::size/2, y1 = 地圖::size - 1, x2 = 地圖::stride + 地圖::size/2, y2 = 地圖::stride);
         地圖::生成地圖100n100(地圖::x座標100n100, 地圖::y座標100n100);
         地圖::生成地圖101n100(地圖::x座標101n100, 地圖::y座標101n100);
         地圖::生成地圖101n101(地圖::x座標101n101, 地圖::y座標101n101);
+        地圖::儲存地圖變量(100, 100, 地圖::新手村100n100);
+        地圖::儲存地圖變量(101, 100, 地圖::新手村近郊101n100);
+        地圖::儲存地圖變量(101, 101, 地圖::新手村近郊101n101);
     }
 }
