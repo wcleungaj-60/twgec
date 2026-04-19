@@ -5013,6 +5013,658 @@
             ]
         },
         {
+            "id": "地圖移動往上",
+            "disabled": false,
+            "folder": "地圖",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "instance",
+                        "valueType": "string",
+                        "value": "{clicker.id}"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "tmp_X_pos_offset",
+                        "valueType": "integer",
+                        "value": "({instance.gamePosition.x}%(27*32))/32"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "tmp_Y_pos_offset",
+                        "valueType": "integer",
+                        "value": "({instance.gamePosition.y}%(27*32))/32"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "LocY",
+                        "valueType": "integer",
+                        "value": "{instance.LocY}-1"
+                    }
+                },
+                {
+                    "type": "ActorRelocate",
+                    "data": {
+                        "actorCode": "instance",
+                        "locType": "loc",
+                        "locs": [
+                            {
+                                "x": "23",
+                                "y": "23",
+                                "range": "0"
+                            }
+                        ],
+                        "shiftX": "0",
+                        "shiftY": "0",
+                        "keepAbStates": false
+                    }
+                },
+                {
+                    "type": "Wait",
+                    "data": {
+                        "duration": "100"
+                    }
+                },
+                {
+                    "type": "ActorRelocate",
+                    "data": {
+                        "actorCode": "instance",
+                        "locType": "loc",
+                        "locs": [
+                            {
+                                "x": "{map_{instance.LocX}_{instance.LocY}_X}+{instance.tmp_X_pos_offset}",
+                                "y": "{map_{instance.LocX}_{instance.LocY}_Y}+19",
+                                "range": "0"
+                            }
+                        ],
+                        "shiftX": "0",
+                        "shiftY": "0",
+                        "keepAbStates": false
+                    }
+                }
+            ],
+            "checks": [
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{{clicker.id}.gamePosition.y} % (27*32)",
+                        "operator": ">=",
+                        "value2": "0*32",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                },
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{{clicker.id}.gamePosition.y} % (27*32)",
+                        "operator": "<=",
+                        "value2": "1*32",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                },
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{{clicker.id}.gamePosition.x} % (27*32)",
+                        "operator": ">=",
+                        "value2": "9*32",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                },
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{{clicker.id}.gamePosition.x} % (27*32)",
+                        "operator": "<=",
+                        "value2": "11*32",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                },
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{map_{{clicker.id}.LocX}_{{clicker.id}.LocY}_ExN}",
+                        "operator": "==",
+                        "value2": "1",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
+            "triggers": [
+                {
+                    "type": "KeyboardPressed",
+                    "data": {
+                        "playerId": "*",
+                        "playerLocal": "clicker",
+                        "timing": "",
+                        "key": 32,
+                        "keyLocal": "",
+                        "ctrl": "",
+                        "shift": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "地圖移動往下",
+            "disabled": false,
+            "folder": "地圖",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "instance",
+                        "valueType": "string",
+                        "value": "{clicker.id}"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "tmp_X_pos_offset",
+                        "valueType": "integer",
+                        "value": "({instance.gamePosition.x}%(27*32))/32"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "tmp_Y_pos_offset",
+                        "valueType": "integer",
+                        "value": "({instance.gamePosition.y}%(27*32))/32"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "LocY",
+                        "valueType": "integer",
+                        "value": "{instance.LocY}+1"
+                    }
+                },
+                {
+                    "type": "ActorRelocate",
+                    "data": {
+                        "actorCode": "instance",
+                        "locType": "loc",
+                        "locs": [
+                            {
+                                "x": "23",
+                                "y": "23",
+                                "range": "0"
+                            }
+                        ],
+                        "shiftX": "0",
+                        "shiftY": "0",
+                        "keepAbStates": false
+                    }
+                },
+                {
+                    "type": "Wait",
+                    "data": {
+                        "duration": "100"
+                    }
+                },
+                {
+                    "type": "ActorRelocate",
+                    "data": {
+                        "actorCode": "instance",
+                        "locType": "loc",
+                        "locs": [
+                            {
+                                "x": "{map_{instance.LocX}_{instance.LocY}_X}+{instance.tmp_X_pos_offset}",
+                                "y": "{map_{instance.LocX}_{instance.LocY}_Y}",
+                                "range": "0"
+                            }
+                        ],
+                        "shiftX": "0",
+                        "shiftY": "0",
+                        "keepAbStates": false
+                    }
+                }
+            ],
+            "checks": [
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{{clicker.id}.gamePosition.y} % (27*32)",
+                        "operator": ">=",
+                        "value2": "19*32",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                },
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{{clicker.id}.gamePosition.y} % (27*32)",
+                        "operator": "<=",
+                        "value2": "20*32",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                },
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{{clicker.id}.gamePosition.x} % (27*32)",
+                        "operator": ">=",
+                        "value2": "9*32",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                },
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{{clicker.id}.gamePosition.x} % (27*32)",
+                        "operator": "<=",
+                        "value2": "11*32",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                },
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{map_{{clicker.id}.LocX}_{{clicker.id}.LocY}_ExS}",
+                        "operator": "==",
+                        "value2": "1",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
+            "triggers": [
+                {
+                    "type": "KeyboardPressed",
+                    "data": {
+                        "playerId": "*",
+                        "playerLocal": "clicker",
+                        "timing": "",
+                        "key": 32,
+                        "keyLocal": "",
+                        "ctrl": "",
+                        "shift": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "地圖移動往左",
+            "disabled": false,
+            "folder": "地圖",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "instance",
+                        "valueType": "string",
+                        "value": "{clicker.id}"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "tmp_X_pos_offset",
+                        "valueType": "integer",
+                        "value": "({instance.gamePosition.x}%(27*32))/32"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "tmp_Y_pos_offset",
+                        "valueType": "integer",
+                        "value": "({instance.gamePosition.y}%(27*32))/32"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "LocX",
+                        "valueType": "integer",
+                        "value": "{instance.LocX}-1"
+                    }
+                },
+                {
+                    "type": "ActorRelocate",
+                    "data": {
+                        "actorCode": "instance",
+                        "locType": "loc",
+                        "locs": [
+                            {
+                                "x": "23",
+                                "y": "23",
+                                "range": "0"
+                            }
+                        ],
+                        "shiftX": "0",
+                        "shiftY": "0",
+                        "keepAbStates": false
+                    }
+                },
+                {
+                    "type": "Wait",
+                    "data": {
+                        "duration": "100"
+                    }
+                },
+                {
+                    "type": "ActorRelocate",
+                    "data": {
+                        "actorCode": "instance",
+                        "locType": "loc",
+                        "locs": [
+                            {
+                                "x": "{map_{instance.LocX}_{instance.LocY}_X}+19",
+                                "y": "{map_{instance.LocX}_{instance.LocY}_Y}+{instance.tmp_Y_pos_offset}",
+                                "range": "0"
+                            }
+                        ],
+                        "shiftX": "0",
+                        "shiftY": "0",
+                        "keepAbStates": false
+                    }
+                }
+            ],
+            "checks": [
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{{clicker.id}.gamePosition.x} % (27*32)",
+                        "operator": ">=",
+                        "value2": "0*32",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                },
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{{clicker.id}.gamePosition.x} % (27*32)",
+                        "operator": "<=",
+                        "value2": "1*32",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                },
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{{clicker.id}.gamePosition.y} % (27*32)",
+                        "operator": ">=",
+                        "value2": "9*32",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                },
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{{clicker.id}.gamePosition.y} % (27*32)",
+                        "operator": "<=",
+                        "value2": "11*32",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                },
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{map_{{clicker.id}.LocX}_{{clicker.id}.LocY}_ExW}",
+                        "operator": "==",
+                        "value2": "1",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
+            "triggers": [
+                {
+                    "type": "KeyboardPressed",
+                    "data": {
+                        "playerId": "*",
+                        "playerLocal": "clicker",
+                        "timing": "",
+                        "key": 32,
+                        "keyLocal": "",
+                        "ctrl": "",
+                        "shift": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "地圖移動往右",
+            "disabled": false,
+            "folder": "地圖",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "instance",
+                        "valueType": "string",
+                        "value": "{clicker.id}"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "tmp_X_pos_offset",
+                        "valueType": "integer",
+                        "value": "({instance.gamePosition.x}%(27*32))/32"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "tmp_Y_pos_offset",
+                        "valueType": "integer",
+                        "value": "({instance.gamePosition.y}%(27*32))/32"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "LocX",
+                        "valueType": "integer",
+                        "value": "{instance.LocX}+1"
+                    }
+                },
+                {
+                    "type": "ActorRelocate",
+                    "data": {
+                        "actorCode": "instance",
+                        "locType": "loc",
+                        "locs": [
+                            {
+                                "x": "23",
+                                "y": "23",
+                                "range": "0"
+                            }
+                        ],
+                        "shiftX": "0",
+                        "shiftY": "0",
+                        "keepAbStates": false
+                    }
+                },
+                {
+                    "type": "Wait",
+                    "data": {
+                        "duration": "100"
+                    }
+                },
+                {
+                    "type": "ActorRelocate",
+                    "data": {
+                        "actorCode": "instance",
+                        "locType": "loc",
+                        "locs": [
+                            {
+                                "x": "{map_{instance.LocX}_{instance.LocY}_X}",
+                                "y": "{map_{instance.LocX}_{instance.LocY}_Y}+{instance.tmp_Y_pos_offset}",
+                                "range": "0"
+                            }
+                        ],
+                        "shiftX": "0",
+                        "shiftY": "0",
+                        "keepAbStates": false
+                    }
+                }
+            ],
+            "checks": [
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{{clicker.id}.gamePosition.x} % (27*32)",
+                        "operator": ">=",
+                        "value2": "19*32",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                },
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{{clicker.id}.gamePosition.x} % (27*32)",
+                        "operator": "<=",
+                        "value2": "20*32",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                },
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{{clicker.id}.gamePosition.y} % (27*32)",
+                        "operator": ">=",
+                        "value2": "9*32",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                },
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{{clicker.id}.gamePosition.y} % (27*32)",
+                        "operator": "<=",
+                        "value2": "11*32",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                },
+                {
+                    "type": "NumberCheck",
+                    "data": {
+                        "value1": "{map_{{clicker.id}.LocX}_{{clicker.id}.LocY}_ExE}",
+                        "operator": "==",
+                        "value2": "1",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": ""
+                    }
+                }
+            ],
+            "triggers": [
+                {
+                    "type": "KeyboardPressed",
+                    "data": {
+                        "playerId": "*",
+                        "playerLocal": "clicker",
+                        "timing": "",
+                        "key": 32,
+                        "keyLocal": "",
+                        "ctrl": "",
+                        "shift": ""
+                    }
+                }
+            ]
+        },
+        {
             "id": "地圖初始化",
             "disabled": false,
             "folder": "地圖",
@@ -5022,150 +5674,6 @@
             "repeatInterval": 0,
             "devOnly": false,
             "actions": [
-                {
-                    "type": "MapWarp",
-                    "data": {
-                        "location": {
-                            "x": "19",
-                            "y": "9",
-                            "range": "0"
-                        },
-                        "op": "add",
-                        "direction": "right",
-                        "warpSpeed": "imme",
-                        "target": {
-                            "x": "27",
-                            "y": "9",
-                            "range": "0"
-                        }
-                    }
-                },
-                {
-                    "type": "MapWarp",
-                    "data": {
-                        "location": {
-                            "x": "27",
-                            "y": "9",
-                            "range": "0"
-                        },
-                        "op": "add",
-                        "direction": "left",
-                        "warpSpeed": "imme",
-                        "target": {
-                            "x": "19",
-                            "y": "9",
-                            "range": "0"
-                        }
-                    }
-                },
-                {
-                    "type": "MapWarp",
-                    "data": {
-                        "location": {
-                            "x": "19",
-                            "y": "10",
-                            "range": "0"
-                        },
-                        "op": "add",
-                        "direction": "right",
-                        "warpSpeed": "imme",
-                        "target": {
-                            "x": "27",
-                            "y": "10",
-                            "range": "0"
-                        }
-                    }
-                },
-                {
-                    "type": "MapWarp",
-                    "data": {
-                        "location": {
-                            "x": "27",
-                            "y": "10",
-                            "range": "0"
-                        },
-                        "op": "add",
-                        "direction": "left",
-                        "warpSpeed": "imme",
-                        "target": {
-                            "x": "19",
-                            "y": "10",
-                            "range": "0"
-                        }
-                    }
-                },
-                {
-                    "type": "MapWarp",
-                    "data": {
-                        "location": {
-                            "x": "36",
-                            "y": "19",
-                            "range": "0"
-                        },
-                        "op": "add",
-                        "direction": "down",
-                        "warpSpeed": "imme",
-                        "target": {
-                            "x": "36",
-                            "y": "27",
-                            "range": "0"
-                        }
-                    }
-                },
-                {
-                    "type": "MapWarp",
-                    "data": {
-                        "location": {
-                            "x": "36",
-                            "y": "27",
-                            "range": "0"
-                        },
-                        "op": "add",
-                        "direction": "up",
-                        "warpSpeed": "imme",
-                        "target": {
-                            "x": "36",
-                            "y": "19",
-                            "range": "0"
-                        }
-                    }
-                },
-                {
-                    "type": "MapWarp",
-                    "data": {
-                        "location": {
-                            "x": "37",
-                            "y": "19",
-                            "range": "0"
-                        },
-                        "op": "add",
-                        "direction": "down",
-                        "warpSpeed": "imme",
-                        "target": {
-                            "x": "37",
-                            "y": "27",
-                            "range": "0"
-                        }
-                    }
-                },
-                {
-                    "type": "MapWarp",
-                    "data": {
-                        "location": {
-                            "x": "37",
-                            "y": "27",
-                            "range": "0"
-                        },
-                        "op": "add",
-                        "direction": "up",
-                        "warpSpeed": "imme",
-                        "target": {
-                            "x": "37",
-                            "y": "19",
-                            "range": "0"
-                        }
-                    }
-                },
                 {
                     "type": "AddMapObject",
                     "data": {
@@ -8944,6 +9452,182 @@
                         "autoLayer": true,
                         "forceBlock": false
                     }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_100_100_ExE",
+                        "valueType": "integer",
+                        "value": "1"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_100_100_X",
+                        "valueType": "integer",
+                        "value": "0"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_100_100_Y",
+                        "valueType": "integer",
+                        "value": "0"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_101_100_X",
+                        "valueType": "integer",
+                        "value": "27"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_101_100_Y",
+                        "valueType": "integer",
+                        "value": "0"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_101_101_X",
+                        "valueType": "integer",
+                        "value": "27"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_101_101_Y",
+                        "valueType": "integer",
+                        "value": "27"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_101_100_ExS",
+                        "valueType": "integer",
+                        "value": "1"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_101_100_ExW",
+                        "valueType": "integer",
+                        "value": "1"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_100_100_X",
+                        "valueType": "integer",
+                        "value": "0"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_100_100_Y",
+                        "valueType": "integer",
+                        "value": "0"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_101_100_X",
+                        "valueType": "integer",
+                        "value": "27"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_101_100_Y",
+                        "valueType": "integer",
+                        "value": "0"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_101_101_X",
+                        "valueType": "integer",
+                        "value": "27"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_101_101_Y",
+                        "valueType": "integer",
+                        "value": "27"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_101_101_ExN",
+                        "valueType": "integer",
+                        "value": "1"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_100_100_X",
+                        "valueType": "integer",
+                        "value": "0"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_100_100_Y",
+                        "valueType": "integer",
+                        "value": "0"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_101_100_X",
+                        "valueType": "integer",
+                        "value": "27"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_101_100_Y",
+                        "valueType": "integer",
+                        "value": "0"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_101_101_X",
+                        "valueType": "integer",
+                        "value": "27"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "map_101_101_Y",
+                        "valueType": "integer",
+                        "value": "27"
+                    }
                 }
             ],
             "checks": [],
@@ -11988,6 +12672,64 @@
             ]
         },
         {
+            "id": "玩家死亡",
+            "disabled": false,
+            "folder": "玩家",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "LocX",
+                        "valueType": "integer",
+                        "value": "100"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "LocY",
+                        "valueType": "integer",
+                        "value": "100"
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "ActorDead",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "player",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "timing": "preDead",
+                        "deathsVarname": "deaths",
+                        "hitterMatches": [],
+                        "hitterVarname": ""
+                    }
+                }
+            ]
+        },
+        {
             "id": "玩家初始化",
             "disabled": false,
             "folder": "玩家",
@@ -12091,6 +12833,24 @@
                     "type": "SetObjectVar",
                     "data": {
                         "objectId": "instance",
+                        "key": "LocX",
+                        "valueType": "integer",
+                        "value": "100"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "LocY",
+                        "valueType": "integer",
+                        "value": "100"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
                         "key": "XSkill",
                         "valueType": "string",
                         "value": "無"
@@ -12168,6 +12928,74 @@
                         "key": "completedInit",
                         "valueType": "integer",
                         "value": "1"
+                    }
+                },
+                {
+                    "type": "ActorSpawnLoc",
+                    "data": {
+                        "actorSelect": "code",
+                        "actorCode": "{instance}",
+                        "locType": "loc",
+                        "locs": [
+                            {
+                                "x": "23",
+                                "y": "23",
+                                "range": "0"
+                            }
+                        ],
+                        "relocate": true,
+                        "disabled": false
+                    }
+                },
+                {
+                    "type": "ActorSpawnLoc",
+                    "data": {
+                        "actorSelect": "code",
+                        "actorCode": "{instance}",
+                        "locType": "loc",
+                        "locs": [
+                            {
+                                "x": "27",
+                                "y": "0",
+                                "range": "0"
+                            }
+                        ],
+                        "relocate": true,
+                        "disabled": false
+                    }
+                },
+                {
+                    "type": "ActorSpawnLoc",
+                    "data": {
+                        "actorSelect": "code",
+                        "actorCode": "{instance}",
+                        "locType": "loc",
+                        "locs": [
+                            {
+                                "x": "27",
+                                "y": "27",
+                                "range": "0"
+                            }
+                        ],
+                        "relocate": true,
+                        "disabled": false
+                    }
+                },
+                {
+                    "type": "ActorSpawnLoc",
+                    "data": {
+                        "actorSelect": "code",
+                        "actorCode": "{instance}",
+                        "locType": "loc",
+                        "locs": [
+                            {
+                                "x": "10",
+                                "y": "10",
+                                "range": "0"
+                            }
+                        ],
+                        "relocate": true,
+                        "disabled": false
                     }
                 }
             ],
