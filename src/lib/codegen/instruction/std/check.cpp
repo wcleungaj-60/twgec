@@ -38,6 +38,28 @@ check::CheckActorCount::method(DefaultMap defaultMap,
 }
 
 JsonObjectNode
+check::CheckActorRegion::method(DefaultMap defaultMap,
+                                UserDefinedMetadata userDefinedMeta) {
+  JsonObjectNode _logiNode = JsonObjectNode("_and_or", "\"\"");
+  JsonObjectNode regionNode = JsonObjectNode({
+      {"defType", "\"rect\""},
+      {"x", defaultMap.get("region_x")},
+      {"y", defaultMap.get("region_y")},
+      {"w", defaultMap.get("region_w")},
+      {"h", defaultMap.get("region_h")},
+  });
+  JsonArrayNode regionsNode =
+      JsonArrayNode(std::make_shared<JsonObjectNode>(regionNode));
+  return JsonObjectNode({
+      {"actorCode", defaultMap.get("actorId")},
+      {"regions", regionsNode.to_string(24)},
+      {"exRegions", "[]"},
+      {"_logi", _logiNode.to_string(24)},
+      {"_elseEventId", "\"\""},
+  });
+}
+
+JsonObjectNode
 check::CheckForEachActor::method(DefaultMap defaultMap,
                                  UserDefinedMetadata userDefinedMeta) {
   JsonObjectNode _logiNode = JsonObjectNode("_and_or", "\"\"");

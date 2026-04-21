@@ -1,0 +1,5 @@
+block init {
+    checks {
+        actorRegion(actorId = "{instance}", region_x = 10, region_y = 10, region_w = 20, region_h = 20);
+    }
+}

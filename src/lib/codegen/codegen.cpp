@@ -212,6 +212,8 @@ void CodeGenerator::codegenCheck(std::ofstream &of,
   of << inden(20) << "\"data\": ";
   if (identifier == "actorCount" || identifier == "計算人數")
     of << check::CheckActorCount::CODEGEN_FUNC;
+  if (identifier == "actorRegion" || identifier == "角色所在區域")
+    of << check::CheckActorRegion::CODEGEN_FUNC;
   if (identifier == "forEachActor" || identifier == "找出所有角色")
     of << check::CheckForEachActor::CODEGEN_FUNC;
   if (identifier == "checkString" || identifier == "比對字串")

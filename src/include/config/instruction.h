@@ -412,6 +412,13 @@ const InstructionConfig actorCountConfig =
         .addParam("region_y", AST_INT, CODEGEN_STRING, "")
         .addParam("region_w", AST_INT, CODEGEN_STRING, "")
         .addParam("region_h", AST_INT, CODEGEN_STRING, "");
+const InstructionConfig actorRegionConfig =
+    InstructionConfig("actorRegion", "角色所在區域")
+        .addParam("actorId", AST_STRING, CODEGEN_STRING, "")
+        .addParam("region_x", AST_INT, CODEGEN_STRING, "0")
+        .addParam("region_y", AST_INT, CODEGEN_STRING, "0")
+        .addParam("region_w", AST_INT, CODEGEN_STRING, "0")
+        .addParam("region_h", AST_INT, CODEGEN_STRING, "0");
 const InstructionConfig checkNumberConfig =
     InstructionConfig("checkNumber", "比較數字")
         .addParam("lhs", AST_INT, CODEGEN_STRING, "0")
@@ -430,10 +437,8 @@ const InstructionConfig forEachActorConfig =
         .addParam("varname", AST_STRING, CODEGEN_STRING, "");
 
 const std::vector<InstructionConfig> checkList = {
-    actorCountConfig,
-    checkNumberConfig,
-    checkStringConfig,
-    forEachActorConfig,
+    actorCountConfig,  actorRegionConfig,  checkNumberConfig,
+    checkStringConfig, forEachActorConfig,
 };
 
 const InstructionConfig actorAddedConfig =

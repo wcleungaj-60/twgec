@@ -15,6 +15,7 @@ namespace check {
   }
 
 REGISTER_CODE_GEN(ActorCount);
+REGISTER_CODE_GEN(ActorRegion);
 REGISTER_CODE_GEN(ForEachActor);
 REGISTER_CODE_GEN(String);
 REGISTER_CODE_GEN(Number);
