@@ -286,6 +286,12 @@ const InstructionConfig printConfig =
         .addParam("type", AST_STRING, CODEGEN_STRING, "log")
         .addParam("text", AST_STRING, CODEGEN_STRING, "")
         .setCodegenName("Console");
+const InstructionConfig removeDeviceConfig =
+    InstructionConfig("removeDevice", "移除地圖機關")
+        .addParam("region_x", AST_INT, CODEGEN_STRING, "0")
+        .addParam("region_y", AST_INT, CODEGEN_STRING, "0")
+        .addParam("region_w", AST_INT, CODEGEN_STRING, "0")
+        .addParam("region_h", AST_INT, CODEGEN_STRING, "0");
 const InstructionConfig setCookieConfig =
     InstructionConfig("setCookie", "儲存Cookies")
         .addParam("playerId", AST_STRING, CODEGEN_STRING, "")
@@ -377,6 +383,7 @@ const std::vector<InstructionConfig> actionList = {
     missionCompleteConfig,
     longBoConfig,
     printConfig,
+    removeDeviceConfig,
     setCookieConfig,
     setGlobalConfig,
     setObjectVarConfig,

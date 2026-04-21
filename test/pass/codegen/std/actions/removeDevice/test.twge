@@ -1,0 +1,5 @@
+block init {
+    actions {
+        removeDevice(region_x = 0, region_y = 0, region_w = 10, region_h = 10);
+    }
+}

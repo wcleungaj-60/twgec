@@ -169,6 +169,8 @@ void CodeGenerator::codegenAction(std::ofstream &of,
     of << action::ActionLongBo::CODEGEN_FUNC;
   if (identifier == "print" || identifier == "控制台輸出")
     of << action::ActionConsole::CODEGEN_FUNC;
+  if (identifier == "removeDevice" || identifier == "移除地圖機關")
+    of << action::ActionRemoveDevice::CODEGEN_FUNC;
   if (identifier == "setCookie" || identifier == "儲存Cookies")
     of << action::ActionSetCookie::CODEGEN_FUNC;
   if (identifier == "setGlobal" || identifier == "儲存全域變數")

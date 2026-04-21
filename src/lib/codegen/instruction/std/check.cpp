@@ -32,7 +32,7 @@ check::CheckActorCount::method(DefaultMap defaultMap,
     });
     JsonArrayNode regionsNode =
         JsonArrayNode(std::make_shared<JsonObjectNode>(regionNode));
-    resNode.addNode("checkRegion", regionNode.to_string(24));
+    resNode.addNode("regions", regionNode.to_string(24));
   }
   return resNode;
 }

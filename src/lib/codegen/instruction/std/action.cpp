@@ -399,6 +399,27 @@ action::ActionLongBo::method(DefaultMap defaultMap,
 }
 
 JsonObjectNode
+action::ActionRemoveDevice::method(DefaultMap defaultMap,
+                                   UserDefinedMetadata userDefinedMeta) {
+  JsonObjectNode regionNode = JsonObjectNode({
+      {"defType", "\"rect\""},
+      {"x", defaultMap.get("region_x")},
+      {"y", defaultMap.get("region_y")},
+      {"w", defaultMap.get("region_w")},
+      {"h", defaultMap.get("region_h")},
+  });
+  JsonArrayNode regionsNode =
+      JsonArrayNode(std::make_shared<JsonObjectNode>(regionNode));
+  return JsonObjectNode({
+      {"searchType", "\"byLoc\""},
+      {"setDeviceType", "\"all\""},
+      {"regions", regionNode.to_string(24)},
+      {"exRegions", "[]"},
+      {"action", "\"remove\""},
+  });
+}
+
+JsonObjectNode
 action::ActionSetCookie::method(DefaultMap defaultMap,
                                 UserDefinedMetadata userDefinedMeta) {
 
