@@ -393,7 +393,11 @@ const InstructionConfig actorCountConfig =
         .addParam("actor", AST_ACTOR_MATCH, CODEGEN_ACTOR_MATCH, "[]")
         .addParam("varname", AST_STRING, CODEGEN_STRING, "")
         .addParam("op", AST_STRING, CODEGEN_STRING, "==")
-        .addParam("value", AST_INT, CODEGEN_STRING, "");
+        .addParam("value", AST_INT, CODEGEN_STRING, "")
+        .addParam("region_x", AST_INT, CODEGEN_STRING, "")
+        .addParam("region_y", AST_INT, CODEGEN_STRING, "")
+        .addParam("region_w", AST_INT, CODEGEN_STRING, "")
+        .addParam("region_h", AST_INT, CODEGEN_STRING, "");
 const InstructionConfig checkNumberConfig =
     InstructionConfig("checkNumber", "比較數字")
         .addParam("lhs", AST_INT, CODEGEN_STRING, "0")

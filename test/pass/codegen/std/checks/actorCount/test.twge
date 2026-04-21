@@ -1,5 +1,6 @@
 block init {
     checks {
         actorCount(actor = ActorMatch(), op = "<", value = "5");
+        actorCount(actor = ActorMatch(), op = "<", value = 5, region_x = 10, region_y = 10, region_w = 20, region_h = 20);
     }
 }

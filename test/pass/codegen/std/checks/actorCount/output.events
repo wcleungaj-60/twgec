@@ -99,6 +99,41 @@
                         },
                         "_elseEventId": ""
                     }
+                },
+                {
+                    "type": "ActorCount",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "operator": "<",
+                        "varname": "",
+                        "value": "5",
+                        "_logi": {
+                            "_and_or": ""
+                        },
+                        "_elseEventId": "",
+                        "checkRegion": true,
+                        "regions": {
+                            "defType": "rect",
+                            "x": "10",
+                            "y": "10",
+                            "w": "20",
+                            "h": "20"
+                        }
+                    }
                 }
             ],
             "triggers": []
