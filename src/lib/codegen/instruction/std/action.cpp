@@ -420,6 +420,26 @@ action::ActionRemoveDevice::method(DefaultMap defaultMap,
 }
 
 JsonObjectNode
+action::ActionRemoveMapObject::method(DefaultMap defaultMap,
+                                      UserDefinedMetadata userDefinedMeta) {
+  JsonObjectNode regionNode = JsonObjectNode({
+      {"defType", "\"rect\""},
+      {"x", defaultMap.get("region_x")},
+      {"y", defaultMap.get("region_y")},
+      {"w", defaultMap.get("region_w")},
+      {"h", defaultMap.get("region_h")},
+  });
+  JsonArrayNode regionsNode =
+      JsonArrayNode(std::make_shared<JsonObjectNode>(regionNode));
+  return JsonObjectNode({
+      {"locType", "\"regions\""},
+      {"regions", regionNode.to_string(24)},
+      {"exRegions", "[]"},
+      {"resourceType", "\"all\""},
+  });
+}
+
+JsonObjectNode
 action::ActionSetCookie::method(DefaultMap defaultMap,
                                 UserDefinedMetadata userDefinedMeta) {
 

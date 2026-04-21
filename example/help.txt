@@ -123,6 +123,8 @@ Supported Actions:
         text: string, type: string
     removeDevice                移除地圖機關
         region_h: int|string, region_w: int|string, region_x: int|string, region_y: int|string
+    removeMapObject             移除地圖物件
+        region_h: int|string, region_w: int|string, region_x: int|string, region_y: int|string
     setCookie                   儲存Cookies
         cookies: string, playerId: string, type: string, value: string
     setGlobal                   儲存全域變數

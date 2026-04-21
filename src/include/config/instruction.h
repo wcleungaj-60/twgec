@@ -292,6 +292,12 @@ const InstructionConfig removeDeviceConfig =
         .addParam("region_y", AST_INT, CODEGEN_STRING, "0")
         .addParam("region_w", AST_INT, CODEGEN_STRING, "0")
         .addParam("region_h", AST_INT, CODEGEN_STRING, "0");
+const InstructionConfig removeMapObjectConfig =
+    InstructionConfig("removeMapObject", "移除地圖物件")
+        .addParam("region_x", AST_INT, CODEGEN_STRING, "0")
+        .addParam("region_y", AST_INT, CODEGEN_STRING, "0")
+        .addParam("region_w", AST_INT, CODEGEN_STRING, "0")
+        .addParam("region_h", AST_INT, CODEGEN_STRING, "0");
 const InstructionConfig setCookieConfig =
     InstructionConfig("setCookie", "儲存Cookies")
         .addParam("playerId", AST_STRING, CODEGEN_STRING, "")
@@ -384,6 +390,7 @@ const std::vector<InstructionConfig> actionList = {
     longBoConfig,
     printConfig,
     removeDeviceConfig,
+    removeMapObjectConfig,
     setCookieConfig,
     setGlobalConfig,
     setObjectVarConfig,
