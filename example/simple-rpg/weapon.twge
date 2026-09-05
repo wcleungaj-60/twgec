@@ -5,6 +5,10 @@ const 公式::鐵劍技能恢復 = "1 + {instance.STR}/6 + {instance.CON}/3";
 const 公式::鐵劍技能傷害 = "1 + {instance.STR}/3 + {instance.CON}/6";
 const 公式::匕首物理傷害 = "10+{attacker.STR}*2+{attacker.AGI}";
 const 公式::匕首技能傷害 = "10 + {instance.AGI}*2";
+const 公式::銀槍物理傷害 = "30+{attacker.STR}*3+{attacker.AGI}";
+const 公式::巨錘物理傷害 = "50+{attacker.STR}*3+{attacker.CON}";
+const 公式::土杖物理傷害 = "5+{attacker.STR}/2";
+const 公式::土杖地震傷害 = "{instance.INT} + {instance.PSY}/2 + 10";
 
 const 文字::風杖描述 =
 "【風杖】\n" + 
@@ -26,10 +30,26 @@ const 文字::匕首描述 =
 " - 武器傷害: 10+力量×2+敏捷\n" +
 "【技能】移動至滑鼠指定位置，並在目的範圍內造成傷害\n" +
 " - 範圍傷害：10+敏捷×2";
+const 文字::銀槍描述 =
+"【銀槍】\n" +
+"【普通攻擊】\n" +
+" - 武器傷害: 30+力量×3+敏捷";
+const 文字::巨錘描述 =
+"【巨錘】\n" +
+"【普通攻擊】\n" +
+" - 武器傷害: 50+力量×3+體質";
+const 文字::土杖描述 =
+"【土杖】\n" +
+"【普通攻擊】\n" +
+" - 武器傷害: 5+力量÷2\n" +
+" - 地震傷害: 10+智慧+精神÷2";
 
 const 別名::武器風杖 = "custom_wind_staff";
 const 別名::武器鐵劍 = "custom_iron_sword";
 const 別名::武器匕首 = "custom_dagger";
+const 別名::武器銀槍 = "custom_silver_spear";
+const 別名::武器巨錘 = "custom_iron_hammer";
+const 別名::武器土杖 = "custom_earth_staff";
 
 def 自定義::點擊裝備武器泛型(button, weapon) : block {
     __repeat__ = -1;
@@ -46,6 +66,9 @@ def 自定義::點擊裝備武器泛型(button, weapon) : block {
 block 點擊裝備武器風杖 = 自定義::點擊裝備武器泛型("WindStaff", 別名::武器風杖);
 block 點擊裝備武器鐵劍 = 自定義::點擊裝備武器泛型("IronSword", 別名::武器鐵劍);
 block 點擊裝備武器匕首 = 自定義::點擊裝備武器泛型("Dagger", 別名::武器匕首);
+block 點擊裝備武器銀槍 = 自定義::點擊裝備武器泛型("SilverSpear", 別名::武器銀槍);
+block 點擊裝備武器巨錘 = 自定義::點擊裝備武器泛型("IronHammer", 別名::武器巨錘);
+block 點擊裝備武器土杖 = 自定義::點擊裝備武器泛型("EarthStaff", 別名::武器土杖);
 block 點擊裝備武器拳頭 = 自定義::點擊裝備武器泛型("None", "fist");
 
 def 自定義::釋放技能泛型(weapon) : block {
@@ -98,6 +121,9 @@ def 自定義::武器物理攻擊泛型(weapon, value) : block  {
 block 風杖物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器風杖, 公式::風杖物理傷害);
 block 鐵劍物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器鐵劍, 公式::鐵劍物理傷害);
 block 匕首物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器匕首, 公式::匕首物理傷害);
+block 銀槍物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器銀槍, 公式::銀槍物理傷害);
+block 巨錘物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器巨錘, 公式::巨錘物理傷害);
+block 土杖物理攻擊 = 自定義::武器物理攻擊泛型(別名::武器土杖, 公式::土杖物理傷害);
 
 block 風杖光彈攻擊 {
     __repeat__ = -1;
@@ -107,6 +133,20 @@ block 風杖光彈攻擊 {
     }
     actions {
         光彈特效(fromActor = "instance", toAngle = 公式::Instance角度, scale = "0.5", damage = 公式::風杖光彈傷害);
+    }
+}
+
+block 土杖地震攻擊 {
+    __repeat__ = -1;
+    __label__ = "武器";
+    triggers {
+        角色發動攻擊(weapon = 別名::武器土杖, varName = "instance");
+    }
+    actions {
+        EnhFF::玩家滑鼠座標(actorId = "{instance}", varX = "x", varY = "y");
+        EnhFF::廣義圓形範圍(x = "{x}", y = "{y}", radius = 2*32, duration = 500,
+            color = "#d38c09", deltaHpType = "damage", deltaHpValue = 公式::土杖地震傷害,
+            deltaHpCD = 600, deltaHpTarget = 角色::任何敵軍, deltaHpCasterCode = "{instance}", lineWidth = 2);
     }
 }
 

@@ -77,7 +77,7 @@
                                 "scaleOnGround": 0.8,
                                 "scaleOnIcon": 1,
                                 "pickTestFunc": "wider",
-                                "weight": 6,
+                                "weight": 5,
                                 "damage": 0,
                                 "swapTime": 800,
                                 "frameName": "BLADE_TYPE",
@@ -187,6 +187,132 @@
                                         "x": 34,
                                         "y": 16,
                                         "degrees": -140,
+                                        "scale": {
+                                            "x": 1,
+                                            "y": 1
+                                        }
+                                    }
+                                }
+                            }
+                    },
+                    {
+                        "code": "iron_hammer",
+                        "config": {
+                                "type": "close",
+                                "clipAlias": "TWilightGameEventCompiler.weapon_iron_hammer",
+                                "scaleOnGround": 0.8,
+                                "scaleOnIcon": 1,
+                                "pickTestFunc": "wider",
+                                "weight": 6,
+                                "damage": 0,
+                                "swapTime": 800,
+                                "frameName": "BLADE_TYPE",
+                                "clip": "",
+                                "fireTime": 1500,
+                                "fires": [
+                                    {
+                                        "fireType": "sword",
+                                        "deltaDamage": 0
+                                    }
+                                ],
+                                "sprite": {
+                                    "pivotOnHand": {
+                                        "x": 38,
+                                        "y": 21,
+                                        "degrees": -104,
+                                        "scale": {
+                                            "x": 1,
+                                            "y": 1
+                                        }
+                                    },
+                                    "pivotOnIcon": {
+                                        "x": 41,
+                                        "y": 18,
+                                        "degrees": -46,
+                                        "scale": {
+                                            "x": 1,
+                                            "y": 1
+                                        }
+                                    }
+                                }
+                            }
+                    },
+                    {
+                        "code": "silver_spear",
+                        "config": {
+                                "type": "close",
+                                "clipAlias": "TWilightGameEventCompiler.weapon_silver_spear",
+                                "scaleOnGround": 0.8,
+                                "scaleOnIcon": 1,
+                                "pickTestFunc": "wider",
+                                "weight": 4,
+                                "damage": 0,
+                                "swapTime": 800,
+                                "frameName": "BLADE_TYPE",
+                                "clip": "",
+                                "fireTime": 1500,
+                                "fires": [
+                                    {
+                                        "fireType": "pierce",
+                                        "deltaDamage": 0
+                                    }
+                                ],
+                                "sprite": {
+                                    "pivotOnHand": {
+                                        "x": 59,
+                                        "y": 17,
+                                        "degrees": -91,
+                                        "scale": {
+                                            "x": 1.1,
+                                            "y": 0.9
+                                        }
+                                    },
+                                    "pivotOnIcon": {
+                                        "x": 48,
+                                        "y": 14,
+                                        "degrees": -49,
+                                        "scale": {
+                                            "x": 1.1,
+                                            "y": 0.9
+                                        }
+                                    }
+                                }
+                            }
+                    },
+                    {
+                        "code": "earth_staff",
+                        "config": {
+                                "type": "close",
+                                "clipAlias": "TWilightGameEventCompiler.weapon_earth_staff",
+                                "scaleOnGround": 0.8,
+                                "scaleOnIcon": 1,
+                                "pickTestFunc": "wider",
+                                "weight": 4,
+                                "damage": 0,
+                                "swapTime": 800,
+                                "frameName": "BLADE_TYPE",
+                                "clip": "",
+                                "fireTime": 1500,
+                                "fires": [
+                                    {
+                                        "fireType": "backslash",
+                                        "deltaDamage": 0
+                                    }
+                                ],
+                                "sprite": {
+                                    "pivotOnHand": {
+                                        "x": -1,
+                                        "y": -5,
+                                        "degrees": 17,
+                                        "scale": {
+                                            "x": 1,
+                                            "y": 1
+                                        }
+                                    },
+                                    "pivotOnIcon": {
+                                        "x": 22,
+                                        "y": 16,
+                                        "degrees": -56,
                                         "scale": {
                                             "x": 1,
                                             "y": 1
@@ -767,6 +893,141 @@
                         "varname": "instance",
                         "checkButtoncode": true,
                         "buttonCode": "wearDagger",
+                        "varnameDevice": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "點擊裝備武器銀槍",
+            "disabled": false,
+            "folder": "武器",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "EquipWeapon",
+                    "data": {
+                        "actorCode": "instance",
+                        "weaponType": "custom_silver_spear",
+                        "weaponIndex": 0,
+                        "checkOwnership": false,
+                        "makeDefault": true
+                    }
+                },
+                {
+                    "type": "EquipWeapon",
+                    "data": {
+                        "actorCode": "instance",
+                        "weaponType": "custom_silver_spear",
+                        "weaponIndex": 1,
+                        "checkOwnership": false,
+                        "makeDefault": true
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "TalkButton",
+                    "data": {
+                        "actorMatches": [],
+                        "varname": "instance",
+                        "checkButtoncode": true,
+                        "buttonCode": "wearSilverSpear",
+                        "varnameDevice": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "點擊裝備武器巨錘",
+            "disabled": false,
+            "folder": "武器",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "EquipWeapon",
+                    "data": {
+                        "actorCode": "instance",
+                        "weaponType": "custom_iron_hammer",
+                        "weaponIndex": 0,
+                        "checkOwnership": false,
+                        "makeDefault": true
+                    }
+                },
+                {
+                    "type": "EquipWeapon",
+                    "data": {
+                        "actorCode": "instance",
+                        "weaponType": "custom_iron_hammer",
+                        "weaponIndex": 1,
+                        "checkOwnership": false,
+                        "makeDefault": true
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "TalkButton",
+                    "data": {
+                        "actorMatches": [],
+                        "varname": "instance",
+                        "checkButtoncode": true,
+                        "buttonCode": "wearIronHammer",
+                        "varnameDevice": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "點擊裝備武器土杖",
+            "disabled": false,
+            "folder": "武器",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "EquipWeapon",
+                    "data": {
+                        "actorCode": "instance",
+                        "weaponType": "custom_earth_staff",
+                        "weaponIndex": 0,
+                        "checkOwnership": false,
+                        "makeDefault": true
+                    }
+                },
+                {
+                    "type": "EquipWeapon",
+                    "data": {
+                        "actorCode": "instance",
+                        "weaponType": "custom_earth_staff",
+                        "weaponIndex": 1,
+                        "checkOwnership": false,
+                        "makeDefault": true
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "TalkButton",
+                    "data": {
+                        "actorMatches": [],
+                        "varname": "instance",
+                        "checkButtoncode": true,
+                        "buttonCode": "wearEarthStaff",
                         "varnameDevice": ""
                     }
                 }
@@ -1401,6 +1662,213 @@
             ]
         },
         {
+            "id": "銀槍物理攻擊",
+            "disabled": false,
+            "folder": "武器",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "DeltaHp",
+                    "data": {
+                        "actorCode": "instance",
+                        "deltaType": "damage",
+                        "hp": "30+{attacker.STR}*3+{attacker.AGI}",
+                        "casterCode": "attacker"
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "ActorHit",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "hitterMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "hitterVarname": "attacker",
+                        "damageTypes": [],
+                        "damageVarname": "",
+                        "aliveType": "skip",
+                        "checkFallDmg": "a",
+                        "checkDeviceDmg": "a",
+                        "checkWeaponType": true,
+                        "weaponTypeCheck": "include",
+                        "weaponType": "custom_silver_spear"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "巨錘物理攻擊",
+            "disabled": false,
+            "folder": "武器",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "DeltaHp",
+                    "data": {
+                        "actorCode": "instance",
+                        "deltaType": "damage",
+                        "hp": "50+{attacker.STR}*3+{attacker.CON}",
+                        "casterCode": "attacker"
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "ActorHit",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "hitterMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "hitterVarname": "attacker",
+                        "damageTypes": [],
+                        "damageVarname": "",
+                        "aliveType": "skip",
+                        "checkFallDmg": "a",
+                        "checkDeviceDmg": "a",
+                        "checkWeaponType": true,
+                        "weaponTypeCheck": "include",
+                        "weaponType": "custom_iron_hammer"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "土杖物理攻擊",
+            "disabled": false,
+            "folder": "武器",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "DeltaHp",
+                    "data": {
+                        "actorCode": "instance",
+                        "deltaType": "damage",
+                        "hp": "5+{attacker.STR}/2",
+                        "casterCode": "attacker"
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "ActorHit",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "hitterMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": ""
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "hitterVarname": "attacker",
+                        "damageTypes": [],
+                        "damageVarname": "",
+                        "aliveType": "skip",
+                        "checkFallDmg": "a",
+                        "checkDeviceDmg": "a",
+                        "checkWeaponType": true,
+                        "weaponTypeCheck": "include",
+                        "weaponType": "custom_earth_staff"
+                    }
+                }
+            ]
+        },
+        {
             "id": "風杖光彈攻擊",
             "disabled": false,
             "folder": "武器",
@@ -1438,6 +1906,108 @@
                         "checkWeaponType": true,
                         "weaponTypeCheck": "include",
                         "weaponType": "custom_wind_staff"
+                    }
+                }
+            ]
+        },
+        {
+            "id": "土杖地震攻擊",
+            "disabled": false,
+            "folder": "武器",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "PlayerMousePositionEnh",
+                    "data": {
+                        "actorCode": "{instance}",
+                        "varX": "x",
+                        "varY": "y",
+                        "wait": true
+                    }
+                },
+                {
+                    "type": "GeneralCircularRangeEnhFF",
+                    "data": {
+                        "select": "map",
+                        "pos": {
+                            "x": "{x}",
+                            "y": "{y}"
+                        },
+                        "region": {
+                            "defType": "circle",
+                            "ciRad": "64",
+                            "offX": "0",
+                            "offY": "0"
+                        },
+                        "duration": "500",
+                        "color": "#d38c09",
+                        "alpha": "1",
+                        "lineWidth": "2",
+                        "lineAlign": "1",
+                        "angle": "0",
+                        "bornAnim": "none",
+                        "disAnim": "none",
+                        "deltaHp": true,
+                        "dhRepeat": "cd",
+                        "dhCD": "600",
+                        "dhSet": {
+                            "deltaType": "damage",
+                            "hp": "{instance.INT} + {instance.PSY}/2 + 10",
+                            "casterCode": "{instance}",
+                            "damageType": {
+                                "damageTypeCode": "none"
+                            },
+                            "dmgWTypeOpt": "default",
+                            "hitAngleOpt": "default",
+                            "drainPctOpt": "default",
+                            "flicker": "default",
+                            "noReact": "default",
+                            "hitSfx": "default",
+                            "sfxOpt": "default",
+                            "__env__": "range"
+                        },
+                        "dhAll": false,
+                        "dhTgt": [
+                                {
+                                    "op": "in",
+                                    "ma": {
+                                        "brain": "0",
+                                        "relship": "0",
+                                        "survival": "1",
+                                        "cgr": true,
+                                        "fgr": [
+                                            {
+                                                "op": "in",
+                                                "comp": [
+                                                    {
+                                                        "op": "==",
+                                                        "val": "101"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "ActorFire",
+                    "data": {
+                        "actorMatches": [],
+                        "varname": "instance",
+                        "fireTriggerType": "all",
+                        "damageTypes": [],
+                        "checkWeaponType": true,
+                        "weaponTypeCheck": "include",
+                        "weaponType": "custom_earth_staff"
                     }
                 }
             ]
@@ -17097,6 +17667,57 @@
                         "pick": "random",
                         "locs": [
                             {
+                                "x": "13+{chunk_{chunk_available_stack_now}_x}",
+                                "y": "0+{chunk_{chunk_available_stack_now}_y}",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true,
+                        "forceBlock": false
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "14+{chunk_{chunk_available_stack_now}_x}",
+                                "y": "0+{chunk_{chunk_available_stack_now}_y}",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true,
+                        "forceBlock": false
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "15+{chunk_{chunk_available_stack_now}_x}",
+                                "y": "0+{chunk_{chunk_available_stack_now}_y}",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true,
+                        "forceBlock": false
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
                                 "x": "18+{chunk_{chunk_available_stack_now}_x}",
                                 "y": "0+{chunk_{chunk_available_stack_now}_y}",
                                 "range": "0"
@@ -17120,6 +17741,74 @@
                             }
                         ],
                         "resource": "rock0",
+                        "autoLayer": true,
+                        "forceBlock": false
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "6+{chunk_{chunk_available_stack_now}_x}",
+                                "y": "1+{chunk_{chunk_available_stack_now}_y}",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true,
+                        "forceBlock": false
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "7+{chunk_{chunk_available_stack_now}_x}",
+                                "y": "1+{chunk_{chunk_available_stack_now}_y}",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true,
+                        "forceBlock": false
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "14+{chunk_{chunk_available_stack_now}_x}",
+                                "y": "1+{chunk_{chunk_available_stack_now}_y}",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
+                        "autoLayer": true,
+                        "forceBlock": false
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
+                                "x": "7+{chunk_{chunk_available_stack_now}_x}",
+                                "y": "2+{chunk_{chunk_available_stack_now}_y}",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "sky012",
                         "autoLayer": true,
                         "forceBlock": false
                     }
@@ -18542,7 +19231,45 @@
                         ],
                         "resource": "box1",
                         "autoLayer": true,
-                        "forceBlock": true
+                        "forceBlock": false
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "12+{chunk_{chunk_available_stack_now}_x}",
+                                "y": "13+{chunk_{chunk_available_stack_now}_y}",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "180",
+                        "speech": "【銀槍】\n【普通攻擊】\n - 武器傷害: 30+力量×3+敏捷",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "wearSilverSpear",
+                                    "close": true,
+                                    "label": "裝備",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "wearNone",
+                                    "close": true,
+                                    "label": "卸下",
+                                    "icon": ""
+                                }
+                            ]
+                        }
                     }
                 },
                 {
@@ -18559,7 +19286,45 @@
                         ],
                         "resource": "box1",
                         "autoLayer": true,
-                        "forceBlock": true
+                        "forceBlock": false
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "12+{chunk_{chunk_available_stack_now}_x}",
+                                "y": "14+{chunk_{chunk_available_stack_now}_y}",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "180",
+                        "speech": "【巨錘】\n【普通攻擊】\n - 武器傷害: 50+力量×3+體質",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "wearIronHammer",
+                                    "close": true,
+                                    "label": "裝備",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "wearNone",
+                                    "close": true,
+                                    "label": "卸下",
+                                    "icon": ""
+                                }
+                            ]
+                        }
                     }
                 },
                 {
@@ -18593,6 +19358,55 @@
                         "pick": "random",
                         "locs": [
                             {
+                                "x": "4+{chunk_{chunk_available_stack_now}_x}",
+                                "y": "15+{chunk_{chunk_available_stack_now}_y}",
+                                "range": "0"
+                            }
+                        ],
+                        "resource": "chair0",
+                        "autoLayer": true,
+                        "forceBlock": false
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "4+{chunk_{chunk_available_stack_now}_x}",
+                                "y": "15+{chunk_{chunk_available_stack_now}_y}",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "180",
+                        "speech": "【重置能力點分配】",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "ResetPoint",
+                                    "close": true,
+                                    "label": "確認",
+                                    "icon": ""
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "AddMapObject",
+                    "data": {
+                        "locType": "locs",
+                        "pick": "random",
+                        "locs": [
+                            {
                                 "x": "12+{chunk_{chunk_available_stack_now}_x}",
                                 "y": "15+{chunk_{chunk_available_stack_now}_y}",
                                 "range": "0"
@@ -18600,7 +19414,45 @@
                         ],
                         "resource": "box1",
                         "autoLayer": true,
-                        "forceBlock": true
+                        "forceBlock": false
+                    }
+                },
+                {
+                    "type": "AddMapSIgn",
+                    "data": {
+                        "localVarname": "",
+                        "locs": [
+                            {
+                                "x": "12+{chunk_{chunk_available_stack_now}_x}",
+                                "y": "15+{chunk_{chunk_available_stack_now}_y}",
+                                "range": "0"
+                            }
+                        ],
+                        "shape": "wood",
+                        "rotation": "180",
+                        "speech": "【土杖】\n【普通攻擊】\n - 武器傷害: 5+力量÷2\n - 地震傷害: 10+智慧+精神÷2",
+                        "parsePolicy": "view",
+                        "showButtons": true,
+                        "btnsGroup": {
+                            "rowSize": "1",
+                            "btnMinWidth": "1",
+                            "textAlign": "center",
+                            "varnameButton": "",
+                            "btns": [
+                                {
+                                    "buttonCode": "wearEarthStaff",
+                                    "close": true,
+                                    "label": "裝備",
+                                    "icon": ""
+                                },
+                                {
+                                    "buttonCode": "wearNone",
+                                    "close": true,
+                                    "label": "卸下",
+                                    "icon": ""
+                                }
+                            ]
+                        }
                     }
                 },
                 {
@@ -18652,6 +19504,60 @@
                         "resource": "rock4",
                         "autoLayer": true,
                         "forceBlock": false
+                    }
+                },
+                {
+                    "type": "AddActor",
+                    "data": {
+                        "actorCode": "npc03*",
+                        "name": "祭司",
+                        "role": {
+                            "dr": 51
+                        },
+                        "actorType": "defaultType",
+                        "weapon0": {
+                            "w0Type": "kongfu"
+                        },
+                        "weapon1": {
+                            "w1Type": "kongfu"
+                        },
+                        "camp": "third",
+                        "group": "100",
+                        "location": {
+                            "x": "2+{chunk_{chunk_available_stack_now}_x}",
+                            "y": "17+{chunk_{chunk_available_stack_now}_y}",
+                            "range": "0"
+                        },
+                        "shiftX": 0,
+                        "shiftY": 0,
+                        "spawnLoc": true,
+                        "rotation": "270",
+                        "idleRotate": true,
+                        "maxhp": "100",
+                        "manaPower": "0",
+                        "lives": "1",
+                        "preferAbilityLevel": "smart",
+                        "maxAbilityLevel": 1,
+                        "weight": "4",
+                        "strength": "1",
+                        "vision": "300",
+                        "range": "10000",
+                        "score": "10",
+                        "bloodType": "default",
+                        "unbrokenArmor": true,
+                        "tornadoRes": "none",
+                        "distractWhenHit": true,
+                        "thinkInterval": 60,
+                        "farAutoLevel": "0",
+                        "patrols": true,
+                        "patrolPath": [],
+                        "bornDelayDuration": "0",
+                        "bornDuration": "1000",
+                        "bornLockDuration": "1000",
+                        "bornEffect": "none",
+                        "bornAnim": "fadein",
+                        "localVarname": "actor",
+                        "globalVarname": ""
                     }
                 },
                 {
