@@ -353,7 +353,7 @@
                     "type": "GetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Point",
                         "varname": "{instance}_Point"
                     }
@@ -371,7 +371,7 @@
                     "type": "GetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "ExpNeeded",
                         "varname": "{instance}_ExpNeeded"
                     }
@@ -389,7 +389,7 @@
                     "type": "GetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Level",
                         "varname": "{instance}_Level"
                     }
@@ -407,7 +407,7 @@
                     "type": "GetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "STR",
                         "varname": "{instance}_STR"
                     }
@@ -425,7 +425,7 @@
                     "type": "GetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "CON",
                         "varname": "{instance}_CON"
                     }
@@ -443,7 +443,7 @@
                     "type": "GetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "AGI",
                         "varname": "{instance}_AGI"
                     }
@@ -461,7 +461,7 @@
                     "type": "GetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "INT",
                         "varname": "{instance}_INT"
                     }
@@ -479,7 +479,7 @@
                     "type": "GetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "PSY",
                         "varname": "{instance}_PSY"
                     }
@@ -497,7 +497,7 @@
                     "type": "GetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Exp",
                         "varname": "{instance}_Exp"
                     }
@@ -515,7 +515,7 @@
                     "type": "GetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "HP",
                         "varname": "{instance}_HP"
                     }
@@ -2084,7 +2084,7 @@
                         "objectId": "instance",
                         "key": "Exp",
                         "valueType": "integer",
-                        "value": "{instance.Exp}+1"
+                        "value": "{instance.Exp}+10"
                     }
                 },
                 {
@@ -2100,7 +2100,7 @@
                         "shiftX": "0",
                         "shiftY": "0",
                         "cleanTalk": false,
-                        "speech": "<span style='color: green'>EXP+1</span>",
+                        "speech": "<span style='color: green'>EXP+10</span>",
                         "html": true,
                         "align": "center",
                         "scalePolicy": "withWindowMinOne",
@@ -2112,7 +2112,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Point",
                         "valueType": "string",
                         "value": "{{instance}.Point}"
@@ -2122,7 +2122,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "ExpNeeded",
                         "valueType": "string",
                         "value": "{{instance}.ExpNeeded}"
@@ -2132,7 +2132,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Level",
                         "valueType": "string",
                         "value": "{{instance}.Level}"
@@ -2142,7 +2142,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -2152,7 +2152,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "CON",
                         "valueType": "string",
                         "value": "{{instance}.CON}"
@@ -2162,7 +2162,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "AGI",
                         "valueType": "string",
                         "value": "{{instance}.AGI}"
@@ -2172,7 +2172,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "INT",
                         "valueType": "string",
                         "value": "{{instance}.INT}"
@@ -2182,7 +2182,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "PSY",
                         "valueType": "string",
                         "value": "{{instance}.PSY}"
@@ -2192,7 +2192,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
@@ -2202,7 +2202,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "HP",
                         "valueType": "string",
                         "value": "{{instance}.HP}"
@@ -2212,7 +2212,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "savedBefore",
                         "valueType": "integer",
                         "value": "1"
@@ -2252,7 +2252,7 @@
                         "objectId": "instance",
                         "key": "Exp",
                         "valueType": "integer",
-                        "value": "{instance.Exp}+3"
+                        "value": "{instance.Exp}+12"
                     }
                 },
                 {
@@ -2268,7 +2268,7 @@
                         "shiftX": "0",
                         "shiftY": "0",
                         "cleanTalk": false,
-                        "speech": "<span style='color: green'>EXP+3</span>",
+                        "speech": "<span style='color: green'>EXP+12</span>",
                         "html": true,
                         "align": "center",
                         "scalePolicy": "withWindowMinOne",
@@ -2280,7 +2280,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Point",
                         "valueType": "string",
                         "value": "{{instance}.Point}"
@@ -2290,7 +2290,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "ExpNeeded",
                         "valueType": "string",
                         "value": "{{instance}.ExpNeeded}"
@@ -2300,7 +2300,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Level",
                         "valueType": "string",
                         "value": "{{instance}.Level}"
@@ -2310,7 +2310,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -2320,7 +2320,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "CON",
                         "valueType": "string",
                         "value": "{{instance}.CON}"
@@ -2330,7 +2330,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "AGI",
                         "valueType": "string",
                         "value": "{{instance}.AGI}"
@@ -2340,7 +2340,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "INT",
                         "valueType": "string",
                         "value": "{{instance}.INT}"
@@ -2350,7 +2350,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "PSY",
                         "valueType": "string",
                         "value": "{{instance}.PSY}"
@@ -2360,7 +2360,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
@@ -2370,7 +2370,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "HP",
                         "valueType": "string",
                         "value": "{{instance}.HP}"
@@ -2380,7 +2380,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "savedBefore",
                         "valueType": "integer",
                         "value": "1"
@@ -2420,7 +2420,7 @@
                         "objectId": "instance",
                         "key": "Exp",
                         "valueType": "integer",
-                        "value": "{instance.Exp}+5"
+                        "value": "{instance.Exp}+15"
                     }
                 },
                 {
@@ -2436,7 +2436,7 @@
                         "shiftX": "0",
                         "shiftY": "0",
                         "cleanTalk": false,
-                        "speech": "<span style='color: green'>EXP+5</span>",
+                        "speech": "<span style='color: green'>EXP+15</span>",
                         "html": true,
                         "align": "center",
                         "scalePolicy": "withWindowMinOne",
@@ -2448,7 +2448,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Point",
                         "valueType": "string",
                         "value": "{{instance}.Point}"
@@ -2458,7 +2458,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "ExpNeeded",
                         "valueType": "string",
                         "value": "{{instance}.ExpNeeded}"
@@ -2468,7 +2468,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Level",
                         "valueType": "string",
                         "value": "{{instance}.Level}"
@@ -2478,7 +2478,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -2488,7 +2488,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "CON",
                         "valueType": "string",
                         "value": "{{instance}.CON}"
@@ -2498,7 +2498,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "AGI",
                         "valueType": "string",
                         "value": "{{instance}.AGI}"
@@ -2508,7 +2508,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "INT",
                         "valueType": "string",
                         "value": "{{instance}.INT}"
@@ -2518,7 +2518,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "PSY",
                         "valueType": "string",
                         "value": "{{instance}.PSY}"
@@ -2528,7 +2528,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
@@ -2538,7 +2538,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "HP",
                         "valueType": "string",
                         "value": "{{instance}.HP}"
@@ -2548,7 +2548,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "savedBefore",
                         "valueType": "integer",
                         "value": "1"
@@ -2573,174 +2573,6 @@
             ]
         },
         {
-            "id": "拾取經驗五級山嶺石怪",
-            "disabled": false,
-            "folder": "怪物",
-            "startTime": 0,
-            "checkInterval": 10,
-            "repeats": -1,
-            "repeatInterval": 0,
-            "devOnly": false,
-            "actions": [
-                {
-                    "type": "SetObjectVar",
-                    "data": {
-                        "objectId": "instance",
-                        "key": "Exp",
-                        "valueType": "integer",
-                        "value": "{instance.Exp}+7"
-                    }
-                },
-                {
-                    "type": "TipOnMap",
-                    "data": {
-                        "locs": [
-                            {
-                                "x": "{instance.gamePosition.x}/32",
-                                "y": "{instance.gamePosition.y}/32",
-                                "range": "0"
-                            }
-                        ],
-                        "shiftX": "0",
-                        "shiftY": "0",
-                        "cleanTalk": false,
-                        "speech": "<span style='color: green'>EXP+7</span>",
-                        "html": true,
-                        "align": "center",
-                        "scalePolicy": "withWindowMinOne",
-                        "stay": "time",
-                        "duration": "3000"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "Point",
-                        "valueType": "string",
-                        "value": "{{instance}.Point}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "ExpNeeded",
-                        "valueType": "string",
-                        "value": "{{instance}.ExpNeeded}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "Level",
-                        "valueType": "string",
-                        "value": "{{instance}.Level}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "STR",
-                        "valueType": "string",
-                        "value": "{{instance}.STR}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "CON",
-                        "valueType": "string",
-                        "value": "{{instance}.CON}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "AGI",
-                        "valueType": "string",
-                        "value": "{{instance}.AGI}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "INT",
-                        "valueType": "string",
-                        "value": "{{instance}.INT}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "PSY",
-                        "valueType": "string",
-                        "value": "{{instance}.PSY}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "Exp",
-                        "valueType": "string",
-                        "value": "{{instance}.Exp}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "HP",
-                        "valueType": "string",
-                        "value": "{{instance}.HP}"
-                    }
-                },
-                {
-                    "type": "SetUserState",
-                    "data": {
-                        "playerId": "{instance}",
-                        "category": "simple-rpg-test",
-                        "key": "savedBefore",
-                        "valueType": "integer",
-                        "value": "1"
-                    }
-                }
-            ],
-            "checks": [],
-            "triggers": [
-                {
-                    "type": "ItemPickup",
-                    "data": {
-                        "actorMatches": [],
-                        "varname": "instance",
-                        "itemMatch": {
-                            "method": "equal",
-                            "itemCode": "stone_exp_05",
-                            "itemType": ""
-                        },
-                        "itemVarname": ""
-                    }
-                }
-            ]
-        },
-        {
             "id": "拾取經驗七級山嶺石怪",
             "disabled": false,
             "folder": "怪物",
@@ -2756,7 +2588,7 @@
                         "objectId": "instance",
                         "key": "Exp",
                         "valueType": "integer",
-                        "value": "{instance.Exp}+10"
+                        "value": "{instance.Exp}+19"
                     }
                 },
                 {
@@ -2772,7 +2604,7 @@
                         "shiftX": "0",
                         "shiftY": "0",
                         "cleanTalk": false,
-                        "speech": "<span style='color: green'>EXP+10</span>",
+                        "speech": "<span style='color: green'>EXP+19</span>",
                         "html": true,
                         "align": "center",
                         "scalePolicy": "withWindowMinOne",
@@ -2784,7 +2616,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Point",
                         "valueType": "string",
                         "value": "{{instance}.Point}"
@@ -2794,7 +2626,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "ExpNeeded",
                         "valueType": "string",
                         "value": "{{instance}.ExpNeeded}"
@@ -2804,7 +2636,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Level",
                         "valueType": "string",
                         "value": "{{instance}.Level}"
@@ -2814,7 +2646,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -2824,7 +2656,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "CON",
                         "valueType": "string",
                         "value": "{{instance}.CON}"
@@ -2834,7 +2666,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "AGI",
                         "valueType": "string",
                         "value": "{{instance}.AGI}"
@@ -2844,7 +2676,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "INT",
                         "valueType": "string",
                         "value": "{{instance}.INT}"
@@ -2854,7 +2686,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "PSY",
                         "valueType": "string",
                         "value": "{{instance}.PSY}"
@@ -2864,7 +2696,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
@@ -2874,7 +2706,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "HP",
                         "valueType": "string",
                         "value": "{{instance}.HP}"
@@ -2884,7 +2716,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "savedBefore",
                         "valueType": "integer",
                         "value": "1"
@@ -2901,6 +2733,174 @@
                         "itemMatch": {
                             "method": "equal",
                             "itemCode": "stone_exp_07",
+                            "itemType": ""
+                        },
+                        "itemVarname": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "拾取經驗九級山嶺石怪",
+            "disabled": false,
+            "folder": "怪物",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "Exp",
+                        "valueType": "integer",
+                        "value": "{instance.Exp}+22"
+                    }
+                },
+                {
+                    "type": "TipOnMap",
+                    "data": {
+                        "locs": [
+                            {
+                                "x": "{instance.gamePosition.x}/32",
+                                "y": "{instance.gamePosition.y}/32",
+                                "range": "0"
+                            }
+                        ],
+                        "shiftX": "0",
+                        "shiftY": "0",
+                        "cleanTalk": false,
+                        "speech": "<span style='color: green'>EXP+22</span>",
+                        "html": true,
+                        "align": "center",
+                        "scalePolicy": "withWindowMinOne",
+                        "stay": "time",
+                        "duration": "3000"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test-v2",
+                        "key": "Point",
+                        "valueType": "string",
+                        "value": "{{instance}.Point}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test-v2",
+                        "key": "ExpNeeded",
+                        "valueType": "string",
+                        "value": "{{instance}.ExpNeeded}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test-v2",
+                        "key": "Level",
+                        "valueType": "string",
+                        "value": "{{instance}.Level}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test-v2",
+                        "key": "STR",
+                        "valueType": "string",
+                        "value": "{{instance}.STR}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test-v2",
+                        "key": "CON",
+                        "valueType": "string",
+                        "value": "{{instance}.CON}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test-v2",
+                        "key": "AGI",
+                        "valueType": "string",
+                        "value": "{{instance}.AGI}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test-v2",
+                        "key": "INT",
+                        "valueType": "string",
+                        "value": "{{instance}.INT}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test-v2",
+                        "key": "PSY",
+                        "valueType": "string",
+                        "value": "{{instance}.PSY}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test-v2",
+                        "key": "Exp",
+                        "valueType": "string",
+                        "value": "{{instance}.Exp}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test-v2",
+                        "key": "HP",
+                        "valueType": "string",
+                        "value": "{{instance}.HP}"
+                    }
+                },
+                {
+                    "type": "SetUserState",
+                    "data": {
+                        "playerId": "{instance}",
+                        "category": "simple-rpg-test-v2",
+                        "key": "savedBefore",
+                        "valueType": "integer",
+                        "value": "1"
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "ItemPickup",
+                    "data": {
+                        "actorMatches": [],
+                        "varname": "instance",
+                        "itemMatch": {
+                            "method": "equal",
+                            "itemCode": "stone_exp_09",
                             "itemType": ""
                         },
                         "itemVarname": ""
@@ -3077,62 +3077,6 @@
             ]
         },
         {
-            "id": "野獸死亡五級山嶺石怪",
-            "disabled": false,
-            "folder": "怪物",
-            "startTime": 0,
-            "checkInterval": 10,
-            "repeats": -1,
-            "repeatInterval": 0,
-            "devOnly": false,
-            "actions": [
-                {
-                    "type": "AddDropItem",
-                    "data": {
-                        "location": {
-                            "x": "{instance.gamePosition.x}/32-0.5",
-                            "y": "{instance.gamePosition.y}/32-0.5",
-                            "range": "0"
-                        },
-                        "shiftX": 0,
-                        "shiftY": 0,
-                        "itemCode": "stone_exp_05",
-                        "itemType": "redStone",
-                        "itemScale": "1",
-                        "localVarname": ""
-                    }
-                }
-            ],
-            "checks": [],
-            "triggers": [
-                {
-                    "type": "ActorDead",
-                    "data": {
-                        "actorMatches": [
-                            {
-                                "actorCodes": [
-                                    {
-                                        "method": "contain",
-                                        "actorCode": "monster_stone_lv05"
-                                    }
-                                ],
-                                "brain": "all",
-                                "camp": {
-                                    "campAll": true
-                                },
-                                "excludeActorCodes": []
-                            }
-                        ],
-                        "varname": "instance",
-                        "timing": "preDead",
-                        "deathsVarname": "deaths",
-                        "hitterMatches": [],
-                        "hitterVarname": ""
-                    }
-                }
-            ]
-        },
-        {
             "id": "野獸死亡七級山嶺石怪",
             "disabled": false,
             "folder": "怪物",
@@ -3170,6 +3114,62 @@
                                     {
                                         "method": "contain",
                                         "actorCode": "monster_stone_lv07"
+                                    }
+                                ],
+                                "brain": "all",
+                                "camp": {
+                                    "campAll": true
+                                },
+                                "excludeActorCodes": []
+                            }
+                        ],
+                        "varname": "instance",
+                        "timing": "preDead",
+                        "deathsVarname": "deaths",
+                        "hitterMatches": [],
+                        "hitterVarname": ""
+                    }
+                }
+            ]
+        },
+        {
+            "id": "野獸死亡九級山嶺石怪",
+            "disabled": false,
+            "folder": "怪物",
+            "startTime": 0,
+            "checkInterval": 10,
+            "repeats": -1,
+            "repeatInterval": 0,
+            "devOnly": false,
+            "actions": [
+                {
+                    "type": "AddDropItem",
+                    "data": {
+                        "location": {
+                            "x": "{instance.gamePosition.x}/32-0.5",
+                            "y": "{instance.gamePosition.y}/32-0.5",
+                            "range": "0"
+                        },
+                        "shiftX": 0,
+                        "shiftY": 0,
+                        "itemCode": "stone_exp_09",
+                        "itemType": "redStone",
+                        "itemScale": "1",
+                        "localVarname": ""
+                    }
+                }
+            ],
+            "checks": [],
+            "triggers": [
+                {
+                    "type": "ActorDead",
+                    "data": {
+                        "actorMatches": [
+                            {
+                                "actorCodes": [
+                                    {
+                                        "method": "contain",
+                                        "actorCode": "monster_stone_lv09"
                                     }
                                 ],
                                 "brain": "all",
@@ -3573,13 +3573,13 @@
                         "spawnLoc": true,
                         "rotation": "0",
                         "idleRotate": true,
-                        "maxhp": "150",
+                        "maxhp": "90",
                         "manaPower": "0",
                         "lives": "1",
                         "preferAbilityLevel": "smart",
                         "maxAbilityLevel": 1,
                         "weight": "4",
-                        "strength": "20",
+                        "strength": "14",
                         "vision": "300",
                         "range": "10000",
                         "score": "10",
@@ -3689,13 +3689,13 @@
                         "spawnLoc": true,
                         "rotation": "0",
                         "idleRotate": true,
-                        "maxhp": "150",
+                        "maxhp": "90",
                         "manaPower": "0",
                         "lives": "1",
                         "preferAbilityLevel": "smart",
                         "maxAbilityLevel": 1,
                         "weight": "4",
-                        "strength": "20",
+                        "strength": "14",
                         "vision": "300",
                         "range": "10000",
                         "score": "10",
@@ -3805,13 +3805,13 @@
                         "spawnLoc": true,
                         "rotation": "0",
                         "idleRotate": true,
-                        "maxhp": "150",
+                        "maxhp": "90",
                         "manaPower": "0",
                         "lives": "1",
                         "preferAbilityLevel": "smart",
                         "maxAbilityLevel": 1,
                         "weight": "4",
-                        "strength": "20",
+                        "strength": "14",
                         "vision": "300",
                         "range": "10000",
                         "score": "10",
@@ -3921,13 +3921,13 @@
                         "spawnLoc": true,
                         "rotation": "0",
                         "idleRotate": true,
-                        "maxhp": "240",
+                        "maxhp": "120",
                         "manaPower": "0",
                         "lives": "1",
                         "preferAbilityLevel": "smart",
                         "maxAbilityLevel": 1,
                         "weight": "4",
-                        "strength": "30",
+                        "strength": "18",
                         "vision": "300",
                         "range": "10000",
                         "score": "10",
@@ -4037,13 +4037,13 @@
                         "spawnLoc": true,
                         "rotation": "0",
                         "idleRotate": true,
-                        "maxhp": "240",
+                        "maxhp": "120",
                         "manaPower": "0",
                         "lives": "1",
                         "preferAbilityLevel": "smart",
                         "maxAbilityLevel": 1,
                         "weight": "4",
-                        "strength": "30",
+                        "strength": "18",
                         "vision": "300",
                         "range": "10000",
                         "score": "10",
@@ -4129,8 +4129,8 @@
                 {
                     "type": "AddActor",
                     "data": {
-                        "actorCode": "monster_stone_lv05*",
-                        "name": "山嶺石怪(Lv5)",
+                        "actorCode": "monster_stone_lv07*",
+                        "name": "山嶺石怪(Lv7)",
                         "role": {
                             "dr": 22
                         },
@@ -4153,13 +4153,13 @@
                         "spawnLoc": true,
                         "rotation": "0",
                         "idleRotate": true,
-                        "maxhp": "420",
+                        "maxhp": "200",
                         "manaPower": "0",
                         "lives": "1",
                         "preferAbilityLevel": "smart",
                         "maxAbilityLevel": 1,
                         "weight": "4",
-                        "strength": "50",
+                        "strength": "24",
                         "vision": "300",
                         "range": "10000",
                         "score": "10",
@@ -4207,7 +4207,7 @@
                             {
                                 "attr": "bodyScale",
                                 "operation": "set",
-                                "value": "1.1"
+                                "value": "1.05"
                             }
                         ],
                         "takeFriendAIFire": "u",
@@ -4236,7 +4236,7 @@
                                 "actorCodes": [
                                     {
                                         "method": "contain",
-                                        "actorCode": "monster_stone_lv05"
+                                        "actorCode": "monster_stone_lv07"
                                     }
                                 ],
                                 "brain": "all",
@@ -4283,8 +4283,8 @@
                 {
                     "type": "AddActor",
                     "data": {
-                        "actorCode": "monster_stone_lv05*",
-                        "name": "山嶺石怪(Lv5)",
+                        "actorCode": "monster_stone_lv07*",
+                        "name": "山嶺石怪(Lv7)",
                         "role": {
                             "dr": 22
                         },
@@ -4307,13 +4307,13 @@
                         "spawnLoc": true,
                         "rotation": "0",
                         "idleRotate": true,
-                        "maxhp": "420",
+                        "maxhp": "200",
                         "manaPower": "0",
                         "lives": "1",
                         "preferAbilityLevel": "smart",
                         "maxAbilityLevel": 1,
                         "weight": "4",
-                        "strength": "50",
+                        "strength": "24",
                         "vision": "300",
                         "range": "10000",
                         "score": "10",
@@ -4361,7 +4361,7 @@
                             {
                                 "attr": "bodyScale",
                                 "operation": "set",
-                                "value": "1.1"
+                                "value": "1.05"
                             }
                         ],
                         "takeFriendAIFire": "u",
@@ -4390,7 +4390,7 @@
                                 "actorCodes": [
                                     {
                                         "method": "contain",
-                                        "actorCode": "monster_stone_lv05"
+                                        "actorCode": "monster_stone_lv07"
                                     }
                                 ],
                                 "brain": "all",
@@ -4437,8 +4437,8 @@
                 {
                     "type": "AddActor",
                     "data": {
-                        "actorCode": "monster_stone_lv07*",
-                        "name": "山嶺石怪(Lv7)",
+                        "actorCode": "monster_stone_lv09*",
+                        "name": "山嶺石怪(Lv9)",
                         "role": {
                             "dr": 22
                         },
@@ -4461,13 +4461,13 @@
                         "spawnLoc": true,
                         "rotation": "0",
                         "idleRotate": true,
-                        "maxhp": "580",
+                        "maxhp": "240",
                         "manaPower": "0",
                         "lives": "1",
                         "preferAbilityLevel": "smart",
                         "maxAbilityLevel": 1,
                         "weight": "4",
-                        "strength": "70",
+                        "strength": "28",
                         "vision": "300",
                         "range": "10000",
                         "score": "10",
@@ -4515,7 +4515,7 @@
                             {
                                 "attr": "bodyScale",
                                 "operation": "set",
-                                "value": "1.1"
+                                "value": "1.05"
                             }
                         ],
                         "takeFriendAIFire": "u",
@@ -4544,7 +4544,7 @@
                                 "actorCodes": [
                                     {
                                         "method": "contain",
-                                        "actorCode": "monster_stone_lv07"
+                                        "actorCode": "monster_stone_lv09"
                                     }
                                 ],
                                 "brain": "all",
@@ -4591,8 +4591,8 @@
                 {
                     "type": "AddActor",
                     "data": {
-                        "actorCode": "monster_stone_lv07*",
-                        "name": "山嶺石怪(Lv7)",
+                        "actorCode": "monster_stone_lv09*",
+                        "name": "山嶺石怪(Lv9)",
                         "role": {
                             "dr": 22
                         },
@@ -4615,13 +4615,13 @@
                         "spawnLoc": true,
                         "rotation": "0",
                         "idleRotate": true,
-                        "maxhp": "580",
+                        "maxhp": "240",
                         "manaPower": "0",
                         "lives": "1",
                         "preferAbilityLevel": "smart",
                         "maxAbilityLevel": 1,
                         "weight": "4",
-                        "strength": "70",
+                        "strength": "28",
                         "vision": "300",
                         "range": "10000",
                         "score": "10",
@@ -4669,7 +4669,7 @@
                             {
                                 "attr": "bodyScale",
                                 "operation": "set",
-                                "value": "1.1"
+                                "value": "1.05"
                             }
                         ],
                         "takeFriendAIFire": "u",
@@ -4698,7 +4698,7 @@
                                 "actorCodes": [
                                     {
                                         "method": "contain",
-                                        "actorCode": "monster_stone_lv07"
+                                        "actorCode": "monster_stone_lv09"
                                     }
                                 ],
                                 "brain": "all",
@@ -25656,7 +25656,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Point",
                         "valueType": "string",
                         "value": "{{instance}.Point}"
@@ -25666,7 +25666,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "ExpNeeded",
                         "valueType": "string",
                         "value": "{{instance}.ExpNeeded}"
@@ -25676,7 +25676,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Level",
                         "valueType": "string",
                         "value": "{{instance}.Level}"
@@ -25686,7 +25686,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -25696,7 +25696,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "CON",
                         "valueType": "string",
                         "value": "{{instance}.CON}"
@@ -25706,7 +25706,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "AGI",
                         "valueType": "string",
                         "value": "{{instance}.AGI}"
@@ -25716,7 +25716,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "INT",
                         "valueType": "string",
                         "value": "{{instance}.INT}"
@@ -25726,7 +25726,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "PSY",
                         "valueType": "string",
                         "value": "{{instance}.PSY}"
@@ -25736,7 +25736,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
@@ -25746,7 +25746,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "HP",
                         "valueType": "string",
                         "value": "{{instance}.HP}"
@@ -25756,7 +25756,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "savedBefore",
                         "valueType": "integer",
                         "value": "1"
@@ -25981,7 +25981,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Point",
                         "valueType": "string",
                         "value": "{{instance}.Point}"
@@ -25991,7 +25991,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "ExpNeeded",
                         "valueType": "string",
                         "value": "{{instance}.ExpNeeded}"
@@ -26001,7 +26001,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Level",
                         "valueType": "string",
                         "value": "{{instance}.Level}"
@@ -26011,7 +26011,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -26021,7 +26021,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "CON",
                         "valueType": "string",
                         "value": "{{instance}.CON}"
@@ -26031,7 +26031,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "AGI",
                         "valueType": "string",
                         "value": "{{instance}.AGI}"
@@ -26041,7 +26041,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "INT",
                         "valueType": "string",
                         "value": "{{instance}.INT}"
@@ -26051,7 +26051,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "PSY",
                         "valueType": "string",
                         "value": "{{instance}.PSY}"
@@ -26061,7 +26061,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
@@ -26071,7 +26071,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "HP",
                         "valueType": "string",
                         "value": "{{instance}.HP}"
@@ -26081,7 +26081,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "savedBefore",
                         "valueType": "integer",
                         "value": "1"
@@ -26306,7 +26306,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Point",
                         "valueType": "string",
                         "value": "{{instance}.Point}"
@@ -26316,7 +26316,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "ExpNeeded",
                         "valueType": "string",
                         "value": "{{instance}.ExpNeeded}"
@@ -26326,7 +26326,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Level",
                         "valueType": "string",
                         "value": "{{instance}.Level}"
@@ -26336,7 +26336,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -26346,7 +26346,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "CON",
                         "valueType": "string",
                         "value": "{{instance}.CON}"
@@ -26356,7 +26356,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "AGI",
                         "valueType": "string",
                         "value": "{{instance}.AGI}"
@@ -26366,7 +26366,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "INT",
                         "valueType": "string",
                         "value": "{{instance}.INT}"
@@ -26376,7 +26376,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "PSY",
                         "valueType": "string",
                         "value": "{{instance}.PSY}"
@@ -26386,7 +26386,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
@@ -26396,7 +26396,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "HP",
                         "valueType": "string",
                         "value": "{{instance}.HP}"
@@ -26406,7 +26406,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "savedBefore",
                         "valueType": "integer",
                         "value": "1"
@@ -26631,7 +26631,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Point",
                         "valueType": "string",
                         "value": "{{instance}.Point}"
@@ -26641,7 +26641,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "ExpNeeded",
                         "valueType": "string",
                         "value": "{{instance}.ExpNeeded}"
@@ -26651,7 +26651,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Level",
                         "valueType": "string",
                         "value": "{{instance}.Level}"
@@ -26661,7 +26661,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -26671,7 +26671,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "CON",
                         "valueType": "string",
                         "value": "{{instance}.CON}"
@@ -26681,7 +26681,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "AGI",
                         "valueType": "string",
                         "value": "{{instance}.AGI}"
@@ -26691,7 +26691,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "INT",
                         "valueType": "string",
                         "value": "{{instance}.INT}"
@@ -26701,7 +26701,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "PSY",
                         "valueType": "string",
                         "value": "{{instance}.PSY}"
@@ -26711,7 +26711,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
@@ -26721,7 +26721,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "HP",
                         "valueType": "string",
                         "value": "{{instance}.HP}"
@@ -26731,7 +26731,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "savedBefore",
                         "valueType": "integer",
                         "value": "1"
@@ -26956,7 +26956,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Point",
                         "valueType": "string",
                         "value": "{{instance}.Point}"
@@ -26966,7 +26966,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "ExpNeeded",
                         "valueType": "string",
                         "value": "{{instance}.ExpNeeded}"
@@ -26976,7 +26976,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Level",
                         "valueType": "string",
                         "value": "{{instance}.Level}"
@@ -26986,7 +26986,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -26996,7 +26996,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "CON",
                         "valueType": "string",
                         "value": "{{instance}.CON}"
@@ -27006,7 +27006,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "AGI",
                         "valueType": "string",
                         "value": "{{instance}.AGI}"
@@ -27016,7 +27016,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "INT",
                         "valueType": "string",
                         "value": "{{instance}.INT}"
@@ -27026,7 +27026,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "PSY",
                         "valueType": "string",
                         "value": "{{instance}.PSY}"
@@ -27036,7 +27036,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
@@ -27046,7 +27046,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "HP",
                         "valueType": "string",
                         "value": "{{instance}.HP}"
@@ -27056,7 +27056,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "savedBefore",
                         "valueType": "integer",
                         "value": "1"
@@ -27281,7 +27281,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Point",
                         "valueType": "string",
                         "value": "{{instance}.Point}"
@@ -27291,7 +27291,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "ExpNeeded",
                         "valueType": "string",
                         "value": "{{instance}.ExpNeeded}"
@@ -27301,7 +27301,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Level",
                         "valueType": "string",
                         "value": "{{instance}.Level}"
@@ -27311,7 +27311,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -27321,7 +27321,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "CON",
                         "valueType": "string",
                         "value": "{{instance}.CON}"
@@ -27331,7 +27331,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "AGI",
                         "valueType": "string",
                         "value": "{{instance}.AGI}"
@@ -27341,7 +27341,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "INT",
                         "valueType": "string",
                         "value": "{{instance}.INT}"
@@ -27351,7 +27351,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "PSY",
                         "valueType": "string",
                         "value": "{{instance}.PSY}"
@@ -27361,7 +27361,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
@@ -27371,7 +27371,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "HP",
                         "valueType": "string",
                         "value": "{{instance}.HP}"
@@ -27381,7 +27381,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "savedBefore",
                         "valueType": "integer",
                         "value": "1"
@@ -27606,7 +27606,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Point",
                         "valueType": "string",
                         "value": "{{instance}.Point}"
@@ -27616,7 +27616,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "ExpNeeded",
                         "valueType": "string",
                         "value": "{{instance}.ExpNeeded}"
@@ -27626,7 +27626,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Level",
                         "valueType": "string",
                         "value": "{{instance}.Level}"
@@ -27636,7 +27636,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -27646,7 +27646,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "CON",
                         "valueType": "string",
                         "value": "{{instance}.CON}"
@@ -27656,7 +27656,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "AGI",
                         "valueType": "string",
                         "value": "{{instance}.AGI}"
@@ -27666,7 +27666,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "INT",
                         "valueType": "string",
                         "value": "{{instance}.INT}"
@@ -27676,7 +27676,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "PSY",
                         "valueType": "string",
                         "value": "{{instance}.PSY}"
@@ -27686,7 +27686,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
@@ -27696,7 +27696,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "HP",
                         "valueType": "string",
                         "value": "{{instance}.HP}"
@@ -27706,7 +27706,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "savedBefore",
                         "valueType": "integer",
                         "value": "1"
@@ -27931,7 +27931,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Point",
                         "valueType": "string",
                         "value": "{{instance}.Point}"
@@ -27941,7 +27941,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "ExpNeeded",
                         "valueType": "string",
                         "value": "{{instance}.ExpNeeded}"
@@ -27951,7 +27951,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Level",
                         "valueType": "string",
                         "value": "{{instance}.Level}"
@@ -27961,7 +27961,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -27971,7 +27971,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "CON",
                         "valueType": "string",
                         "value": "{{instance}.CON}"
@@ -27981,7 +27981,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "AGI",
                         "valueType": "string",
                         "value": "{{instance}.AGI}"
@@ -27991,7 +27991,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "INT",
                         "valueType": "string",
                         "value": "{{instance}.INT}"
@@ -28001,7 +28001,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "PSY",
                         "valueType": "string",
                         "value": "{{instance}.PSY}"
@@ -28011,7 +28011,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
@@ -28021,7 +28021,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "HP",
                         "valueType": "string",
                         "value": "{{instance}.HP}"
@@ -28031,7 +28031,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "savedBefore",
                         "valueType": "integer",
                         "value": "1"
@@ -28256,7 +28256,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Point",
                         "valueType": "string",
                         "value": "{{instance}.Point}"
@@ -28266,7 +28266,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "ExpNeeded",
                         "valueType": "string",
                         "value": "{{instance}.ExpNeeded}"
@@ -28276,7 +28276,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Level",
                         "valueType": "string",
                         "value": "{{instance}.Level}"
@@ -28286,7 +28286,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -28296,7 +28296,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "CON",
                         "valueType": "string",
                         "value": "{{instance}.CON}"
@@ -28306,7 +28306,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "AGI",
                         "valueType": "string",
                         "value": "{{instance}.AGI}"
@@ -28316,7 +28316,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "INT",
                         "valueType": "string",
                         "value": "{{instance}.INT}"
@@ -28326,7 +28326,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "PSY",
                         "valueType": "string",
                         "value": "{{instance}.PSY}"
@@ -28336,7 +28336,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
@@ -28346,7 +28346,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "HP",
                         "valueType": "string",
                         "value": "{{instance}.HP}"
@@ -28356,7 +28356,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "savedBefore",
                         "valueType": "integer",
                         "value": "1"
@@ -28581,7 +28581,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Point",
                         "valueType": "string",
                         "value": "{{instance}.Point}"
@@ -28591,7 +28591,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "ExpNeeded",
                         "valueType": "string",
                         "value": "{{instance}.ExpNeeded}"
@@ -28601,7 +28601,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Level",
                         "valueType": "string",
                         "value": "{{instance}.Level}"
@@ -28611,7 +28611,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -28621,7 +28621,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "CON",
                         "valueType": "string",
                         "value": "{{instance}.CON}"
@@ -28631,7 +28631,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "AGI",
                         "valueType": "string",
                         "value": "{{instance}.AGI}"
@@ -28641,7 +28641,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "INT",
                         "valueType": "string",
                         "value": "{{instance}.INT}"
@@ -28651,7 +28651,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "PSY",
                         "valueType": "string",
                         "value": "{{instance}.PSY}"
@@ -28661,7 +28661,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
@@ -28671,7 +28671,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "HP",
                         "valueType": "string",
                         "value": "{{instance}.HP}"
@@ -28681,7 +28681,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "savedBefore",
                         "valueType": "integer",
                         "value": "1"
@@ -28810,12 +28810,28 @@
             "devOnly": false,
             "actions": [
                 {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "tmp_q",
+                        "valueType": "integer",
+                        "value": "floor({instance.Level}/10)"
+                    }
+                },
+                {
+                    "type": "SetGlobal",
+                    "data": {
+                        "key": "tmp_r",
+                        "valueType": "integer",
+                        "value": "{instance.Level} - 10*{tmp_q}"
+                    }
+                },
+                {
                     "type": "SetObjectVar",
                     "data": {
                         "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "{instance.Level}*2+3"
+                        "value": "5 * {tmp_q} * ({tmp_q} + 3) + {tmp_r} * ({tmp_q} + 2)"
                     }
                 },
                 {
@@ -28944,7 +28960,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Point",
                         "valueType": "string",
                         "value": "{{instance}.Point}"
@@ -28954,7 +28970,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "ExpNeeded",
                         "valueType": "string",
                         "value": "{{instance}.ExpNeeded}"
@@ -28964,7 +28980,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Level",
                         "valueType": "string",
                         "value": "{{instance}.Level}"
@@ -28974,7 +28990,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -28984,7 +29000,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "CON",
                         "valueType": "string",
                         "value": "{{instance}.CON}"
@@ -28994,7 +29010,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "AGI",
                         "valueType": "string",
                         "value": "{{instance}.AGI}"
@@ -29004,7 +29020,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "INT",
                         "valueType": "string",
                         "value": "{{instance}.INT}"
@@ -29014,7 +29030,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "PSY",
                         "valueType": "string",
                         "value": "{{instance}.PSY}"
@@ -29024,7 +29040,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
@@ -29034,7 +29050,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "HP",
                         "valueType": "string",
                         "value": "{{instance}.HP}"
@@ -29044,7 +29060,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "savedBefore",
                         "valueType": "integer",
                         "value": "1"
@@ -29109,18 +29125,9 @@
                     "type": "SetObjectVar",
                     "data": {
                         "objectId": "instance",
-                        "key": "Level",
-                        "valueType": "integer",
-                        "value": "{instance.Level}+1"
-                    }
-                },
-                {
-                    "type": "SetObjectVar",
-                    "data": {
-                        "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "{instance.Point}+2"
+                        "value": "{instance.Point}+floor({instance.Level}/10)+2"
                     }
                 },
                 {
@@ -29129,7 +29136,16 @@
                         "objectId": "instance",
                         "key": "ExpNeeded",
                         "valueType": "integer",
-                        "value": "{instance.Level}*2+4"
+                        "value": "({instance.Level}+10)*({instance.Level}+10)"
+                    }
+                },
+                {
+                    "type": "SetObjectVar",
+                    "data": {
+                        "objectId": "instance",
+                        "key": "Level",
+                        "valueType": "integer",
+                        "value": "{instance.Level}+1"
                     }
                 },
                 {
@@ -29164,7 +29180,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Point",
                         "valueType": "string",
                         "value": "{{instance}.Point}"
@@ -29174,7 +29190,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "ExpNeeded",
                         "valueType": "string",
                         "value": "{{instance}.ExpNeeded}"
@@ -29184,7 +29200,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Level",
                         "valueType": "string",
                         "value": "{{instance}.Level}"
@@ -29194,7 +29210,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "STR",
                         "valueType": "string",
                         "value": "{{instance}.STR}"
@@ -29204,7 +29220,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "CON",
                         "valueType": "string",
                         "value": "{{instance}.CON}"
@@ -29214,7 +29230,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "AGI",
                         "valueType": "string",
                         "value": "{{instance}.AGI}"
@@ -29224,7 +29240,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "INT",
                         "valueType": "string",
                         "value": "{{instance}.INT}"
@@ -29234,7 +29250,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "PSY",
                         "valueType": "string",
                         "value": "{{instance}.PSY}"
@@ -29244,7 +29260,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "Exp",
                         "valueType": "string",
                         "value": "{{instance}.Exp}"
@@ -29254,7 +29270,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "HP",
                         "valueType": "string",
                         "value": "{{instance}.HP}"
@@ -29264,7 +29280,7 @@
                     "type": "SetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "savedBefore",
                         "valueType": "integer",
                         "value": "1"
@@ -29497,7 +29513,7 @@
                         "objectId": "instance",
                         "key": "Point",
                         "valueType": "integer",
-                        "value": "5"
+                        "value": "2"
                     }
                 },
                 {
@@ -29515,7 +29531,7 @@
                         "objectId": "instance",
                         "key": "ExpNeeded",
                         "valueType": "integer",
-                        "value": "6"
+                        "value": "100"
                     }
                 },
                 {
@@ -29558,7 +29574,7 @@
                     "type": "GetUserState",
                     "data": {
                         "playerId": "{instance}",
-                        "category": "simple-rpg-test",
+                        "category": "simple-rpg-test-v2",
                         "key": "savedBefore",
                         "varname": "{instance}_savedBefore"
                     }

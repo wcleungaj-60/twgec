@@ -13,11 +13,12 @@ def 自定義::拾取經驗泛型(drop_item_code, exp) : block {
     }
 }
 
-block 拾取經驗一級鹿 = 自定義::拾取經驗泛型("deer_exp_01", 1);
-block 拾取經驗三級鹿 = 自定義::拾取經驗泛型("deer_exp_03", 3);
-block 拾取經驗五級鹿 = 自定義::拾取經驗泛型("deer_exp_05", 5);
-block 拾取經驗五級山嶺石怪 = 自定義::拾取經驗泛型("stone_exp_05", 7);
-block 拾取經驗七級山嶺石怪 = 自定義::拾取經驗泛型("stone_exp_07", 10);
+// floor(9+x^1.2)
+block 拾取經驗一級鹿 = 自定義::拾取經驗泛型("deer_exp_01", 10);
+block 拾取經驗三級鹿 = 自定義::拾取經驗泛型("deer_exp_03", 12);
+block 拾取經驗五級鹿 = 自定義::拾取經驗泛型("deer_exp_05", 15);
+block 拾取經驗七級山嶺石怪 = 自定義::拾取經驗泛型("stone_exp_07", 19);
+block 拾取經驗九級山嶺石怪 = 自定義::拾取經驗泛型("stone_exp_09", 22);
 
 def 自定義::野獸死亡泛型(actor_id, drop_item_code, drop_item_type) : block {
     __repeat__ = -1;
@@ -33,8 +34,8 @@ def 自定義::野獸死亡泛型(actor_id, drop_item_code, drop_item_type) : bl
 block 野獸死亡一級鹿 = 自定義::野獸死亡泛型("monster_deer_lv01", "deer_exp_01", "sariraFire");
 block 野獸死亡三級鹿 = 自定義::野獸死亡泛型("monster_deer_lv03", "deer_exp_03", "sariraFire");
 block 野獸死亡五級鹿 = 自定義::野獸死亡泛型("monster_deer_lv05", "deer_exp_05", "sariraFire");
-block 野獸死亡五級山嶺石怪 = 自定義::野獸死亡泛型("monster_stone_lv05", "stone_exp_05", "redStone");
 block 野獸死亡七級山嶺石怪 = 自定義::野獸死亡泛型("monster_stone_lv07", "stone_exp_07", "redStone");
+block 野獸死亡九級山嶺石怪 = 自定義::野獸死亡泛型("monster_stone_lv09", "stone_exp_09", "redStone");
 
 // TODO: Support syntax
 // def 自定義::野獸重生拳頭類泛型(actor_id, name, x, y, range, hp, strength, role) : block = 
@@ -66,8 +67,8 @@ def 自定義::野獸重生泛型(interval, chunk_x, chunk_y, monster_type, leve
         if(monster_type == "鹿") {
             新增角色(name = monster_type + "(Lv" + twge::to_string(level) + ")",
                     id = "monster_deer_lv0" + twge::to_string(level) + "*",
-                    hp = 15 + 45 * level,
-                    strength = 5 + 5 * level,
+                    hp = 45 + 15 * level,
+                    strength = 8 + 2 * level,
                     x = "{chunk_{map_to_chunk_" + chunk_x + "_" + chunk_y + "}_x} + 10",
                     y = "{chunk_{map_to_chunk_" + chunk_x + "_" + chunk_y + "}_y} + 10", 
                     camp = "第三", range = 10, localVarname = "actor",
@@ -76,14 +77,14 @@ def 自定義::野獸重生泛型(interval, chunk_x, chunk_y, monster_type, leve
         if(monster_type == "山嶺石怪") {
             新增角色(name = monster_type + "(Lv" + twge::to_string(level) + ")",
                     id = "monster_stone_lv0" + twge::to_string(level) + "*",
-                    hp = 20 + 80 * level,
-                    strength = 10 * level,
+                    hp = 60 + 20 * level,
+                    strength = 10 + 2 * level,
                     x = "{chunk_{map_to_chunk_" + chunk_x + "_" + chunk_y + "}_x} + 10",
                     y = "{chunk_{map_to_chunk_" + chunk_x + "_" + chunk_y + "}_y} + 10", 
                     camp = "第三", range = 10, localVarname = "actor",
                     weapon1 = "fist", weapon2 = "fist", teamId = 101, role = "石怪");
             設定角色屬性(actorId = "{actor}", attr = "體重", value = "6");
-            設定角色屬性(actorId = "{actor}", attr = "體型縮放", value = "1.1");
+            設定角色屬性(actorId = "{actor}", attr = "體型縮放", value = "1.05");
         }
         跟隨人物(actorId = "actor", type = "跟隨自己");
     }
@@ -101,8 +102,10 @@ block 野獸重生x100y102鹿 = 自定義::野獸重生泛型(10000, "100", "102
 block 野獸重生x099y102鹿 = 自定義::野獸重生泛型(12000, "99", "102", "鹿", 5);
 block 野獸重生x101y102鹿 = 自定義::野獸重生泛型(20000, "101", "102", "鹿", 5);
 
-// 五級山嶺石怪
-block 野獸重生x101y102山嶺石怪 = 自定義::野獸重生泛型(20000, "101", "102", "山嶺石怪", 5);
-block 野獸重生x101y103山嶺石怪 = 自定義::野獸重生泛型(15000, "101", "103", "山嶺石怪", 5);
-block 野獸重生x100y103山嶺石怪 = 自定義::野獸重生泛型(15000, "100", "103", "山嶺石怪", 7);
-block 野獸重生x100y104山嶺石怪 = 自定義::野獸重生泛型(15000, "100", "104", "山嶺石怪", 7);
+// 七級山嶺石怪
+block 野獸重生x101y102山嶺石怪 = 自定義::野獸重生泛型(20000, "101", "102", "山嶺石怪", 7);
+block 野獸重生x101y103山嶺石怪 = 自定義::野獸重生泛型(15000, "101", "103", "山嶺石怪", 7);
+
+// 九級山嶺石怪
+block 野獸重生x100y103山嶺石怪 = 自定義::野獸重生泛型(15000, "100", "103", "山嶺石怪", 9);
+block 野獸重生x100y104山嶺石怪 = 自定義::野獸重生泛型(15000, "100", "104", "山嶺石怪", 9);

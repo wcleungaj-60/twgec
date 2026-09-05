@@ -15,7 +15,7 @@ const 角色::任何敵軍 = ActorMatch(group = 101);
 
 const 出生點 = Point(10,10);
 const 除錯模式 = false;
-const 狀態讀寫密鑰 = "simple-rpg-test";
+const 狀態讀寫密鑰 = "simple-rpg-test-v2";
 
 //------------------- Metadata設定 -------------------//
 __skydowLocs__ = 出生點;

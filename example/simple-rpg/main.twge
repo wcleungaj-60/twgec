@@ -14,7 +14,9 @@ block 點擊重置能力 {
         告示牌按鈕(varName = "instance", buttonId = "ResetPoint");
     }
     actions {
-        自定義::儲存Instance整數("Point", "{instance.Level}*2+3");
+        儲存全域變數(key = "tmp_q", type = "int", value = "floor({instance.Level}/10)");
+        儲存全域變數(key = "tmp_r", type = "int", value = "{instance.Level} - 10*{tmp_q}");
+        自定義::儲存Instance整數("Point", "5 * {tmp_q} * ({tmp_q} + 3) + {tmp_r} * ({tmp_q} + 2)");
         自定義::儲存Instance整數("STR", 0);
         自定義::儲存Instance整數("CON", 0);
         自定義::儲存Instance整數("AGI", 0);
@@ -36,9 +38,9 @@ block 等級提升 {
     actions {
         地圖標示文字(x = 公式::InstanceX坐標, y = 公式::InstanceY坐標, html = true, text = 文字::HTML等級提升, duration = 6000);
         自定義::儲存Instance整數("Exp", "{instance.Exp}-{instance.ExpNeeded}");
+        自定義::儲存Instance整數("Point", "{instance.Point}+floor({instance.Level}/10)+2");
+        自定義::儲存Instance整數("ExpNeeded", "({instance.Level}+10)*({instance.Level}+10)");
         自定義::儲存Instance整數("Level", "{instance.Level}+1");
-        自定義::儲存Instance整數("Point", "{instance.Point}+2");
-        自定義::儲存Instance整數("ExpNeeded", "{instance.Level}*2+4");
         自定義::儲存Instance整數("HP", 公式::Instance血量);
         設定角色屬性(actorId = "instance", attr = "maxHp", value = "{instance.HP}");
         自定義::上載Instance數據();
@@ -82,9 +84,9 @@ block 玩家初始化 {
         自定義::儲存Instance整數("INT", 0);
         自定義::儲存Instance整數("PSY", 0);
         自定義::儲存Instance整數("Level", 1);
-        自定義::儲存Instance整數("Point", 5);
+        自定義::儲存Instance整數("Point", 2);
         自定義::儲存Instance整數("Exp", 0);
-        自定義::儲存Instance整數("ExpNeeded", 6);
+        自定義::儲存Instance整數("ExpNeeded", 100);
         自定義::儲存Instance整數("HP", 100);
         自定義::儲存Instance整數("map_x", 100);
         自定義::儲存Instance整數("map_y", 100);
