@@ -1,28 +1,28 @@
-const 公式::火星領域傷害 = "{instance.INT}/4+{instance.PSY}/6";
-const 公式::震撼傷害 = "1+{instance.CON}/3";
+const 公式::火星領域傷害 = "2+{instance.INT}/2+{instance.PSY}/3";
+const 公式::震撼傷害 = "15+{instance.CON}";
 const 公式::震撼範圍 = "60+10*{instance.CON}^0.5";
-const 公式::土靈召喚血量 = "100+{instance.PSY}*2";
-const 公式::土靈召喚傷害 = "10+{instance.PSY}/5";
+const 公式::土靈召喚血量 = "100+{instance.PSY}*4";
+const 公式::土靈召喚傷害 = "10+{instance.PSY}/2";
 
 const 文字::火星領域描述 = 
 "【火星領域】\n" + 
 "在滑鼠指定範圍內持續出現星火\n" + 
-" - 星火傷害: 智慧÷4+精神÷6\n" +
+" - 星火傷害: 2+智慧÷2+精神÷3\n" +
 "冷卻10秒";
 
 const 文字::震撼描述 = 
 "【震撼】\n" + 
 "對自身附近的敵人造成傷害\n" +
 "體質越高，威力及範圍越大\n" + 
-" - 震撼傷害: 1+體質÷3\n" +
+" - 震撼傷害: 15+體質\n" +
 " - 震撼範圍: 60+10×體質^0.5\n" +
 "冷卻10秒";
 
 const 文字::土靈召喚 = 
 "【土靈召喚】\n" + 
 "生成一直存在35秒的土靈為你戰鬥\n" + 
-" - 土靈血量: 100+精神×2\n" +
-" - 土靈傷害: 10+精神÷5\n" +
+" - 土靈血量: 100+精神×4\n" +
+" - 土靈傷害: 10+精神÷2\n" +
 "冷卻40秒";
 
 const 別名::技能火星領域EN = "SparkArea";
@@ -52,8 +52,8 @@ def 火星領域技能() : actions {
 EnhFF::玩家滑鼠座標(actorId = "{instance}", varX = "x", varY = "y");
     EnhFF::廣義圓形範圍(x = "{x}", y="{y}", radius = 2*64, duration = 10000,
             color = "#912B2B", lineWidth = 3);
-    for(i in 1...30) {
-        wait(duration = 300);
+    for(i in 1...60) {
+        wait(duration = 150);
         EnhFF::廣義圓形範圍(x = "{x}+random(-64,64)", y="{y}+random(-64,64)", 
                 radius = 40, duration = 500, color = "#FF0F0F", 
                 deltaHpType = "damage", deltaHpValue = 公式::火星領域傷害,
